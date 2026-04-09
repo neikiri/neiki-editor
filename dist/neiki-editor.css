@@ -1,0 +1,796 @@
+/* ============================================
+   NEIKI EDITOR - WYSIWYG Rich Text Editor
+   ============================================ */
+
+:root {
+    --neiki-primary: #3b82f6;
+    --neiki-primary-hover: #2563eb;
+    --neiki-secondary: #64748b;
+    --neiki-bg: #ffffff;
+    --neiki-bg-dark: #f8fafc;
+    --neiki-border: #e2e8f0;
+    --neiki-text: #1e293b;
+    --neiki-text-light: #64748b;
+    --neiki-success: #22c55e;
+    --neiki-warning: #f59e0b;
+    --neiki-danger: #ef4444;
+    --neiki-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --neiki-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --neiki-radius: 8px;
+    --neiki-radius-sm: 4px;
+}
+
+/* Editor Container */
+.neiki-editor-container {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    border: 1px solid var(--neiki-border);
+    border-radius: var(--neiki-radius);
+    background: var(--neiki-bg);
+    box-shadow: var(--neiki-shadow);
+    overflow: hidden;
+}
+
+/* Toolbar */
+.neiki-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    padding: 8px;
+    background: var(--neiki-bg-dark);
+    border-bottom: 1px solid var(--neiki-border);
+    align-items: center;
+}
+
+.neiki-toolbar-group {
+    display: flex;
+    gap: 2px;
+    padding: 0 6px;
+    border-right: 1px solid var(--neiki-border);
+}
+
+.neiki-toolbar-group:last-child {
+    border-right: none;
+}
+
+/* Toolbar Buttons */
+.neiki-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: var(--neiki-radius-sm);
+    background: transparent;
+    color: var(--neiki-text);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 14px;
+}
+
+.neiki-btn:hover {
+    background: var(--neiki-border);
+}
+
+.neiki-btn:active,
+.neiki-btn.active {
+    background: var(--neiki-primary);
+    color: white;
+}
+
+.neiki-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.neiki-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Dropdown Select */
+.neiki-select {
+    height: 32px;
+    padding: 0 8px;
+    border: 1px solid var(--neiki-border);
+    border-radius: var(--neiki-radius-sm);
+    background: var(--neiki-bg);
+    color: var(--neiki-text);
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+    min-width: 100px;
+}
+
+.neiki-select:hover {
+    border-color: var(--neiki-primary);
+}
+
+.neiki-select:focus {
+    border-color: var(--neiki-primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Color Picker */
+.neiki-color-picker-wrapper {
+    position: relative;
+    display: inline-flex;
+}
+
+.neiki-color-btn {
+    position: relative;
+    width: 32px;
+    height: 32px;
+}
+
+.neiki-color-indicator {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 3px;
+    border-radius: 1px;
+    background: currentColor;
+}
+
+.neiki-color-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    padding: 8px;
+    background: var(--neiki-bg);
+    border: 1px solid var(--neiki-border);
+    border-radius: var(--neiki-radius);
+    box-shadow: var(--neiki-shadow-lg);
+}
+
+.neiki-color-dropdown.show {
+    display: block;
+}
+
+.neiki-color-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 24px);
+    gap: 4px;
+}
+
+.neiki-color-swatch {
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--neiki-border);
+    border-radius: var(--neiki-radius-sm);
+    cursor: pointer;
+    transition: transform 0.1s ease;
+}
+
+.neiki-color-swatch:hover {
+    transform: scale(1.15);
+    z-index: 1;
+}
+
+.neiki-color-swatch-reset {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #000;
+    border-radius: var(--neiki-radius-sm);
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    position: relative;
+    background: 
+        linear-gradient(45deg, #ccc 25%, transparent 25%),
+        linear-gradient(-45deg, #ccc 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #ccc 75%),
+        linear-gradient(-45deg, transparent 75%, #ccc 75%);
+    background-size: 8px 8px;
+    background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
+    background-color: #fff;
+}
+
+.neiki-color-swatch-reset::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -2px;
+    right: -2px;
+    height: 2px;
+    background: #e53935;
+    transform: rotate(-45deg);
+    border-radius: 1px;
+}
+
+.neiki-color-swatch-reset:hover {
+    transform: scale(1.15);
+    z-index: 1;
+}
+
+.neiki-color-custom {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--neiki-border);
+}
+
+.neiki-color-custom input[type="color"] {
+    width: 100%;
+    height: 30px;
+    padding: 0;
+    border: 1px solid var(--neiki-border);
+    border-radius: var(--neiki-radius-sm);
+    cursor: pointer;
+}
+
+/* Editor Content Area */
+.neiki-editor-content {
+    min-height: 300px;
+    max-height: 600px;
+    padding: 16px;
+    overflow-y: auto;
+    outline: none;
+    line-height: 1.6;
+    color: var(--neiki-text);
+}
+
+.neiki-editor-content:focus {
+    outline: none;
+}
+
+.neiki-editor-content p {
+    margin: 0 0 1em 0;
+}
+
+.neiki-editor-content h1,
+.neiki-editor-content h2,
+.neiki-editor-content h3,
+.neiki-editor-content h4,
+.neiki-editor-content h5,
+.neiki-editor-content h6 {
+    margin: 1em 0 0.5em 0;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.neiki-editor-content h1 { font-size: 2em; }
+.neiki-editor-content h2 { font-size: 1.5em; }
+.neiki-editor-content h3 { font-size: 1.25em; }
+.neiki-editor-content h4 { font-size: 1.1em; }
+.neiki-editor-content h5 { font-size: 1em; }
+.neiki-editor-content h6 { font-size: 0.9em; }
+
+.neiki-editor-content ul,
+.neiki-editor-content ol {
+    margin: 0 0 1em 0;
+    padding-left: 2em;
+}
+
+.neiki-editor-content li {
+    margin-bottom: 0.25em;
+}
+
+.neiki-editor-content blockquote {
+    margin: 1em 0;
+    padding: 12px 20px;
+    border-left: 4px solid var(--neiki-primary);
+    background: var(--neiki-bg-dark);
+    font-style: italic;
+}
+
+.neiki-editor-content pre {
+    margin: 1em 0;
+    padding: 16px;
+    background: #1e293b;
+    color: #e2e8f0;
+    border-radius: var(--neiki-radius);
+    overflow-x: auto;
+    font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+    font-size: 14px;
+}
+
+.neiki-editor-content code {
+    padding: 2px 6px;
+    background: var(--neiki-bg-dark);
+    border-radius: var(--neiki-radius-sm);
+    font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+    font-size: 0.9em;
+}
+
+.neiki-editor-content pre code {
+    padding: 0;
+    background: transparent;
+}
+
+.neiki-editor-content a {
+    color: var(--neiki-primary);
+    text-decoration: underline;
+}
+
+.neiki-editor-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--neiki-radius-sm);
+}
+
+.neiki-editor-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+}
+
+.neiki-editor-content table th,
+.neiki-editor-content table td {
+    border: 1px solid var(--neiki-border);
+    padding: 8px 12px;
+    text-align: left;
+}
+
+.neiki-editor-content table th {
+    background: var(--neiki-bg-dark);
+    font-weight: 600;
+}
+
+.neiki-editor-content hr {
+    margin: 1.5em 0;
+    border: none;
+    border-top: 2px solid var(--neiki-border);
+}
+
+/* Source Code View */
+.neiki-source-editor {
+    display: none;
+    width: 100%;
+    min-height: 300px;
+    max-height: 600px;
+    padding: 16px;
+    border: none;
+    background: #1e293b;
+    color: #e2e8f0;
+    font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    outline: none;
+}
+
+.neiki-source-editor.active {
+    display: block;
+}
+
+.neiki-editor-content.hidden {
+    display: none;
+}
+
+/* Status Bar */
+.neiki-statusbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 12px;
+    background: var(--neiki-bg-dark);
+    border-top: 1px solid var(--neiki-border);
+    font-size: 12px;
+    color: var(--neiki-text-light);
+}
+
+.neiki-statusbar-left,
+.neiki-statusbar-right {
+    display: flex;
+    gap: 16px;
+}
+
+/* Modal */
+.neiki-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+}
+
+.neiki-modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.neiki-modal {
+    background: var(--neiki-bg);
+    border-radius: var(--neiki-radius);
+    box-shadow: var(--neiki-shadow-lg);
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow: hidden;
+    transform: scale(0.9);
+    transition: transform 0.2s ease;
+}
+
+.neiki-modal-overlay.show .neiki-modal {
+    transform: scale(1);
+}
+
+.neiki-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--neiki-border);
+}
+
+.neiki-modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--neiki-text);
+    margin: 0;
+}
+
+.neiki-modal-close {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: var(--neiki-text-light);
+    cursor: pointer;
+    border-radius: var(--neiki-radius-sm);
+    font-size: 20px;
+}
+
+.neiki-modal-close:hover {
+    background: var(--neiki-border);
+    color: var(--neiki-text);
+}
+
+.neiki-modal-body {
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.neiki-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 16px 20px;
+    border-top: 1px solid var(--neiki-border);
+}
+
+/* Form Elements */
+.neiki-form-group {
+    margin-bottom: 16px;
+}
+
+.neiki-form-group:last-child {
+    margin-bottom: 0;
+}
+
+.neiki-form-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--neiki-text);
+}
+
+.neiki-form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--neiki-border);
+    border-radius: var(--neiki-radius-sm);
+    font-size: 14px;
+    color: var(--neiki-text);
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    box-sizing: border-box;
+}
+
+.neiki-form-input:focus {
+    border-color: var(--neiki-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.neiki-form-input::placeholder {
+    color: var(--neiki-text-light);
+}
+
+/* Buttons */
+.neiki-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--neiki-radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.neiki-button-primary {
+    background: var(--neiki-primary);
+    color: white;
+}
+
+.neiki-button-primary:hover {
+    background: var(--neiki-primary-hover);
+}
+
+.neiki-button-secondary {
+    background: var(--neiki-bg-dark);
+    color: var(--neiki-text);
+    border: 1px solid var(--neiki-border);
+}
+
+.neiki-button-secondary:hover {
+    background: var(--neiki-border);
+}
+
+/* Tooltip */
+.neiki-btn[data-tooltip] {
+    position: relative;
+}
+
+.neiki-btn[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 10px;
+    background: var(--neiki-text);
+    color: white;
+    font-size: 12px;
+    white-space: nowrap;
+    border-radius: var(--neiki-radius-sm);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.15s ease;
+    pointer-events: none;
+    margin-bottom: 6px;
+    z-index: 1000;
+}
+
+.neiki-btn[data-tooltip]:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .neiki-toolbar {
+        padding: 6px;
+    }
+    
+    .neiki-toolbar-group {
+        padding: 0 4px;
+    }
+    
+    .neiki-btn {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .neiki-select {
+        min-width: 80px;
+        font-size: 12px;
+    }
+    
+    .neiki-editor-content {
+        padding: 12px;
+        min-height: 200px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .neiki-toolbar,
+    .neiki-statusbar {
+        display: none;
+    }
+    
+    .neiki-editor-container {
+        border: none;
+        box-shadow: none;
+    }
+    
+    .neiki-editor-content {
+        max-height: none;
+        overflow: visible;
+    }
+}
+
+/* Emoji Picker */
+.neiki-emoji-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    width: 280px;
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 8px;
+    background: var(--neiki-bg);
+    border: 1px solid var(--neiki-border);
+    border-radius: var(--neiki-radius);
+    box-shadow: var(--neiki-shadow-lg);
+}
+
+.neiki-emoji-dropdown.show {
+    display: block;
+}
+
+.neiki-emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 4px;
+}
+
+.neiki-emoji-item {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: var(--neiki-radius-sm);
+    transition: background 0.1s ease;
+}
+
+.neiki-emoji-item:hover {
+    background: var(--neiki-bg-dark);
+}
+
+/* Special Characters */
+.neiki-special-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    width: 320px;
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 8px;
+    background: var(--neiki-bg);
+    border: 1px solid var(--neiki-border);
+    border-radius: var(--neiki-radius);
+    box-shadow: var(--neiki-shadow-lg);
+}
+
+.neiki-special-dropdown.show {
+    display: block;
+}
+
+.neiki-special-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+}
+
+.neiki-special-item {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: var(--neiki-radius-sm);
+    border: 1px solid var(--neiki-border);
+    transition: all 0.1s ease;
+}
+
+.neiki-special-item:hover {
+    background: var(--neiki-primary);
+    color: white;
+    border-color: var(--neiki-primary);
+}
+
+/* Find and Replace */
+.neiki-find-replace {
+    display: none;
+    padding: 8px 12px;
+    background: var(--neiki-bg-dark);
+    border-bottom: 1px solid var(--neiki-border);
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.neiki-find-replace.show {
+    display: flex;
+}
+
+.neiki-find-replace input {
+    padding: 6px 10px;
+    border: 1px solid var(--neiki-border);
+    border-radius: var(--neiki-radius-sm);
+    font-size: 13px;
+    outline: none;
+    width: 150px;
+}
+
+.neiki-find-replace input:focus {
+    border-color: var(--neiki-primary);
+}
+
+.neiki-find-replace button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: var(--neiki-radius-sm);
+    background: var(--neiki-primary);
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.neiki-find-replace button:hover {
+    background: var(--neiki-primary-hover);
+}
+
+.neiki-find-replace .close-find {
+    background: transparent;
+    color: var(--neiki-text-light);
+    padding: 6px;
+}
+
+.neiki-find-replace .close-find:hover {
+    color: var(--neiki-text);
+    background: var(--neiki-border);
+}
+
+/* Resizable */
+.neiki-editor-resizable .neiki-editor-content,
+.neiki-editor-resizable .neiki-source-editor {
+    resize: vertical;
+}
+
+/* Fullscreen */
+.neiki-editor-fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 9999 !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+}
+
+.neiki-editor-fullscreen .neiki-editor-content,
+.neiki-editor-fullscreen .neiki-source-editor {
+    max-height: calc(100vh - 120px) !important;
+    min-height: calc(100vh - 120px) !important;
+}
+
+/* Dark Theme */
+.neiki-editor-dark {
+    --neiki-bg: #1e293b;
+    --neiki-bg-dark: #0f172a;
+    --neiki-border: #334155;
+    --neiki-text: #f1f5f9;
+    --neiki-text-light: #94a3b8;
+}
+
+.neiki-editor-dark .neiki-editor-content pre {
+    background: #0f172a;
+}
+
+.neiki-editor-dark .neiki-source-editor {
+    background: #0f172a;
+}
