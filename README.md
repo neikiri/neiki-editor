@@ -27,7 +27,7 @@
 
 ---
 
-## � Installation
+## 📦 Installation
 
 ### CDN (recommended)
 
@@ -241,7 +241,7 @@ editor.setTheme('light');
 
 ---
 
-## � License
+## 📄 License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
