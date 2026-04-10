@@ -32,9 +32,9 @@
 ### CDN (recommended)
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.1/dist/neiki-editor.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.2/dist/neiki-editor.js"></script>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.1/dist/neiki-editor.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.2/dist/neiki-editor.css">
 ```
 
 ### Manual Install

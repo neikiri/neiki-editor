@@ -180,7 +180,7 @@
     cursor: pointer;
     transition: transform 0.1s ease;
     position: relative;
-    background: 
+    background:
         linear-gradient(45deg, #ccc 25%, transparent 25%),
         linear-gradient(-45deg, #ccc 25%, transparent 25%),
         linear-gradient(45deg, transparent 75%, #ccc 75%),
@@ -252,12 +252,29 @@
     line-height: 1.3;
 }
 
-.neiki-editor-content h1 { font-size: 2em; }
-.neiki-editor-content h2 { font-size: 1.5em; }
-.neiki-editor-content h3 { font-size: 1.25em; }
-.neiki-editor-content h4 { font-size: 1.1em; }
-.neiki-editor-content h5 { font-size: 1em; }
-.neiki-editor-content h6 { font-size: 0.9em; }
+.neiki-editor-content h1 {
+    font-size: 2em;
+}
+
+.neiki-editor-content h2 {
+    font-size: 1.5em;
+}
+
+.neiki-editor-content h3 {
+    font-size: 1.25em;
+}
+
+.neiki-editor-content h4 {
+    font-size: 1.1em;
+}
+
+.neiki-editor-content h5 {
+    font-size: 1em;
+}
+
+.neiki-editor-content h6 {
+    font-size: 0.9em;
+}
 
 .neiki-editor-content ul,
 .neiki-editor-content ol {
@@ -571,21 +588,21 @@
     .neiki-toolbar {
         padding: 6px;
     }
-    
+
     .neiki-toolbar-group {
         padding: 0 4px;
     }
-    
+
     .neiki-btn {
         width: 28px;
         height: 28px;
     }
-    
+
     .neiki-select {
         min-width: 80px;
         font-size: 12px;
     }
-    
+
     .neiki-editor-content {
         padding: 12px;
         min-height: 200px;
@@ -594,16 +611,17 @@
 
 /* Print Styles */
 @media print {
+
     .neiki-toolbar,
     .neiki-statusbar {
         display: none;
     }
-    
+
     .neiki-editor-container {
         border: none;
         box-shadow: none;
     }
-    
+
     .neiki-editor-content {
         max-height: none;
         overflow: visible;
@@ -793,4 +811,34 @@
 
 .neiki-editor-dark .neiki-source-editor {
     background: #0f172a;
+}
+
+/* === LAYOUT FIX (sticky toolbar + bottom statusbar) === */
+
+.neiki-editor-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.neiki-editor-content {
+    flex: 1;
+    max-height: none;
+    overflow-y: auto;
+}
+
+.neiki-source-editor {
+    flex: 1;
+    max-height: none;
+}
+
+.neiki-statusbar {
+    margin-top: auto;
+}
+
+
+.neiki-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }

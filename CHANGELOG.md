@@ -6,3 +6,6 @@
 
 ## [1.0.1]
 - Fix color change
+
+## [1.0.2]
+- Added some styles
