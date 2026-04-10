@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 2.0.0
+ * Version: 2.1.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -21,18 +21,15 @@
 
   const DEFAULT_CONFIG = {
     toolbar: [
-      'undo', 'redo', '|',
-      'bold', 'italic', 'underline', 'strikethrough', '|',
-      'heading', 'fontSize', 'fontFamily', '|',
+      'viewCode', 'undo', 'redo', 'findReplace', '|',
+      'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'removeFormat', '|',
+      'heading', 'fontFamily', 'fontSize', '|',
       'foreColor', 'backColor', '|',
       'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', '|',
-      'bulletList', 'numberedList', '|',
       'indent', 'outdent', '|',
-      'link', 'image', 'table', '|',
-      'blockquote', 'viewCode', 'horizontalRule', '|',
-      'subscript', 'superscript', 'removeFormat', '|',
-      'findReplace', 'emoji', 'specialChars', '|',
-      'fullscreen', 'themeToggle', 'print'
+      'bulletList', 'numberedList', 'blockquote', 'horizontalRule', '|',
+      'insertDropdown', '|',
+      'moreMenu'
     ],
     placeholder: 'Start typing...',
     minHeight: 300,
@@ -44,6 +41,7 @@
     language: 'en',
     plugins: [],
     onChange: null,
+    onSave: null,
     onFocus: null,
     onBlur: null,
     onReady: null
@@ -56,9 +54,9 @@
     italic: { icon: 'italic', title: 'Italic (Ctrl+I)', command: 'italic' },
     underline: { icon: 'underline', title: 'Underline (Ctrl+U)', command: 'underline' },
     strikethrough: { icon: 'strikethrough', title: 'Strikethrough', command: 'strikeThrough' },
-    heading: { icon: 'heading', title: 'Heading', command: 'heading', dropdown: true },
-    fontSize: { icon: 'font-size', title: 'Font Size', command: 'fontSize', dropdown: true },
-    fontFamily: { icon: 'font', title: 'Font Family', command: 'fontFamily', dropdown: true },
+    heading: { title: 'Heading', command: 'heading', type: 'select' },
+    fontSize: { title: 'Font Size', command: 'fontSize', type: 'fontSizeWidget' },
+    fontFamily: { title: 'Font Family', command: 'fontFamily', type: 'select' },
     foreColor: { icon: 'text-color', title: 'Text Color', command: 'foreColor', picker: 'color' },
     backColor: { icon: 'highlight', title: 'Background Color', command: 'backColor', picker: 'color' },
     alignLeft: { icon: 'align-left', title: 'Align Left', command: 'justifyLeft' },
@@ -84,25 +82,12 @@
     fullscreen: { icon: 'fullscreen', title: 'Fullscreen', command: 'fullscreen' },
     autosave: { icon: 'save', title: 'Toggle Autosave', command: 'autosave', toggle: true },
     themeToggle: { icon: 'sun', title: 'Toggle Theme', command: 'themeToggle', toggle: true },
-    print: { icon: 'print', title: 'Print', command: 'print' }
+    print: { icon: 'print', title: 'Print', command: 'print' },
+    insertDropdown: { icon: 'plus', title: 'Insert', type: 'insertDropdown' },
+    moreMenu: { icon: 'more', title: 'More options', type: 'moreMenu' }
   };
 
-  const FONT_SIZES = [
-    { label: '10px', value: '10px' },
-    { label: '11px', value: '11px' },
-    { label: '12px', value: '12px' },
-    { label: '14px', value: '14px' },
-    { label: '16px', value: '16px' },
-    { label: '18px', value: '18px' },
-    { label: '20px', value: '20px' },
-    { label: '24px', value: '24px' },
-    { label: '28px', value: '28px' },
-    { label: '32px', value: '32px' },
-    { label: '36px', value: '36px' },
-    { label: '48px', value: '48px' },
-    { label: '64px', value: '64px' },
-    { label: '72px', value: '72px' }
-  ];
+  const FONT_SIZES = [8, 9, 10, 11, 12, 14, 18, 24, 30, 36, 48, 60, 72, 96];
 
   const FONT_FAMILIES = [
     { label: 'Sans Serif', value: 'Arial, sans-serif' },
@@ -325,7 +310,13 @@
     emoji: '<svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>',
     specialChars: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><text x="12" y="16" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">©</text></svg>',
     sun: '<svg viewBox="0 0 24 24"><path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"/></svg>',
-    moon: '<svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>'
+    moon: '<svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>',
+    plus: '<svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>',
+    more: '<svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>',
+    download: '<svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>',
+    eye: '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>',
+    trash: '<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>',
+    'chevron-down': '<svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>'
   };
 
   // ============================================
@@ -980,12 +971,12 @@
     createFontSizeDropdown() {
       const dropdown = Utils.createElement('div', { className: 'neiki-dropdown' });
 
-      FONT_SIZES.forEach(({ label, value }) => {
+      FONT_SIZES.forEach(size => {
         const item = Utils.createElement('div', {
           className: 'neiki-dropdown-item',
-          textContent: label,
+          textContent: size + 'px',
           onClick: () => {
-            this.editor.commands.fontSize(value);
+            this.editor.commands.fontSize(size + 'px');
             this.close();
           }
         });
@@ -1222,10 +1213,34 @@
 
     exec(command, value = null) {
       this.editor.focus();
+      const inlineCommands = ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'foreColor', 'backColor', 'fontName', 'fontSize', 'removeFormat'];
+      if (inlineCommands.includes(command)) {
+        this._expandToWordIfCollapsed();
+      }
       document.execCommand(command, false, value);
       this.editor.history.record();
       this.editor.updateToolbar();
       this.editor.triggerChange();
+    }
+
+    _expandToWordIfCollapsed() {
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount || !sel.isCollapsed) return;
+      const range = sel.getRangeAt(0);
+      const node = range.startContainer;
+      if (node.nodeType !== Node.TEXT_NODE) return;
+      const text = node.textContent;
+      let start = range.startOffset;
+      let end = range.startOffset;
+      // Expand backward
+      while (start > 0 && /\S/.test(text[start - 1])) start--;
+      // Expand forward
+      while (end < text.length && /\S/.test(text[end])) end++;
+      if (start === end) return;
+      range.setStart(node, start);
+      range.setEnd(node, end);
+      sel.removeAllRanges();
+      sel.addRange(range);
     }
 
     bold() { this.exec('bold'); }
@@ -1256,6 +1271,7 @@
 
     fontSize(sizeStr) {
       this.editor.focus();
+      this._expandToWordIfCollapsed();
       document.execCommand('fontSize', false, '7');
       const marked = this.editor.contentArea.querySelectorAll('font[size="7"]');
       marked.forEach(el => {
@@ -1504,13 +1520,6 @@
       this.updateStatusBar();
       this.updateToolbar();
 
-      // Set initial theme button state
-      if (this.config.theme === 'dark' && this.toolbarButtons.themeToggle) {
-        this.toolbarButtons.themeToggle.innerHTML = Icons.moon;
-        this.toolbarButtons.themeToggle.classList.add('active');
-        this.toolbarButtons.themeToggle.title = 'Switch to Light Mode';
-      }
-
       if (this.config.autofocus) {
         this.focus();
       }
@@ -1533,16 +1542,341 @@
     createToolbar() {
       this.toolbar = Utils.createElement('div', { className: 'neiki-toolbar' });
       this.toolbarButtons = {};
+      this.toolbarSelects = {};
+
+      let currentGroup = Utils.createElement('div', { className: 'neiki-toolbar-group' });
+
+      const appendToGroup = (el) => { currentGroup.appendChild(el); };
+      const flushGroup = () => {
+        if (currentGroup.childNodes.length > 0) {
+          this.toolbar.appendChild(currentGroup);
+        }
+        currentGroup = Utils.createElement('div', { className: 'neiki-toolbar-group' });
+      };
 
       this.config.toolbar.forEach(item => {
         if (item === '|') {
-          this.toolbar.appendChild(Utils.createElement('div', { className: 'neiki-toolbar-divider' }));
+          flushGroup();
           return;
         }
 
         const config = TOOLBAR_ITEMS[item];
         if (!config) return;
 
+        // Handle <select> type (heading, fontFamily)
+        if (config.type === 'select') {
+          const select = Utils.createElement('select', {
+            className: 'neiki-select',
+            title: config.title,
+            'data-command': item
+          });
+
+          if (item === 'heading') {
+            HEADINGS.forEach(({ label, value }) => {
+              const opt = document.createElement('option');
+              opt.value = value;
+              opt.textContent = label;
+              select.appendChild(opt);
+            });
+          } else if (item === 'fontFamily') {
+            FONT_FAMILIES.forEach(({ label, value }) => {
+              const opt = document.createElement('option');
+              opt.value = value;
+              opt.textContent = label;
+              opt.style.fontFamily = value;
+              select.appendChild(opt);
+            });
+          }
+
+          select.addEventListener('change', (e) => {
+            e.preventDefault();
+            if (item === 'heading') {
+              this.commands.formatBlock(select.value);
+            } else if (item === 'fontFamily') {
+              this.commands.fontFamily(select.value);
+            }
+            this.focus();
+          });
+
+          this.toolbarSelects[item] = select;
+          appendToGroup(select);
+          return;
+        }
+
+        // Handle fontSizeWidget type
+        if (config.type === 'fontSizeWidget') {
+          const wrapper = Utils.createElement('div', { className: 'neiki-fontsize-widget' });
+
+          const minusBtn = Utils.createElement('button', {
+            className: 'neiki-fontsize-btn',
+            type: 'button',
+            title: 'Decrease font size',
+            innerHTML: '<svg viewBox="0 0 24 24" width="14" height="14"><path d="M19 13H5v-2h14v2z" fill="currentColor"/></svg>'
+          });
+
+          const input = Utils.createElement('input', {
+            className: 'neiki-fontsize-input',
+            type: 'text',
+            title: 'Font size',
+            value: '16'
+          });
+
+          const plusBtn = Utils.createElement('button', {
+            className: 'neiki-fontsize-btn',
+            type: 'button',
+            title: 'Increase font size',
+            innerHTML: '<svg viewBox="0 0 24 24" width="14" height="14"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor"/></svg>'
+          });
+
+          // Save/restore selection for font size operations
+          let _savedRange = null;
+          const _saveSelection = () => {
+            const sel = window.getSelection();
+            if (sel && sel.rangeCount > 0) {
+              _savedRange = sel.getRangeAt(0).cloneRange();
+            }
+          };
+          const _restoreSelection = () => {
+            if (_savedRange) {
+              const sel = window.getSelection();
+              sel.removeAllRanges();
+              sel.addRange(_savedRange);
+            }
+          };
+
+          // Dropdown for preset sizes
+          const dropdown = Utils.createElement('div', { className: 'neiki-fontsize-dropdown' });
+          FONT_SIZES.forEach(size => {
+            const item = Utils.createElement('div', {
+              className: 'neiki-fontsize-dropdown-item',
+              textContent: size,
+              'data-size': String(size)
+            });
+            item.addEventListener('mousedown', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            });
+            item.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              input.value = size;
+              _restoreSelection();
+              this.commands.fontSize(size + 'px');
+              dropdown.classList.remove('show');
+            });
+            dropdown.appendChild(item);
+          });
+
+          const applyFontSize = () => {
+            const val = parseInt(input.value);
+            if (val && val > 0) {
+              _restoreSelection();
+              this.commands.fontSize(val + 'px');
+            }
+          };
+
+          minusBtn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            _saveSelection();
+          });
+          minusBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            _restoreSelection();
+            const current = parseInt(input.value) || 16;
+            const newSize = Math.max(1, current - 1);
+            input.value = newSize;
+            this.commands.fontSize(newSize + 'px');
+          });
+
+          plusBtn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            _saveSelection();
+          });
+          plusBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            _restoreSelection();
+            const current = parseInt(input.value) || 16;
+            const newSize = Math.min(999, current + 1);
+            input.value = newSize;
+            this.commands.fontSize(newSize + 'px');
+          });
+
+          input.addEventListener('mousedown', (e) => {
+            _saveSelection();
+          });
+
+          input.addEventListener('focus', () => {
+            dropdown.classList.add('show');
+          });
+
+          input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              applyFontSize();
+              dropdown.classList.remove('show');
+              this.focus();
+            }
+            if (e.key === 'Escape') {
+              dropdown.classList.remove('show');
+              this.focus();
+            }
+          });
+
+          document.addEventListener('mousedown', (e) => {
+            if (!wrapper.contains(e.target)) {
+              dropdown.classList.remove('show');
+            }
+          });
+
+          wrapper.appendChild(minusBtn);
+          wrapper.appendChild(input);
+          wrapper.appendChild(plusBtn);
+          wrapper.appendChild(dropdown);
+
+          this.fontSizeInput = input;
+          appendToGroup(wrapper);
+          return;
+        }
+
+        // Handle Insert dropdown
+        if (config.type === 'insertDropdown') {
+          const btn = Utils.createElement('button', {
+            className: 'neiki-toolbar-btn neiki-insert-dropdown-btn',
+            title: config.title,
+            type: 'button'
+          });
+          btn.innerHTML = Icons[config.icon] + '<span class="neiki-insert-label">Insert</span><span class="neiki-chevron">' + Icons['chevron-down'] + '</span>';
+
+          const dropdown = Utils.createElement('div', { className: 'neiki-insert-dropdown' });
+
+          const insertItems = [
+            { key: 'link', icon: Icons.link, label: 'Link', action: () => this.modal.open('link', { text: Utils.getSelection().toString() }) },
+            { key: 'image', icon: Icons.image, label: 'Image', action: () => this.modal.open('image', {}) },
+            { key: 'table', icon: Icons.table, label: 'Table', action: () => this.modal.open('table', {}) },
+            { key: 'emoji', icon: Icons.emoji, label: 'Emoji', action: () => this.emojiPicker.toggle(btn) },
+            { key: 'specialChars', icon: Icons.specialChars, label: 'Symbol', action: () => this.specialCharsPicker.toggle(btn) }
+          ];
+
+          insertItems.forEach(({ icon, label, action }) => {
+            const item = Utils.createElement('div', {
+              className: 'neiki-dropdown-item'
+            });
+            item.innerHTML = '<span class="neiki-dropdown-item-icon">' + icon + '</span>' + label;
+            item.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              dropdown.classList.remove('show');
+              action();
+            });
+            dropdown.appendChild(item);
+          });
+
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            // Close moreMenu if open
+            const moreDD = this.toolbar.querySelector('.neiki-more-dropdown.show');
+            if (moreDD) moreDD.classList.remove('show');
+            // Close emoji/specialChars pickers if open
+            this.emojiPicker.close();
+            this.specialCharsPicker.close();
+            dropdown.classList.toggle('show');
+          });
+
+          document.addEventListener('mousedown', (e) => {
+            if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+              dropdown.classList.remove('show');
+            }
+          });
+
+          btn.appendChild(dropdown);
+          this.toolbarButtons[item] = btn;
+          appendToGroup(btn);
+          return;
+        }
+
+        // Handle More menu (⋯)
+        if (config.type === 'moreMenu') {
+          const btn = Utils.createElement('button', {
+            className: 'neiki-toolbar-btn neiki-more-btn',
+            title: config.title,
+            type: 'button',
+            innerHTML: Icons[config.icon],
+            'data-command': item
+          });
+
+          const dropdown = Utils.createElement('div', { className: 'neiki-more-dropdown' });
+
+          const moreItems = [
+            { key: 'save', icon: Icons.save, label: 'Save', action: () => this.triggerSave() },
+            { key: 'preview', icon: Icons.eye, label: 'Preview', action: () => this.previewContent() },
+            { key: 'download', icon: Icons.download, label: 'Download', action: () => this.downloadContent() },
+            { key: 'print', icon: Icons.print, label: 'Print', action: () => this.printContent() },
+            { key: 'divider' },
+            { key: 'autosave', icon: Icons.save, label: 'Autosave', action: () => this.toggleAutosave(), toggle: true },
+            { key: 'divider' },
+            { key: 'clearAll', icon: Icons.trash, label: 'Clear all', action: () => this.clearAll(), danger: true },
+            { key: 'themeToggle', icon: Icons.sun, label: 'Toggle Theme', action: () => { this.toggleTheme(); this._updateThemeMenuItem(); } },
+            { key: 'fullscreen', icon: Icons.fullscreen, label: 'Fullscreen', action: () => this.toggleFullscreen() }
+          ];
+
+          moreItems.forEach(({ key, icon, label, action, danger, toggle }) => {
+            if (key === 'divider') {
+              dropdown.appendChild(Utils.createElement('div', { className: 'neiki-dropdown-divider' }));
+              return;
+            }
+            const menuItem = Utils.createElement('div', {
+              className: 'neiki-dropdown-item' + (danger ? ' neiki-dropdown-item-danger' : '')
+            });
+            menuItem.innerHTML = '<span class="neiki-dropdown-item-icon">' + icon + '</span><span class="neiki-dropdown-item-label">' + label + '</span>';
+
+            if (key === 'autosave') {
+              const badge = Utils.createElement('span', { className: 'neiki-autosave-badge' });
+              badge.textContent = '✕';
+              menuItem.appendChild(badge);
+              this._autosaveMenuItem = menuItem;
+              this._autosaveBadge = badge;
+            }
+
+            if (key === 'themeToggle') {
+              this._themeMenuItem = menuItem;
+              this._themeMenuIcon = menuItem.querySelector('.neiki-dropdown-item-icon');
+            }
+
+            menuItem.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (key !== 'autosave') dropdown.classList.remove('show');
+              action();
+            });
+            dropdown.appendChild(menuItem);
+          });
+
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            // Close insertDropdown if open
+            const insDD = this.toolbar.querySelector('.neiki-insert-dropdown.show');
+            if (insDD) insDD.classList.remove('show');
+            dropdown.classList.toggle('show');
+          });
+
+          document.addEventListener('mousedown', (e) => {
+            if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+              dropdown.classList.remove('show');
+            }
+          });
+
+          btn.appendChild(dropdown);
+          this.toolbarButtons[item] = btn;
+          appendToGroup(btn);
+          currentGroup.style.marginLeft = 'auto';
+          return;
+        }
+
+        // Default: regular button
         const button = Utils.createElement('button', {
           className: 'neiki-toolbar-btn',
           title: config.title,
@@ -1558,8 +1892,11 @@
         });
 
         this.toolbarButtons[item] = button;
-        this.toolbar.appendChild(button);
+        appendToGroup(button);
       });
+
+      // Flush the last group
+      flushGroup();
 
       this.container.appendChild(this.toolbar);
     }
@@ -1599,6 +1936,8 @@
         }
       }
 
+      this._ensureDefaultBlock();
+
       this.contentWrapper.appendChild(this.contentArea);
 
       // Code view overlay
@@ -1632,6 +1971,7 @@
     bindEvents() {
       // Content changes
       this.contentArea.addEventListener('input', Utils.debounce(() => {
+        this._ensureDefaultBlock();
         this.history.record();
         this.syncToOriginal();
         this.triggerChange();
@@ -1649,12 +1989,10 @@
 
       // Focus/Blur
       this.contentArea.addEventListener('focus', () => {
-        this.container.classList.add('neiki-focused');
         if (this.config.onFocus) this.config.onFocus(this);
       });
 
       this.contentArea.addEventListener('blur', () => {
-        this.container.classList.remove('neiki-focused');
         if (this.config.onBlur) this.config.onBlur(this);
       });
 
@@ -1669,11 +2007,8 @@
       const config = TOOLBAR_ITEMS[item];
       if (!config) return;
 
-      // Handle dropdowns
-      if (config.dropdown) {
-        this.dropdown.toggle(button, item);
-        return;
-      }
+      // Skip custom types (handled in createToolbar)
+      if (config.type) return;
 
       // Handle color pickers
       if (config.picker === 'color') {
@@ -1762,6 +2097,10 @@
             e.preventDefault();
             this.commands.redo();
             break;
+          case 's':
+            e.preventDefault();
+            this.triggerSave();
+            break;
         }
       }
 
@@ -1801,7 +2140,7 @@
     updateToolbar() {
       Object.entries(this.toolbarButtons).forEach(([item, button]) => {
         const config = TOOLBAR_ITEMS[item];
-        if (!config) return;
+        if (!config || config.type) return;
 
         let isActive = false;
 
@@ -1811,6 +2150,8 @@
             case 'italic':
             case 'underline':
             case 'strikeThrough':
+            case 'subscript':
+            case 'superscript':
             case 'insertUnorderedList':
             case 'insertOrderedList':
               isActive = document.queryCommandState(config.command);
@@ -1840,9 +2181,43 @@
       if (this.toolbarButtons.viewCode) {
         this.toolbarButtons.viewCode.classList.toggle('active', this.isCodeViewOpen);
       }
-      // Update autosave active state
-      if (this.toolbarButtons.autosave) {
-        this.toolbarButtons.autosave.classList.toggle('active', this.isAutosaveEnabled);
+
+      // Sync heading select
+      if (this.toolbarSelects.heading) {
+        const block = this.getCurrentBlockType();
+        const validValues = HEADINGS.map(h => h.value);
+        this.toolbarSelects.heading.value = validValues.includes(block) ? block : 'p';
+      }
+
+      // Sync fontFamily select
+      if (this.toolbarSelects.fontFamily) {
+        try {
+          const font = document.queryCommandValue('fontName');
+          if (font) {
+            const match = FONT_FAMILIES.find(f => f.value.toLowerCase().includes(font.toLowerCase().replace(/"/g, '')));
+            if (match) this.toolbarSelects.fontFamily.value = match.value;
+          }
+        } catch (e) {}
+      }
+
+      // Sync font size input
+      if (this.fontSizeInput) {
+        try {
+          const sel = window.getSelection();
+          if (sel && sel.rangeCount) {
+            let node = sel.getRangeAt(0).startContainer;
+            if (node.nodeType === Node.TEXT_NODE) node = node.parentNode;
+            const computed = window.getComputedStyle(node);
+            const size = Math.round(parseFloat(computed.fontSize));
+            if (size) this.fontSizeInput.value = size;
+          }
+        } catch (e) {}
+      }
+
+      // Update autosave badge in more menu
+      if (this._autosaveBadge) {
+        this._autosaveBadge.textContent = this.isAutosaveEnabled ? '✓' : '✕';
+        this._autosaveBadge.classList.toggle('active', this.isAutosaveEnabled);
       }
     }
 
@@ -1872,6 +2247,113 @@
         this.toolbarButtons.themeToggle.classList.toggle('active', !isDark);
         this.toolbarButtons.themeToggle.title = isDark ? 'Switch to Dark Mode' : 'Switch to Light Mode';
       }
+      this._updateThemeMenuItem();
+    }
+
+    _updateThemeMenuItem() {
+      if (this._themeMenuIcon) {
+        const isDark = this.container.classList.contains('neiki-dark');
+        this._themeMenuIcon.innerHTML = isDark ? Icons.moon : Icons.sun;
+      }
+    }
+
+    triggerSave() {
+      if (this.config.onSave) {
+        this.config.onSave(this.getContent(), this);
+      }
+    }
+
+    previewContent() {
+      const content = this.getContent();
+
+      // Create overlay
+      const overlay = Utils.createElement('div', { className: 'neiki-preview-overlay' });
+
+      const modal = Utils.createElement('div', { className: 'neiki-preview-modal' });
+
+      const header = Utils.createElement('div', { className: 'neiki-preview-header' });
+      header.innerHTML = '<span>Document Preview</span>';
+      const closeBtn = Utils.createElement('button', {
+        className: 'neiki-preview-close',
+        type: 'button',
+        innerHTML: Icons.close
+      });
+      closeBtn.addEventListener('click', () => overlay.remove());
+      header.appendChild(closeBtn);
+
+      const body = Utils.createElement('div', { className: 'neiki-preview-body' });
+      body.innerHTML = content;
+
+      modal.appendChild(header);
+      modal.appendChild(body);
+      overlay.appendChild(modal);
+
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.remove();
+      });
+
+      document.addEventListener('keydown', function escHandler(e) {
+        if (e.key === 'Escape') {
+          overlay.remove();
+          document.removeEventListener('keydown', escHandler);
+        }
+      });
+
+      document.body.appendChild(overlay);
+    }
+
+    downloadContent() {
+      const content = this.getContent();
+      const fullHTML = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Document</title>\n<style>\nbody{font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,sans-serif;max-width:800px;margin:40px auto;padding:0 20px;line-height:1.7;color:#1e293b;}\nimg{max-width:100%;}\ntable{border-collapse:collapse;width:100%;}\ntable td,table th{border:1px solid #d1d5db;padding:8px 12px;}\n</style>\n</head>\n<body>\n' + content + '\n</body>\n</html>';
+
+      const blob = new Blob([fullHTML], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'document.html';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    clearAll() {
+      if (this.getContent().trim() && !confirm('Clear all content?')) return;
+      this.setContent('');
+      this.history.record();
+      this.triggerChange();
+      this.updateStatusBar();
+    }
+
+    _ensureDefaultBlock() {
+      // Ensure the content area always has at least one <p> block
+      if (!this.contentArea) return;
+      const html = this.contentArea.innerHTML.trim();
+      if (!html || html === '<br>') {
+        this.contentArea.innerHTML = '<p><br></p>';
+        // Place cursor inside the paragraph if focused
+        try {
+          if (document.activeElement === this.contentArea) {
+            const p = this.contentArea.querySelector('p');
+            if (p) {
+              const sel = window.getSelection();
+              const range = document.createRange();
+              range.setStart(p, 0);
+              range.collapse(true);
+              sel.removeAllRanges();
+              sel.addRange(range);
+            }
+          }
+        } catch (e) {}
+        return;
+      }
+      // Wrap bare text nodes in <p>
+      const childNodes = Array.from(this.contentArea.childNodes);
+      childNodes.forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+          const p = document.createElement('p');
+          node.parentNode.insertBefore(p, node);
+          p.appendChild(node);
+        }
+      });
     }
 
     syncToOriginal() {
@@ -1904,6 +2386,7 @@
 
     setContent(html) {
       this.contentArea.innerHTML = Utils.sanitizeHTML(html);
+      this._ensureDefaultBlock();
       this.syncToOriginal();
     }
 
@@ -1966,6 +2449,10 @@
         className: 'neiki-statusbar-item',
         textContent: '0 chars'
       });
+      this.statusAutosave = Utils.createElement('span', {
+        className: 'neiki-statusbar-item neiki-statusbar-autosave'
+      });
+      this.statusAutosave.style.display = 'none';
       this.statusBlockType = Utils.createElement('span', {
         className: 'neiki-statusbar-item neiki-statusbar-block',
         textContent: 'p'
@@ -1973,6 +2460,7 @@
 
       left.appendChild(this.statusWordCount);
       left.appendChild(this.statusCharCount);
+      right.appendChild(this.statusAutosave);
       right.appendChild(this.statusBlockType);
       this.statusBar.appendChild(left);
       this.statusBar.appendChild(right);
@@ -1999,7 +2487,7 @@
         if (blockTags.includes(node.tagName)) return node.tagName.toLowerCase();
         node = node.parentNode;
       }
-      return 'div';
+      return 'p';
     }
 
     toggleCodeView() {
@@ -2042,11 +2530,36 @@
     enableAutosave() {
       this.isAutosaveEnabled = true;
       this.storage.set('autosave_enabled', true);
-      this.autosaveInterval = setInterval(() => {
-        this.storage.set('autosave_content', this.getContent());
-      }, 5000); // Save every 5 seconds
+
+      // Show autosave status
+      if (this.statusAutosave) {
+        this.statusAutosave.style.display = '';
+        this.statusAutosave.textContent = 'Saved locally';
+      }
+
+      // Listen for content changes to trigger autosave
+      if (!this._autosaveContentHandler) {
+        this._autosaveContentHandler = Utils.debounce(() => {
+          if (!this.isAutosaveEnabled) return;
+          // Show "Autosaving..."
+          if (this.statusAutosave) {
+            this.statusAutosave.textContent = 'Autosaving...';
+            this.statusAutosave.style.display = '';
+          }
+          this.storage.set('autosave_content', this.getContent());
+          // Show "Saved locally" after brief delay
+          setTimeout(() => {
+            if (this.statusAutosave && this.isAutosaveEnabled) {
+              this.statusAutosave.textContent = 'Saved locally';
+            }
+          }, 500);
+        }, 1000);
+        this.contentArea.addEventListener('input', this._autosaveContentHandler);
+      }
+
       // Save immediately
       this.storage.set('autosave_content', this.getContent());
+      this.updateToolbar();
     }
 
     disableAutosave() {
@@ -2056,6 +2569,10 @@
         clearInterval(this.autosaveInterval);
         this.autosaveInterval = null;
       }
+      if (this.statusAutosave) {
+        this.statusAutosave.style.display = 'none';
+      }
+      this.updateToolbar();
     }
 
     // ============================================

@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 2.0.0
+ * Version: 1.0.0
  */
 
 /* ============================================
@@ -119,10 +119,11 @@
 }
 
 .neiki-toolbar-group {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 2px;
   padding: 0 4px;
+  flex-wrap: nowrap;
 }
 
 .neiki-toolbar-group:not(:last-child) {
@@ -306,11 +307,8 @@
   z-index: 10;
 }
 
-/* Focus state for editor container */
-.neiki-editor.neiki-focused {
-  border-color: var(--neiki-accent-color);
-  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
-}
+/* Focus state for editor container - disabled */
+/* .neiki-editor.neiki-focused removed */
 
 /* Disabled state */
 .neiki-editor.neiki-disabled {
@@ -555,8 +553,8 @@
 .neiki-dropdown-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
+  gap: 6px;
+  padding: 7px 10px;
   border-radius: 4px;
   cursor: pointer;
   color: var(--neiki-text-primary);
@@ -963,6 +961,17 @@
   overflow-y: auto;
 }
 
+.neiki-modal h3,
+.neiki-modal-header h3 {
+  color: #000000;
+  margin: 0;
+}
+
+.neiki-dark .neiki-modal h3,
+.neiki-dark .neiki-modal-header h3 {
+  color: var(--neiki-text-primary);
+}
+
 .neiki-modal-footer {
   display: flex;
   justify-content: flex-end;
@@ -1016,7 +1025,6 @@
 .neiki-form-row {
   display: flex;
   gap: 16px;
-  align-items: flex-end;
 }
 
 .neiki-form-divider {
@@ -1669,4 +1677,300 @@
 
 .neiki-modal-overlay.show .neiki-modal {
   animation: neiki-modal-in 0.2s ease;
+}
+
+/* ============================================
+   Font Size Widget
+   ============================================ */
+.neiki-fontsize-widget {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  height: 32px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 4px;
+  overflow: visible;
+  background: var(--neiki-bg-primary);
+}
+
+.neiki-fontsize-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--neiki-text-secondary);
+  transition: background 0.15s, color 0.15s;
+  padding: 0;
+}
+
+.neiki-fontsize-btn:hover {
+  background: var(--neiki-bg-hover);
+  color: var(--neiki-text-primary);
+}
+
+.neiki-fontsize-input {
+  width: 38px;
+  height: 30px;
+  text-align: center;
+  border: none;
+  border-left: 1px solid var(--neiki-border-color);
+  border-right: 1px solid var(--neiki-border-color);
+  background: var(--neiki-bg-primary);
+  color: var(--neiki-text-primary);
+  font-size: 13px;
+  outline: none;
+  -moz-appearance: textfield;
+  appearance: textfield;
+  padding: 0;
+}
+
+.neiki-fontsize-input::-webkit-outer-spin-button,
+.neiki-fontsize-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.neiki-fontsize-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  min-width: 70px;
+  max-height: 240px;
+  overflow-y: auto;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 6px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 4px;
+  margin-top: 4px;
+}
+
+.neiki-fontsize-dropdown.show {
+  display: block;
+}
+
+.neiki-fontsize-dropdown-item {
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 4px;
+  color: var(--neiki-text-primary);
+  text-align: center;
+  transition: background 0.1s;
+}
+
+.neiki-fontsize-dropdown-item:hover {
+  background: var(--neiki-bg-hover);
+}
+
+/* ============================================
+   Insert Dropdown Button
+   ============================================ */
+.neiki-insert-dropdown-btn {
+  width: auto !important;
+  padding: 0 8px !important;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.neiki-insert-label {
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.neiki-chevron {
+  display: inline-flex;
+  pointer-events: none;
+}
+
+.neiki-chevron svg {
+  width: 14px;
+  height: 14px;
+}
+
+.neiki-insert-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  min-width: 160px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 6px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 4px;
+  margin-top: 4px;
+}
+
+.neiki-insert-dropdown.show {
+  display: block;
+  animation: neiki-fade-in 0.15s ease;
+}
+
+/* ============================================
+   More Menu (⋯) Dropdown
+   ============================================ */
+.neiki-more-btn {
+  position: relative;
+}
+
+.neiki-more-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 1000;
+  min-width: 140px;
+  max-width: 170px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 6px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 4px;
+  margin-top: 4px;
+}
+
+.neiki-more-dropdown.show {
+  display: block;
+  animation: neiki-fade-in 0.15s ease;
+}
+
+/* Dropdown item with icon */
+.neiki-dropdown-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.neiki-dropdown-item-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.neiki-dropdown-item-danger {
+  color: var(--neiki-danger-color) !important;
+}
+
+.neiki-dropdown-item-danger:hover {
+  background: rgba(220, 53, 69, 0.1);
+}
+
+/* Autosave badge in More menu */
+.neiki-autosave-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--neiki-text-muted);
+  padding: 0 4px;
+}
+
+.neiki-autosave-badge.active {
+  color: var(--neiki-success-color);
+}
+
+/* ============================================
+   Preview Modal
+   ============================================ */
+.neiki-preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  animation: neiki-fade-in 0.2s ease;
+}
+
+.neiki-preview-modal {
+  background: var(--neiki-bg-primary);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+  animation: neiki-modal-in 0.2s ease;
+}
+
+.neiki-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: var(--neiki-bg-secondary);
+  border-bottom: 1px solid var(--neiki-border-color);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--neiki-text-primary);
+}
+
+.neiki-preview-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--neiki-text-muted);
+  transition: background 0.15s;
+}
+
+.neiki-preview-close:hover {
+  background: var(--neiki-bg-hover);
+  color: var(--neiki-text-primary);
+}
+
+.neiki-preview-close svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.neiki-preview-body {
+  flex: 1;
+  overflow: auto;
+  padding: 30px;
+  color: var(--neiki-text-primary);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.neiki-preview-body img {
+  max-width: 100%;
+}
+
+.neiki-preview-body table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.neiki-preview-body table td,
+.neiki-preview-body table th {
+  border: 1px solid var(--neiki-border-color);
+  padding: 8px 12px;
+}
+
+/* Autosave status in statusbar */
+.neiki-statusbar-autosave {
+  font-style: italic;
+  color: var(--neiki-success-color);
+  font-size: 11px;
 }

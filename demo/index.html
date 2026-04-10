@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeikiEditor Demo</title>
-    <link rel="stylesheet" href="neiki-editor.css">
+    <title>Neiki's HTML Editor</title>
+    <link rel="stylesheet" href="../dist/neiki-editor.css">
     <style>
         * {
             margin: 0;
@@ -12,287 +13,419 @@
             box-sizing: border-box;
         }
 
+        html,
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 40px 20px;
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
         }
 
-        .demo-container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .demo-header {
-            text-align: center;
-            margin-bottom: 30px;
-            color: white;
-        }
-
-        .demo-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .demo-header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        .editor-wrapper {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-
-        .demo-controls {
+        body {
             display: flex;
-            gap: 10px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-top: 1px solid #e9ecef;
-            flex-wrap: wrap;
+            flex-direction: column;
         }
 
-        .demo-btn {
-            padding: 10px 20px;
-            border: none;
+        /* ── Header ── */
+        .header {
+            height: 65px;
+            min-height: 65px;
+            background: #1E1E1E;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 16px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .header-logo {
+            height: 40px;
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 16px;
+            font-weight: 600;
+            color: #f1f5f9;
+            white-space: nowrap;
+            letter-spacing: 0.3px;
+        }
+
+        .header-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .header-separator {
+            width: 1px;
+            height: 28px;
+            background: #475569;
+            margin: 0 4px;
+        }
+
+        .header-btn {
+            background: #334155;
+            border: 1px solid #475569;
+            color: #e2e8f0;
+            padding: 7px 14px;
             border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
-            transition: all 0.2s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.15s, border-color 0.15s;
+            white-space: nowrap;
         }
 
-        .demo-btn-primary {
-            background: #667eea;
-            color: white;
+        .header-btn:hover {
+            background: #475569;
+            border-color: #64748b;
         }
 
-        .demo-btn-primary:hover {
-            background: #5a6fd6;
+        .header-btn:active {
+            background: #1e293b;
         }
 
-        .demo-btn-secondary {
-            background: #e9ecef;
-            color: #495057;
+        .header-btn svg {
+            width: 15px;
+            height: 15px;
+            fill: currentColor;
+            flex-shrink: 0;
         }
 
-        .demo-btn-secondary:hover {
-            background: #dee2e6;
+        .header-btn.btn-danger {
+            color: #fca5a5;
         }
 
-        .demo-btn-danger {
-            background: #dc3545;
-            color: white;
+        .header-btn.btn-danger:hover {
+            background: #7f1d1d;
+            border-color: #991b1b;
         }
 
-        .demo-btn-danger:hover {
-            background: #c82333;
-        }
-
-        .output-section {
-            margin-top: 30px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        /* ── Editor wrapper ── */
+        .editor-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
         }
 
-        .output-header {
-            padding: 15px 20px;
-            background: #343a40;
-            color: white;
-            font-weight: 600;
+        .editor-wrapper .neiki-editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
-        .output-content {
-            padding: 20px;
-            max-height: 300px;
-            overflow: auto;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 13px;
-            background: #1e1e1e;
-            color: #d4d4d4;
-            white-space: pre-wrap;
-            word-break: break-all;
+        .editor-wrapper .neiki-content-area {
+            flex: 1;
         }
 
-        .theme-toggle {
+        /* ── Preview Modal ── */
+        .preview-overlay {
+            display: none;
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.2);
-            border: 2px solid white;
-            border-radius: 30px;
-            color: white;
-            cursor: pointer;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .preview-overlay.active {
+            display: flex;
+        }
+
+        .preview-modal {
+            background: #fff;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            background: #1e293b;
+            color: #f1f5f9;
             font-weight: 600;
-            transition: all 0.3s;
+            font-size: 14px;
         }
 
-        .theme-toggle:hover {
-            background: white;
-            color: #667eea;
+        .preview-close {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 20px;
+            line-height: 1;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: color 0.15s, background 0.15s;
         }
 
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 30px;
+        .preview-close:hover {
+            color: #fff;
+            background: #334155;
         }
 
-        .feature-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 8px;
-            padding: 20px;
-            color: white;
-            backdrop-filter: blur(10px);
+        .preview-body {
+            flex: 1;
+            overflow: auto;
+            padding: 30px;
+            color: #1e293b;
+            font-size: 15px;
+            line-height: 1.7;
         }
 
-        .feature-card h3 {
-            font-size: 1rem;
-            margin-bottom: 8px;
+        .preview-body img {
+            max-width: 100%;
         }
 
-        .feature-card p {
-            font-size: 0.85rem;
-            opacity: 0.8;
+        .preview-body table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .preview-body table td,
+        .preview-body table th {
+            border: 1px solid #d1d5db;
+            padding: 8px 12px;
         }
     </style>
 </head>
+
 <body>
-    <button class="theme-toggle" onclick="toggleTheme()">🌙 Dark Mode</button>
 
-    <div class="demo-container">
-        <div class="demo-header">
-            <h1>✨ NeikiEditor</h1>
-            <p>A modern, lightweight WYSIWYG editor for the web</p>
+    <!-- ── Header ── -->
+    <header class="header">
+        <img src="logo.png" alt="Neiki Editor" class="header-logo">
+        <span class="header-title">Neiki's HTML Editor</span>
+
+        <div class="header-actions">
+            <!-- Document group -->
+            <button class="header-btn" onclick="newDocument()" title="New Document">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+                </svg>
+                New
+            </button>
+            <button class="header-btn" onclick="uploadDocument()" title="Upload HTML File">
+                <svg viewBox="0 0 24 24">
+                    <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z" />
+                </svg>
+                Upload
+            </button>
+
+            <div class="header-separator"></div>
+
+            <!-- Save group -->
+            <button class="header-btn" onclick="saveToCache()" title="Save to Browser Cache">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M17 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z" />
+                </svg>
+                Save
+            </button>
+            <button class="header-btn" onclick="downloadDocument()" title="Download as HTML">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                </svg>
+                Download
+            </button>
+
+            <div class="header-separator"></div>
+
+            <!-- View group -->
+            <button class="header-btn" onclick="previewDocument()" title="Preview Document">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+                </svg>
+                Preview
+            </button>
+            <button class="header-btn btn-danger" onclick="clearDocument()" title="Clear Content">
+                <svg viewBox="0 0 24 24">
+                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                </svg>
+                Clear
+            </button>
         </div>
+    </header>
 
-        <div class="editor-wrapper">
-            <textarea id="editor">
-                <h2>Welcome to NeikiEditor!</h2>
-                <p>This is a <strong>powerful</strong> and <em>flexible</em> rich text editor.</p>
-                <p>Try out some features:</p>
-                <ul>
-                    <li>Format text with <strong>bold</strong>, <em>italic</em>, <u>underline</u></li>
-                    <li>Create ordered and unordered lists</li>
-                    <li>Insert links, images, and tables</li>
-                    <li>Use keyboard shortcuts (Ctrl+B, Ctrl+I, etc.)</li>
-                </ul>
-                <blockquote>
-                    "The best way to predict the future is to create it." - Peter Drucker
-                </blockquote>
-                <p>Start editing to see the magic! 🚀</p>
-            </textarea>
+    <!-- ── Editor ── -->
+    <div class="editor-wrapper">
+        <textarea id="editor"></textarea>
+    </div>
 
-            <div class="demo-controls">
-                <button class="demo-btn demo-btn-primary" onclick="getContent()">Get HTML</button>
-                <button class="demo-btn demo-btn-secondary" onclick="getText()">Get Text</button>
-                <button class="demo-btn demo-btn-secondary" onclick="checkEmpty()">Is Empty?</button>
-                <button class="demo-btn demo-btn-danger" onclick="clearContent()">Clear</button>
-                <button class="demo-btn demo-btn-secondary" onclick="toggleDisable()">Toggle Disable</button>
+    <!-- ── Preview Modal ── -->
+    <div class="preview-overlay" id="previewOverlay">
+        <div class="preview-modal">
+            <div class="preview-header">
+                <span>📄 Document Preview</span>
+                <button class="preview-close" onclick="closePreview()">&times;</button>
             </div>
-        </div>
-
-        <div class="output-section" id="outputSection" style="display: none;">
-            <div class="output-header">Output</div>
-            <div class="output-content" id="outputContent"></div>
-        </div>
-
-        <div class="features-grid">
-            <div class="feature-card">
-                <h3>📝 Rich Formatting</h3>
-                <p>Bold, italic, underline, strikethrough, and more</p>
-            </div>
-            <div class="feature-card">
-                <h3>🎨 Colors</h3>
-                <p>Text color and background highlighting</p>
-            </div>
-            <div class="feature-card">
-                <h3>📊 Tables</h3>
-                <p>Insert and edit tables with ease</p>
-            </div>
-            <div class="feature-card">
-                <h3>🔗 Links & Images</h3>
-                <p>Embed links and images seamlessly</p>
-            </div>
-            <div class="feature-card">
-                <h3>⌨️ Shortcuts</h3>
-                <p>Keyboard shortcuts for power users</p>
-            </div>
-            <div class="feature-card">
-                <h3>↩️ Undo/Redo</h3>
-                <p>Full history management</p>
-            </div>
+            <div class="preview-body" id="previewBody"></div>
         </div>
     </div>
 
-    <script src="neiki-editor.js"></script>
+    <!-- Hidden file input -->
+    <input type="file" id="fileInput" accept=".html,.htm" style="display:none" onchange="handleFileUpload(event)">
+
+    <script src="../dist/neiki-editor.js"></script>
     <script>
-        // Initialize the editor
-        const editor = new NeikiEditor('#editor', {
-            placeholder: 'Start typing your content...',
-            minHeight: 350,
-            autofocus: false,
-            onChange: function(content) {
-                console.log('Content changed');
-            },
-            onReady: function(editor) {
-                console.log('NeikiEditor is ready!');
+        // Initialize editor
+        const editor = new NeikiEditor('#editor');
+
+        const CACHE_KEY = 'neiki-html-editor-document';
+
+        // ── Load cached content on startup ──
+        (function loadCached() {
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (cached) {
+                editor.setContent(cached);
             }
+        })();
+
+        // ── New Document ──
+        function newDocument() {
+            if (!editor.getContent().trim() || confirm('Create a new document? Unsaved changes will be lost.')) {
+                editor.setContent('');
+            }
+        }
+
+        // ── Upload HTML ──
+        function uploadDocument() {
+            document.getElementById('fileInput').click();
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                let html = e.target.result;
+
+                // Extract <body> content if it's a full HTML document
+                const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+                if (bodyMatch) {
+                    html = bodyMatch[1];
+                }
+
+                editor.setContent(html.trim());
+            };
+            reader.readAsText(file);
+
+            // Reset input so the same file can be re-uploaded
+            event.target.value = '';
+        }
+
+        // ── Save to Cache ──
+        function saveToCache() {
+            const content = editor.getContent();
+            localStorage.setItem(CACHE_KEY, content);
+            showNotification('Document saved to browser cache');
+        }
+
+        // ── Download as HTML ──
+        function downloadDocument() {
+            const content = editor.getContent();
+            const fullHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; line-height: 1.7; color: #1e293b; }
+        img { max-width: 100%; }
+        table { border-collapse: collapse; width: 100%; }
+        table td, table th { border: 1px solid #d1d5db; padding: 8px 12px; }
+    </style>
+</head>
+<body>
+${content}
+</body>
+</html>`;
+
+            const blob = new Blob([fullHTML], {type: 'text/html'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'document.html';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ── Preview ──
+        function previewDocument() {
+            const content = editor.getContent();
+            document.getElementById('previewBody').innerHTML = content;
+            document.getElementById('previewOverlay').classList.add('active');
+        }
+
+        function closePreview() {
+            document.getElementById('previewOverlay').classList.remove('active');
+        }
+
+        // Close preview on overlay click
+        document.getElementById('previewOverlay').addEventListener('click', function (e) {
+            if (e.target === this) closePreview();
         });
 
-        let isDark = false;
-        let isDisabled = false;
+        // Close preview on Escape
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closePreview();
+        });
 
-        function toggleTheme() {
-            isDark = !isDark;
-            editor.setTheme(isDark ? 'dark' : 'light');
-            document.querySelector('.theme-toggle').textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
-        }
-
-        function getContent() {
-            const content = editor.getContent();
-            showOutput(content);
-        }
-
-        function getText() {
-            const text = editor.getText();
-            showOutput(text);
-        }
-
-        function checkEmpty() {
-            const isEmpty = editor.isEmpty();
-            showOutput(isEmpty ? 'Editor is empty' : 'Editor has content');
-        }
-
-        function clearContent() {
-            editor.setContent('');
-            showOutput('Content cleared');
-        }
-
-        function toggleDisable() {
-            isDisabled = !isDisabled;
-            if (isDisabled) {
-                editor.disable();
-                showOutput('Editor disabled');
-            } else {
-                editor.enable();
-                showOutput('Editor enabled');
+        // ── Clear ──
+        function clearDocument() {
+            if (!editor.getContent().trim() || confirm('Clear all content?')) {
+                editor.setContent('');
             }
         }
 
-        function showOutput(content) {
-            document.getElementById('outputSection').style.display = 'block';
-            document.getElementById('outputContent').textContent = content;
+        // ── Notification helper ──
+        function showNotification(message) {
+            const el = document.createElement('div');
+            el.textContent = message;
+            Object.assign(el.style, {
+                position: 'fixed',
+                bottom: '20px',
+                right: '20px',
+                background: '#334155',
+                color: '#e2e8f0',
+                padding: '10px 18px',
+                borderRadius: '8px',
+                fontSize: '13px',
+                fontWeight: '500',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+                zIndex: '99999',
+                transition: 'opacity 0.3s',
+                border: '1px solid #475569'
+            });
+            document.body.appendChild(el);
+            setTimeout(() => {el.style.opacity = '0';}, 1500);
+            setTimeout(() => {el.remove();}, 1800);
         }
     </script>
 </body>
+
 </html>

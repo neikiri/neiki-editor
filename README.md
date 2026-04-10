@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/css-%23663399.svg?style=for-the-badge&logo=css&logoColor=white" alt="CSS">
   <br>
   <img src="https://img.shields.io/badge/License-MIT-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-2.0.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-2.1.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -33,8 +33,8 @@
 ### CDN (Recommended)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.0.0/dist/neiki-editor.css">
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.0.0/dist/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.1.0/dist/neiki-editor.css">
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.1.0/dist/neiki-editor.js"></script>
 ```
 
 ### Self-hosted
@@ -74,21 +74,21 @@ const editor = new NeikiEditor('#editor', {
     readonly: false,
     theme: 'light',       // 'light' or 'dark'
     toolbar: [
-        'undo', 'redo', '|',
-        'bold', 'italic', 'underline', 'strikethrough', '|',
-        'heading', 'fontSize', 'fontFamily', '|',
+        'viewCode', 'undo', 'redo', 'findReplace', '|',
+        'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'removeFormat', '|',
+        'heading', 'fontFamily', 'fontSize', '|',
         'foreColor', 'backColor', '|',
         'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', '|',
-        'bulletList', 'numberedList', '|',
         'indent', 'outdent', '|',
-        'link', 'image', 'table', '|',
-        'blockquote', 'viewCode', 'horizontalRule', '|',
-        'subscript', 'superscript', 'removeFormat', '|',
-        'findReplace', 'emoji', 'specialChars', '|',
-        'fullscreen', 'themeToggle', 'print'
+        'bulletList', 'numberedList', 'blockquote', 'horizontalRule', '|',
+        'insertDropdown', '|',
+        'moreMenu'
     ],
     onChange: function(content, editor) {
         console.log('Content changed:', content);
+    },
+    onSave: function(content, editor) {
+        console.log('Save triggered:', content);
     },
     onReady: function(editor) {
         console.log('Editor is ready!');
@@ -109,13 +109,16 @@ const editor = new NeikiEditor('#editor', {
 | `theme` | `string` | `'light'` | `'light'` or `'dark'` |
 | `toolbar` | `array` | *(see above)* | Toolbar button configuration |
 | `onChange` | `function\|null` | `null` | Callback on content change |
+| `onSave` | `function\|null` | `null` | Callback on save (triggered by Ctrl+S or More menu → Save) |
+| `onFocus` | `function\|null` | `null` | Callback when editor gains focus |
+| `onBlur` | `function\|null` | `null` | Callback when editor loses focus |
 | `onReady` | `function\|null` | `null` | Callback when editor is ready |
 
 ---
 
 ## 🔧 Toolbar Buttons
 
-Use the `toolbar` array to customize which buttons appear and in what order. Use `'|'` for a visual separator.
+Use the `toolbar` array to customize which buttons appear and in what order. Use `'|'` for a visual separator between groups. Groups of buttons between separators wrap as whole units on smaller screens.
 
 ### Text Formatting
 
@@ -129,15 +132,17 @@ Use the `toolbar` array to customize which buttons appear and in what order. Use
 | `superscript` | Superscript text |
 | `removeFormat` | Remove all formatting |
 
+> **Note:** When no text is selected, formatting commands (including Remove Formatting) automatically expand to the word at the cursor position.
+
 ### Text Style
 
-| Button | Description |
-|--------|-------------|
-| `heading` | Dropdown: Paragraph, H1–H6 |
-| `fontSize` | Dropdown: 10px–36px |
-| `fontFamily` | Dropdown: Arial, Georgia, Courier New, etc. |
-| `foreColor` | Text color picker with reset option |
-| `backColor` | Background color picker with reset option |
+| Button | Type | Description |
+|--------|------|-------------|
+| `heading` | Select | Paragraph, H1, H2, H3, H4, H5, H6. Defaults to Paragraph. |
+| `fontSize` | Widget | Font size widget with **[−]** / **[+]** buttons, text input, and dropdown presets: 8, 9, 10, 11, 12, 14, 18, 24, 30, 36, 48, 60, 72, 96 |
+| `fontFamily` | Select | Sans Serif (Arial), Serif (Georgia), Monospace (Consolas), Cursive (Comic Sans MS) |
+| `foreColor` | Color Picker | Text color picker with reset option |
+| `backColor` | Color Picker | Background color picker with reset option |
 
 ### Alignment & Lists
 
@@ -152,19 +157,36 @@ Use the `toolbar` array to customize which buttons appear and in what order. Use
 | `indent` | Increase indent |
 | `outdent` | Decrease indent |
 
-### Insert
+### Insert Dropdown
 
-| Button | Description |
-|--------|-------------|
-| `link` | Insert/edit hyperlink (**Ctrl+K**) |
-| `image` | Insert image (URL or file upload → base64) |
-| `table` | Insert table with custom rows/columns |
-| `blockquote` | Block quote |
-| `horizontalRule` | Horizontal line |
-| `emoji` | Emoji picker (100+ emojis) |
-| `specialChars` | Special characters (©, ®, €, π, Ω, arrows, etc.) |
+The `insertDropdown` toolbar item renders a single **Insert** button that opens a dropdown containing:
 
-### Tools
+| Item | Description |
+|------|-------------|
+| **Link** | Insert/edit hyperlink (**Ctrl+K**) |
+| **Image** | Insert image (URL or file upload → base64) |
+| **Table** | Insert table with custom rows/columns |
+| **Emoji** | Emoji picker (100+ emojis) |
+| **Symbol** | Special characters (©, ®, €, π, Ω, arrows, etc.) |
+
+You can still use `link`, `image`, `table`, `emoji`, `specialChars` as standalone toolbar buttons if preferred.
+
+### More Menu
+
+The `moreMenu` toolbar item renders a **⋯** button (pushed to the right) that opens a dropdown containing:
+
+| Item | Description |
+|------|-------------|
+| **Save** | Trigger the `onSave` callback |
+| **Preview** | Open a document preview modal |
+| **Download** | Download content as an HTML file |
+| **Print** | Print editor content |
+| **Autosave** | Toggle autosave to localStorage |
+| **Clear all** | Clear all editor content |
+| **Toggle Theme** | Switch between light/dark theme |
+| **Fullscreen** | Toggle fullscreen mode |
+
+### Standalone Tools
 
 | Button | Description |
 |--------|-------------|
@@ -172,10 +194,8 @@ Use the `toolbar` array to customize which buttons appear and in what order. Use
 | `redo` | Redo (**Ctrl+Y** / **Ctrl+Shift+Z**) |
 | `findReplace` | Find & Replace with regex support |
 | `viewCode` | Toggle HTML source editor |
-| `fullscreen` | Toggle fullscreen mode |
-| `themeToggle` | Toggle light/dark theme (persists across reloads) |
-| `autosave` | Toggle autosave to localStorage *(opt-in, not in default toolbar)* |
-| `print` | Print editor content |
+| `blockquote` | Block quote |
+| `horizontalRule` | Horizontal line |
 
 ---
 
@@ -193,32 +213,27 @@ const editor = new NeikiEditor('#editor', {
 
 ### Toggle theme at runtime:
 
-The `themeToggle` toolbar button switches between themes and persists the choice across page reloads.
-
-You can also toggle programmatically:
+Use the **Toggle Theme** item in the More menu (⋯), or toggle programmatically:
 
 ```javascript
 editor.toggleTheme();
+// or set a specific theme:
+editor.setTheme('dark');
 ```
+
+The selected theme persists across page reloads via `localStorage`.
 
 ---
 
 ## 💾 Autosave
 
-Autosave is **opt-in** — it is not included in the default toolbar. To enable it, add `'autosave'` to your toolbar config:
+Autosave is accessible from the **More menu** (⋯) in the default toolbar. When activated:
 
-```javascript
-const editor = new NeikiEditor('#editor', {
-    toolbar: [
-        'bold', 'italic', 'underline', '|',
-        'autosave'
-    ]
-});
-```
+- Content is saved to `localStorage` on every content change (debounced)
+- The status bar shows "Autosaving..." / "Saved locally"
+- Content is restored on page reload **only when autosave was enabled**
 
-When activated, autosave stores content to `localStorage` every 5 seconds. Content is restored on page reload **only when autosave is enabled**.
-
-> **Note:** For production use (CMS, blog, etc.), consider using the `onChange` callback to save content to your database instead.
+> **Note:** For production use (CMS, blog, etc.), use the `onSave` callback or `onChange` callback to save content to your database instead.
 
 ---
 
@@ -229,6 +244,8 @@ When activated, autosave stores content to `localStorage` every 5 seconds. Conte
 ```javascript
 editor.getContent();          // Get HTML content
 editor.setContent('<p>Hello</p>');  // Set HTML content
+editor.getText();             // Get plain text content
+editor.isEmpty();             // Check if editor is empty
 
 editor.getHTML();             // Alias for getContent()
 editor.setHTML(html);         // Alias for setContent()
@@ -242,9 +259,16 @@ editor.setJSON(json);         // Set content from JSON
 ```javascript
 editor.focus();               // Focus the editor
 editor.blur();                // Blur the editor
+editor.enable();              // Enable editing
+editor.disable();             // Disable editing (read-only)
 editor.destroy();             // Remove editor, restore original element
 editor.toggleFullscreen();    // Toggle fullscreen mode
 editor.toggleTheme();         // Toggle light/dark theme
+editor.setTheme('dark');      // Set a specific theme
+editor.triggerSave();         // Trigger onSave callback
+editor.previewContent();      // Open preview modal
+editor.downloadContent();     // Download content as HTML file
+editor.clearAll();            // Clear all content
 ```
 
 ### Command Execution
@@ -373,6 +397,7 @@ Click the **Print** button to open the browser print dialog with the editor cont
 | **Ctrl+I** | Italic |
 | **Ctrl+U** | Underline |
 | **Ctrl+K** | Insert Link |
+| **Ctrl+S** | Save (triggers `onSave` callback) |
 | **Ctrl+Z** | Undo |
 | **Ctrl+Y** / **Ctrl+Shift+Z** | Redo |
 | **Tab** | Indent |
@@ -385,7 +410,7 @@ Click the **Print** button to open the browser print dialog with the editor cont
 The editor includes a status bar at the bottom displaying:
 
 - **Left side:** Word count and character count
-- **Right side:** Current block type (p, h1, h2, etc.)
+- **Right side:** Autosave status (when enabled) and current block type (p, h1, h2, etc.)
 
 ---
 
@@ -523,6 +548,7 @@ neiki-editor/
 │   └── neiki-editor.css      # Editor styles
 ├── demo/
 │   └── index.html            # Interactive demo page
+│   └── logo.png              # Demo logo
 ├── php/
 │   └── neiki-editor.php      # PHP integration helper
 ├── logo.png
