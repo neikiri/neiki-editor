@@ -25,7 +25,7 @@
             'subscript', 'superscript', '|',
             'removeFormat', 'findReplace', '|',
             'emoji', 'specialChar', '|',
-            'source', 'fullscreen', 'print'
+            'source', 'fullscreen', 'print', 'toggleTheme'
         ],
         fonts: [
             'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Georgia',
@@ -96,7 +96,9 @@
         emoji: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>',
         specialChar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><text x="12" y="16" text-anchor="middle" font-size="12" fill="currentColor">Ω</text></svg>',
         findReplace: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
-        close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+        close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+        themeLight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>',
+        themeDark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
     };
 
     // Tooltip labels
@@ -131,7 +133,8 @@
         backColor: 'Barva pozadí',
         emoji: 'Emoji',
         specialChar: 'Speciální znaky',
-        findReplace: 'Najít a nahradit (Ctrl+F)'
+        findReplace: 'Najít a nahradit (Ctrl+F)',
+        toggleTheme: 'Přepnout světlý/tmavý režim'
     };
 
     class NeikiEditor {
@@ -143,6 +146,13 @@
             }
 
             this.config = { ...defaultConfig, ...options };
+            
+            // Load theme from localStorage
+            const savedTheme = localStorage.getItem('neiki-editor-theme');
+            if (savedTheme) {
+                this.config.theme = savedTheme;
+            }
+            
             this.isSourceMode = false;
             this.isFullscreen = false;
             this.undoStack = [];
@@ -231,6 +241,8 @@
                     currentGroup.appendChild(this.createEmojiPicker());
                 } else if (item === 'specialChar') {
                     currentGroup.appendChild(this.createSpecialCharPicker());
+                } else if (item === 'toggleTheme') {
+                    currentGroup.appendChild(this.createThemeToggle());
                 } else {
                     currentGroup.appendChild(this.createButton(item));
                 }
@@ -357,8 +369,10 @@
                 }
                 this.contentArea.focus();
                 if (type === 'foreColor') {
-                    this.execCommand(type, '#000000');
-                    btn.querySelector('.neiki-color-indicator').style.background = '#000000';
+                    // Remove color formatting to use default/inherited color
+                    document.execCommand('removeFormat', false, null);
+                    const defaultColor = getComputedStyle(this.contentArea).color;
+                    btn.querySelector('.neiki-color-indicator').style.background = defaultColor;
                 } else {
                     document.execCommand('removeFormat', false, null);
                     const selection = window.getSelection();
@@ -474,6 +488,24 @@
             wrapper.appendChild(dropdown);
 
             return wrapper;
+        }
+
+        createThemeToggle() {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'neiki-btn neiki-theme-toggle';
+            btn.setAttribute('data-tooltip', tooltips.toggleTheme);
+            btn.innerHTML = this.config.theme === 'dark' ? icons.themeLight : icons.themeDark;
+
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const newTheme = this.config.theme === 'dark' ? 'light' : 'dark';
+                this.setTheme(newTheme);
+                localStorage.setItem('neiki-editor-theme', newTheme);
+                btn.innerHTML = newTheme === 'dark' ? icons.themeLight : icons.themeDark;
+            });
+
+            return btn;
         }
 
         createSpecialCharPicker() {
