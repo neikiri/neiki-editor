@@ -9,3 +9,6 @@
 
 ## [1.0.2]
 - Added some styles
+
+## [1.0.3]
+- Translate labels to English

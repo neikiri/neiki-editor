@@ -1,7 +1,7 @@
 /**
  * NEIKI EDITOR - WYSIWYG Rich Text Editor
  * A full-featured rich text editor similar to TinyMCE
- * @version 1.0.2
+ * @version 1.0.3
  */
 
 (function (global) {
@@ -10,7 +10,7 @@
   // Default configuration
   const defaultConfig = {
     height: 400,
-    placeholder: 'Začněte psát...',
+    placeholder: 'Start writing...',
     theme: 'light',
     toolbar: [
       'undo', 'redo', '|',
@@ -103,38 +103,38 @@
 
   // Tooltip labels
   const tooltips = {
-    bold: 'Tučné (Ctrl+B)',
-    italic: 'Kurzíva (Ctrl+I)',
-    underline: 'Podtržené (Ctrl+U)',
-    strikethrough: 'Přeškrtnuté',
-    alignLeft: 'Zarovnat vlevo',
-    alignCenter: 'Zarovnat na střed',
-    alignRight: 'Zarovnat vpravo',
-    alignJustify: 'Zarovnat do bloku',
-    insertOrderedList: 'Číslovaný seznam',
-    insertUnorderedList: 'Odrážkový seznam',
-    indent: 'Zvětšit odsazení',
-    outdent: 'Zmenšit odsazení',
-    createLink: 'Vložit odkaz (Ctrl+K)',
-    insertImage: 'Vložit obrázek',
-    insertTable: 'Vložit tabulku',
-    undo: 'Zpět (Ctrl+Z)',
-    redo: 'Vpřed (Ctrl+Y)',
-    source: 'HTML kód',
-    fullscreen: 'Celá obrazovka',
-    print: 'Tisk',
-    blockquote: 'Citace',
-    insertHorizontalRule: 'Vodorovná čára',
-    insertCode: 'Blok kódu',
-    subscript: 'Dolní index',
-    superscript: 'Horní index',
-    removeFormat: 'Odstranit formátování',
-    foreColor: 'Barva textu',
-    backColor: 'Barva pozadí',
+    bold: 'Bold (Ctrl+B)',
+    italic: 'Italic (Ctrl+I)',
+    underline: 'Underlined (Ctrl+U)',
+    strikethrough: 'Strikethrough',
+    alignLeft: 'Align left',
+    alignCenter: 'Center align',
+    alignRight: 'Align right',
+    alignJustify: 'Justify',
+    insertOrderedList: 'Numbered list',
+    insertUnorderedList: 'Bulleted list',
+    indent: 'Increase indent',
+    outdent: 'Decrease indent',
+    createLink: 'Insert link (Ctrl+K)',
+    insertImage: 'Insert Image',
+    insertTable: 'Insert Table',
+    undo: 'Undo (Ctrl+Z)',
+    redo: 'Redo (Ctrl+Y)',
+    source: 'HTML code',
+    fullscreen: 'Full screen',
+    print: 'Print',
+    blockquote: 'Quote',
+    insertHorizontalRule: 'Horizontal line',
+    insertCode: 'Code block',
+    subscript: 'Subscript',
+    superscript: 'Superscript',
+    removeFormat: 'Remove formatting',
+    foreColor: 'Text color',
+    backColor: 'Background color',
     emoji: 'Emoji',
-    specialChar: 'Speciální znaky',
-    findReplace: 'Najít a nahradit (Ctrl+F)',
-    toggleTheme: 'Přepnout světlý/tmavý režim'
+    specialChar: 'Special characters',
+    findReplace: 'Find and replace (Ctrl+F)',
+    toggleTheme: 'Toggle light/dark mode'
   };
 
   class NeikiEditor {

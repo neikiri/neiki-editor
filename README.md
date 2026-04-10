@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/css-%23663399.svg?style=for-the-badge&logo=css&logoColor=white" alt="CSS">
   <br>
   <img src="https://img.shields.io/badge/License-MIT-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-1.0.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-1.0.3-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -32,9 +32,9 @@
 ### CDN (recommended)
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.2/dist/neiki-editor.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.3/dist/neiki-editor.js"></script>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.2/dist/neiki-editor.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.3/dist/neiki-editor.css">
 ```
 
 ### Manual Install
