@@ -1,7 +1,7 @@
 /**
  * NEIKI EDITOR - WYSIWYG Rich Text Editor
  * A full-featured rich text editor similar to TinyMCE
- * @version 1.0.3
+ * @version 1.0.4
  */
 
 (function (global) {

@@ -24,8 +24,8 @@ function neiki_editor_base_path() {
 function neiki_editor_head($useCdn = true) {
     if ($useCdn) {
         echo <<<HTML
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.0/dist/neiki-editor.css">
-        <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.0/dist/neiki-editor.js" defer></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.4/dist/neiki-editor.css">
+        <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.4/dist/neiki-editor.js" defer></script>
 HTML;
     } else {
         $basePath = neiki_editor_base_path();
