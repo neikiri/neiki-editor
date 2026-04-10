@@ -1,0 +1,14 @@
+{
+  "name": "neiki-editor",
+  "version": "2.0.0",
+  "description": "Lightweight, dependency-free WYSIWYG editor",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neikiri/neiki-editor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/neikiri/neiki-editor/issues"
+  },
+  "author": "Jindřich Stoklasa <jindrichstoklasa1@gmail.com>",
+  "license": "MIT"
+}

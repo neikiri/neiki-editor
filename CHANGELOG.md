@@ -14,4 +14,8 @@
 - Translate labels to English
 
 ## [1.0.4]
--Improved README
+- Improved README
+
+## [2.0.0]
+- Major update
+- Complete remaster

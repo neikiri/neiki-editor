@@ -1,844 +1,1672 @@
+/**
+ * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
+ * CSS Stylesheet
+ * Version: 2.0.0
+ */
+
 /* ============================================
-   NEIKI EDITOR - WYSIWYG Rich Text Editor
+   CSS Custom Properties (Light/Dark Themes)
    ============================================ */
-
 :root {
-    --neiki-primary: #3b82f6;
-    --neiki-primary-hover: #2563eb;
-    --neiki-secondary: #64748b;
-    --neiki-bg: #ffffff;
-    --neiki-bg-dark: #f8fafc;
-    --neiki-border: #e2e8f0;
-    --neiki-text: #1e293b;
-    --neiki-text-light: #64748b;
-    --neiki-success: #22c55e;
-    --neiki-warning: #f59e0b;
-    --neiki-danger: #ef4444;
-    --neiki-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-    --neiki-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-    --neiki-radius: 8px;
-    --neiki-radius-sm: 4px;
+  /* Light Theme (default) */
+  --neiki-bg-primary: #ffffff;
+  --neiki-bg-secondary: #f8f9fa;
+  --neiki-bg-tertiary: #e9ecef;
+  --neiki-bg-hover: #dee2e6;
+  --neiki-bg-active: #ced4da;
+  --neiki-border-color: #dee2e6;
+  --neiki-border-color-dark: #adb5bd;
+  --neiki-text-primary: #212529;
+  --neiki-text-secondary: #495057;
+  --neiki-text-muted: #6c757d;
+  --neiki-accent-color: #0d6efd;
+  --neiki-accent-hover: #0b5ed7;
+  --neiki-danger-color: #dc3545;
+  --neiki-success-color: #198754;
+  --neiki-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --neiki-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --neiki-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --neiki-editor-bg: #ffffff;
+  --neiki-toolbar-bg: #f8f9fa;
+  --neiki-statusbar-bg: #f8f9fa;
+  --neiki-modal-overlay: rgba(0, 0, 0, 0.5);
+  --neiki-scrollbar-thumb: #ced4da;
+  --neiki-scrollbar-track: #f8f9fa;
+  --neiki-selection-bg: #b3d7ff;
+  --neiki-highlight-color: #fff3cd;
+  --neiki-table-border: #dee2e6;
 }
 
-/* Editor Container */
-.neiki-editor-container {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-    border: 1px solid var(--neiki-border);
-    border-radius: var(--neiki-radius);
-    background: var(--neiki-bg);
-    box-shadow: var(--neiki-shadow);
-    overflow: hidden;
+/* Dark Theme */
+.neiki-editor.neiki-dark {
+  --neiki-bg-primary: #1e1e1e;
+  --neiki-bg-secondary: #252526;
+  --neiki-bg-tertiary: #2d2d30;
+  --neiki-bg-hover: #3e3e42;
+  --neiki-bg-active: #505050;
+  --neiki-border-color: #3e3e42;
+  --neiki-border-color-dark: #505050;
+  --neiki-text-primary: #d4d4d4;
+  --neiki-text-secondary: #a0a0a0;
+  --neiki-text-muted: #808080;
+  --neiki-accent-color: #4fc3f7;
+  --neiki-accent-hover: #29b6f6;
+  --neiki-danger-color: #f44336;
+  --neiki-success-color: #4caf50;
+  --neiki-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --neiki-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --neiki-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4);
+  --neiki-editor-bg: #1e1e1e;
+  --neiki-toolbar-bg: #252526;
+  --neiki-statusbar-bg: #252526;
+  --neiki-modal-overlay: rgba(0, 0, 0, 0.7);
+  --neiki-scrollbar-thumb: #505050;
+  --neiki-scrollbar-track: #2d2d30;
+  --neiki-selection-bg: #264f78;
+  --neiki-highlight-color: #5c4d00;
+  --neiki-table-border: #3e3e42;
 }
 
-/* Toolbar */
+/* ============================================
+   Base Editor Container
+   ============================================ */
+.neiki-editor {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  color: var(--neiki-text-primary);
+  box-shadow: var(--neiki-shadow-md);
+}
+
+.neiki-editor * {
+  box-sizing: border-box;
+}
+
+/* Fullscreen Mode */
+.neiki-editor.neiki-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 999999 !important;
+  border-radius: 0 !important;
+  border: none !important;
+}
+
+/* ============================================
+   Toolbar
+   ============================================ */
 .neiki-toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2px;
-    padding: 8px;
-    background: var(--neiki-bg-dark);
-    border-bottom: 1px solid var(--neiki-border);
-    align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  background: var(--neiki-toolbar-bg);
+  border-bottom: 1px solid var(--neiki-border-color);
+  min-height: 44px;
 }
 
 .neiki-toolbar-group {
-    display: flex;
-    gap: 2px;
-    padding: 0 6px;
-    border-right: 1px solid var(--neiki-border);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 4px;
 }
 
-.neiki-toolbar-group:last-child {
-    border-right: none;
+.neiki-toolbar-group:not(:last-child) {
+  border-right: 1px solid var(--neiki-border-color);
+  padding-right: 8px;
+  margin-right: 4px;
+}
+
+.neiki-toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--neiki-border-color);
+  margin: 0 4px;
 }
 
 /* Toolbar Buttons */
-.neiki-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    border: none;
-    border-radius: var(--neiki-radius-sm);
-    background: transparent;
-    color: var(--neiki-text);
-    cursor: pointer;
-    transition: all 0.15s ease;
-    font-size: 14px;
+.neiki-btn,
+.neiki-toolbar-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--neiki-text-secondary);
+  transition: all 0.15s ease;
+  position: relative;
 }
 
-.neiki-btn:hover {
-    background: var(--neiki-border);
+.neiki-btn:hover,
+.neiki-toolbar-btn:hover {
+  background: var(--neiki-bg-hover);
+  color: var(--neiki-text-primary);
 }
 
 .neiki-btn:active,
-.neiki-btn.active {
-    background: var(--neiki-primary);
-    color: white;
+.neiki-toolbar-btn:active {
+  background: var(--neiki-bg-active);
 }
 
-.neiki-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+.neiki-btn.active,
+.neiki-toolbar-btn.active {
+  background: var(--neiki-bg-active);
+  color: var(--neiki-accent-color);
+  border-color: var(--neiki-accent-color);
 }
 
-.neiki-btn svg {
-    width: 18px;
-    height: 18px;
+.neiki-btn:disabled,
+.neiki-toolbar-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
-/* Dropdown Select */
+.neiki-btn svg,
+.neiki-toolbar-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  pointer-events: none;
+}
+
+/* Toolbar Selects */
 .neiki-select {
-    height: 32px;
-    padding: 0 8px;
-    border: 1px solid var(--neiki-border);
-    border-radius: var(--neiki-radius-sm);
-    background: var(--neiki-bg);
-    color: var(--neiki-text);
-    font-size: 13px;
-    cursor: pointer;
-    outline: none;
-    min-width: 100px;
+  height: 32px;
+  padding: 0 28px 0 10px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 4px;
+  color: var(--neiki-text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  min-width: 100px;
 }
 
 .neiki-select:hover {
-    border-color: var(--neiki-primary);
+  border-color: var(--neiki-border-color-dark);
 }
 
 .neiki-select:focus {
-    border-color: var(--neiki-primary);
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  outline: none;
+  border-color: var(--neiki-accent-color);
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15);
 }
 
-/* Color Picker */
-.neiki-color-picker-wrapper {
-    position: relative;
-    display: inline-flex;
-}
-
+/* Color Picker Button */
 .neiki-color-btn {
-    position: relative;
-    width: 32px;
-    height: 32px;
+  position: relative;
+  width: 36px;
 }
 
-.neiki-color-indicator {
-    position: absolute;
-    bottom: 4px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 14px;
-    height: 3px;
-    border-radius: 1px;
-    background: currentColor;
+.neiki-color-btn .neiki-color-indicator {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 3px;
+  border-radius: 1px;
+  background: currentColor;
 }
 
-.neiki-color-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1000;
-    display: none;
-    padding: 8px;
-    background: var(--neiki-bg);
-    border: 1px solid var(--neiki-border);
-    border-radius: var(--neiki-radius);
-    box-shadow: var(--neiki-shadow-lg);
+/* Checkbox Toggle */
+.neiki-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  height: 32px;
+  font-size: 12px;
+  color: var(--neiki-text-secondary);
+  cursor: pointer;
+  user-select: none;
 }
 
-.neiki-color-dropdown.show {
-    display: block;
+.neiki-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--neiki-accent-color);
+  cursor: pointer;
 }
 
-.neiki-color-grid {
-    display: grid;
-    grid-template-columns: repeat(8, 24px);
-    gap: 4px;
+/* ============================================
+   Editor Content Area
+   ============================================ */
+.neiki-editor-wrapper,
+.neiki-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
 }
 
-.neiki-color-swatch {
-    width: 24px;
-    height: 24px;
-    border: 1px solid var(--neiki-border);
-    border-radius: var(--neiki-radius-sm);
-    cursor: pointer;
-    transition: transform 0.1s ease;
+.neiki-content {
+  flex: 1;
+  padding: 20px 24px;
+  background: var(--neiki-editor-bg);
+  overflow-y: auto;
+  outline: none;
+  line-height: 1.6;
+  color: var(--neiki-text-primary);
+  min-height: 200px;
 }
 
-.neiki-color-swatch:hover {
-    transform: scale(1.15);
-    z-index: 1;
+.neiki-content:focus {
+  outline: none;
 }
 
-.neiki-color-swatch-reset {
-    width: 24px;
-    height: 24px;
-    border: 1px solid #000;
-    border-radius: var(--neiki-radius-sm);
-    cursor: pointer;
-    transition: transform 0.1s ease;
-    position: relative;
-    background:
-        linear-gradient(45deg, #ccc 25%, transparent 25%),
-        linear-gradient(-45deg, #ccc 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, #ccc 75%),
-        linear-gradient(-45deg, transparent 75%, #ccc 75%);
-    background-size: 8px 8px;
-    background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
-    background-color: #fff;
+/* Placeholder */
+.neiki-content:empty::before {
+  content: attr(data-placeholder);
+  color: var(--neiki-text-muted);
+  font-style: italic;
+  pointer-events: none;
 }
 
-.neiki-color-swatch-reset::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: -2px;
-    right: -2px;
-    height: 2px;
-    background: #e53935;
-    transform: rotate(-45deg);
-    border-radius: 1px;
+.neiki-content.neiki-drag-over {
+  border: 2px dashed var(--neiki-accent-color);
+  background: rgba(13, 110, 253, 0.05);
 }
 
-.neiki-color-swatch-reset:hover {
-    transform: scale(1.15);
-    z-index: 1;
+.neiki-content.neiki-drag-over::after {
+  content: 'Drop images here';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--neiki-accent-color);
+  font-weight: 600;
+  font-size: 16px;
+  pointer-events: none;
+  z-index: 10;
 }
 
-.neiki-color-custom {
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid var(--neiki-border);
+/* Focus state for editor container */
+.neiki-editor.neiki-focused {
+  border-color: var(--neiki-accent-color);
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
 }
 
-.neiki-color-custom input[type="color"] {
-    width: 100%;
-    height: 30px;
-    padding: 0;
-    border: 1px solid var(--neiki-border);
-    border-radius: var(--neiki-radius-sm);
-    cursor: pointer;
+/* Disabled state */
+.neiki-editor.neiki-disabled {
+  opacity: 0.6;
+  pointer-events: none;
 }
 
-/* Editor Content Area */
-.neiki-editor-content {
-    min-height: 300px;
-    max-height: 600px;
-    padding: 16px;
-    overflow-y: auto;
-    outline: none;
-    line-height: 1.6;
-    color: var(--neiki-text);
+/* Content Scrollbar */
+.neiki-content::-webkit-scrollbar {
+  width: 10px;
 }
 
-.neiki-editor-content:focus {
-    outline: none;
+.neiki-content::-webkit-scrollbar-track {
+  background: var(--neiki-scrollbar-track);
 }
 
-.neiki-editor-content p {
-    margin: 0 0 1em 0;
+.neiki-content::-webkit-scrollbar-thumb {
+  background: var(--neiki-scrollbar-thumb);
+  border-radius: 5px;
 }
 
-.neiki-editor-content h1,
-.neiki-editor-content h2,
-.neiki-editor-content h3,
-.neiki-editor-content h4,
-.neiki-editor-content h5,
-.neiki-editor-content h6 {
-    margin: 1em 0 0.5em 0;
-    font-weight: 600;
-    line-height: 1.3;
+.neiki-content::-webkit-scrollbar-thumb:hover {
+  background: var(--neiki-border-color-dark);
 }
 
-.neiki-editor-content h1 {
-    font-size: 2em;
+/* Content Typography */
+.neiki-content p {
+  margin: 0 0 1em 0;
 }
 
-.neiki-editor-content h2 {
-    font-size: 1.5em;
+.neiki-content h1 {
+  font-size: 2em;
+  font-weight: 700;
+  margin: 0 0 0.5em 0;
 }
 
-.neiki-editor-content h3 {
-    font-size: 1.25em;
+.neiki-content h2 {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin: 0 0 0.5em 0;
 }
 
-.neiki-editor-content h4 {
-    font-size: 1.1em;
+.neiki-content h3 {
+  font-size: 1.25em;
+  font-weight: 600;
+  margin: 0 0 0.5em 0;
 }
 
-.neiki-editor-content h5 {
-    font-size: 1em;
+.neiki-content h4 {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin: 0 0 0.5em 0;
 }
 
-.neiki-editor-content h6 {
-    font-size: 0.9em;
+.neiki-content h5 {
+  font-size: 1em;
+  font-weight: 600;
+  margin: 0 0 0.5em 0;
 }
 
-.neiki-editor-content ul,
-.neiki-editor-content ol {
-    margin: 0 0 1em 0;
-    padding-left: 2em;
+.neiki-content h6 {
+  font-size: 0.9em;
+  font-weight: 600;
+  margin: 0 0 0.5em 0;
 }
 
-.neiki-editor-content li {
-    margin-bottom: 0.25em;
+.neiki-content ul,
+.neiki-content ol {
+  margin: 0 0 1em 0;
+  padding-left: 2em;
 }
 
-.neiki-editor-content blockquote {
-    margin: 1em 0;
-    padding: 12px 20px;
-    border-left: 4px solid var(--neiki-primary);
-    background: var(--neiki-bg-dark);
-    font-style: italic;
+.neiki-content li {
+  margin-bottom: 0.25em;
 }
 
-.neiki-editor-content pre {
-    margin: 1em 0;
-    padding: 16px;
-    background: #1e293b;
-    color: #e2e8f0;
-    border-radius: var(--neiki-radius);
-    overflow-x: auto;
-    font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
-    font-size: 14px;
+.neiki-content blockquote {
+  margin: 0 0 1em 0;
+  padding: 10px 20px;
+  border-left: 4px solid var(--neiki-accent-color);
+  background: var(--neiki-bg-secondary);
+  font-style: italic;
 }
 
-.neiki-editor-content code {
-    padding: 2px 6px;
-    background: var(--neiki-bg-dark);
-    border-radius: var(--neiki-radius-sm);
-    font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
-    font-size: 0.9em;
+.neiki-content pre {
+  margin: 0 0 1em 0;
+  padding: 16px;
+  background: var(--neiki-bg-tertiary);
+  border-radius: 4px;
+  overflow-x: auto;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 13px;
 }
 
-.neiki-editor-content pre code {
-    padding: 0;
-    background: transparent;
+.neiki-content code {
+  padding: 2px 6px;
+  background: var(--neiki-bg-tertiary);
+  border-radius: 3px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.9em;
 }
 
-.neiki-editor-content a {
-    color: var(--neiki-primary);
-    text-decoration: underline;
+.neiki-content a {
+  color: var(--neiki-accent-color);
+  text-decoration: underline;
 }
 
-.neiki-editor-content img {
-    max-width: 100%;
-    height: auto;
-    border-radius: var(--neiki-radius-sm);
+.neiki-content a:hover {
+  color: var(--neiki-accent-hover);
 }
 
-.neiki-editor-content table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1em 0;
+.neiki-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-.neiki-editor-content table th,
-.neiki-editor-content table td {
-    border: 1px solid var(--neiki-border);
-    padding: 8px 12px;
-    text-align: left;
+.neiki-content img.neiki-selected {
+  outline: 2px solid var(--neiki-accent-color);
+  outline-offset: 2px;
 }
 
-.neiki-editor-content table th {
-    background: var(--neiki-bg-dark);
-    font-weight: 600;
+/* Search Highlight */
+.neiki-highlight {
+  background: var(--neiki-highlight-color);
+  padding: 1px 0;
 }
 
-.neiki-editor-content hr {
-    margin: 1.5em 0;
-    border: none;
-    border-top: 2px solid var(--neiki-border);
+.neiki-highlight-current {
+  background: #ffc107;
+  outline: 2px solid #ff9800;
 }
 
-/* Source Code View */
-.neiki-source-editor {
-    display: none;
-    width: 100%;
-    min-height: 300px;
-    max-height: 600px;
-    padding: 16px;
-    border: none;
-    background: #1e293b;
-    color: #e2e8f0;
-    font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
-    font-size: 14px;
-    line-height: 1.5;
-    resize: vertical;
-    outline: none;
+/* ============================================
+   Tables
+   ============================================ */
+.neiki-content table,
+.neiki-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  table-layout: fixed;
 }
 
-.neiki-source-editor.active {
-    display: block;
+.neiki-content table td,
+.neiki-content table th {
+  border: 1px solid var(--neiki-table-border);
+  padding: 8px 12px;
+  min-width: 50px;
+  vertical-align: top;
+  position: relative;
 }
 
-.neiki-editor-content.hidden {
-    display: none;
+.neiki-content table th {
+  background: var(--neiki-bg-secondary);
+  font-weight: 600;
 }
 
-/* Status Bar */
+.neiki-content table td:hover,
+.neiki-content table th:hover {
+  background: var(--neiki-bg-hover);
+}
+
+.neiki-content table td.neiki-cell-selected,
+.neiki-content table th.neiki-cell-selected {
+  background: var(--neiki-selection-bg);
+}
+
+/* Table Resize Handle */
+.neiki-table-resize-handle {
+  position: absolute;
+  top: 0;
+  right: -3px;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 10;
+}
+
+.neiki-table-resize-handle:hover {
+  background: var(--neiki-accent-color);
+}
+
+/* ============================================
+   Status Bar
+   ============================================ */
 .neiki-statusbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 12px;
-    background: var(--neiki-bg-dark);
-    border-top: 1px solid var(--neiki-border);
-    font-size: 12px;
-    color: var(--neiki-text-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  background: var(--neiki-statusbar-bg);
+  border-top: 1px solid var(--neiki-border-color);
+  font-size: 12px;
+  color: var(--neiki-text-muted);
 }
 
 .neiki-statusbar-left,
 .neiki-statusbar-right {
-    display: flex;
-    gap: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
-/* Modal */
+.neiki-statusbar-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.neiki-statusbar-block {
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 11px;
+  padding: 2px 6px;
+  background: var(--neiki-bg-tertiary);
+  border-radius: 3px;
+  color: var(--neiki-accent-color);
+  font-weight: 600;
+  border: 1px solid var(--neiki-border-color);
+}
+
+/* ============================================
+   Dropdowns & Popups
+   ============================================ */
+.neiki-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  min-width: 180px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 6px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 4px;
+  margin-top: 4px;
+}
+
+/* Remove the .show requirement - JS adds/removes element directly */
+
+.neiki-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--neiki-text-primary);
+  font-size: 13px;
+  transition: background 0.1s;
+}
+
+.neiki-dropdown-item:hover {
+  background: var(--neiki-bg-hover);
+}
+
+.neiki-dropdown-item.active {
+  background: var(--neiki-bg-active);
+  color: var(--neiki-accent-color);
+}
+
+.neiki-dropdown-divider {
+  height: 1px;
+  background: var(--neiki-border-color);
+  margin: 4px 0;
+}
+
+/* ============================================
+   Color Picker
+   ============================================ */
+.neiki-color-picker {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  width: 220px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 8px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 8px;
+  margin-top: 4px;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2px;
+}
+
+.neiki-color-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 1px solid var(--neiki-border-color);
+  transition: transform 0.1s;
+}
+
+.neiki-color-swatch:hover {
+  transform: scale(1.2);
+  z-index: 1;
+}
+
+.neiki-color-swatch.neiki-color-reset {
+  background: white;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #ccc;
+}
+
+.neiki-color-swatch.neiki-color-reset::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -2px;
+  right: -2px;
+  height: 2px;
+  background: #e53935;
+  transform: rotate(-45deg);
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.neiki-color-picker-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--neiki-text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+/* Emoji Picker */
+.neiki-emoji-picker {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  width: 280px;
+  max-height: 250px;
+  overflow-y: auto;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 8px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 8px;
+  margin-top: 4px;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2px;
+}
+
+.neiki-emoji-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.neiki-emoji-item:hover {
+  background: var(--neiki-bg-hover);
+  transform: scale(1.2);
+}
+
+/* Special Characters Picker */
+.neiki-special-picker {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  width: 320px;
+  max-height: 280px;
+  overflow-y: auto;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 8px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 8px;
+  margin-top: 4px;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+}
+
+.neiki-special-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid var(--neiki-border-color);
+  background: var(--neiki-bg-secondary);
+  transition: all 0.15s;
+}
+
+.neiki-special-item:hover {
+  background: var(--neiki-accent-color);
+  color: white;
+  border-color: var(--neiki-accent-color);
+  transform: scale(1.1);
+}
+
+/* Find & Replace Highlights */
+.neiki-highlight-find {
+  background: #ffeb3b;
+  padding: 1px 0;
+  border-radius: 2px;
+}
+
+.neiki-highlight-current {
+  background: #ff9800;
+  outline: 2px solid #e65100;
+}
+
+.neiki-color-presets {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.neiki-color-preset {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.1s, border-color 0.1s;
+}
+
+.neiki-color-preset:hover {
+  transform: scale(1.1);
+}
+
+.neiki-color-preset.active {
+  border-color: var(--neiki-accent-color);
+}
+
+.neiki-color-preset.neiki-color-reset {
+  background: linear-gradient(45deg, #fff 45%, #ff0000 45%, #ff0000 55%, #fff 55%);
+  border: 1px solid var(--neiki-border-color);
+}
+
+.neiki-color-custom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--neiki-border-color);
+}
+
+.neiki-color-custom input[type="color"] {
+  width: 40px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.neiki-color-custom input[type="text"] {
+  flex: 1;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 4px;
+  background: var(--neiki-bg-primary);
+  color: var(--neiki-text-primary);
+  font-size: 12px;
+  font-family: monospace;
+}
+
+/* ============================================
+   Table Picker
+   ============================================ */
+.neiki-table-picker {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 8px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 12px;
+  display: none;
+}
+
+.neiki-table-picker.show {
+  display: block;
+}
+
+.neiki-table-picker-label {
+  font-size: 12px;
+  color: var(--neiki-text-secondary);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.neiki-table-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 20px);
+  gap: 2px;
+}
+
+.neiki-table-picker-cell {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 2px;
+  background: var(--neiki-bg-primary);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.neiki-table-picker-cell:hover,
+.neiki-table-picker-cell.active {
+  background: var(--neiki-accent-color);
+  border-color: var(--neiki-accent-color);
+}
+
+/* ============================================
+   Special Characters Picker (duplicate removed)
+   ============================================ */
+.neiki-special-chars {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  width: 280px;
+  max-height: 300px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 8px;
+  box-shadow: var(--neiki-shadow-lg);
+  display: none;
+  overflow: hidden;
+}
+
+.neiki-special-chars.show {
+  display: flex;
+  flex-direction: column;
+}
+
+.neiki-special-chars-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2px;
+  padding: 8px;
+  overflow-y: auto;
+}
+
+.neiki-special-char-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.neiki-special-char-item:hover {
+  background: var(--neiki-bg-hover);
+}
+
+/* ============================================
+   Modals
+   ============================================ */
 .neiki-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.2s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--neiki-modal-overlay);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
 }
 
-.neiki-modal-overlay.show {
-    opacity: 1;
-    visibility: visible;
+.neiki-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
 }
 
 .neiki-modal {
-    background: var(--neiki-bg);
-    border-radius: var(--neiki-radius);
-    box-shadow: var(--neiki-shadow-lg);
-    width: 90%;
-    max-width: 500px;
-    max-height: 90vh;
-    overflow: hidden;
-    transform: scale(0.9);
-    transition: transform 0.2s ease;
+  background: var(--neiki-bg-primary);
+  border-radius: 12px;
+  box-shadow: var(--neiki-shadow-lg);
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: neiki-modal-in 0.2s ease;
 }
 
-.neiki-modal-overlay.show .neiki-modal {
-    transform: scale(1);
+.neiki-modal-wide {
+  max-width: 520px;
 }
 
 .neiki-modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--neiki-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--neiki-border-color);
 }
 
 .neiki-modal-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--neiki-text);
-    margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--neiki-text-primary);
+  margin: 0;
 }
 
 .neiki-modal-close {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    background: transparent;
-    color: var(--neiki-text-light);
-    cursor: pointer;
-    border-radius: var(--neiki-radius-sm);
-    font-size: 20px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--neiki-text-muted);
+  transition: background 0.15s;
 }
 
 .neiki-modal-close:hover {
-    background: var(--neiki-border);
-    color: var(--neiki-text);
+  background: var(--neiki-bg-hover);
+  color: var(--neiki-text-primary);
 }
 
 .neiki-modal-body {
-    padding: 20px;
-    overflow-y: auto;
+  padding: 20px;
+  overflow-y: auto;
 }
 
 .neiki-modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    padding: 16px 20px;
-    border-top: 1px solid var(--neiki-border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--neiki-border-color);
 }
 
 /* Form Elements */
 .neiki-form-group {
-    margin-bottom: 16px;
+  margin-bottom: 16px;
 }
 
 .neiki-form-group:last-child {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .neiki-form-label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--neiki-text);
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--neiki-text-secondary);
 }
 
-.neiki-form-input {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid var(--neiki-border);
-    border-radius: var(--neiki-radius-sm);
-    font-size: 14px;
-    color: var(--neiki-text);
-    outline: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    box-sizing: border-box;
+.neiki-form-input,
+.neiki-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 6px;
+  background: var(--neiki-bg-primary);
+  color: var(--neiki-text-primary);
+  font-size: 14px;
+  transition: border-color 0.15s;
 }
 
-.neiki-form-input:focus {
-    border-color: var(--neiki-primary);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+.neiki-form-input:focus,
+.neiki-input:focus {
+  outline: none;
+  border-color: var(--neiki-accent-color);
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
 }
 
-.neiki-form-input::placeholder {
-    color: var(--neiki-text-light);
+.neiki-form-input::placeholder,
+.neiki-input::placeholder {
+  color: var(--neiki-text-muted);
+}
+
+.neiki-form-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.neiki-form-divider {
+  display: flex;
+  align-items: center;
+  margin: 16px 0;
+  text-align: center;
+  position: relative;
+}
+
+.neiki-form-divider::before {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--neiki-border-color);
+  margin-right: 12px;
+}
+
+.neiki-form-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--neiki-border-color);
+  margin-left: 12px;
+}
+
+.neiki-form-divider span {
+  color: var(--neiki-text-muted);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.neiki-form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--neiki-text-secondary);
+}
+
+.neiki-form-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 6px;
+  background: var(--neiki-bg-primary);
+  color: var(--neiki-text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.15s;
+}
+
+.neiki-form-textarea:focus {
+  outline: none;
+  border-color: var(--neiki-accent-color);
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
 }
 
 /* Buttons */
 .neiki-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: var(--neiki-radius-sm);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
 }
 
-.neiki-button-primary {
-    background: var(--neiki-primary);
-    color: white;
+.neiki-button-primary,
+.neiki-btn-primary {
+  background: var(--neiki-accent-color);
+  color: #fff;
 }
 
-.neiki-button-primary:hover {
-    background: var(--neiki-primary-hover);
+.neiki-button-primary:hover,
+.neiki-btn-primary:hover {
+  background: var(--neiki-accent-hover);
 }
 
-.neiki-button-secondary {
-    background: var(--neiki-bg-dark);
-    color: var(--neiki-text);
-    border: 1px solid var(--neiki-border);
+.neiki-button-secondary,
+.neiki-btn-secondary {
+  background: var(--neiki-bg-secondary);
+  color: var(--neiki-text-primary);
+  border-color: var(--neiki-border-color);
+}
+
+.neiki-btn-primary,
+.neiki-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.neiki-btn-secondary {
+  border-color: var(--neiki-border-color);
+}
+
+.neiki-btn-secondary:hover {
+  background: var(--neiki-bg-hover);
 }
 
 .neiki-button-secondary:hover {
-    background: var(--neiki-border);
+  background: var(--neiki-bg-hover);
 }
 
-/* Tooltip */
-.neiki-btn[data-tooltip] {
-    position: relative;
+.neiki-button-danger {
+  background: var(--neiki-danger-color);
+  color: #fff;
 }
 
-.neiki-btn[data-tooltip]::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 6px 10px;
-    background: var(--neiki-text);
-    color: white;
-    font-size: 12px;
-    white-space: nowrap;
-    border-radius: var(--neiki-radius-sm);
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.15s ease;
-    pointer-events: none;
-    margin-bottom: 6px;
-    z-index: 1000;
+.neiki-button-danger:hover {
+  opacity: 0.9;
 }
 
-.neiki-btn[data-tooltip]:hover::after {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .neiki-toolbar {
-        padding: 6px;
-    }
-
-    .neiki-toolbar-group {
-        padding: 0 4px;
-    }
-
-    .neiki-btn {
-        width: 28px;
-        height: 28px;
-    }
-
-    .neiki-select {
-        min-width: 80px;
-        font-size: 12px;
-    }
-
-    .neiki-editor-content {
-        padding: 12px;
-        min-height: 200px;
-    }
-}
-
-/* Print Styles */
-@media print {
-
-    .neiki-toolbar,
-    .neiki-statusbar {
-        display: none;
-    }
-
-    .neiki-editor-container {
-        border: none;
-        box-shadow: none;
-    }
-
-    .neiki-editor-content {
-        max-height: none;
-        overflow: visible;
-    }
-}
-
-/* Emoji Picker */
-.neiki-emoji-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1000;
-    display: none;
-    width: 280px;
-    max-height: 250px;
-    overflow-y: auto;
-    padding: 8px;
-    background: var(--neiki-bg);
-    border: 1px solid var(--neiki-border);
-    border-radius: var(--neiki-radius);
-    box-shadow: var(--neiki-shadow-lg);
-}
-
-.neiki-emoji-dropdown.show {
-    display: block;
-}
-
-.neiki-emoji-grid {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 4px;
-}
-
-.neiki-emoji-item {
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    cursor: pointer;
-    border-radius: var(--neiki-radius-sm);
-    transition: background 0.1s ease;
-}
-
-.neiki-emoji-item:hover {
-    background: var(--neiki-bg-dark);
-}
-
-/* Special Characters */
-.neiki-special-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1000;
-    display: none;
-    width: 320px;
-    max-height: 250px;
-    overflow-y: auto;
-    padding: 8px;
-    background: var(--neiki-bg);
-    border: 1px solid var(--neiki-border);
-    border-radius: var(--neiki-radius);
-    box-shadow: var(--neiki-shadow-lg);
-}
-
-.neiki-special-dropdown.show {
-    display: block;
-}
-
-.neiki-special-grid {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    gap: 4px;
-}
-
-.neiki-special-item {
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: var(--neiki-radius-sm);
-    border: 1px solid var(--neiki-border);
-    transition: all 0.1s ease;
-}
-
-.neiki-special-item:hover {
-    background: var(--neiki-primary);
-    color: white;
-    border-color: var(--neiki-primary);
-}
-
-/* Find and Replace */
+/* ============================================
+   Find & Replace Panel
+   ============================================ */
 .neiki-find-replace {
-    display: none;
-    padding: 8px 12px;
-    background: var(--neiki-bg-dark);
-    border-bottom: 1px solid var(--neiki-border);
-    gap: 8px;
-    align-items: center;
-    flex-wrap: wrap;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  width: 360px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 0 0 0 8px;
+  box-shadow: var(--neiki-shadow-lg);
+  display: none;
 }
 
 .neiki-find-replace.show {
-    display: flex;
+  display: block;
 }
 
-.neiki-find-replace input {
-    padding: 6px 10px;
-    border: 1px solid var(--neiki-border);
-    border-radius: var(--neiki-radius-sm);
-    font-size: 13px;
-    outline: none;
-    width: 150px;
+.neiki-find-replace-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--neiki-border-color);
 }
 
-.neiki-find-replace input:focus {
-    border-color: var(--neiki-primary);
+.neiki-find-replace-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--neiki-text-primary);
 }
 
-.neiki-find-replace button {
-    padding: 6px 12px;
-    border: none;
-    border-radius: var(--neiki-radius-sm);
-    background: var(--neiki-primary);
-    color: white;
-    font-size: 13px;
-    cursor: pointer;
+.neiki-find-replace-body {
+  padding: 12px;
 }
 
-.neiki-find-replace button:hover {
-    background: var(--neiki-primary-hover);
+.neiki-find-replace-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
-.neiki-find-replace .close-find {
-    background: transparent;
-    color: var(--neiki-text-light);
-    padding: 6px;
+.neiki-find-replace-row:last-child {
+  margin-bottom: 0;
 }
 
-.neiki-find-replace .close-find:hover {
-    color: var(--neiki-text);
-    background: var(--neiki-border);
+.neiki-find-replace-input {
+  flex: 1;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 4px;
+  background: var(--neiki-bg-primary);
+  color: var(--neiki-text-primary);
+  font-size: 13px;
 }
 
-/* Resizable */
-.neiki-editor-resizable .neiki-editor-content,
-.neiki-editor-resizable .neiki-source-editor {
-    resize: vertical;
+.neiki-find-replace-input:focus {
+  outline: none;
+  border-color: var(--neiki-accent-color);
 }
 
-/* Fullscreen */
-.neiki-editor-fullscreen {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    z-index: 9999 !important;
-    border-radius: 0 !important;
-    margin: 0 !important;
+.neiki-find-replace-options {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
 }
 
-.neiki-editor-fullscreen .neiki-editor-content,
-.neiki-editor-fullscreen .neiki-source-editor {
-    max-height: calc(100vh - 120px) !important;
-    min-height: calc(100vh - 120px) !important;
+.neiki-find-replace-option {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--neiki-text-secondary);
+  cursor: pointer;
 }
 
-/* Dark Theme */
-.neiki-editor-dark {
-    --neiki-bg: #1e293b;
-    --neiki-bg-dark: #0f172a;
-    --neiki-border: #334155;
-    --neiki-text: #f1f5f9;
-    --neiki-text-light: #94a3b8;
+.neiki-find-replace-option input {
+  accent-color: var(--neiki-accent-color);
 }
 
-.neiki-editor-dark .neiki-editor-content pre {
-    background: #0f172a;
+.neiki-find-replace-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
-.neiki-editor-dark .neiki-source-editor {
-    background: #0f172a;
+.neiki-find-replace-btn {
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+  border-radius: 4px;
 }
 
-/* === LAYOUT FIX (sticky toolbar + bottom statusbar) === */
-
-.neiki-editor-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+.neiki-find-replace-count {
+  font-size: 12px;
+  color: var(--neiki-text-muted);
+  margin-left: auto;
 }
 
-.neiki-editor-content {
-    flex: 1;
-    max-height: none;
-    overflow-y: auto;
+/* ============================================
+   HTML Code View
+   ============================================ */
+.neiki-code-view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  background: var(--neiki-bg-primary);
+  display: none;
+  flex-direction: column;
 }
 
-.neiki-source-editor {
-    flex: 1;
-    max-height: none;
+.neiki-code-view.show {
+  display: flex;
 }
 
-.neiki-statusbar {
-    margin-top: auto;
+.neiki-code-view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: var(--neiki-bg-secondary);
+  border-bottom: 1px solid var(--neiki-border-color);
+  flex-shrink: 0;
 }
 
+.neiki-code-view-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--neiki-text-primary);
+}
 
-.neiki-toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
+.neiki-code-view-textarea {
+  flex: 1;
+  width: 100%;
+  padding: 16px;
+  border: none;
+  background: var(--neiki-bg-primary);
+  color: var(--neiki-text-primary);
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  resize: none;
+}
+
+.neiki-code-view-textarea:focus {
+  outline: none;
+}
+
+.neiki-code-view-apply {
+  width: auto !important;
+  padding: 0 12px !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 30px;
+  font-size: 12px;
+  background: var(--neiki-accent-color) !important;
+  color: white !important;
+  border-radius: 5px;
+}
+
+.neiki-code-view-apply:hover {
+  background: var(--neiki-accent-hover) !important;
+  color: white !important;
+}
+
+.neiki-code-view-apply svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+/* ============================================
+   Context Menu
+   ============================================ */
+.neiki-context-menu {
+  position: fixed;
+  z-index: 10001;
+  min-width: 180px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 8px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 4px;
+  display: none;
+}
+
+.neiki-context-menu.show {
+  display: block;
+}
+
+.neiki-context-item,
+.neiki-context-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--neiki-text-primary);
+  font-size: 13px;
+  transition: background 0.1s;
+}
+
+.neiki-context-item:hover,
+.neiki-context-menu-item:hover {
+  background: var(--neiki-bg-hover);
+}
+
+.neiki-context-item.neiki-context-danger,
+.neiki-context-menu-item.danger {
+  color: var(--neiki-danger-color);
+}
+
+.neiki-context-item svg,
+.neiki-context-menu-item svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.neiki-context-divider,
+.neiki-context-menu-divider {
+  height: 1px;
+  background: var(--neiki-border-color);
+  margin: 4px 0;
+}
+
+/* ============================================
+   Floating Selection Toolbar
+   ============================================ */
+.neiki-floating-toolbar {
+  position: absolute;
+  z-index: 1000;
+  display: none;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 8px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 4px;
+}
+
+.neiki-floating-toolbar.show {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.neiki-floating-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--neiki-bg-primary);
+  color: var(--neiki-text-primary);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.neiki-floating-btn:hover {
+  background: var(--neiki-bg-hover);
+  color: var(--neiki-accent-color);
+}
+
+.neiki-floating-btn:active {
+  background: var(--neiki-bg-active);
+}
+
+.neiki-floating-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.neiki-floating-toolbar .neiki-btn {
+  width: 28px;
+  height: 28px;
+}
+
+.neiki-floating-toolbar .neiki-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ============================================
+   Tooltips
+   ============================================ */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  background: var(--neiki-text-primary);
+  color: var(--neiki-bg-primary);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  border-radius: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s, visibility 0.15s;
+  pointer-events: none;
+  z-index: 10002;
+  margin-bottom: 6px;
+}
+
+[data-tooltip]:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ============================================
+   Drag & Drop Overlay
+   ============================================ */
+.neiki-drop-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(13, 110, 253, 0.1);
+  border: 3px dashed var(--neiki-accent-color);
+  border-radius: 8px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.neiki-drop-overlay.show {
+  display: flex;
+}
+
+.neiki-drop-overlay-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--neiki-accent-color);
+}
+
+/* ============================================
+   Image Resize Handles
+   ============================================ */
+.neiki-image-wrapper {
+  display: inline-block;
+  position: relative;
+}
+
+.neiki-image-wrapper.selected {
+  outline: 2px solid var(--neiki-accent-color);
+}
+
+.neiki-resize-handle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--neiki-accent-color);
+  border: 2px solid #fff;
+  border-radius: 2px;
+}
+
+.neiki-resize-handle.nw { top: -5px; left: -5px; cursor: nw-resize; }
+.neiki-resize-handle.ne { top: -5px; right: -5px; cursor: ne-resize; }
+.neiki-resize-handle.sw { bottom: -5px; left: -5px; cursor: sw-resize; }
+.neiki-resize-handle.se { bottom: -5px; right: -5px; cursor: se-resize; }
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  .neiki-editor {
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .neiki-toolbar,
+  .neiki-statusbar,
+  .neiki-floating-toolbar,
+  .neiki-find-replace,
+  .neiki-code-view-header {
+    display: none !important;
+  }
+
+  .neiki-content {
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .neiki-editor-wrapper {
+    overflow: visible !important;
+  }
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+@media (max-width: 768px) {
+  .neiki-toolbar {
+    padding: 4px;
+    gap: 1px;
+  }
+
+  .neiki-toolbar-group {
+    padding: 0 2px;
+  }
+
+  .neiki-toolbar-group:not(:last-child) {
+    padding-right: 4px;
+    margin-right: 2px;
+  }
+
+  .neiki-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .neiki-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .neiki-select {
+    height: 28px;
+    min-width: 80px;
+    font-size: 12px;
+    padding: 0 24px 0 8px;
+  }
+
+  .neiki-content {
+    padding: 12px 16px;
+  }
+
+  .neiki-statusbar {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  .neiki-modal {
+    width: 95%;
+    max-width: none;
+    margin: 10px;
+  }
+
+  .neiki-find-replace {
+    width: 100%;
+    border-radius: 0;
+  }
+
+  .neiki-checkbox-wrapper {
+    padding: 0 4px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .neiki-toolbar-group:not(:last-child) {
+    border-right: none;
+    padding-right: 2px;
+    margin-right: 0;
+  }
+
+  .neiki-select {
+    min-width: 60px;
+  }
+
+  .neiki-statusbar-left,
+  .neiki-statusbar-right {
+    gap: 8px;
+  }
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+@keyframes neiki-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.neiki-dropdown.show,
+.neiki-color-picker.show,
+.neiki-table-picker.show,
+.neiki-emoji-picker.show,
+.neiki-special-chars.show {
+  animation: neiki-fade-in 0.15s ease;
+}
+
+@keyframes neiki-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.neiki-modal-overlay.show .neiki-modal {
+  animation: neiki-modal-in 0.2s ease;
 }

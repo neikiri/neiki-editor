@@ -7,10 +7,11 @@
 <p align="center">
   <img src="https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E" alt="JavaScript">
   <img src="https://img.shields.io/badge/php-%23777BB4.svg?style=for-the-badge&logo=php&logoColor=white" alt="PHP">
+  <img src="https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5">
   <img src="https://img.shields.io/badge/css-%23663399.svg?style=for-the-badge&logo=css&logoColor=white" alt="CSS">
   <br>
   <img src="https://img.shields.io/badge/License-MIT-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-1.0.4-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-2.0.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -29,188 +30,338 @@
 
 ## 📦 Installation
 
-### CDN (recommended)
+### CDN (Recommended)
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.4/dist/neiki-editor.js"></script>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.4/dist/neiki-editor.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.0.0/dist/neiki-editor.css">
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.0.0/dist/neiki-editor.js"></script>
 ```
 
-### Manual Install
+### Self-hosted
 
-```bash
-git clone https://github.com/neikiri/neiki-editor.git
+Download `neiki-editor.js` and `neiki-editor.css`, then include them in your project:
+
+```html
+<link rel="stylesheet" href="path/to/neiki-editor.css">
+<script src="path/to/neiki-editor.js"></script>
 ```
-
-Copy the `dist/` folder to your project.
 
 ---
 
-## 🚀 Usage
-
-### HTML/JavaScript
+## 🚀 Quick Start
 
 ```html
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" href="dist/neiki-editor.css">
-</head>
-<body>
-    <textarea id="my-editor"></textarea>
-    
-    <script src="dist/neiki-editor.js"></script>
-    <script>
-        const editor = new NeikiEditor('#my-editor', {
-            height: 400,
-            theme: 'light'
-        });
-    </script>
-</body>
-</html>
+<textarea id="editor"></textarea>
+
+<script>
+  const editor = new NeikiEditor('#editor');
+</script>
 ```
 
-### PHP
-
-```php
-<?php include 'php/neiki-editor.php'; ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <?php neiki_editor_head(); ?>
-</head>
-<body>
-    <?php neiki_editor('my-editor', ['height' => 400]); ?>
-</body>
-</html>
-```
+That's it — zero config required. The editor replaces the `<textarea>` with a full-featured WYSIWYG editor.
 
 ---
 
 ## ⚙️ Configuration
 
 ```javascript
-const editor = new NeikiEditor('#my-editor', {
-    height: 400,
+const editor = new NeikiEditor('#editor', {
     placeholder: 'Start typing...',
-    theme: 'light', // 'light' or 'dark'
+    minHeight: 300,
+    maxHeight: 600,
+    autofocus: false,
+    spellcheck: true,
+    readonly: false,
+    theme: 'light',       // 'light' or 'dark'
     toolbar: [
         'undo', 'redo', '|',
-        'formatBlock', 'fontName', 'fontSize', '|',
         'bold', 'italic', 'underline', 'strikethrough', '|',
+        'heading', 'fontSize', 'fontFamily', '|',
         'foreColor', 'backColor', '|',
         'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', '|',
-        'insertOrderedList', 'insertUnorderedList', '|',
+        'bulletList', 'numberedList', '|',
         'indent', 'outdent', '|',
-        'createLink', 'insertImage', 'insertTable', '|',
-        'blockquote', 'insertHorizontalRule', 'insertCode', '|',
-        'subscript', 'superscript', '|',
-        'removeFormat', 'findReplace', '|',
-        'emoji', 'specialChar', '|',
-        'source', 'fullscreen', 'print'
+        'link', 'image', 'table', '|',
+        'blockquote', 'viewCode', 'horizontalRule', '|',
+        'subscript', 'superscript', 'removeFormat', '|',
+        'findReplace', 'emoji', 'specialChars', '|',
+        'fullscreen', 'themeToggle', 'print'
     ],
-    onChange: function(content) {
+    onChange: function(content, editor) {
         console.log('Content changed:', content);
     },
     onReady: function(editor) {
-        console.log('Editor ready');
+        console.log('Editor is ready!');
     }
 });
 ```
 
+### Configuration Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `placeholder` | `string` | `'Start typing...'` | Placeholder text when editor is empty |
+| `minHeight` | `number` | `300` | Minimum height in pixels |
+| `maxHeight` | `number\|null` | `null` | Maximum height in pixels (enables scroll) |
+| `autofocus` | `boolean` | `false` | Focus editor on initialization |
+| `spellcheck` | `boolean` | `true` | Enable browser spellcheck |
+| `readonly` | `boolean` | `false` | Make editor read-only |
+| `theme` | `string` | `'light'` | `'light'` or `'dark'` |
+| `toolbar` | `array` | *(see above)* | Toolbar button configuration |
+| `onChange` | `function\|null` | `null` | Callback on content change |
+| `onReady` | `function\|null` | `null` | Callback when editor is ready |
+
 ---
 
-## 📋 Toolbar Commands
+## 🔧 Toolbar Buttons
 
-| Command | Description |
-|---------|-------------|
-| `undo` | Undo |
-| `redo` | Redo |
-| `formatBlock` | Format selection (headings, paragraph) |
-| `fontName` | Font family |
-| `fontSize` | Font size |
-| `bold` | Bold |
-| `italic` | Italic |
-| `underline` | Underline |
-| `strikethrough` | Strikethrough |
-| `foreColor` | Text color |
-| `backColor` | Background color |
-| `alignLeft` | Align left |
-| `alignCenter` | Align center |
-| `alignRight` | Align right |
-| `alignJustify` | Justify |
-| `insertOrderedList` | Ordered list |
-| `insertUnorderedList` | Unordered list |
+Use the `toolbar` array to customize which buttons appear and in what order. Use `'|'` for a visual separator.
+
+### Text Formatting
+
+| Button | Description |
+|--------|-------------|
+| `bold` | Bold text (**Ctrl+B**) |
+| `italic` | Italic text (**Ctrl+I**) |
+| `underline` | Underline text (**Ctrl+U**) |
+| `strikethrough` | Strikethrough text |
+| `subscript` | Subscript text |
+| `superscript` | Superscript text |
+| `removeFormat` | Remove all formatting |
+
+### Text Style
+
+| Button | Description |
+|--------|-------------|
+| `heading` | Dropdown: Paragraph, H1–H6 |
+| `fontSize` | Dropdown: 10px–36px |
+| `fontFamily` | Dropdown: Arial, Georgia, Courier New, etc. |
+| `foreColor` | Text color picker with reset option |
+| `backColor` | Background color picker with reset option |
+
+### Alignment & Lists
+
+| Button | Description |
+|--------|-------------|
+| `alignLeft` | Align text left |
+| `alignCenter` | Center text |
+| `alignRight` | Align text right |
+| `alignJustify` | Justify text |
+| `bulletList` | Unordered list |
+| `numberedList` | Ordered list |
 | `indent` | Increase indent |
 | `outdent` | Decrease indent |
-| `createLink` | Insert link |
-| `insertImage` | Insert image |
-| `insertTable` | Insert table |
-| `blockquote` | Blockquote |
-| `insertHorizontalRule` | Horizontal rule |
-| `insertCode` | Code block |
-| `subscript` | Subscript |
-| `superscript` | Superscript |
-| `removeFormat` | Remove formatting |
-| `findReplace` | Find and replace |
-| `emoji` | Emoji picker |
-| `specialChar` | Special characters |
-| `source` | View HTML source |
-| `fullscreen` | Fullscreen mode |
-| `print` | Print |
-| `\|` | Group separator |
+
+### Insert
+
+| Button | Description |
+|--------|-------------|
+| `link` | Insert/edit hyperlink (**Ctrl+K**) |
+| `image` | Insert image (URL or file upload → base64) |
+| `table` | Insert table with custom rows/columns |
+| `blockquote` | Block quote |
+| `horizontalRule` | Horizontal line |
+| `emoji` | Emoji picker (100+ emojis) |
+| `specialChars` | Special characters (©, ®, €, π, Ω, arrows, etc.) |
+
+### Tools
+
+| Button | Description |
+|--------|-------------|
+| `undo` | Undo (**Ctrl+Z**) |
+| `redo` | Redo (**Ctrl+Y** / **Ctrl+Shift+Z**) |
+| `findReplace` | Find & Replace with regex support |
+| `viewCode` | Toggle HTML source editor |
+| `fullscreen` | Toggle fullscreen mode |
+| `themeToggle` | Toggle light/dark theme (persists across reloads) |
+| `autosave` | Toggle autosave to localStorage *(opt-in, not in default toolbar)* |
+| `print` | Print editor content |
 
 ---
 
-## 🔧 API Methods
+## 🎨 Themes
+
+Neiki Editor ships with **Light** and **Dark** themes.
+
+### Set theme on init:
 
 ```javascript
-// Get HTML content
-const html = editor.getContent();
+const editor = new NeikiEditor('#editor', {
+    theme: 'dark'
+});
+```
 
-// Set content
-editor.setContent('<p>New content</p>');
+### Toggle theme at runtime:
 
-// Get plain text
-const text = editor.getText();
+The `themeToggle` toolbar button switches between themes and persists the choice across page reloads.
 
-// Clear editor
-editor.clear();
+You can also toggle programmatically:
 
-// Focus editor
-editor.focus();
-
-// Change theme
-editor.setTheme('dark');
-
-// Destroy editor
-editor.destroy();
+```javascript
+editor.toggleTheme();
 ```
 
 ---
 
-## 🎨 PHP Helper Functions
+## 💾 Autosave
 
-```php
-// Basic editor
-neiki_editor('id', $options, $content);
+Autosave is **opt-in** — it is not included in the default toolbar. To enable it, add `'autosave'` to your toolbar config:
 
-// Minimal editor (basic formatting)
-neiki_editor_minimal('id', $options, $content);
-
-// Full editor (all features)
-neiki_editor_full('id', $options, $content);
-
-// Custom toolbar
-neiki_editor_custom('id', $toolbar, $options, $content);
-
-// Get content from POST
-$content = neiki_editor_get_content('field_name');
-
-// Sanitize content
-$safe = neiki_editor_sanitize($content);
+```javascript
+const editor = new NeikiEditor('#editor', {
+    toolbar: [
+        'bold', 'italic', 'underline', '|',
+        'autosave'
+    ]
+});
 ```
+
+When activated, autosave stores content to `localStorage` every 5 seconds. Content is restored on page reload **only when autosave is enabled**.
+
+> **Note:** For production use (CMS, blog, etc.), consider using the `onChange` callback to save content to your database instead.
+
+---
+
+## 📋 API Methods
+
+### Content
+
+```javascript
+editor.getContent();          // Get HTML content
+editor.setContent('<p>Hello</p>');  // Set HTML content
+
+editor.getHTML();             // Alias for getContent()
+editor.setHTML(html);         // Alias for setContent()
+
+editor.getJSON();             // Get structured JSON representation
+editor.setJSON(json);         // Set content from JSON
+```
+
+### Editor Control
+
+```javascript
+editor.focus();               // Focus the editor
+editor.blur();                // Blur the editor
+editor.destroy();             // Remove editor, restore original element
+editor.toggleFullscreen();    // Toggle fullscreen mode
+editor.toggleTheme();         // Toggle light/dark theme
+```
+
+### Command Execution
+
+```javascript
+editor.execCommand('bold');                  // Execute a command
+editor.insertHTML('<span>Hello</span>');     // Insert HTML at cursor
+editor.wrapSelection('mark', { class: 'highlight' }); // Wrap selection
+editor.unwrapSelection('mark');              // Unwrap selection
+```
+
+### Selection
+
+```javascript
+editor.getSelection();        // Get current Selection object
+```
+
+---
+
+## 🔌 Plugin API
+
+Extend the editor with custom plugins:
+
+```javascript
+NeikiEditor.registerPlugin({
+    name: 'word-counter-alert',
+    icon: '<svg viewBox="0 0 24 24">...</svg>',   // optional toolbar button
+    tooltip: 'Show Word Count',
+    action: function(editor) {
+        const text = editor.getContent().replace(/<[^>]*>/g, '');
+        const words = text.trim().split(/\s+/).filter(Boolean).length;
+        alert('Word count: ' + words);
+    },
+    init: function(editor) {
+        // Called once when editor initializes (optional)
+        console.log('Plugin initialized!');
+    }
+});
+```
+
+### Plugin Properties
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `name` | `string` | ✅ | Unique plugin identifier |
+| `icon` | `string` | ❌ | SVG icon for toolbar button |
+| `tooltip` | `string` | ❌ | Button tooltip text |
+| `action` | `function` | ❌ | Called when toolbar button is clicked |
+| `init` | `function` | ❌ | Called once during editor initialization |
+
+### List Registered Plugins
+
+```javascript
+NeikiEditor.getPlugins(); // Returns array of registered plugins
+```
+
+---
+
+## 📊 Table Features
+
+Insert tables via the toolbar button with configurable rows, columns, and optional header row.
+
+### Table Context Menu
+
+Right-click on any table cell to access:
+
+- **Insert Row Above / Below**
+- **Insert Column Left / Right**
+- **Delete Row / Column / Table**
+- **Merge Cells** — merge selected cells horizontally
+- **Split Cell** — split a previously merged cell
+
+---
+
+## 🖼️ Image Support
+
+### Insert via URL
+
+Click the **Image** toolbar button and paste a URL.
+
+### Upload from File
+
+The Image dialog includes a file upload input. Selected images are converted to **base64** and embedded directly in the content.
+
+### Drag & Drop
+
+Drag image files directly into the editor content area. Images are automatically converted to base64 and inserted at the drop position.
+
+---
+
+## 🔍 Find & Replace
+
+Open with the toolbar button or implement via the modal API.
+
+Features:
+- **Case-sensitive** search toggle
+- **Regular expression** support
+- **Find Next** — navigate through matches with highlighting
+- **Replace** — replace current match
+- **Replace All** — replace all matches at once
+
+---
+
+## ✏️ Floating Toolbar
+
+When you select text in the editor, a floating toolbar appears above the selection with quick access to:
+
+- Bold, Italic, Underline, Strikethrough
+- Insert Link
+
+The toolbar follows the selection and disappears when the selection is cleared.
+
+---
+
+## 🖨️ Print
+
+Click the **Print** button to open the browser print dialog with the editor content formatted for printing.
 
 ---
 
@@ -218,580 +369,170 @@ $safe = neiki_editor_sanitize($content);
 
 | Shortcut | Action |
 |----------|--------|
-| `Ctrl+B` | Bold |
-| `Ctrl+I` | Italic |
-| `Ctrl+U` | Underline |
-| `Ctrl+K` | Insert link |
-| `Ctrl+Z` | Undo |
-| `Ctrl+Y` | Redo |
-| `Ctrl+F` | Find and replace |
+| **Ctrl+B** | Bold |
+| **Ctrl+I** | Italic |
+| **Ctrl+U** | Underline |
+| **Ctrl+K** | Insert Link |
+| **Ctrl+Z** | Undo |
+| **Ctrl+Y** / **Ctrl+Shift+Z** | Redo |
+| **Tab** | Indent |
+| **Shift+Tab** | Outdent |
 
 ---
 
-## 🌙 Dark Mode
+## 📐 Status Bar
 
-```javascript
-// On initialization
-new NeikiEditor('#editor', { theme: 'dark' });
+The editor includes a status bar at the bottom displaying:
 
-// Dynamically
-editor.setTheme('dark');
-editor.setTheme('light');
-```
+- **Left side:** Word count and character count
+- **Right side:** Current block type (p, h1, h2, etc.)
 
 ---
 
-## 🔌 Website Integration Guide
+## 🔗 Integration Examples
 
-This comprehensive guide shows you how to integrate Neiki Editor into your website for various use cases.
+### PHP Helper (Recommended)
 
-### Basic Integration
+Neiki Editor includes a PHP integration helper (`php/neiki-editor.php`) that provides asset loading, editor rendering, and HTML sanitization:
 
-#### 1. Embedding in HTML Page
-
-```html
+```php
+<?php require_once 'php/neiki-editor.php'; ?>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website with Editor</title>
-    
-    <!-- Neiki Editor CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.4/dist/neiki-editor.css">
+    <?= NeikiEditor::assets() ?>
 </head>
 <body>
-    <!-- Form with editor -->
-    <form id="article-form" method="POST" action="/save-article.php">
-        <input type="text" name="title" placeholder="Article title">
-        
-        <!-- Textarea that transforms into editor -->
-        <textarea id="content" name="content"></textarea>
-        
-        <button type="submit">Save Article</button>
+    <form method="POST" action="save.php">
+        <?= NeikiEditor::render('content', $article->content, [
+            'minHeight' => 400,
+            'placeholder' => 'Write your article...'
+        ]) ?>
+        <button type="submit">Save</button>
     </form>
-    
-    <!-- Neiki Editor JS -->
-    <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.4/dist/neiki-editor.js"></script>
-    <script>
-        const editor = new NeikiEditor('#content', {
-            height: 400,
-            theme: 'light',
-            placeholder: 'Start writing your article...'
-        });
-    </script>
 </body>
 </html>
 ```
 
----
+```php
+// save.php — sanitize before saving to database
+require_once 'php/neiki-editor.php';
+$clean = NeikiEditor::sanitize($_POST['content']);
+$db->save($clean);
+```
 
-### Form Integration
+#### PHP Helper Methods
 
-#### Submitting Content via Form
+| Method | Description |
+|--------|-------------|
+| `NeikiEditor::assets()` | Output CSS & JS tags (CDN). Call once per page. |
+| `NeikiEditor::assets(true, '/path/to/dist')` | Use local files instead of CDN. |
+| `NeikiEditor::render($id, $content, $options)` | Render textarea + init script. |
+| `NeikiEditor::sanitize($html)` | Strip dangerous tags/attributes before DB save. |
 
-The editor automatically synchronizes content with the original `<textarea>` element, so when submitting the form, the content is sent as a regular form field.
+### PHP Form (Manual)
 
-```html
-<form id="my-form" method="POST">
-    <textarea id="editor" name="article_content"></textarea>
-    <button type="submit">Submit</button>
+```php
+<form method="POST" action="save.php">
+    <textarea id="editor" name="content"><?= htmlspecialchars($article->content) ?></textarea>
+    <button type="submit">Save</button>
 </form>
 
 <script>
     const editor = new NeikiEditor('#editor');
-    
-    // You can process content before form submission
-    document.getElementById('my-form').addEventListener('submit', function(e) {
-        // Get HTML content
-        const htmlContent = editor.getContent();
-        
-        // Get plain text (without HTML)
-        const plainText = editor.getText();
-        
-        console.log('Submitting:', htmlContent);
-    });
 </script>
 ```
 
-#### AJAX Submission
-
-```javascript
-const editor = new NeikiEditor('#editor');
-
-document.getElementById('save-btn').addEventListener('click', async function() {
-    const content = editor.getContent();
-    
-    try {
-        const response = await fetch('/api/save-article', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                content: content,
-                title: document.getElementById('title').value
-            })
-        });
-        
-        if (response.ok) {
-            alert('Article saved successfully!');
-        }
-    } catch (error) {
-        console.error('Error saving:', error);
-    }
-});
-```
-
----
-
-### Working with Content
-
-#### Loading Existing Content
-
-```javascript
-// Method 1: Via textarea
-document.getElementById('editor').value = '<p>Existing content</p>';
-const editor = new NeikiEditor('#editor');
-
-// Method 2: Programmatically after initialization
-const editor = new NeikiEditor('#editor');
-editor.setContent('<h1>Title</h1><p>Article content...</p>');
-
-// Method 3: Loading from API
-fetch('/api/get-article/123')
-    .then(response => response.json())
-    .then(data => {
-        editor.setContent(data.content);
-    });
-```
-
-#### Tracking Content Changes
-
-```javascript
-const editor = new NeikiEditor('#editor', {
-    onChange: function(content) {
-        // Auto-save draft
-        localStorage.setItem('draft', content);
-        
-        // Or display unsaved changes indicator
-        document.getElementById('save-indicator').textContent = 'Unsaved';
-    },
-    onReady: function(editorInstance) {
-        // Load draft on startup
-        const draft = localStorage.getItem('draft');
-        if (draft) {
-            editorInstance.setContent(draft);
-        }
-    }
-});
-```
-
----
-
-### Multiple Editors on Page
-
-```html
-<textarea id="editor-intro"></textarea>
-<textarea id="editor-content"></textarea>
-<textarea id="editor-conclusion"></textarea>
-
-<script>
-    // Each editor has its own instance
-    const introEditor = new NeikiEditor('#editor-intro', {
-        height: 150,
-        toolbar: ['bold', 'italic', 'underline']
-    });
-    
-    const contentEditor = new NeikiEditor('#editor-content', {
-        height: 400,
-        toolbar: [
-            'undo', 'redo', '|',
-            'formatBlock', 'bold', 'italic', '|',
-            'insertImage', 'createLink', 'insertTable'
-        ]
-    });
-    
-    const conclusionEditor = new NeikiEditor('#editor-conclusion', {
-        height: 150,
-        toolbar: ['bold', 'italic', 'underline']
-    });
-    
-    // Get content from all editors
-    function getAllContent() {
-        return {
-            intro: introEditor.getContent(),
-            content: contentEditor.getContent(),
-            conclusion: conclusionEditor.getContent()
-        };
-    }
-</script>
-```
-
----
-
-### PHP Backend Integration
-
-#### Frontend (HTML)
-
-```html
-<form id="article-form" method="POST" action="save.php">
-    <input type="text" name="title" required>
-    <textarea id="content" name="content"></textarea>
-    <button type="submit">Save</button>
-</form>
-
-<script src="dist/neiki-editor.js"></script>
-<script>
-    new NeikiEditor('#content');
-</script>
-```
-
-#### Backend (save.php)
-
-```php
-<?php
-// Get content from editor
-$content = $_POST['content'] ?? '';
-$title = $_POST['title'] ?? '';
-
-// Sanitize HTML content
-$allowedTags = '<p><br><strong><em><u><s><h1><h2><h3><h4><h5><h6><ul><ol><li><a><img><table><tr><td><th><thead><tbody><blockquote><pre><code><hr><span><div>';
-$safeContent = strip_tags($content, $allowedTags);
-
-// Save to database
-$pdo = new PDO('mysql:host=localhost;dbname=mydb', 'user', 'password');
-$stmt = $pdo->prepare('INSERT INTO articles (title, content) VALUES (?, ?)');
-$stmt->execute([$title, $safeContent]);
-
-header('Location: /articles');
-exit;
-```
-
-#### Loading Article for Editing
-
-```php
-<?php
-$id = $_GET['id'] ?? 0;
-$stmt = $pdo->prepare('SELECT * FROM articles WHERE id = ?');
-$stmt->execute([$id]);
-$article = $stmt->fetch();
-?>
-
-<form method="POST" action="update.php">
-    <input type="hidden" name="id" value="<?= $article['id'] ?>">
-    <input type="text" name="title" value="<?= htmlspecialchars($article['title']) ?>">
-    <textarea id="content" name="content"><?= htmlspecialchars($article['content']) ?></textarea>
-    <button type="submit">Update</button>
-</form>
-
-<script>
-    new NeikiEditor('#content');
-</script>
-```
-
----
-
-### WordPress Integration
-
-#### Using in Templates
-
-```php
-<?php
-// In functions.php
-function enqueue_neiki_editor() {
-    wp_enqueue_style('neiki-editor', 'https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.4/dist/neiki-editor.css');
-    wp_enqueue_script('neiki-editor', 'https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.4/dist/neiki-editor.js', [], '1.0.4', true);
-}
-add_action('wp_enqueue_scripts', 'enqueue_neiki_editor');
-?>
-
-<!-- In template -->
-<form method="POST">
-    <textarea id="user-comment" name="comment"></textarea>
-    <button type="submit">Submit Comment</button>
-</form>
-
-<script>
-    new NeikiEditor('#user-comment', {
-        height: 200,
-        toolbar: ['bold', 'italic', 'underline', '|', 'insertOrderedList', 'insertUnorderedList', '|', 'createLink']
-    });
-</script>
-```
-
----
-
-### Dynamic Editor Creation
-
-```javascript
-// Create editor for dynamically added elements
-function createEditor(elementId, options = {}) {
-    const defaultOptions = {
-        height: 300,
-        theme: 'light'
-    };
-    
-    return new NeikiEditor(`#${elementId}`, { ...defaultOptions, ...options });
-}
-
-// Example: Adding new editor via button
-let editorCount = 0;
-const editors = [];
-
-document.getElementById('add-section').addEventListener('click', function() {
-    editorCount++;
-    const id = `editor-${editorCount}`;
-    
-    // Create new textarea
-    const container = document.createElement('div');
-    container.innerHTML = `
-        <h3>Section ${editorCount}</h3>
-        <textarea id="${id}" name="section_${editorCount}"></textarea>
-    `;
-    document.getElementById('sections-container').appendChild(container);
-    
-    // Initialize editor
-    const editor = createEditor(id);
-    editors.push(editor);
-});
-
-// Get content from all editors
-function getAllSections() {
-    return editors.map((editor, index) => ({
-        section: index + 1,
-        content: editor.getContent()
-    }));
-}
-```
-
----
-
-### Auto-save
+### AJAX Save
 
 ```javascript
 const editor = new NeikiEditor('#editor', {
     onChange: debounce(function(content) {
-        // Auto-save after 2 seconds of inactivity
-        saveToServer(content);
+        fetch('/api/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content })
+        });
     }, 2000)
 });
-
-function debounce(func, wait) {
-    let timeout;
-    return function(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-}
-
-async function saveToServer(content) {
-    const response = await fetch('/api/auto-save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content, articleId: 123 })
-    });
-    
-    if (response.ok) {
-        document.getElementById('status').textContent = 'Auto-saved';
-    }
-}
 ```
 
----
+### Vue.js
 
-### Responsive Design
+```vue
+<template>
+  <textarea ref="editor"></textarea>
+</template>
 
-```css
-/* Customize editor for mobile devices */
-@media (max-width: 768px) {
-    .neiki-editor-container {
-        font-size: 14px;
+<script>
+export default {
+    mounted() {
+        this.editor = new NeikiEditor(this.$refs.editor, {
+            onChange: (content) => {
+                this.$emit('update:modelValue', content);
+            }
+        });
+    },
+    beforeUnmount() {
+        this.editor.destroy();
     }
-    
-    .neiki-toolbar {
-        flex-wrap: wrap;
-    }
-    
-    .neiki-toolbar-group {
-        margin-bottom: 5px;
-    }
-    
-    .neiki-editor-content {
-        min-height: 200px !important;
-    }
+}
+</script>
+```
+
+### React
+
+```jsx
+import { useEffect, useRef } from 'react';
+
+function NeikiEditorComponent({ value, onChange }) {
+    const ref = useRef(null);
+    const editorRef = useRef(null);
+
+    useEffect(() => {
+        editorRef.current = new NeikiEditor(ref.current, {
+            onChange: (content) => onChange?.(content)
+        });
+        return () => editorRef.current?.destroy();
+    }, []);
+
+    return <textarea ref={ref} defaultValue={value} />;
 }
 ```
 
-```javascript
-// Dynamic height based on device
-const isMobile = window.innerWidth < 768;
-const editor = new NeikiEditor('#editor', {
-    height: isMobile ? 250 : 400,
-    toolbar: isMobile 
-        ? ['bold', 'italic', '|', 'insertImage', 'createLink']
-        : ['undo', 'redo', '|', 'formatBlock', 'bold', 'italic', 'underline', '|', 'insertImage', 'createLink', 'insertTable']
-});
-```
+---
+
+## 🌐 Browser Support
+
+| Browser | Support |
+|---------|---------|
+| Chrome | ✅ Latest |
+| Firefox | ✅ Latest |
+| Safari | ✅ Latest |
+| Edge | ✅ Latest |
+| Opera | ✅ Latest |
 
 ---
 
-### Content Validation
+## 📁 File Structure
 
-```javascript
-const editor = new NeikiEditor('#editor');
-
-document.getElementById('form').addEventListener('submit', function(e) {
-    const content = editor.getContent();
-    const text = editor.getText().trim();
-    
-    // Check minimum length
-    if (text.length < 100) {
-        e.preventDefault();
-        alert('Article must be at least 100 characters.');
-        return;
-    }
-    
-    // Check maximum length
-    if (text.length > 10000) {
-        e.preventDefault();
-        alert('Article is too long (max 10000 characters).');
-        return;
-    }
-    
-    // Check for forbidden words
-    const forbiddenWords = ['spam', 'advertisement'];
-    const lowerText = text.toLowerCase();
-    for (const word of forbiddenWords) {
-        if (lowerText.includes(word)) {
-            e.preventDefault();
-            alert(`Content contains forbidden word: ${word}`);
-            return;
-        }
-    }
-});
 ```
-
----
-
-### System Theme Detection
-
-```javascript
-// Detect system theme
-const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-const editor = new NeikiEditor('#editor', {
-    theme: prefersDark ? 'dark' : 'light'
-});
-
-// Listen for system theme changes
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    editor.setTheme(e.matches ? 'dark' : 'light');
-});
-```
-
----
-
-### Complete Page Example
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog - New Article</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.4/dist/neiki-editor.css">
-    <style>
-        * { box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input[type="text"] { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; }
-        .btn { padding: 12px 24px; font-size: 16px; cursor: pointer; border: none; border-radius: 4px; }
-        .btn-primary { background: #3b82f6; color: white; }
-        .btn-secondary { background: #6b7280; color: white; margin-left: 10px; }
-        .status { margin-top: 10px; color: #666; font-size: 14px; }
-    </style>
-</head>
-<body>
-    <h1>New Article</h1>
-    
-    <form id="article-form" method="POST" action="/api/articles">
-        <div class="form-group">
-            <label for="title">Article Title</label>
-            <input type="text" id="title" name="title" required>
-        </div>
-        
-        <div class="form-group">
-            <label for="content">Content</label>
-            <textarea id="content" name="content"></textarea>
-        </div>
-        
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary">Publish</button>
-            <button type="button" class="btn btn-secondary" id="save-draft">Save Draft</button>
-        </div>
-        
-        <div class="status" id="status"></div>
-    </form>
-    
-    <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@1.0.4/dist/neiki-editor.js"></script>
-    <script>
-        // Initialize editor
-        const editor = new NeikiEditor('#content', {
-            height: 400,
-            placeholder: 'Start writing your article...',
-            onChange: function(content) {
-                // Auto-save draft to localStorage
-                localStorage.setItem('article-draft', JSON.stringify({
-                    title: document.getElementById('title').value,
-                    content: content,
-                    savedAt: new Date().toISOString()
-                }));
-                document.getElementById('status').textContent = 'Draft auto-saved';
-            },
-            onReady: function() {
-                // Load draft on startup
-                const draft = localStorage.getItem('article-draft');
-                if (draft) {
-                    const data = JSON.parse(draft);
-                    if (confirm('Unsaved draft found. Would you like to restore it?')) {
-                        document.getElementById('title').value = data.title || '';
-                        editor.setContent(data.content || '');
-                    }
-                }
-            }
-        });
-        
-        // Save draft to server
-        document.getElementById('save-draft').addEventListener('click', async function() {
-            const response = await fetch('/api/drafts', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: document.getElementById('title').value,
-                    content: editor.getContent()
-                })
-            });
-            
-            if (response.ok) {
-                document.getElementById('status').textContent = 'Draft saved to server';
-                localStorage.removeItem('article-draft');
-            }
-        });
-        
-        // Validate before submission
-        document.getElementById('article-form').addEventListener('submit', function(e) {
-            const text = editor.getText().trim();
-            if (text.length < 50) {
-                e.preventDefault();
-                alert('Article must be at least 50 characters.');
-            }
-        });
-    </script>
-</body>
-</html>
+neiki-editor/
+├── dist/
+│   ├── neiki-editor.js       # Editor core
+│   └── neiki-editor.css      # Editor styles
+├── demo/
+│   └── index.html            # Interactive demo page
+├── php/
+│   └── neiki-editor.php      # PHP integration helper
+├── logo.png
+├── package.json
+├── README.md
+├── LICENSE
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── CODE_OF_CONDUCT.md
+└── SECURITY.md
 ```
 
 ---

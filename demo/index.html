@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neiki Editor - Demo</title>
-    <link rel="stylesheet" href="../dist/neiki-editor.css">
+    <title>NeikiEditor Demo</title>
+    <link rel="stylesheet" href="neiki-editor.css">
     <style>
         * {
             margin: 0;
@@ -19,233 +19,279 @@
             padding: 40px 20px;
         }
 
-        .container {
-            max-width: 1000px;
+        .demo-container {
+            max-width: 900px;
             margin: 0 auto;
         }
 
-        header {
+        .demo-header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             color: white;
         }
 
-        header h1 {
+        .demo-header h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
-        header p {
+        .demo-header p {
             font-size: 1.1rem;
             opacity: 0.9;
         }
 
-        .demo-card {
+        .editor-wrapper {
             background: white;
-            border-radius: 16px;
+            border-radius: 12px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
         }
 
-        .demo-header {
+        .demo-controls {
+            display: flex;
+            gap: 10px;
+            padding: 20px;
             background: #f8f9fa;
-            padding: 20px 24px;
-            border-bottom: 1px solid #e9ecef;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            border-top: 1px solid #e9ecef;
+            flex-wrap: wrap;
         }
 
-        .demo-header h2 {
-            font-size: 1.2rem;
-            color: #333;
-        }
-
-        .theme-toggle {
-            display: flex;
-            gap: 8px;
-        }
-
-        .theme-toggle button {
-            padding: 8px 16px;
-            border: 1px solid #ddd;
-            background: white;
+        .demo-btn {
+            padding: 10px 20px;
+            border: none;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 14px;
+            font-weight: 500;
             transition: all 0.2s;
         }
 
-        .theme-toggle button:hover {
-            background: #f0f0f0;
-        }
-
-        .theme-toggle button.active {
+        .demo-btn-primary {
             background: #667eea;
             color: white;
-            border-color: #667eea;
         }
 
-        .demo-content {
-            padding: 24px;
+        .demo-btn-primary:hover {
+            background: #5a6fd6;
+        }
+
+        .demo-btn-secondary {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .demo-btn-secondary:hover {
+            background: #dee2e6;
+        }
+
+        .demo-btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .demo-btn-danger:hover {
+            background: #c82333;
         }
 
         .output-section {
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px solid #e9ecef;
-        }
-
-        .output-section h3 {
-            font-size: 1rem;
-            color: #666;
-            margin-bottom: 12px;
-        }
-
-        .output-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .output-tabs button {
-            padding: 6px 12px;
-            border: 1px solid #ddd;
+            margin-top: 30px;
             background: white;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.85rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
         }
 
-        .output-tabs button.active {
-            background: #333;
+        .output-header {
+            padding: 15px 20px;
+            background: #343a40;
             color: white;
-            border-color: #333;
+            font-weight: 600;
         }
 
-        .output-box {
+        .output-content {
+            padding: 20px;
+            max-height: 300px;
+            overflow: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
             background: #1e1e1e;
             color: #d4d4d4;
-            padding: 16px;
-            border-radius: 8px;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.85rem;
-            max-height: 200px;
-            overflow: auto;
             white-space: pre-wrap;
             word-break: break-all;
         }
 
-        footer {
-            text-align: center;
-            margin-top: 40px;
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            border-radius: 30px;
             color: white;
-            opacity: 0.8;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
         }
 
-        footer a {
+        .theme-toggle:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 20px;
             color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-card h3 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 0.85rem;
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>✨ Neiki Editor</h1>
-            <p>Lightweight WYSIWYG Rich Text Editor</p>
-        </header>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙 Dark Mode</button>
 
-        <div class="demo-card">
-            <div class="demo-header">
-                <h2>Full Editor Demo</h2>
-                <div class="theme-toggle">
-                    <button class="active" onclick="switchTheme('light', this)">☀️ Light</button>
-                    <button onclick="switchTheme('dark', this)">🌙 Dark</button>
-                </div>
-            </div>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>✨ NeikiEditor</h1>
+            <p>A modern, lightweight WYSIWYG editor for the web</p>
+        </div>
 
-            <div class="demo-content">
-                <textarea id="demo-editor"></textarea>
+        <div class="editor-wrapper">
+            <textarea id="editor">
+                <h2>Welcome to NeikiEditor!</h2>
+                <p>This is a <strong>powerful</strong> and <em>flexible</em> rich text editor.</p>
+                <p>Try out some features:</p>
+                <ul>
+                    <li>Format text with <strong>bold</strong>, <em>italic</em>, <u>underline</u></li>
+                    <li>Create ordered and unordered lists</li>
+                    <li>Insert links, images, and tables</li>
+                    <li>Use keyboard shortcuts (Ctrl+B, Ctrl+I, etc.)</li>
+                </ul>
+                <blockquote>
+                    "The best way to predict the future is to create it." - Peter Drucker
+                </blockquote>
+                <p>Start editing to see the magic! 🚀</p>
+            </textarea>
 
-                <div class="output-section">
-                    <h3>Output</h3>
-                    <div class="output-tabs">
-                        <button class="active" onclick="showOutput('html')">HTML</button>
-                        <button onclick="showOutput('text')">Plain Text</button>
-                    </div>
-                    <div class="output-box" id="output-box"></div>
-                </div>
+            <div class="demo-controls">
+                <button class="demo-btn demo-btn-primary" onclick="getContent()">Get HTML</button>
+                <button class="demo-btn demo-btn-secondary" onclick="getText()">Get Text</button>
+                <button class="demo-btn demo-btn-secondary" onclick="checkEmpty()">Is Empty?</button>
+                <button class="demo-btn demo-btn-danger" onclick="clearContent()">Clear</button>
+                <button class="demo-btn demo-btn-secondary" onclick="toggleDisable()">Toggle Disable</button>
             </div>
         </div>
 
-        <footer>
-            <p>Made with ❤️ | <a href="https://github.com/neikiri/neiki-editor" target="_blank">GitHub</a></p>
-        </footer>
+        <div class="output-section" id="outputSection" style="display: none;">
+            <div class="output-header">Output</div>
+            <div class="output-content" id="outputContent"></div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>📝 Rich Formatting</h3>
+                <p>Bold, italic, underline, strikethrough, and more</p>
+            </div>
+            <div class="feature-card">
+                <h3>🎨 Colors</h3>
+                <p>Text color and background highlighting</p>
+            </div>
+            <div class="feature-card">
+                <h3>📊 Tables</h3>
+                <p>Insert and edit tables with ease</p>
+            </div>
+            <div class="feature-card">
+                <h3>🔗 Links & Images</h3>
+                <p>Embed links and images seamlessly</p>
+            </div>
+            <div class="feature-card">
+                <h3>⌨️ Shortcuts</h3>
+                <p>Keyboard shortcuts for power users</p>
+            </div>
+            <div class="feature-card">
+                <h3>↩️ Undo/Redo</h3>
+                <p>Full history management</p>
+            </div>
+        </div>
     </div>
 
-    <script src="../dist/neiki-editor.js"></script>
+    <script src="neiki-editor.js"></script>
     <script>
-        let editor;
-        let isDarkTheme = false;
-
-        document.addEventListener('DOMContentLoaded', function() {
-            editor = new NeikiEditor('#demo-editor', {
-                height: 400,
-                theme: 'light',
-                placeholder: 'Start typing here...',
-                toolbar: [
-                    'undo', 'redo', '|',
-                    'formatBlock', 'fontName', 'fontSize', '|',
-                    'bold', 'italic', 'underline', 'strikethrough', '|',
-                    'foreColor', 'backColor', '|',
-                    'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', '|',
-                    'insertOrderedList', 'insertUnorderedList', '|',
-                    'indent', 'outdent', '|',
-                    'createLink', 'insertImage', 'insertTable', '|',
-                    'blockquote', 'insertHorizontalRule', 'insertCode', '|',
-                    'subscript', 'superscript', '|',
-                    'removeFormat', 'findReplace', '|',
-                    'emoji', 'specialChar', '|',
-                    'source', 'fullscreen', 'print'
-                ],
-                onChange: function(content) {
-                    updateOutput();
-                }
-            });
-
-            editor.setContent('<h2>Welcome to Neiki Editor! 🎉</h2><p>This is a <strong>full-featured</strong> WYSIWYG editor with support for:</p><ul><li>Text formatting (bold, italic, underline, strikethrough)</li><li>Multiple fonts and sizes</li><li>Text and background colors</li><li>Lists and alignment</li><li>Links, images, and tables</li><li>Code blocks and blockquotes</li><li>Emoji and special characters</li><li>Dark mode support</li></ul><p>Try editing this content or start fresh!</p>');
-            updateOutput();
+        // Initialize the editor
+        const editor = new NeikiEditor('#editor', {
+            placeholder: 'Start typing your content...',
+            minHeight: 350,
+            autofocus: false,
+            onChange: function(content) {
+                console.log('Content changed');
+            },
+            onReady: function(editor) {
+                console.log('NeikiEditor is ready!');
+            }
         });
 
-        let currentOutputType = 'html';
+        let isDark = false;
+        let isDisabled = false;
 
-        function switchTheme(theme, btn) {
-            if (editor) {
-                editor.setTheme(theme);
-            }
-            document.querySelectorAll('.theme-toggle button').forEach(b => {
-                b.classList.remove('active');
-            });
-            btn.classList.add('active');
+        function toggleTheme() {
+            isDark = !isDark;
+            editor.setTheme(isDark ? 'dark' : 'light');
+            document.querySelector('.theme-toggle').textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
         }
 
-        function showOutput(type) {
-            currentOutputType = type;
-            document.querySelectorAll('.output-tabs button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            updateOutput();
+        function getContent() {
+            const content = editor.getContent();
+            showOutput(content);
         }
 
-        function updateOutput() {
-            const outputBox = document.getElementById('output-box');
-            if (currentOutputType === 'html') {
-                outputBox.textContent = editor.getContent();
+        function getText() {
+            const text = editor.getText();
+            showOutput(text);
+        }
+
+        function checkEmpty() {
+            const isEmpty = editor.isEmpty();
+            showOutput(isEmpty ? 'Editor is empty' : 'Editor has content');
+        }
+
+        function clearContent() {
+            editor.setContent('');
+            showOutput('Content cleared');
+        }
+
+        function toggleDisable() {
+            isDisabled = !isDisabled;
+            if (isDisabled) {
+                editor.disable();
+                showOutput('Editor disabled');
             } else {
-                outputBox.textContent = editor.getText();
+                editor.enable();
+                showOutput('Editor enabled');
             }
+        }
+
+        function showOutput(content) {
+            document.getElementById('outputSection').style.display = 'block';
+            document.getElementById('outputContent').textContent = content;
         }
     </script>
 </body>

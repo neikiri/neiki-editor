@@ -1,765 +1,1766 @@
 /**
- * NEIKI EDITOR - WYSIWYG Rich Text Editor
- * A full-featured rich text editor similar to TinyMCE
- * @version 1.0.4
+ * NeikiEditor - A Modern WYSIWYG Editor
+ * Version: 2.0.0
+ *
+ * A lightweight, feature-rich text editor with support for:
+ * - Rich text formatting (bold, italic, underline, etc.)
+ * - Lists (ordered, unordered)
+ * - Links and images
+ * - Tables
+ * - Code blocks
+ * - Undo/Redo
+ * - Keyboard shortcuts
  */
 
 (function (global) {
   'use strict';
 
-  // Default configuration
-  const defaultConfig = {
-    height: 400,
-    placeholder: 'Start writing...',
-    theme: 'light',
+  // ============================================
+  // SECTION 1: CONFIGURATION & CONSTANTS
+  // ============================================
+
+  const DEFAULT_CONFIG = {
     toolbar: [
       'undo', 'redo', '|',
-      'formatBlock', 'fontName', 'fontSize', '|',
       'bold', 'italic', 'underline', 'strikethrough', '|',
+      'heading', 'fontSize', 'fontFamily', '|',
       'foreColor', 'backColor', '|',
       'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', '|',
-      'insertOrderedList', 'insertUnorderedList', '|',
+      'bulletList', 'numberedList', '|',
       'indent', 'outdent', '|',
-      'createLink', 'insertImage', 'insertTable', '|',
-      'blockquote', 'insertHorizontalRule', 'insertCode', '|',
-      'subscript', 'superscript', '|',
-      'removeFormat', 'findReplace', '|',
-      'emoji', 'specialChar', '|',
-      'source', 'fullscreen', 'print', 'toggleTheme'
+      'link', 'image', 'table', '|',
+      'blockquote', 'viewCode', 'horizontalRule', '|',
+      'subscript', 'superscript', 'removeFormat', '|',
+      'findReplace', 'emoji', 'specialChars', '|',
+      'fullscreen', 'themeToggle', 'print'
     ],
-    fonts: [
-      'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Georgia',
-      'Impact', 'Lucida Console', 'Palatino Linotype', 'Tahoma',
-      'Times New Roman', 'Trebuchet MS', 'Verdana'
-    ],
-    fontSizes: ['8px', '10px', '12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px', '72px'],
-    colors: [
-      '#000000', '#434343', '#666666', '#999999', '#b7b7b7', '#cccccc', '#d9d9d9', '#efefef',
-      '#f3f3f3', '#ffffff', '#980000', '#ff0000', '#ff9900', '#ffff00', '#00ff00', '#00ffff',
-      '#4a86e8', '#0000ff', '#9900ff', '#ff00ff', '#e6b8af', '#f4cccc', '#fce5cd', '#fff2cc',
-      '#d9ead3', '#d0e0e3', '#c9daf8', '#cfe2f3', '#d9d2e9', '#ead1dc', '#dd7e6b', '#ea9999',
-      '#f9cb9c', '#ffe599', '#b6d7a8', '#a2c4c9', '#a4c2f4', '#9fc5e8', '#b4a7d6', '#d5a6bd',
-      '#cc4125', '#e06666', '#f6b26b', '#ffd966', '#93c47d', '#76a5af', '#6d9eeb', '#6fa8dc',
-      '#8e7cc3', '#c27ba0', '#a61c00', '#cc0000', '#e69138', '#f1c232', '#6aa84f', '#45818e',
-      '#3c78d8', '#3d85c6', '#674ea7', '#a64d79'
-    ],
-    emojis: [
-      '😀', '😃', '😄', '😁', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘',
-      '😗', '😙', '😚', '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐',
-      '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢',
-      '👍', '👎', '👏', '🙌', '👐', '🤲', '🤝', '🙏', '✌️', '🤞', '🤟', '🤘', '👌', '🤏', '👈', '👉',
-      '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '❣️', '💕', '💞', '💓', '💗', '💖',
-      '⭐', '🌟', '✨', '💫', '🔥', '💥', '⚡', '🎉', '🎊', '🎁', '🏆', '🥇', '🥈', '🥉', '🏅', '🎯'
-    ],
-    specialChars: [
-      '©', '®', '™', '€', '£', '¥', '¢', '§', '¶', '†', '‡', '•', '…', '‰', '′', '″',
-      '←', '→', '↑', '↓', '↔', '↕', '⇐', '⇒', '⇑', '⇓', '⇔', '⇕', '◄', '►', '▲', '▼',
-      '±', '×', '÷', '≠', '≈', '≤', '≥', '∞', '∑', '∏', '√', '∫', '∂', '∆', '∇', 'π',
-      'α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'θ', 'λ', 'μ', 'ξ', 'ρ', 'σ', 'τ', 'φ', 'ω',
-      '½', '⅓', '¼', '⅕', '⅙', '⅛', '⅔', '¾', '⅖', '⅗', '⅘', '⅚', '⅝', '⅞', '№', '℃'
-    ],
+    placeholder: 'Start typing...',
+    minHeight: 300,
+    maxHeight: null,
+    autofocus: false,
+    spellcheck: true,
+    readonly: false,
+    theme: 'light',
+    language: 'en',
+    plugins: [],
     onChange: null,
+    onFocus: null,
+    onBlur: null,
     onReady: null
   };
 
-  // Icons SVG
-  const icons = {
-    bold: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg>',
-    italic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>',
-    underline: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg>',
-    strikethrough: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.3 4.9c-2.3-.6-4.4-1-6.2-.9-2.7 0-5.3.7-5.3 3.6 0 1.5 1.8 3.3 3.6 3.9h.2"/><path d="M8.7 19.1c2.3.6 4.4 1 6.2.9 2.7 0 5.3-.7 5.3-3.6 0-1.5-1.8-3.3-3.6-3.9h-.2"/><line x1="4" y1="12" x2="20" y2="12"/></svg>',
-    alignLeft: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>',
-    alignCenter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="10" x2="6" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="18" y1="18" x2="6" y2="18"/></svg>',
-    alignRight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/></svg>',
-    alignJustify: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg>',
-    orderedList: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>',
-    unorderedList: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg>',
-    indent: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="12" x2="11" y2="12"/><line x1="21" y1="18" x2="11" y2="18"/><polyline points="7 8 3 12 7 16"/></svg>',
-    outdent: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="12" x2="11" y2="12"/><line x1="21" y1="18" x2="11" y2="18"/><polyline points="3 8 7 12 3 16"/></svg>',
-    link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
-    image: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
-    table: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>',
-    undo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>',
-    redo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>',
-    source: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
-    fullscreen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>',
-    exitFullscreen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>',
-    print: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>',
-    blockquote: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v4z"/></svg>',
-    hr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/></svg>',
-    code: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
-    subscript: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5l8 8"/><path d="M12 5l-8 8"/><path d="M20 19h-4c0-1.5.44-2 1.5-2.5S20 15.33 20 14.5c0-.47-.17-.93-.48-1.29a2.11 2.11 0 0 0-2.62-.44c-.42.24-.74.62-.9 1.07"/></svg>',
-    superscript: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19l8-8"/><path d="M12 19l-8-8"/><path d="M20 12h-4c0-1.5.442-2 1.5-2.5S20 8.334 20 7.5c0-.472-.167-.934-.476-1.29a2.11 2.11 0 0 0-2.62-.442c-.42.24-.74.62-.9 1.07"/></svg>',
-    removeFormat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/><path d="M3 21l18-18"/></svg>',
-    foreColor: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16"/><path d="M6.9 15h10.2"/><path d="M12 3L5.5 15h13L12 3z"/></svg>',
-    backColor: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 19.5h19v3h-19z" fill="currentColor"/><path d="M12 3L5.5 15h13L12 3z"/></svg>',
-    emoji: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>',
-    specialChar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><text x="12" y="16" text-anchor="middle" font-size="12" fill="currentColor">Ω</text></svg>',
-    findReplace: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
-    close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
-    themeLight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>',
-    themeDark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+  const TOOLBAR_ITEMS = {
+    undo: { icon: 'undo', title: 'Undo (Ctrl+Z)', command: 'undo' },
+    redo: { icon: 'redo', title: 'Redo (Ctrl+Y)', command: 'redo' },
+    bold: { icon: 'bold', title: 'Bold (Ctrl+B)', command: 'bold' },
+    italic: { icon: 'italic', title: 'Italic (Ctrl+I)', command: 'italic' },
+    underline: { icon: 'underline', title: 'Underline (Ctrl+U)', command: 'underline' },
+    strikethrough: { icon: 'strikethrough', title: 'Strikethrough', command: 'strikeThrough' },
+    heading: { icon: 'heading', title: 'Heading', command: 'heading', dropdown: true },
+    fontSize: { icon: 'font-size', title: 'Font Size', command: 'fontSize', dropdown: true },
+    fontFamily: { icon: 'font', title: 'Font Family', command: 'fontFamily', dropdown: true },
+    foreColor: { icon: 'text-color', title: 'Text Color', command: 'foreColor', picker: 'color' },
+    backColor: { icon: 'highlight', title: 'Background Color', command: 'backColor', picker: 'color' },
+    alignLeft: { icon: 'align-left', title: 'Align Left', command: 'justifyLeft' },
+    alignCenter: { icon: 'align-center', title: 'Align Center', command: 'justifyCenter' },
+    alignRight: { icon: 'align-right', title: 'Align Right', command: 'justifyRight' },
+    alignJustify: { icon: 'align-justify', title: 'Justify', command: 'justifyFull' },
+    bulletList: { icon: 'list-ul', title: 'Bullet List', command: 'insertUnorderedList' },
+    numberedList: { icon: 'list-ol', title: 'Numbered List', command: 'insertOrderedList' },
+    indent: { icon: 'indent', title: 'Increase Indent', command: 'indent' },
+    outdent: { icon: 'outdent', title: 'Decrease Indent', command: 'outdent' },
+    link: { icon: 'link', title: 'Insert Link (Ctrl+K)', command: 'createLink', modal: true },
+    image: { icon: 'image', title: 'Insert Image', command: 'insertImage', modal: true },
+    table: { icon: 'table', title: 'Insert Table', command: 'insertTable', modal: true },
+    blockquote: { icon: 'quote', title: 'Blockquote', command: 'formatBlock', value: 'blockquote' },
+    viewCode: { icon: 'code', title: 'View Code (Toggle HTML)', command: 'viewCode' },
+    horizontalRule: { icon: 'minus', title: 'Horizontal Line', command: 'insertHorizontalRule' },
+    subscript: { icon: 'subscript', title: 'Subscript', command: 'subscript' },
+    superscript: { icon: 'superscript', title: 'Superscript', command: 'superscript' },
+    removeFormat: { icon: 'eraser', title: 'Remove Formatting', command: 'removeFormat' },
+    findReplace: { icon: 'search', title: 'Find & Replace', command: 'findReplace', modal: true },
+    emoji: { icon: 'emoji', title: 'Insert Emoji', command: 'emoji', picker: 'emoji' },
+    specialChars: { icon: 'specialChars', title: 'Special Characters', command: 'specialChars', picker: 'specialChars' },
+    fullscreen: { icon: 'fullscreen', title: 'Fullscreen', command: 'fullscreen' },
+    autosave: { icon: 'save', title: 'Toggle Autosave', command: 'autosave', toggle: true },
+    themeToggle: { icon: 'sun', title: 'Toggle Theme', command: 'themeToggle', toggle: true },
+    print: { icon: 'print', title: 'Print', command: 'print' }
   };
 
-  // Tooltip labels
-  const tooltips = {
-    bold: 'Bold (Ctrl+B)',
-    italic: 'Italic (Ctrl+I)',
-    underline: 'Underlined (Ctrl+U)',
-    strikethrough: 'Strikethrough',
-    alignLeft: 'Align left',
-    alignCenter: 'Center align',
-    alignRight: 'Align right',
-    alignJustify: 'Justify',
-    insertOrderedList: 'Numbered list',
-    insertUnorderedList: 'Bulleted list',
-    indent: 'Increase indent',
-    outdent: 'Decrease indent',
-    createLink: 'Insert link (Ctrl+K)',
-    insertImage: 'Insert Image',
-    insertTable: 'Insert Table',
-    undo: 'Undo (Ctrl+Z)',
-    redo: 'Redo (Ctrl+Y)',
-    source: 'HTML code',
-    fullscreen: 'Full screen',
-    print: 'Print',
-    blockquote: 'Quote',
-    insertHorizontalRule: 'Horizontal line',
-    insertCode: 'Code block',
-    subscript: 'Subscript',
-    superscript: 'Superscript',
-    removeFormat: 'Remove formatting',
-    foreColor: 'Text color',
-    backColor: 'Background color',
-    emoji: 'Emoji',
-    specialChar: 'Special characters',
-    findReplace: 'Find and replace (Ctrl+F)',
-    toggleTheme: 'Toggle light/dark mode'
+  const FONT_SIZES = [
+    { label: '10px', value: '10px' },
+    { label: '11px', value: '11px' },
+    { label: '12px', value: '12px' },
+    { label: '14px', value: '14px' },
+    { label: '16px', value: '16px' },
+    { label: '18px', value: '18px' },
+    { label: '20px', value: '20px' },
+    { label: '24px', value: '24px' },
+    { label: '28px', value: '28px' },
+    { label: '32px', value: '32px' },
+    { label: '36px', value: '36px' },
+    { label: '48px', value: '48px' },
+    { label: '64px', value: '64px' },
+    { label: '72px', value: '72px' }
+  ];
+
+  const FONT_FAMILIES = [
+    { label: 'Sans Serif', value: 'Arial, sans-serif' },
+    { label: 'Serif', value: 'Georgia, serif' },
+    { label: 'Monospace', value: 'Consolas, monospace' },
+    { label: 'Cursive', value: 'Comic Sans MS, cursive' }
+  ];
+
+  const HEADINGS = [
+    { label: 'Paragraph', value: 'p' },
+    { label: 'Heading 1', value: 'h1' },
+    { label: 'Heading 2', value: 'h2' },
+    { label: 'Heading 3', value: 'h3' },
+    { label: 'Heading 4', value: 'h4' },
+    { label: 'Heading 5', value: 'h5' },
+    { label: 'Heading 6', value: 'h6' }
+  ];
+
+  const EMOJIS = [
+    '😀', '😃', '😄', '😁', '😅', '😂', '🤣', '😊', '😇', '🙂',
+    '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛',
+    '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨',
+    '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔',
+    '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵',
+    '👍', '👎', '👌', '✌️', '🤞', '🤟', '🤘', '🤙', '👈', '👉',
+    '👆', '👇', '☝️', '👋', '🤚', '🖐️', '✋', '🖖', '👏', '🙌',
+    '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔',
+    '⭐', '🌟', '✨', '💫', '🔥', '💥', '💯', '✅', '❌', '❓'
+  ];
+
+  const SPECIAL_CHARS = [
+    { char: '©', name: 'Copyright' },
+    { char: '®', name: 'Registered' },
+    { char: '™', name: 'Trademark' },
+    { char: '€', name: 'Euro' },
+    { char: '£', name: 'Pound' },
+    { char: '¥', name: 'Yen' },
+    { char: '¢', name: 'Cent' },
+    { char: '°', name: 'Degree' },
+    { char: '±', name: 'Plus-Minus' },
+    { char: '×', name: 'Multiply' },
+    { char: '÷', name: 'Divide' },
+    { char: '≠', name: 'Not Equal' },
+    { char: '≤', name: 'Less or Equal' },
+    { char: '≥', name: 'Greater or Equal' },
+    { char: '∞', name: 'Infinity' },
+    { char: '√', name: 'Square Root' },
+    { char: 'π', name: 'Pi' },
+    { char: 'Ω', name: 'Omega' },
+    { char: 'α', name: 'Alpha' },
+    { char: 'β', name: 'Beta' },
+    { char: 'γ', name: 'Gamma' },
+    { char: 'δ', name: 'Delta' },
+    { char: 'µ', name: 'Micro' },
+    { char: '∑', name: 'Sum' },
+    { char: '∆', name: 'Delta (big)' },
+    { char: '←', name: 'Left Arrow' },
+    { char: '→', name: 'Right Arrow' },
+    { char: '↑', name: 'Up Arrow' },
+    { char: '↓', name: 'Down Arrow' },
+    { char: '↔', name: 'Left-Right Arrow' },
+    { char: '•', name: 'Bullet' },
+    { char: '…', name: 'Ellipsis' },
+    { char: '—', name: 'Em Dash' },
+    { char: '–', name: 'En Dash' },
+    { char: '§', name: 'Section' },
+    { char: '¶', name: 'Paragraph' },
+    { char: '†', name: 'Dagger' },
+    { char: '‡', name: 'Double Dagger' },
+    { char: '♠', name: 'Spade' },
+    { char: '♣', name: 'Club' },
+    { char: '♥', name: 'Heart' },
+    { char: '♦', name: 'Diamond' }
+  ];
+
+  const COLORS = [
+    '#000000', '#434343', '#666666', '#999999', '#b7b7b7', '#cccccc', '#d9d9d9', '#efefef', '#f3f3f3', '#ffffff',
+    '#980000', '#ff0000', '#ff9900', '#ffff00', '#00ff00', '#00ffff', '#4a86e8', '#0000ff', '#9900ff', '#ff00ff',
+    '#e6b8af', '#f4cccc', '#fce5cd', '#fff2cc', '#d9ead3', '#d0e0e3', '#c9daf8', '#cfe2f3', '#d9d2e9', '#ead1dc',
+    '#dd7e6b', '#ea9999', '#f9cb9c', '#ffe599', '#b6d7a8', '#a2c4c9', '#a4c2f4', '#9fc5e8', '#b4a7d6', '#d5a6bd',
+    '#cc4125', '#e06666', '#f6b26b', '#ffd966', '#93c47d', '#76a5af', '#6d9eeb', '#6fa8dc', '#8e7cc3', '#c27ba0',
+    '#a61c00', '#cc0000', '#e69138', '#f1c232', '#6aa84f', '#45818e', '#3c78d8', '#3d85c6', '#674ea7', '#a64d79',
+    '#85200c', '#990000', '#b45f06', '#bf9000', '#38761d', '#134f5c', '#1155cc', '#0b5394', '#351c75', '#741b47',
+    '#5b0f00', '#660000', '#783f04', '#7f6000', '#274e13', '#0c343d', '#1c4587', '#073763', '#20124d', '#4c1130'
+  ];
+
+  // ============================================
+  // SECTION 2: UTILITY FUNCTIONS
+  // ============================================
+
+  const Utils = {
+    generateId() {
+      return 'neiki-' + Math.random().toString(36).substr(2, 9);
+    },
+
+    createElement(tag, attrs = {}, children = []) {
+      const el = document.createElement(tag);
+      Object.entries(attrs).forEach(([key, value]) => {
+        if (key === 'className') {
+          el.className = value;
+        } else if (key === 'innerHTML') {
+          el.innerHTML = value;
+        } else if (key === 'textContent') {
+          el.textContent = value;
+        } else if (key.startsWith('on') && typeof value === 'function') {
+          el.addEventListener(key.slice(2).toLowerCase(), value);
+        } else if (key === 'style' && typeof value === 'object') {
+          Object.assign(el.style, value);
+        } else {
+          el.setAttribute(key, value);
+        }
+      });
+      children.forEach(child => {
+        if (typeof child === 'string') {
+          el.appendChild(document.createTextNode(child));
+        } else if (child instanceof Node) {
+          el.appendChild(child);
+        }
+      });
+      return el;
+    },
+
+    debounce(fn, delay) {
+      let timeout;
+      return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => fn.apply(this, args), delay);
+      };
+    },
+
+    deepMerge(target, source) {
+      const result = { ...target };
+      Object.keys(source).forEach(key => {
+        if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+          result[key] = Utils.deepMerge(result[key] || {}, source[key]);
+        } else {
+          result[key] = source[key];
+        }
+      });
+      return result;
+    },
+
+    sanitizeHTML(html) {
+      const temp = document.createElement('div');
+      temp.innerHTML = html;
+      const scripts = temp.querySelectorAll('script');
+      scripts.forEach(s => s.remove());
+      return temp.innerHTML;
+    },
+
+    isValidUrl(string) {
+      try {
+        new URL(string);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    },
+
+    getSelection() {
+      return window.getSelection();
+    },
+
+    saveSelection() {
+      const sel = window.getSelection();
+      if (sel.rangeCount > 0) {
+        return sel.getRangeAt(0).cloneRange();
+      }
+      return null;
+    },
+
+    restoreSelection(range) {
+      if (range) {
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    }
   };
 
-  class NeikiEditor {
-    constructor(element, options = {}) {
-      this.element = typeof element === 'string' ? document.querySelector(element) : element;
-      if (!this.element) {
-        console.error('NeikiEditor: Element not found');
+  // ============================================
+  // SECTION 3: ICONS (SVG)
+  // ============================================
+
+  const Icons = {
+    undo: '<svg viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>',
+    redo: '<svg viewBox="0 0 24 24"><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/></svg>',
+    bold: '<svg viewBox="0 0 24 24"><path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></svg>',
+    italic: '<svg viewBox="0 0 24 24"><path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z"/></svg>',
+    underline: '<svg viewBox="0 0 24 24"><path d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"/></svg>',
+    strikethrough: '<svg viewBox="0 0 24 24"><path d="M10 19h4v-3h-4v3zM5 4v3h5v3h4V7h5V4H5zM3 14h18v-2H3v2z"/></svg>',
+    heading: '<svg viewBox="0 0 24 24"><path d="M5 4v3h5.5v12h3V7H19V4z"/></svg>',
+    'font-size': '<svg viewBox="0 0 24 24"><path d="M9 4v3h5v12h3V7h5V4H9zm-6 8h3v7h3v-7h3v-3H3v3z"/></svg>',
+    font: '<svg viewBox="0 0 24 24"><path d="M9.93 13.5h4.14L12 7.98 9.93 13.5zM20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-4.05 16.5l-1.14-3H9.17l-1.12 3H5.96l5.11-13h1.86l5.11 13h-2.09z"/></svg>',
+    'text-color': '<svg viewBox="0 0 24 24"><path d="M11 3L5.5 17h2.25l1.12-3h6.25l1.12 3h2.25L13 3h-2zm-1.38 9L12 5.67 14.38 12H9.62z"/><rect x="3" y="19" width="18" height="3" fill="currentColor"/></svg>',
+    highlight: '<svg viewBox="0 0 24 24"><path d="M16.56 8.94L7.62 0 6.21 1.41l2.38 2.38-5.15 5.15c-.59.59-.59 1.54 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10L10 5.21 14.79 10H5.21zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5z"/><rect x="0" y="20" width="24" height="4"/></svg>',
+    'align-left': '<svg viewBox="0 0 24 24"><path d="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg>',
+    'align-center': '<svg viewBox="0 0 24 24"><path d="M7 15v2h10v-2H7zm-4 6h18v-2H3v2zm0-8h18v-2H3v2zm4-6v2h10V7H7zM3 3v2h18V3H3z"/></svg>',
+    'align-right': '<svg viewBox="0 0 24 24"><path d="M3 21h18v-2H3v2zm6-4h12v-2H9v2zm-6-4h18v-2H3v2zm6-4h12V7H9v2zM3 3v2h18V3H3z"/></svg>',
+    'align-justify': '<svg viewBox="0 0 24 24"><path d="M3 21h18v-2H3v2zm0-4h18v-2H3v2zm0-4h18v-2H3v2zm0-4h18V7H3v2zm0-6v2h18V3H3z"/></svg>',
+    'list-ul': '<svg viewBox="0 0 24 24"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/></svg>',
+    'list-ol': '<svg viewBox="0 0 24 24"><path d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"/></svg>',
+    indent: '<svg viewBox="0 0 24 24"><path d="M3 21h18v-2H3v2zM3 8v8l4-4-4-4zm8 9h10v-2H11v2zM3 3v2h18V3H3zm8 6h10V7H11v2zm0 4h10v-2H11v2z"/></svg>',
+    outdent: '<svg viewBox="0 0 24 24"><path d="M11 17h10v-2H11v2zm-8-5l4 4V8l-4 4zm0 9h18v-2H3v2zM3 3v2h18V3H3zm8 6h10V7H11v2zm0 4h10v-2H11v2z"/></svg>',
+    link: '<svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>',
+    image: '<svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>',
+    table: '<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"/></svg>',
+    quote: '<svg viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>',
+    code: '<svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>',
+    minus: '<svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>',
+    eraser: '<svg viewBox="0 0 24 24"><path d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 01-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.6-10.6c.79-.78 2.05-.78 2.83 0zm-1.41 1.42L6.93 12.9l4.24 4.24 7.9-7.9-4.24-4.26z"/></svg>',
+    fullscreen: '<svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>',
+    close: '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>',
+    check: '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>',
+    save: '<svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>',
+    print: '<svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>',
+    subscript: '<svg viewBox="0 0 24 24"><path d="M22 18h-2v1h3v1h-4v-2.5c0-.83.67-1.5 1.5-1.5h1.5v-1h-3v-1h2.5c.83 0 1.5.67 1.5 1.5v1c0 .83-.67 1.5-1.5 1.5zM5.88 18h2.66l3.4-5.42h.12l3.4 5.42h2.66l-4.65-7.27L17.81 4h-2.68l-3.07 4.99h-.12L8.87 4H6.19l4.32 6.73L5.88 18z"/></svg>',
+    superscript: '<svg viewBox="0 0 24 24"><path d="M22 7h-2v1h3v1h-4V6.5c0-.83.67-1.5 1.5-1.5h1.5V4h-3V3h2.5c.83 0 1.5.67 1.5 1.5v1c0 .83-.67 1.5-1.5 1.5zM5.88 20h2.66l3.4-5.42h.12l3.4 5.42h2.66l-4.65-7.27L17.81 6h-2.68l-3.07 4.99h-.12L8.87 6H6.19l4.32 6.73L5.88 20z"/></svg>',
+    search: '<svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>',
+    emoji: '<svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>',
+    specialChars: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><text x="12" y="16" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">©</text></svg>',
+    sun: '<svg viewBox="0 0 24 24"><path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"/></svg>',
+    moon: '<svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>'
+  };
+
+  // ============================================
+  // SECTION 4: STORAGE MANAGER (Persistence)
+  // ============================================
+
+  class StorageManager {
+    constructor(editorId) {
+      this.prefix = 'neiki_' + editorId + '_';
+    }
+
+    set(key, value) {
+      try {
+        localStorage.setItem(this.prefix + key, JSON.stringify(value));
+      } catch (e) {
+        console.warn('NeikiEditor: localStorage not available');
+      }
+    }
+
+    get(key, defaultValue = null) {
+      try {
+        const item = localStorage.getItem(this.prefix + key);
+        return item ? JSON.parse(item) : defaultValue;
+      } catch (e) {
+        return defaultValue;
+      }
+    }
+
+    remove(key) {
+      try {
+        localStorage.removeItem(this.prefix + key);
+      } catch (e) { }
+    }
+
+    // Global storage (shared across all editors)
+    static setGlobal(key, value) {
+      try {
+        localStorage.setItem('neiki_global_' + key, JSON.stringify(value));
+      } catch (e) { }
+    }
+
+    static getGlobal(key, defaultValue = null) {
+      try {
+        const item = localStorage.getItem('neiki_global_' + key);
+        return item ? JSON.parse(item) : defaultValue;
+      } catch (e) {
+        return defaultValue;
+      }
+    }
+  }
+
+  // ============================================
+  // SECTION 5: HISTORY MANAGER (Undo/Redo with Persistence)
+  // ============================================
+
+  class HistoryManager {
+    constructor(editor, maxSize = 100) {
+      this.editor = editor;
+      this.maxSize = maxSize;
+      this.undoStack = [];
+      this.redoStack = [];
+      this.isRecording = true;
+      // Load persisted history if available
+      this.loadFromStorage();
+    }
+
+    record() {
+      if (!this.isRecording) return;
+
+      const content = this.editor.getContent();
+      const lastState = this.undoStack[this.undoStack.length - 1];
+
+      if (lastState !== content) {
+        this.undoStack.push(content);
+        this.redoStack = [];
+
+        if (this.undoStack.length > this.maxSize) {
+          this.undoStack.shift();
+        }
+        this.saveToStorage();
+      }
+    }
+
+    undo() {
+      if (this.undoStack.length <= 1) return false;
+
+      const current = this.undoStack.pop();
+      this.redoStack.push(current);
+
+      const previous = this.undoStack[this.undoStack.length - 1];
+      this.isRecording = false;
+      this.editor.setContent(previous);
+      this.isRecording = true;
+      this.saveToStorage();
+
+      return true;
+    }
+
+    redo() {
+      if (this.redoStack.length === 0) return false;
+
+      const next = this.redoStack.pop();
+      this.undoStack.push(next);
+
+      this.isRecording = false;
+      this.editor.setContent(next);
+      this.isRecording = true;
+      this.saveToStorage();
+
+      return true;
+    }
+
+    canUndo() {
+      return this.undoStack.length > 1;
+    }
+
+    canRedo() {
+      return this.redoStack.length > 0;
+    }
+
+    clear() {
+      this.undoStack = [];
+      this.redoStack = [];
+      this.record();
+    }
+
+    saveToStorage() {
+      // Undo/Redo history is NOT persisted across page reloads
+      // This is intentional - after saving content and returning to edit,
+      // the "initial state" should be the saved version, not old history
+    }
+
+    loadFromStorage() {
+      // No-op - history is session-only
+    }
+
+    clearStorage() {
+      // No-op - history is session-only
+    }
+  }
+
+  // ============================================
+  // SECTION 6: MODAL MANAGER
+  // ============================================
+
+  class ModalManager {
+    constructor(editor) {
+      this.editor = editor;
+      this.activeModal = null;
+      this.overlay = null;
+    }
+
+    createOverlay() {
+      if (this.overlay) return this.overlay;
+
+      this.overlay = Utils.createElement('div', {
+        className: 'neiki-modal-overlay',
+        onClick: (e) => {
+          if (e.target === this.overlay) {
+            this.close();
+          }
+        }
+      });
+
+      document.body.appendChild(this.overlay);
+      return this.overlay;
+    }
+
+    open(type, data = {}) {
+      this.close();
+      this.createOverlay();
+
+      let modal;
+      switch (type) {
+        case 'link':
+          modal = this.createLinkModal(data);
+          break;
+        case 'image':
+          modal = this.createImageModal(data);
+          break;
+        case 'table':
+          modal = this.createTableModal(data);
+          break;
+        case 'findReplace':
+          modal = this.createFindReplaceModal(data);
+          break;
+        default:
+          return;
+      }
+
+      this.activeModal = modal;
+      this.overlay.appendChild(modal);
+      this.overlay.classList.add('active');
+
+      const firstInput = modal.querySelector('input');
+      if (firstInput) firstInput.focus();
+    }
+
+    close() {
+      if (this.overlay) {
+        this.overlay.classList.remove('active');
+        if (this.activeModal) {
+          this.activeModal.remove();
+          this.activeModal = null;
+        }
+      }
+    }
+
+    createLinkModal(data) {
+      const modal = Utils.createElement('div', { className: 'neiki-modal' });
+
+      modal.innerHTML = `
+                <div class="neiki-modal-header">
+                    <h3>Insert Link</h3>
+                    <button class="neiki-modal-close" type="button">${Icons.close}</button>
+                </div>
+                <div class="neiki-modal-body">
+                    <div class="neiki-form-group">
+                        <label>URL</label>
+                        <input type="url" class="neiki-input" name="url" placeholder="https://example.com" value="${data.url || ''}">
+                    </div>
+                    <div class="neiki-form-group">
+                        <label>Text</label>
+                        <input type="text" class="neiki-input" name="text" placeholder="Link text" value="${data.text || ''}">
+                    </div>
+                    <div class="neiki-form-group">
+                        <label>
+                            <input type="checkbox" name="newTab" ${data.newTab ? 'checked' : ''}> Open in new tab
+                        </label>
+                    </div>
+                </div>
+                <div class="neiki-modal-footer">
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">Cancel</button>
+                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">Insert</button>
+                </div>
+            `;
+
+      modal.querySelector('.neiki-modal-close').addEventListener('click', () => this.close());
+      modal.querySelector('[data-action="cancel"]').addEventListener('click', () => this.close());
+      modal.querySelector('[data-action="insert"]').addEventListener('click', () => {
+        const url = modal.querySelector('[name="url"]').value;
+        const text = modal.querySelector('[name="text"]').value || url;
+        const newTab = modal.querySelector('[name="newTab"]').checked;
+
+        if (url) {
+          this.editor.commands.insertLink(url, text, newTab);
+        }
+        this.close();
+      });
+
+      return modal;
+    }
+
+    createImageModal(data) {
+      const modal = Utils.createElement('div', { className: 'neiki-modal' });
+
+      modal.innerHTML = `
+                <div class="neiki-modal-header">
+                    <h3>Insert Image</h3>
+                    <button class="neiki-modal-close" type="button">${Icons.close}</button>
+                </div>
+                <div class="neiki-modal-body">
+                    <div class="neiki-form-group">
+                        <label>Upload Image</label>
+                        <input type="file" class="neiki-input" name="upload" accept="image/*">
+                        <small style="color: var(--neiki-text-muted); font-size: 11px;">Will be converted to base64</small>
+                    </div>
+                    <div class="neiki-form-divider">
+                        <span>OR</span>
+                    </div>
+                    <div class="neiki-form-group">
+                        <label>Image URL</label>
+                        <input type="url" class="neiki-input" name="url" placeholder="https://example.com/image.jpg" value="${data.url || ''}">
+                    </div>
+                    <div class="neiki-form-group">
+                        <label>Alt Text</label>
+                        <input type="text" class="neiki-input" name="alt" placeholder="Describe the image" value="${data.alt || ''}">
+                    </div>
+                    <div class="neiki-form-group">
+                        <label>Width (optional)</label>
+                        <input type="text" class="neiki-input" name="width" placeholder="e.g. 300px or 50%" value="${data.width || ''}">
+                    </div>
+                </div>
+                <div class="neiki-modal-footer">
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">Cancel</button>
+                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">Insert</button>
+                </div>
+            `;
+
+      const uploadInput = modal.querySelector('[name="upload"]');
+      const urlInput = modal.querySelector('[name="url"]');
+
+      // Handle file upload
+      uploadInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            urlInput.value = e.target.result;
+            urlInput.disabled = true;
+          };
+          reader.readAsDataURL(file);
+        } else if (file) {
+          alert('Please select a valid image file.');
+          uploadInput.value = '';
+        }
+      });
+
+      // Clear URL when upload is cleared
+      urlInput.addEventListener('input', () => {
+        if (!urlInput.value) {
+          urlInput.disabled = false;
+          uploadInput.value = '';
+        }
+      });
+
+      modal.querySelector('.neiki-modal-close').addEventListener('click', () => this.close());
+      modal.querySelector('[data-action="cancel"]').addEventListener('click', () => this.close());
+      modal.querySelector('[data-action="insert"]').addEventListener('click', () => {
+        const url = modal.querySelector('[name="url"]').value;
+        const alt = modal.querySelector('[name="alt"]').value;
+        const width = modal.querySelector('[name="width"]').value;
+
+        if (url) {
+          this.editor.commands.insertImage(url, alt, width);
+        }
+        this.close();
+      });
+
+      return modal;
+    }
+
+    createTableModal(data) {
+      const modal = Utils.createElement('div', { className: 'neiki-modal' });
+
+      modal.innerHTML = `
+                <div class="neiki-modal-header">
+                    <h3>Insert Table</h3>
+                    <button class="neiki-modal-close" type="button">${Icons.close}</button>
+                </div>
+                <div class="neiki-modal-body">
+                    <div class="neiki-form-row">
+                        <div class="neiki-form-group">
+                            <label>Rows</label>
+                            <input type="number" class="neiki-input" name="rows" min="1" max="20" value="${data.rows || 3}">
+                        </div>
+                        <div class="neiki-form-group">
+                            <label>Columns</label>
+                            <input type="number" class="neiki-input" name="cols" min="1" max="10" value="${data.cols || 3}">
+                        </div>
+                    </div>
+                    <div class="neiki-form-group">
+                        <label>
+                            <input type="checkbox" name="header" ${data.header !== false ? 'checked' : ''}> Include header row
+                        </label>
+                    </div>
+                </div>
+                <div class="neiki-modal-footer">
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">Cancel</button>
+                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">Insert</button>
+                </div>
+            `;
+
+      modal.querySelector('.neiki-modal-close').addEventListener('click', () => this.close());
+      modal.querySelector('[data-action="cancel"]').addEventListener('click', () => this.close());
+      modal.querySelector('[data-action="insert"]').addEventListener('click', () => {
+        const rows = parseInt(modal.querySelector('[name="rows"]').value) || 3;
+        const cols = parseInt(modal.querySelector('[name="cols"]').value) || 3;
+        const header = modal.querySelector('[name="header"]').checked;
+
+        this.editor.commands.insertTable(rows, cols, header);
+        this.close();
+      });
+
+      return modal;
+    }
+
+    createFindReplaceModal(data) {
+      const modal = Utils.createElement('div', { className: 'neiki-modal neiki-modal-wide' });
+
+      modal.innerHTML = `
+                <div class="neiki-modal-header">
+                    <h3>Find & Replace</h3>
+                    <button class="neiki-modal-close" type="button">${Icons.close}</button>
+                </div>
+                <div class="neiki-modal-body">
+                    <div class="neiki-form-group">
+                        <label>Find</label>
+                        <input type="text" class="neiki-input" name="find" placeholder="Search text...">
+                    </div>
+                    <div class="neiki-form-group">
+                        <label>Replace with</label>
+                        <input type="text" class="neiki-input" name="replace" placeholder="Replacement text...">
+                    </div>
+                    <div class="neiki-form-group neiki-form-row">
+                        <label><input type="checkbox" name="regex"> Use Regular Expression</label>
+                        <label><input type="checkbox" name="caseSensitive"> Case Sensitive</label>
+                    </div>
+                    <div class="neiki-find-results" style="margin-top:10px;font-size:13px;color:var(--neiki-text-muted);"></div>
+                </div>
+                <div class="neiki-modal-footer">
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="findNext">Find Next</button>
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="replaceOne">Replace</button>
+                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="replaceAll">Replace All</button>
+                </div>
+            `;
+
+      const findInput = modal.querySelector('[name="find"]');
+      const replaceInput = modal.querySelector('[name="replace"]');
+      const regexCheck = modal.querySelector('[name="regex"]');
+      const caseCheck = modal.querySelector('[name="caseSensitive"]');
+      const resultsDiv = modal.querySelector('.neiki-find-results');
+
+      let currentMatches = [];
+      let currentIndex = -1;
+
+      const clearHighlights = () => {
+        const highlights = this.editor.contentArea.querySelectorAll('.neiki-highlight-find');
+        highlights.forEach(h => {
+          const text = document.createTextNode(h.textContent);
+          h.parentNode.replaceChild(text, h);
+        });
+        this.editor.contentArea.normalize();
+      };
+
+      const findMatches = () => {
+        clearHighlights();
+        currentMatches = [];
+        currentIndex = -1;
+
+        const searchText = findInput.value;
+        if (!searchText) {
+          resultsDiv.textContent = '';
+          return;
+        }
+
+        const content = this.editor.contentArea.innerHTML;
+        let flags = 'g';
+        if (!caseCheck.checked) flags += 'i';
+
+        let regex;
+        try {
+          regex = regexCheck.checked
+            ? new RegExp(searchText, flags)
+            : new RegExp(searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), flags);
+        } catch (e) {
+          resultsDiv.textContent = 'Invalid regex';
+          return;
+        }
+
+        // Find and highlight in text nodes
+        const walker = document.createTreeWalker(
+          this.editor.contentArea,
+          NodeFilter.SHOW_TEXT,
+          null,
+          false
+        );
+
+        const textNodes = [];
+        while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+        textNodes.forEach(node => {
+          const text = node.textContent;
+          const matches = [...text.matchAll(regex)];
+          if (matches.length > 0) {
+            const frag = document.createDocumentFragment();
+            let lastIndex = 0;
+            matches.forEach(match => {
+              if (match.index > lastIndex) {
+                frag.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+              }
+              const span = document.createElement('span');
+              span.className = 'neiki-highlight-find';
+              span.textContent = match[0];
+              frag.appendChild(span);
+              currentMatches.push(span);
+              lastIndex = match.index + match[0].length;
+            });
+            if (lastIndex < text.length) {
+              frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+            }
+            node.parentNode.replaceChild(frag, node);
+          }
+        });
+
+        resultsDiv.textContent = `${currentMatches.length} match(es) found`;
+      };
+
+      const findNext = () => {
+        if (currentMatches.length === 0) {
+          findMatches();
+        }
+        if (currentMatches.length === 0) return;
+
+        // Remove current highlight
+        if (currentIndex >= 0 && currentMatches[currentIndex]) {
+          currentMatches[currentIndex].classList.remove('neiki-highlight-current');
+        }
+
+        currentIndex = (currentIndex + 1) % currentMatches.length;
+        const current = currentMatches[currentIndex];
+        current.classList.add('neiki-highlight-current');
+        current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        resultsDiv.textContent = `Match ${currentIndex + 1} of ${currentMatches.length}`;
+      };
+
+      const replaceOne = () => {
+        if (currentIndex >= 0 && currentMatches[currentIndex]) {
+          const match = currentMatches[currentIndex];
+          match.textContent = replaceInput.value;
+          match.classList.remove('neiki-highlight-find', 'neiki-highlight-current');
+          currentMatches.splice(currentIndex, 1);
+          currentIndex--;
+          this.editor.history.record();
+          this.editor.triggerChange();
+          resultsDiv.textContent = `${currentMatches.length} match(es) remaining`;
+          if (currentMatches.length > 0) findNext();
+        }
+      };
+
+      const replaceAll = () => {
+        clearHighlights();
+        const searchText = findInput.value;
+        const replaceText = replaceInput.value;
+        if (!searchText) return;
+
+        let flags = 'g';
+        if (!caseCheck.checked) flags += 'i';
+
+        let regex;
+        try {
+          regex = regexCheck.checked
+            ? new RegExp(searchText, flags)
+            : new RegExp(searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), flags);
+        } catch (e) {
+          return;
+        }
+
+        // Replace in text nodes
+        const walker = document.createTreeWalker(
+          this.editor.contentArea,
+          NodeFilter.SHOW_TEXT,
+          null,
+          false
+        );
+
+        const textNodes = [];
+        while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+        let count = 0;
+        textNodes.forEach(node => {
+          const text = node.textContent;
+          const newText = text.replace(regex, () => {
+            count++;
+            return replaceText;
+          });
+          if (newText !== text) {
+            node.textContent = newText;
+          }
+        });
+
+        this.editor.history.record();
+        this.editor.triggerChange();
+        currentMatches = [];
+        currentIndex = -1;
+        resultsDiv.textContent = `Replaced ${count} occurrence(s)`;
+      };
+
+      findInput.addEventListener('input', Utils.debounce(findMatches, 300));
+      modal.querySelector('.neiki-modal-close').addEventListener('click', () => {
+        clearHighlights();
+        this.close();
+      });
+      modal.querySelector('[data-action="findNext"]').addEventListener('click', findNext);
+      modal.querySelector('[data-action="replaceOne"]').addEventListener('click', replaceOne);
+      modal.querySelector('[data-action="replaceAll"]').addEventListener('click', replaceAll);
+
+      return modal;
+    }
+  }
+
+  // ============================================
+  // SECTION 6: DROPDOWN MANAGER
+  // ============================================
+
+  class DropdownManager {
+    constructor(editor) {
+      this.editor = editor;
+      this.activeDropdown = null;
+
+      document.addEventListener('click', (e) => {
+        if (this.activeDropdown && !this.activeDropdown.contains(e.target)) {
+          this.close();
+        }
+      });
+    }
+
+    toggle(button, type) {
+      const existing = button.querySelector('.neiki-dropdown');
+
+      if (existing) {
+        this.close();
         return;
       }
 
-      this.config = { ...defaultConfig, ...options };
+      this.close();
 
-      // Load theme from localStorage
-      const savedTheme = localStorage.getItem('neiki-editor-theme');
-      if (savedTheme) {
-        this.config.theme = savedTheme;
+      let dropdown;
+      switch (type) {
+        case 'heading':
+          dropdown = this.createHeadingDropdown();
+          break;
+        case 'fontSize':
+          dropdown = this.createFontSizeDropdown();
+          break;
+        case 'fontFamily':
+          dropdown = this.createFontFamilyDropdown();
+          break;
+        default:
+          return;
       }
 
-      this.isSourceMode = false;
+      button.appendChild(dropdown);
+      this.activeDropdown = dropdown;
+    }
+
+    close() {
+      if (this.activeDropdown) {
+        this.activeDropdown.remove();
+        this.activeDropdown = null;
+      }
+    }
+
+    createHeadingDropdown() {
+      const dropdown = Utils.createElement('div', { className: 'neiki-dropdown' });
+
+      HEADINGS.forEach(({ label, value }) => {
+        const item = Utils.createElement('div', {
+          className: 'neiki-dropdown-item',
+          innerHTML: `<${value}>${label}</${value}>`,
+          onClick: () => {
+            this.editor.commands.formatBlock(value);
+            this.close();
+          }
+        });
+        dropdown.appendChild(item);
+      });
+
+      return dropdown;
+    }
+
+    createFontSizeDropdown() {
+      const dropdown = Utils.createElement('div', { className: 'neiki-dropdown' });
+
+      FONT_SIZES.forEach(({ label, value }) => {
+        const item = Utils.createElement('div', {
+          className: 'neiki-dropdown-item',
+          textContent: label,
+          onClick: () => {
+            this.editor.commands.fontSize(value);
+            this.close();
+          }
+        });
+        dropdown.appendChild(item);
+      });
+
+      return dropdown;
+    }
+
+    createFontFamilyDropdown() {
+      const dropdown = Utils.createElement('div', { className: 'neiki-dropdown' });
+
+      FONT_FAMILIES.forEach(({ label, value }) => {
+        const item = Utils.createElement('div', {
+          className: 'neiki-dropdown-item',
+          textContent: label,
+          style: { fontFamily: value },
+          onClick: () => {
+            this.editor.commands.fontFamily(value);
+            this.close();
+          }
+        });
+        dropdown.appendChild(item);
+      });
+
+      return dropdown;
+    }
+  }
+
+  // ============================================
+  // SECTION 7: COLOR PICKER
+  // ============================================
+
+  class ColorPicker {
+    constructor(editor) {
+      this.editor = editor;
+      this.activePicker = null;
+      this.activeButton = null;
+
+      document.addEventListener('mousedown', (e) => {
+        if (this.activePicker &&
+          !this.activePicker.contains(e.target) &&
+          (!this.activeButton || !this.activeButton.contains(e.target))) {
+          this.close();
+        }
+      });
+    }
+
+    toggle(button, command) {
+      if (this.activeButton === button && this.activePicker) {
+        this.close();
+        return;
+      }
+
+      this.close();
+
+      const picker = Utils.createElement('div', { className: 'neiki-color-picker' });
+
+      const resetSwatch = Utils.createElement('div', {
+        className: 'neiki-color-swatch neiki-color-reset',
+        title: 'Reset to default'
+      });
+      resetSwatch.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (command === 'foreColor') {
+          this.editor.commands.resetForeColor();
+        } else {
+          this.editor.commands.resetBackColor();
+        }
+        this.close();
+      });
+      picker.appendChild(resetSwatch);
+
+      COLORS.forEach(color => {
+        const swatch = Utils.createElement('div', {
+          className: 'neiki-color-swatch',
+          style: { backgroundColor: color },
+          title: color
+        });
+        swatch.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (command === 'foreColor') {
+            this.editor.commands.foreColor(color);
+          } else {
+            this.editor.commands.backColor(color);
+          }
+          this.close();
+        });
+        picker.appendChild(swatch);
+      });
+
+      button.appendChild(picker);
+      this.activePicker = picker;
+      this.activeButton = button;
+    }
+
+    close() {
+      if (this.activePicker) {
+        this.activePicker.remove();
+        this.activePicker = null;
+        this.activeButton = null;
+      }
+    }
+  }
+
+  // ============================================
+  // SECTION 7b: EMOJI PICKER
+  // ============================================
+
+  class EmojiPicker {
+    constructor(editor) {
+      this.editor = editor;
+      this.picker = null;
+      this.activeButton = null;
+
+      document.addEventListener('mousedown', (e) => {
+        if (this.picker &&
+          !this.picker.contains(e.target) &&
+          (!this.activeButton || !this.activeButton.contains(e.target))) {
+          this.close();
+        }
+      });
+    }
+
+    toggle(button) {
+      if (this.activeButton === button && this.picker) {
+        this.close();
+        return;
+      }
+
+      this.close();
+
+      this.picker = Utils.createElement('div', { className: 'neiki-emoji-picker' });
+
+      EMOJIS.forEach(emoji => {
+        const item = document.createElement('span');
+        item.className = 'neiki-emoji-item';
+        item.textContent = emoji;
+        item.title = emoji;
+        item.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.editor.focus();
+          document.execCommand('insertText', false, emoji);
+          this.editor.history.record();
+          this.editor.triggerChange();
+          this.close();
+        });
+        this.picker.appendChild(item);
+      });
+
+      button.appendChild(this.picker);
+      this.activeButton = button;
+    }
+
+    close() {
+      if (this.picker) {
+        this.picker.remove();
+        this.picker = null;
+        this.activeButton = null;
+      }
+    }
+  }
+
+  // ============================================
+  // SECTION 7c: SPECIAL CHARS PICKER
+  // ============================================
+
+  class SpecialCharsPicker {
+    constructor(editor) {
+      this.editor = editor;
+      this.picker = null;
+      this.activeButton = null;
+
+      document.addEventListener('mousedown', (e) => {
+        if (this.picker &&
+          !this.picker.contains(e.target) &&
+          (!this.activeButton || !this.activeButton.contains(e.target))) {
+          this.close();
+        }
+      });
+    }
+
+    toggle(button) {
+      if (this.activeButton === button && this.picker) {
+        this.close();
+        return;
+      }
+
+      this.close();
+
+      this.picker = Utils.createElement('div', { className: 'neiki-special-picker' });
+
+      SPECIAL_CHARS.forEach(({ char, name }) => {
+        const item = document.createElement('span');
+        item.className = 'neiki-special-item';
+        item.textContent = char;
+        item.title = name;
+        item.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.editor.focus();
+          document.execCommand('insertText', false, char);
+          this.editor.history.record();
+          this.editor.triggerChange();
+          this.close();
+        });
+        this.picker.appendChild(item);
+      });
+
+      button.appendChild(this.picker);
+      this.activeButton = button;
+    }
+
+    close() {
+      if (this.picker) {
+        this.picker.remove();
+        this.picker = null;
+        this.activeButton = null;
+      }
+    }
+  }
+
+  // ============================================
+  // SECTION 8: COMMANDS
+  // ============================================
+
+  class Commands {
+    constructor(editor) {
+      this.editor = editor;
+    }
+
+    exec(command, value = null) {
+      this.editor.focus();
+      document.execCommand(command, false, value);
+      this.editor.history.record();
+      this.editor.updateToolbar();
+      this.editor.triggerChange();
+    }
+
+    bold() { this.exec('bold'); }
+    italic() { this.exec('italic'); }
+    underline() { this.exec('underline'); }
+    strikeThrough() { this.exec('strikeThrough'); }
+    subscript() { this.exec('subscript'); }
+    superscript() { this.exec('superscript'); }
+
+    justifyLeft() { this.exec('justifyLeft'); }
+    justifyCenter() { this.exec('justifyCenter'); }
+    justifyRight() { this.exec('justifyRight'); }
+    justifyFull() { this.exec('justifyFull'); }
+
+    insertUnorderedList() { this.exec('insertUnorderedList'); }
+    insertOrderedList() { this.exec('insertOrderedList'); }
+
+    indent() { this.exec('indent'); }
+    outdent() { this.exec('outdent'); }
+
+    removeFormat() { this.exec('removeFormat'); }
+
+    insertHorizontalRule() { this.exec('insertHorizontalRule'); }
+
+    formatBlock(tag) {
+      this.exec('formatBlock', `<${tag}>`);
+    }
+
+    fontSize(sizeStr) {
+      this.editor.focus();
+      document.execCommand('fontSize', false, '7');
+      const marked = this.editor.contentArea.querySelectorAll('font[size="7"]');
+      marked.forEach(el => {
+        const span = document.createElement('span');
+        span.style.fontSize = sizeStr;
+        while (el.firstChild) span.appendChild(el.firstChild);
+        el.parentNode.replaceChild(span, el);
+      });
+      this.editor.history.record();
+      this.editor.updateToolbar();
+      this.editor.triggerChange();
+    }
+
+    fontFamily(font) {
+      this.exec('fontName', font);
+    }
+
+    foreColor(color) {
+      this.exec('foreColor', color);
+    }
+
+    backColor(color) {
+      this.exec('backColor', color);
+    }
+
+    resetForeColor() {
+      this._resetColorProperty('color');
+    }
+
+    resetBackColor() {
+      this._resetColorProperty('backgroundColor');
+    }
+
+    _resetColorProperty(cssProp) {
+      this.editor.focus();
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount) return;
+      const range = sel.getRangeAt(0);
+      if (range.collapsed) return;
+
+      const fragment = range.extractContents();
+
+      const processNode = (node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          if (node.style && node.style[cssProp]) {
+            node.style[cssProp] = '';
+            if (!node.getAttribute('style') || !node.getAttribute('style').trim()) {
+              node.removeAttribute('style');
+            }
+          }
+          if (cssProp === 'color' && node.tagName === 'FONT' && node.hasAttribute('color')) {
+            node.removeAttribute('color');
+          }
+          if (cssProp === 'backgroundColor' && node.tagName === 'FONT' && node.style.backgroundColor) {
+            node.style.backgroundColor = '';
+          }
+          if (node.tagName === 'FONT' && !node.hasAttribute('color') && !node.hasAttribute('face') &&
+            !node.hasAttribute('size') && (!node.getAttribute('style') || !node.getAttribute('style').trim())) {
+            const parent = node.parentNode;
+            if (parent) {
+              while (node.firstChild) parent.insertBefore(node.firstChild, node);
+              parent.removeChild(node);
+            }
+            return;
+          }
+          if (node.tagName === 'SPAN' && (!node.getAttribute('style') || !node.getAttribute('style').trim()) && !node.className) {
+            const parent = node.parentNode;
+            if (parent) {
+              while (node.firstChild) parent.insertBefore(node.firstChild, node);
+              parent.removeChild(node);
+            }
+            return;
+          }
+          Array.from(node.childNodes).forEach(processNode);
+        }
+      };
+
+      Array.from(fragment.childNodes).forEach(processNode);
+      range.insertNode(fragment);
+      sel.removeAllRanges();
+      sel.addRange(range);
+
+      this.editor.history.record();
+      this.editor.updateToolbar();
+      this.editor.triggerChange();
+    }
+
+    viewCode() {
+      this.editor.toggleCodeView();
+    }
+
+    autosave() {
+      this.editor.toggleAutosave();
+    }
+
+    print() {
+      this.editor.printContent();
+    }
+
+    insertHTML(html) {
+      this.editor.focus();
+      document.execCommand('insertHTML', false, html);
+      this.editor.history.record();
+      this.editor.triggerChange();
+    }
+
+    insertLink(url, text, newTab = false) {
+      const selection = Utils.getSelection();
+      const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+
+      if (range && !range.collapsed) {
+        this.exec('createLink', url);
+        if (newTab) {
+          const links = this.editor.contentArea.querySelectorAll('a[href="' + url + '"]');
+          links.forEach(link => link.setAttribute('target', '_blank'));
+        }
+      } else {
+        const link = document.createElement('a');
+        link.href = url;
+        link.textContent = text || url;
+        if (newTab) link.target = '_blank';
+
+        this.editor.focus();
+        document.execCommand('insertHTML', false, link.outerHTML);
+        this.editor.history.record();
+        this.editor.triggerChange();
+      }
+    }
+
+    insertImage(url, alt = '', width = '') {
+      let html = `<img src="${url}"`;
+      if (alt) html += ` alt="${alt}"`;
+      if (width) html += ` width="${width}"`;
+      html += '>';
+
+      this.editor.focus();
+      document.execCommand('insertHTML', false, html);
+      this.editor.history.record();
+      this.editor.triggerChange();
+    }
+
+    insertTable(rows, cols, hasHeader = true) {
+      let html = '<table class="neiki-table">';
+
+      for (let i = 0; i < rows; i++) {
+        html += '<tr>';
+        for (let j = 0; j < cols; j++) {
+          if (i === 0 && hasHeader) {
+            html += '<th>Header</th>';
+          } else {
+            html += '<td>Cell</td>';
+          }
+        }
+        html += '</tr>';
+      }
+
+      html += '</table><p><br></p>';
+
+      this.editor.focus();
+      document.execCommand('insertHTML', false, html);
+      this.editor.history.record();
+      this.editor.triggerChange();
+    }
+
+    undo() {
+      if (this.editor.history.undo()) {
+        this.editor.updateToolbar();
+        this.editor.triggerChange();
+      }
+    }
+
+    redo() {
+      if (this.editor.history.redo()) {
+        this.editor.updateToolbar();
+        this.editor.triggerChange();
+      }
+    }
+  }
+
+  // ============================================
+  // SECTION 9: MAIN EDITOR CLASS
+  // ============================================
+
+  class NeikiEditor {
+    constructor(element, options = {}) {
+      this.originalElement = typeof element === 'string'
+        ? document.querySelector(element)
+        : element;
+
+      if (!this.originalElement) {
+        throw new Error('NeikiEditor: Element not found');
+      }
+
+      // Use stable ID based on element's id or a hash of selector, not random
+      this.id = this.originalElement.id ||
+        this.originalElement.getAttribute('data-neiki-id') ||
+        'neiki_' + (typeof element === 'string' ? element.replace(/[^a-zA-Z0-9]/g, '_') : 'editor');
+
+      this.config = Utils.deepMerge(DEFAULT_CONFIG, options);
       this.isFullscreen = false;
-      this.undoStack = [];
-      this.redoStack = [];
-      this.maxUndoLevels = 50;
+      this.isAutosaveEnabled = false;
+      this.autosaveInterval = null;
 
       this.init();
     }
 
     init() {
-      this.createEditor();
-      this.attachEvents();
-      this.saveState();
+      // Initialize storage first
+      this.storage = new StorageManager(this.id);
+
+      // Load theme preference
+      const savedTheme = StorageManager.getGlobal('theme', this.config.theme);
+      this.config.theme = savedTheme;
+
+      this.createStructure();
+      this.createToolbar();
+      this.createContentArea();
+      this.createStatusBar();
+
+      this.history = new HistoryManager(this);
+      this.modal = new ModalManager(this);
+      this.dropdown = new DropdownManager(this);
+      this.colorPicker = new ColorPicker(this);
+      this.emojiPicker = new EmojiPicker(this);
+      this.specialCharsPicker = new SpecialCharsPicker(this);
+      this.commands = new Commands(this);
+      this.tableContextMenu = new TableContextMenu(this);
+      this.floatingToolbar = new FloatingToolbar(this);
+
+      this.bindEvents();
+      this.initDragDrop();
+      this.initPlugins();
+
+      // Sync restored content to original element
+      this.syncToOriginal();
+
+      // Record initial state (content already restored in createContentArea)
+      this.history.record();
+
+      // Restore autosave state
+      const savedAutosave = this.storage.get('autosave_enabled', false);
+      if (savedAutosave) {
+        this.enableAutosave();
+      }
+
+      this.updateStatusBar();
+      this.updateToolbar();
+
+      // Set initial theme button state
+      if (this.config.theme === 'dark' && this.toolbarButtons.themeToggle) {
+        this.toolbarButtons.themeToggle.innerHTML = Icons.moon;
+        this.toolbarButtons.themeToggle.classList.add('active');
+        this.toolbarButtons.themeToggle.title = 'Switch to Light Mode';
+      }
+
+      if (this.config.autofocus) {
+        this.focus();
+      }
 
       if (this.config.onReady) {
         this.config.onReady(this);
       }
     }
 
-    createEditor() {
-      // Create container
-      this.container = document.createElement('div');
-      this.container.className = 'neiki-editor-container';
-      if (this.config.theme === 'dark') {
-        this.container.classList.add('neiki-editor-dark');
-      }
+    createStructure() {
+      this.container = Utils.createElement('div', {
+        className: `neiki-editor ${this.config.theme === 'dark' ? 'neiki-dark' : ''}`,
+        id: this.id
+      });
 
-      // Create toolbar
-      this.toolbar = this.createToolbar();
-      this.container.appendChild(this.toolbar);
-
-      // Create find/replace bar
-      this.findReplaceBar = this.createFindReplaceBar();
-      this.container.appendChild(this.findReplaceBar);
-
-      // Create content area
-      this.contentArea = document.createElement('div');
-      this.contentArea.className = 'neiki-editor-content';
-      this.contentArea.contentEditable = true;
-      this.contentArea.style.minHeight = this.config.height + 'px';
-      this.contentArea.innerHTML = this.element.value || this.element.innerHTML || '<p><br></p>';
-      this.contentArea.setAttribute('data-placeholder', this.config.placeholder);
-      this.container.appendChild(this.contentArea);
-
-      // Create source editor
-      this.sourceEditor = document.createElement('textarea');
-      this.sourceEditor.className = 'neiki-source-editor';
-      this.sourceEditor.style.minHeight = this.config.height + 'px';
-      this.container.appendChild(this.sourceEditor);
-
-      // Create status bar
-      this.statusBar = this.createStatusBar();
-      this.container.appendChild(this.statusBar);
-
-      // Replace original element
-      this.element.style.display = 'none';
-      this.element.parentNode.insertBefore(this.container, this.element.nextSibling);
-
-      // Create modals
-      this.createModals();
+      this.originalElement.style.display = 'none';
+      this.originalElement.parentNode.insertBefore(this.container, this.originalElement);
     }
 
     createToolbar() {
-      const toolbar = document.createElement('div');
-      toolbar.className = 'neiki-toolbar';
-
-      let currentGroup = document.createElement('div');
-      currentGroup.className = 'neiki-toolbar-group';
+      this.toolbar = Utils.createElement('div', { className: 'neiki-toolbar' });
+      this.toolbarButtons = {};
 
       this.config.toolbar.forEach(item => {
         if (item === '|') {
-          toolbar.appendChild(currentGroup);
-          currentGroup = document.createElement('div');
-          currentGroup.className = 'neiki-toolbar-group';
-        } else if (item === 'formatBlock') {
-          currentGroup.appendChild(this.createFormatSelect());
-        } else if (item === 'fontName') {
-          currentGroup.appendChild(this.createFontSelect());
-        } else if (item === 'fontSize') {
-          currentGroup.appendChild(this.createFontSizeSelect());
-        } else if (item === 'foreColor') {
-          currentGroup.appendChild(this.createColorPicker('foreColor'));
-        } else if (item === 'backColor') {
-          currentGroup.appendChild(this.createColorPicker('backColor'));
-        } else if (item === 'emoji') {
-          currentGroup.appendChild(this.createEmojiPicker());
-        } else if (item === 'specialChar') {
-          currentGroup.appendChild(this.createSpecialCharPicker());
-        } else if (item === 'toggleTheme') {
-          currentGroup.appendChild(this.createThemeToggle());
-        } else {
-          currentGroup.appendChild(this.createButton(item));
+          this.toolbar.appendChild(Utils.createElement('div', { className: 'neiki-toolbar-divider' }));
+          return;
         }
-      });
 
-      toolbar.appendChild(currentGroup);
-      return toolbar;
-    }
+        const config = TOOLBAR_ITEMS[item];
+        if (!config) return;
 
-    createButton(command) {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'neiki-btn';
-      btn.setAttribute('data-command', command);
-      btn.setAttribute('data-tooltip', tooltips[command] || command);
-
-      const iconKey = this.getIconKey(command);
-      btn.innerHTML = icons[iconKey] || command.charAt(0).toUpperCase();
-
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.execCommand(command);
-      });
-
-      return btn;
-    }
-
-    getIconKey(command) {
-      const mapping = {
-        'insertOrderedList': 'orderedList',
-        'insertUnorderedList': 'unorderedList',
-        'createLink': 'link',
-        'insertImage': 'image',
-        'insertTable': 'table',
-        'insertHorizontalRule': 'hr',
-        'insertCode': 'code'
-      };
-      return mapping[command] || command;
-    }
-
-    createFormatSelect() {
-      const select = document.createElement('select');
-      select.className = 'neiki-select';
-      select.innerHTML = `
-                <option value="p">Odstavec</option>
-                <option value="h1">Nadpis 1</option>
-                <option value="h2">Nadpis 2</option>
-                <option value="h3">Nadpis 3</option>
-                <option value="h4">Nadpis 4</option>
-                <option value="h5">Nadpis 5</option>
-                <option value="h6">Nadpis 6</option>
-                <option value="pre">Předformátovaný</option>
-            `;
-      select.addEventListener('change', () => {
-        this.execCommand('formatBlock', select.value);
-        select.value = 'p';
-      });
-      return select;
-    }
-
-    createFontSelect() {
-      const select = document.createElement('select');
-      select.className = 'neiki-select';
-      select.innerHTML = '<option value="">Písmo</option>';
-      this.config.fonts.forEach(font => {
-        select.innerHTML += `<option value="${font}" style="font-family: ${font}">${font}</option>`;
-      });
-      select.addEventListener('change', () => {
-        if (select.value) {
-          this.execCommand('fontName', select.value);
-        }
-        select.value = '';
-      });
-      return select;
-    }
-
-    createFontSizeSelect() {
-      const select = document.createElement('select');
-      select.className = 'neiki-select';
-      select.innerHTML = '<option value="">Velikost</option>';
-      this.config.fontSizes.forEach(size => {
-        select.innerHTML += `<option value="${size}">${size}</option>`;
-      });
-      select.addEventListener('change', () => {
-        if (select.value) {
-          document.execCommand('fontSize', false, '7');
-          const fontElements = this.contentArea.querySelectorAll('font[size="7"]');
-          fontElements.forEach(el => {
-            el.removeAttribute('size');
-            el.style.fontSize = select.value;
-          });
-          this.saveState();
-        }
-        select.value = '';
-      });
-      return select;
-    }
-
-    createColorPicker(type) {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'neiki-color-picker-wrapper';
-      let savedSelection = null;
-
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'neiki-btn neiki-color-btn';
-      btn.setAttribute('data-type', type);
-      btn.setAttribute('data-tooltip', tooltips[type]);
-      btn.innerHTML = icons[type] + '<span class="neiki-color-indicator" style="background: ' + (type === 'foreColor' ? '#000' : '#ff0') + '"></span>';
-
-      const dropdown = document.createElement('div');
-      dropdown.className = 'neiki-color-dropdown';
-
-      const grid = document.createElement('div');
-      grid.className = 'neiki-color-grid';
-
-      // Reset swatch - sets default color (black for text, transparent for background)
-      const resetSwatch = document.createElement('div');
-      resetSwatch.className = 'neiki-color-swatch-reset';
-      resetSwatch.title = type === 'foreColor' ? 'Výchozí barva textu' : 'Bez barvy pozadí';
-      resetSwatch.addEventListener('click', () => {
-        if (savedSelection) {
-          this.restoreSelection(savedSelection);
-        }
-        this.contentArea.focus();
-        if (type === 'foreColor') {
-          // Remove color formatting to use default/inherited color
-          document.execCommand('removeFormat', false, null);
-          const defaultColor = getComputedStyle(this.contentArea).color;
-          btn.querySelector('.neiki-color-indicator').style.background = defaultColor;
-        } else {
-          document.execCommand('removeFormat', false, null);
-          const selection = window.getSelection();
-          if (selection.rangeCount > 0) {
-            const range = selection.getRangeAt(0);
-            const span = range.commonAncestorContainer.parentElement;
-            if (span && span.style) {
-              span.style.backgroundColor = '';
-            }
-          }
-          btn.querySelector('.neiki-color-indicator').style.background = 'transparent';
-        }
-        dropdown.classList.remove('show');
-        savedSelection = null;
-      });
-      grid.appendChild(resetSwatch);
-
-      this.config.colors.forEach(color => {
-        const swatch = document.createElement('div');
-        swatch.className = 'neiki-color-swatch';
-        swatch.style.backgroundColor = color;
-        swatch.addEventListener('click', () => {
-          if (savedSelection) {
-            this.restoreSelection(savedSelection);
-          }
-          this.contentArea.focus();
-          this.execCommand(type, color);
-          btn.querySelector('.neiki-color-indicator').style.background = color;
-          dropdown.classList.remove('show');
-          savedSelection = null;
+        const button = Utils.createElement('button', {
+          className: 'neiki-toolbar-btn',
+          title: config.title,
+          type: 'button',
+          innerHTML: Icons[config.icon] || '',
+          'data-command': item
         });
-        grid.appendChild(swatch);
+
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.handleToolbarClick(item, button);
+        });
+
+        this.toolbarButtons[item] = button;
+        this.toolbar.appendChild(button);
       });
 
-      const customDiv = document.createElement('div');
-      customDiv.className = 'neiki-color-custom';
-      const customInput = document.createElement('input');
-      customInput.type = 'color';
-      customInput.value = type === 'foreColor' ? '#000000' : '#ffff00';
-      customInput.addEventListener('change', () => {
-        if (savedSelection) {
-          this.restoreSelection(savedSelection);
+      this.container.appendChild(this.toolbar);
+    }
+
+    createContentArea() {
+      this.contentWrapper = Utils.createElement('div', { className: 'neiki-content-wrapper' });
+
+      this.contentArea = Utils.createElement('div', {
+        className: 'neiki-content',
+        contentEditable: !this.config.readonly,
+        spellcheck: this.config.spellcheck,
+        'data-placeholder': this.config.placeholder
+      });
+
+      if (this.config.minHeight) {
+        this.contentArea.style.minHeight = this.config.minHeight + 'px';
+      }
+      if (this.config.maxHeight) {
+        this.contentArea.style.maxHeight = this.config.maxHeight + 'px';
+        this.contentArea.style.overflowY = 'auto';
+      }
+
+      // Check if autosave is enabled AND has saved content
+      const autosaveEnabled = this.storage.get('autosave_enabled', false);
+      const autosavedContent = this.storage.get('autosave_content', null);
+
+      if (autosaveEnabled && autosavedContent) {
+        // Restore autosaved content only if autosave was enabled
+        this.contentArea.innerHTML = autosavedContent;
+      } else {
+        // Always use original element content (textarea value or innerHTML)
+        // This ensures the page's actual content is shown, not old localStorage data
+        if (this.originalElement.value) {
+          this.contentArea.innerHTML = this.originalElement.value;
+        } else if (this.originalElement.innerHTML.trim()) {
+          this.contentArea.innerHTML = this.originalElement.innerHTML;
         }
-        this.contentArea.focus();
-        this.execCommand(type, customInput.value);
-        btn.querySelector('.neiki-color-indicator').style.background = customInput.value;
-        dropdown.classList.remove('show');
-        savedSelection = null;
+      }
+
+      this.contentWrapper.appendChild(this.contentArea);
+
+      // Code view overlay
+      this.isCodeViewOpen = false;
+      this.codeView = Utils.createElement('div', { className: 'neiki-code-view' });
+      const codeViewHeader = Utils.createElement('div', { className: 'neiki-code-view-header' });
+      const codeViewTitle = Utils.createElement('span', {
+        className: 'neiki-code-view-title',
+        textContent: 'HTML Source'
       });
-      customDiv.appendChild(customInput);
-
-      dropdown.appendChild(grid);
-      dropdown.appendChild(customDiv);
-
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        savedSelection = this.saveSelection();
-        this.closeAllDropdowns();
-        dropdown.classList.toggle('show');
+      const codeViewApply = Utils.createElement('button', {
+        className: 'neiki-btn neiki-code-view-apply',
+        type: 'button',
+        title: 'Apply changes and close'
       });
-
-      wrapper.appendChild(btn);
-      wrapper.appendChild(dropdown);
-
-      return wrapper;
-    }
-
-    createEmojiPicker() {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'neiki-color-picker-wrapper';
-      let savedSelection = null;
-
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'neiki-btn';
-      btn.setAttribute('data-tooltip', tooltips.emoji);
-      btn.innerHTML = icons.emoji;
-
-      const dropdown = document.createElement('div');
-      dropdown.className = 'neiki-emoji-dropdown';
-
-      const grid = document.createElement('div');
-      grid.className = 'neiki-emoji-grid';
-
-      this.config.emojis.forEach(emoji => {
-        const item = document.createElement('span');
-        item.className = 'neiki-emoji-item';
-        item.textContent = emoji;
-        item.addEventListener('click', () => {
-          if (savedSelection) {
-            this.restoreSelection(savedSelection);
-          }
-          this.contentArea.focus();
-          this.insertHTML(emoji);
-          dropdown.classList.remove('show');
-          savedSelection = null;
-        });
-        grid.appendChild(item);
+      codeViewApply.innerHTML = Icons.close + '<span style="margin-left:5px;font-size:12px;font-weight:500;">Apply & Close</span>';
+      codeViewApply.addEventListener('click', () => this.toggleCodeView());
+      codeViewHeader.appendChild(codeViewTitle);
+      codeViewHeader.appendChild(codeViewApply);
+      this.codeViewTextarea = Utils.createElement('textarea', {
+        className: 'neiki-code-view-textarea',
+        spellcheck: 'false'
       });
+      this.codeView.appendChild(codeViewHeader);
+      this.codeView.appendChild(this.codeViewTextarea);
+      this.contentWrapper.appendChild(this.codeView);
 
-      dropdown.appendChild(grid);
-
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        savedSelection = this.saveSelection();
-        this.closeAllDropdowns();
-        dropdown.classList.toggle('show');
-      });
-
-      wrapper.appendChild(btn);
-      wrapper.appendChild(dropdown);
-
-      return wrapper;
+      this.container.appendChild(this.contentWrapper);
     }
 
-    createThemeToggle() {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'neiki-btn neiki-theme-toggle';
-      btn.setAttribute('data-tooltip', tooltips.toggleTheme);
-      btn.innerHTML = this.config.theme === 'dark' ? icons.themeLight : icons.themeDark;
-
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const newTheme = this.config.theme === 'dark' ? 'light' : 'dark';
-        this.setTheme(newTheme);
-        localStorage.setItem('neiki-editor-theme', newTheme);
-        btn.innerHTML = newTheme === 'dark' ? icons.themeLight : icons.themeDark;
-      });
-
-      return btn;
-    }
-
-    createSpecialCharPicker() {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'neiki-color-picker-wrapper';
-      let savedSelection = null;
-
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'neiki-btn';
-      btn.setAttribute('data-tooltip', tooltips.specialChar);
-      btn.innerHTML = icons.specialChar;
-
-      const dropdown = document.createElement('div');
-      dropdown.className = 'neiki-special-dropdown';
-
-      const grid = document.createElement('div');
-      grid.className = 'neiki-special-grid';
-
-      this.config.specialChars.forEach(char => {
-        const item = document.createElement('span');
-        item.className = 'neiki-special-item';
-        item.textContent = char;
-        item.addEventListener('click', () => {
-          if (savedSelection) {
-            this.restoreSelection(savedSelection);
-          }
-          this.contentArea.focus();
-          this.insertHTML(char);
-          dropdown.classList.remove('show');
-          savedSelection = null;
-        });
-        grid.appendChild(item);
-      });
-
-      dropdown.appendChild(grid);
-
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        savedSelection = this.saveSelection();
-        this.closeAllDropdowns();
-        dropdown.classList.toggle('show');
-      });
-
-      wrapper.appendChild(btn);
-      wrapper.appendChild(dropdown);
-
-      return wrapper;
-    }
-
-    createFindReplaceBar() {
-      const bar = document.createElement('div');
-      bar.className = 'neiki-find-replace';
-      bar.innerHTML = `
-                <input type="text" placeholder="Najít..." class="neiki-find-input">
-                <input type="text" placeholder="Nahradit..." class="neiki-replace-input">
-                <button type="button" class="neiki-find-btn">Najít</button>
-                <button type="button" class="neiki-replace-btn">Nahradit</button>
-                <button type="button" class="neiki-replace-all-btn">Nahradit vše</button>
-                <button type="button" class="close-find">${icons.close}</button>
-            `;
-
-      bar.querySelector('.neiki-find-btn').addEventListener('click', () => this.findText());
-      bar.querySelector('.neiki-replace-btn').addEventListener('click', () => this.replaceText());
-      bar.querySelector('.neiki-replace-all-btn').addEventListener('click', () => this.replaceAllText());
-      bar.querySelector('.close-find').addEventListener('click', () => bar.classList.remove('show'));
-
-      return bar;
-    }
-
-    createStatusBar() {
-      const statusBar = document.createElement('div');
-      statusBar.className = 'neiki-statusbar';
-      statusBar.innerHTML = `
-                <div class="neiki-statusbar-left">
-                    <span class="neiki-word-count">Slova: 0</span>
-                    <span class="neiki-char-count">Znaky: 0</span>
-                </div>
-                <div class="neiki-statusbar-right">
-                    <span class="neiki-path"></span>
-                </div>
-            `;
-      return statusBar;
-    }
-
-    createModals() {
-      // Link Modal
-      this.linkModal = this.createModal('Vložit odkaz', `
-                <div class="neiki-form-group">
-                    <label class="neiki-form-label">URL adresa</label>
-                    <input type="url" class="neiki-form-input" id="neiki-link-url" placeholder="https://example.com">
-                </div>
-                <div class="neiki-form-group">
-                    <label class="neiki-form-label">Text odkazu</label>
-                    <input type="text" class="neiki-form-input" id="neiki-link-text" placeholder="Klikněte zde">
-                </div>
-                <div class="neiki-form-group">
-                    <label class="neiki-form-label">
-                        <input type="checkbox" id="neiki-link-blank"> Otevřít v novém okně
-                    </label>
-                </div>
-            `, () => this.insertLink());
-
-      // Image Modal
-      this.imageModal = this.createModal('Vložit obrázek', `
-                <div class="neiki-form-group">
-                    <label class="neiki-form-label">URL obrázku</label>
-                    <input type="url" class="neiki-form-input" id="neiki-image-url" placeholder="https://example.com/image.jpg">
-                </div>
-                <div class="neiki-form-group">
-                    <label class="neiki-form-label">Alternativní text</label>
-                    <input type="text" class="neiki-form-input" id="neiki-image-alt" placeholder="Popis obrázku">
-                </div>
-                <div class="neiki-form-group">
-                    <label class="neiki-form-label">Šířka (px)</label>
-                    <input type="number" class="neiki-form-input" id="neiki-image-width" placeholder="Auto">
-                </div>
-            `, () => this.insertImage());
-
-      // Table Modal
-      this.tableModal = this.createModal('Vložit tabulku', `
-                <div class="neiki-form-group">
-                    <label class="neiki-form-label">Počet řádků</label>
-                    <input type="number" class="neiki-form-input" id="neiki-table-rows" value="3" min="1" max="20">
-                </div>
-                <div class="neiki-form-group">
-                    <label class="neiki-form-label">Počet sloupců</label>
-                    <input type="number" class="neiki-form-input" id="neiki-table-cols" value="3" min="1" max="10">
-                </div>
-                <div class="neiki-form-group">
-                    <label class="neiki-form-label">
-                        <input type="checkbox" id="neiki-table-header" checked> Záhlaví tabulky
-                    </label>
-                </div>
-            `, () => this.insertTable());
-
-      document.body.appendChild(this.linkModal);
-      document.body.appendChild(this.imageModal);
-      document.body.appendChild(this.tableModal);
-    }
-
-    createModal(title, content, onConfirm) {
-      const overlay = document.createElement('div');
-      overlay.className = 'neiki-modal-overlay';
-      overlay.innerHTML = `
-                <div class="neiki-modal">
-                    <div class="neiki-modal-header">
-                        <h3 class="neiki-modal-title">${title}</h3>
-                        <button type="button" class="neiki-modal-close">&times;</button>
-                    </div>
-                    <div class="neiki-modal-body">${content}</div>
-                    <div class="neiki-modal-footer">
-                        <button type="button" class="neiki-button neiki-button-secondary neiki-modal-cancel">Zrušit</button>
-                        <button type="button" class="neiki-button neiki-button-primary neiki-modal-confirm">Vložit</button>
-                    </div>
-                </div>
-            `;
-
-      overlay.querySelector('.neiki-modal-close').addEventListener('click', () => this.closeModal(overlay));
-      overlay.querySelector('.neiki-modal-cancel').addEventListener('click', () => this.closeModal(overlay));
-      overlay.querySelector('.neiki-modal-confirm').addEventListener('click', () => {
-        onConfirm();
-        this.closeModal(overlay);
-      });
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) this.closeModal(overlay);
-      });
-
-      return overlay;
-    }
-
-    openModal(modal) {
-      modal.classList.add('show');
-      const firstInput = modal.querySelector('input');
-      if (firstInput) firstInput.focus();
-    }
-
-    closeModal(modal) {
-      modal.classList.remove('show');
-    }
-
-    attachEvents() {
+    bindEvents() {
       // Content changes
-      this.contentArea.addEventListener('input', () => {
-        this.updateStats();
-        this.syncToElement();
-        this.saveState();
-        if (this.config.onChange) {
-          this.config.onChange(this.getContent());
+      this.contentArea.addEventListener('input', Utils.debounce(() => {
+        this.history.record();
+        this.syncToOriginal();
+        this.triggerChange();
+        this.updateStatusBar();
+      }, 300));
+
+      // Selection changes
+      document.addEventListener('selectionchange', () => {
+        if (this.contentArea.contains(document.activeElement) ||
+          document.activeElement === this.contentArea) {
+          this.updateToolbar();
+          this.updateStatusBar();
         }
+      });
+
+      // Focus/Blur
+      this.contentArea.addEventListener('focus', () => {
+        this.container.classList.add('neiki-focused');
+        if (this.config.onFocus) this.config.onFocus(this);
+      });
+
+      this.contentArea.addEventListener('blur', () => {
+        this.container.classList.remove('neiki-focused');
+        if (this.config.onBlur) this.config.onBlur(this);
       });
 
       // Keyboard shortcuts
-      this.contentArea.addEventListener('keydown', (e) => this.handleKeyboard(e));
+      this.contentArea.addEventListener('keydown', (e) => this.handleKeydown(e));
 
       // Paste handling
       this.contentArea.addEventListener('paste', (e) => this.handlePaste(e));
-
-      // Source editor sync
-      this.sourceEditor.addEventListener('input', () => {
-        this.syncToElement();
-      });
-
-      // Close dropdowns on outside click
-      document.addEventListener('click', (e) => {
-        if (!e.target.closest('.neiki-color-picker-wrapper')) {
-          this.closeAllDropdowns();
-        }
-      });
-
-      // Update toolbar state
-      this.contentArea.addEventListener('keyup', () => this.updateToolbarState());
-      this.contentArea.addEventListener('mouseup', () => this.updateToolbarState());
-
-      // Initial stats
-      this.updateStats();
     }
 
-    handleKeyboard(e) {
+    handleToolbarClick(item, button) {
+      const config = TOOLBAR_ITEMS[item];
+      if (!config) return;
+
+      // Handle dropdowns
+      if (config.dropdown) {
+        this.dropdown.toggle(button, item);
+        return;
+      }
+
+      // Handle color pickers
+      if (config.picker === 'color') {
+        this.colorPicker.toggle(button, config.command);
+        return;
+      }
+
+      // Handle emoji picker
+      if (config.picker === 'emoji') {
+        this.emojiPicker.toggle(button);
+        return;
+      }
+
+      // Handle special chars picker
+      if (config.picker === 'specialChars') {
+        this.specialCharsPicker.toggle(button);
+        return;
+      }
+
+      // Handle modals
+      if (config.modal) {
+        const savedRange = Utils.saveSelection();
+        let data = {};
+
+        if (item === 'link') {
+          const sel = Utils.getSelection();
+          data.text = sel.toString();
+        }
+
+        this.modal.open(item, data);
+        Utils.restoreSelection(savedRange);
+        return;
+      }
+
+      // Handle fullscreen
+      if (item === 'fullscreen') {
+        this.toggleFullscreen();
+        return;
+      }
+
+      // Handle theme toggle
+      if (item === 'themeToggle') {
+        this.toggleTheme();
+        return;
+      }
+
+      // Handle regular commands
+      if (config.value) {
+        this.commands[config.command](config.value);
+      } else if (this.commands[config.command]) {
+        this.commands[config.command]();
+      } else {
+        this.commands.exec(config.command);
+      }
+    }
+
+    handleKeydown(e) {
+      // Ctrl/Cmd shortcuts
       if (e.ctrlKey || e.metaKey) {
         switch (e.key.toLowerCase()) {
           case 'b':
             e.preventDefault();
-            this.execCommand('bold');
+            this.commands.bold();
             break;
           case 'i':
             e.preventDefault();
-            this.execCommand('italic');
+            this.commands.italic();
             break;
           case 'u':
             e.preventDefault();
-            this.execCommand('underline');
+            this.commands.underline();
             break;
           case 'k':
             e.preventDefault();
-            this.openModal(this.linkModal);
+            this.modal.open('link', { text: Utils.getSelection().toString() });
             break;
           case 'z':
             e.preventDefault();
             if (e.shiftKey) {
-              this.redo();
+              this.commands.redo();
             } else {
-              this.undo();
+              this.commands.undo();
             }
             break;
           case 'y':
             e.preventDefault();
-            this.redo();
-            break;
-          case 'f':
-            e.preventDefault();
-            this.findReplaceBar.classList.toggle('show');
-            this.findReplaceBar.querySelector('.neiki-find-input').focus();
+            this.commands.redo();
             break;
         }
       }
@@ -767,483 +1768,950 @@
       // Tab handling
       if (e.key === 'Tab') {
         e.preventDefault();
-        this.insertHTML('&nbsp;&nbsp;&nbsp;&nbsp;');
+        if (e.shiftKey) {
+          this.commands.outdent();
+        } else {
+          this.commands.indent();
+        }
       }
     }
 
     handlePaste(e) {
+      // Get plain text and sanitize
       e.preventDefault();
-      const text = e.clipboardData.getData('text/html') || e.clipboardData.getData('text/plain');
 
-      // Clean HTML
-      const cleanHTML = this.cleanPastedHTML(text);
-      this.insertHTML(cleanHTML);
+      let text = '';
+      if (e.clipboardData) {
+        // Try to get HTML first
+        let html = e.clipboardData.getData('text/html');
+        if (html) {
+          text = Utils.sanitizeHTML(html);
+        } else {
+          text = e.clipboardData.getData('text/plain');
+          // Convert line breaks to <br>
+          text = text.replace(/\n/g, '<br>');
+        }
+      }
+
+      document.execCommand('insertHTML', false, text);
+      this.history.record();
+      this.triggerChange();
     }
 
-    cleanPastedHTML(html) {
-      const div = document.createElement('div');
-      div.innerHTML = html;
+    updateToolbar() {
+      Object.entries(this.toolbarButtons).forEach(([item, button]) => {
+        const config = TOOLBAR_ITEMS[item];
+        if (!config) return;
 
-      // Remove scripts and styles
-      div.querySelectorAll('script, style, meta, link').forEach(el => el.remove());
+        let isActive = false;
 
-      // Clean attributes
-      div.querySelectorAll('*').forEach(el => {
-        const allowedAttrs = ['href', 'src', 'alt', 'title', 'class', 'id', 'style'];
-        Array.from(el.attributes).forEach(attr => {
-          if (!allowedAttrs.includes(attr.name)) {
-            el.removeAttribute(attr.name);
+        try {
+          switch (config.command) {
+            case 'bold':
+            case 'italic':
+            case 'underline':
+            case 'strikeThrough':
+            case 'insertUnorderedList':
+            case 'insertOrderedList':
+              isActive = document.queryCommandState(config.command);
+              break;
+            case 'justifyLeft':
+            case 'justifyCenter':
+            case 'justifyRight':
+            case 'justifyFull':
+              isActive = document.queryCommandState(config.command);
+              break;
           }
-        });
+        } catch (e) {
+          // queryCommandState can throw in some browsers
+        }
+
+        button.classList.toggle('active', isActive);
       });
 
-      return div.innerHTML;
-    }
-
-    execCommand(command, value = null) {
-      this.contentArea.focus();
-
-      switch (command) {
-        case 'createLink':
-          this.savedSelection = this.saveSelection();
-          const selectedText = window.getSelection().toString();
-          document.getElementById('neiki-link-text').value = selectedText;
-          this.openModal(this.linkModal);
-          break;
-        case 'insertImage':
-          this.savedSelection = this.saveSelection();
-          this.openModal(this.imageModal);
-          break;
-        case 'insertTable':
-          this.savedSelection = this.saveSelection();
-          this.openModal(this.tableModal);
-          break;
-        case 'source':
-          this.toggleSourceMode();
-          break;
-        case 'fullscreen':
-          this.toggleFullscreen();
-          break;
-        case 'print':
-          this.printContent();
-          break;
-        case 'blockquote':
-          document.execCommand('formatBlock', false, 'blockquote');
-          break;
-        case 'insertHorizontalRule':
-          document.execCommand('insertHorizontalRule', false, null);
-          break;
-        case 'insertCode':
-          this.insertCodeBlock();
-          break;
-        case 'findReplace':
-          this.findReplaceBar.classList.toggle('show');
-          this.findReplaceBar.querySelector('.neiki-find-input').focus();
-          break;
-        case 'undo':
-          this.undo();
-          break;
-        case 'redo':
-          this.redo();
-          break;
-        case 'alignLeft':
-          document.execCommand('justifyLeft', false, null);
-          this.saveState();
-          break;
-        case 'alignCenter':
-          document.execCommand('justifyCenter', false, null);
-          this.saveState();
-          break;
-        case 'alignRight':
-          document.execCommand('justifyRight', false, null);
-          this.saveState();
-          break;
-        case 'alignJustify':
-          document.execCommand('justifyFull', false, null);
-          this.saveState();
-          break;
-        case 'foreColor':
-        case 'backColor':
-          if (value) {
-            document.execCommand(command, false, value);
-            this.saveState();
-          }
-          break;
-        default:
-          document.execCommand(command, false, value);
-          this.saveState();
+      // Update undo/redo states
+      if (this.toolbarButtons.undo) {
+        this.toolbarButtons.undo.disabled = !this.history.canUndo();
       }
-
-      this.updateToolbarState();
-      this.syncToElement();
-    }
-
-    insertLink() {
-      const url = document.getElementById('neiki-link-url').value;
-      const text = document.getElementById('neiki-link-text').value || url;
-      const blank = document.getElementById('neiki-link-blank').checked;
-
-      if (url) {
-        this.restoreSelection(this.savedSelection);
-        const target = blank ? ' target="_blank" rel="noopener noreferrer"' : '';
-        this.insertHTML(`<a href="${url}"${target}>${text}</a>`);
-        this.saveState();
+      if (this.toolbarButtons.redo) {
+        this.toolbarButtons.redo.disabled = !this.history.canRedo();
       }
-
-      document.getElementById('neiki-link-url').value = '';
-      document.getElementById('neiki-link-text').value = '';
-    }
-
-    insertImage() {
-      const url = document.getElementById('neiki-image-url').value;
-      const alt = document.getElementById('neiki-image-alt').value;
-      const width = document.getElementById('neiki-image-width').value;
-
-      if (url) {
-        this.restoreSelection(this.savedSelection);
-        const widthAttr = width ? ` width="${width}"` : '';
-        this.insertHTML(`<img src="${url}" alt="${alt}"${widthAttr}>`);
-        this.saveState();
+      // Update viewCode active state
+      if (this.toolbarButtons.viewCode) {
+        this.toolbarButtons.viewCode.classList.toggle('active', this.isCodeViewOpen);
       }
-
-      document.getElementById('neiki-image-url').value = '';
-      document.getElementById('neiki-image-alt').value = '';
-      document.getElementById('neiki-image-width').value = '';
-    }
-
-    insertTable() {
-      const rows = parseInt(document.getElementById('neiki-table-rows').value) || 3;
-      const cols = parseInt(document.getElementById('neiki-table-cols').value) || 3;
-      const hasHeader = document.getElementById('neiki-table-header').checked;
-
-      let html = '<table>';
-
-      for (let i = 0; i < rows; i++) {
-        html += '<tr>';
-        for (let j = 0; j < cols; j++) {
-          if (i === 0 && hasHeader) {
-            html += '<th>Záhlaví</th>';
-          } else {
-            html += '<td>Buňka</td>';
-          }
-        }
-        html += '</tr>';
+      // Update autosave active state
+      if (this.toolbarButtons.autosave) {
+        this.toolbarButtons.autosave.classList.toggle('active', this.isAutosaveEnabled);
       }
-
-      html += '</table>';
-
-      this.restoreSelection(this.savedSelection);
-      this.insertHTML(html);
-      this.saveState();
-    }
-
-    insertCodeBlock() {
-      const selection = window.getSelection();
-      const text = selection.toString() || 'Váš kód zde...';
-      this.insertHTML(`<pre><code>${text}</code></pre>`);
-      this.saveState();
-    }
-
-    insertHTML(html) {
-      this.contentArea.focus();
-      document.execCommand('insertHTML', false, html);
-    }
-
-    toggleSourceMode() {
-      this.isSourceMode = !this.isSourceMode;
-
-      if (this.isSourceMode) {
-        this.sourceEditor.value = this.formatHTML(this.contentArea.innerHTML);
-        this.contentArea.classList.add('hidden');
-        this.sourceEditor.classList.add('active');
-      } else {
-        this.contentArea.innerHTML = this.sourceEditor.value;
-        this.contentArea.classList.remove('hidden');
-        this.sourceEditor.classList.remove('active');
-        this.saveState();
-      }
-
-      const sourceBtn = this.toolbar.querySelector('[data-command="source"]');
-      if (sourceBtn) {
-        sourceBtn.classList.toggle('active', this.isSourceMode);
-      }
-    }
-
-    formatHTML(html) {
-      let formatted = '';
-      let indent = 0;
-      const tags = html.replace(/>\s*</g, '>\n<').split('\n');
-
-      tags.forEach(tag => {
-        if (tag.match(/^<\/\w/)) {
-          indent--;
-        }
-        formatted += '  '.repeat(Math.max(0, indent)) + tag + '\n';
-        if (tag.match(/^<\w[^>]*[^\/]>.*$/) && !tag.match(/^<(br|hr|img|input|meta|link)/i)) {
-          indent++;
-        }
-      });
-
-      return formatted.trim();
     }
 
     toggleFullscreen() {
       this.isFullscreen = !this.isFullscreen;
-      this.container.classList.toggle('neiki-editor-fullscreen', this.isFullscreen);
+      this.container.classList.toggle('neiki-fullscreen', this.isFullscreen);
+      document.body.classList.toggle('neiki-fullscreen-active', this.isFullscreen);
 
-      const btn = this.toolbar.querySelector('[data-command="fullscreen"]');
-      if (btn) {
-        btn.innerHTML = this.isFullscreen ? icons.exitFullscreen : icons.fullscreen;
-        btn.classList.toggle('active', this.isFullscreen);
+      if (this.toolbarButtons.fullscreen) {
+        this.toolbarButtons.fullscreen.classList.toggle('active', this.isFullscreen);
       }
     }
 
-    printContent() {
-      const printWindow = window.open('', '_blank');
-      printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Tisk</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; padding: 20px; }
-                        img { max-width: 100%; }
-                        table { border-collapse: collapse; width: 100%; }
-                        th, td { border: 1px solid #ccc; padding: 8px; }
-                    </style>
-                </head>
-                <body>${this.contentArea.innerHTML}</body>
-                </html>
-            `);
-      printWindow.document.close();
-      printWindow.print();
+    toggleTheme() {
+      const isDark = this.container.classList.contains('neiki-dark');
+      const newTheme = isDark ? 'light' : 'dark';
+
+      this.container.classList.toggle('neiki-dark', !isDark);
+      this.config.theme = newTheme;
+
+      // Persist theme choice
+      StorageManager.setGlobal('theme', newTheme);
+
+      // Update button icon and active state
+      if (this.toolbarButtons.themeToggle) {
+        this.toolbarButtons.themeToggle.innerHTML = isDark ? Icons.sun : Icons.moon;
+        this.toolbarButtons.themeToggle.classList.toggle('active', !isDark);
+        this.toolbarButtons.themeToggle.title = isDark ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+      }
     }
 
-    findText() {
-      const searchText = this.findReplaceBar.querySelector('.neiki-find-input').value;
-      if (!searchText) return;
-
-      if (window.find) {
-        window.find(searchText);
+    syncToOriginal() {
+      if (this.originalElement.tagName === 'TEXTAREA' ||
+        this.originalElement.tagName === 'INPUT') {
+        this.originalElement.value = this.getContent();
       } else {
-        // Fallback for browsers that don't support window.find
-        const content = this.contentArea.innerHTML;
-        const regex = new RegExp(`(${searchText})`, 'gi');
-        this.contentArea.innerHTML = content.replace(regex, '<mark>$1</mark>');
+        this.originalElement.innerHTML = this.getContent();
       }
     }
 
-    replaceText() {
-      const searchText = this.findReplaceBar.querySelector('.neiki-find-input').value;
-      const replaceText = this.findReplaceBar.querySelector('.neiki-replace-input').value;
-      if (!searchText) return;
-
-      const selection = window.getSelection();
-      if (selection.toString().toLowerCase() === searchText.toLowerCase()) {
-        document.execCommand('insertText', false, replaceText);
-        this.saveState();
-      }
-      this.findText();
-    }
-
-    replaceAllText() {
-      const searchText = this.findReplaceBar.querySelector('.neiki-find-input').value;
-      const replaceText = this.findReplaceBar.querySelector('.neiki-replace-input').value;
-      if (!searchText) return;
-
-      const content = this.contentArea.innerHTML;
-      const regex = new RegExp(searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-      this.contentArea.innerHTML = content.replace(regex, replaceText);
-      this.saveState();
-    }
-
-    saveSelection() {
-      const selection = window.getSelection();
-      if (selection.rangeCount > 0) {
-        return selection.getRangeAt(0).cloneRange();
-      }
-      return null;
-    }
-
-    restoreSelection(range) {
-      if (range) {
-        const selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
-    }
-
-    saveState() {
-      const content = this.contentArea.innerHTML;
-      if (this.undoStack.length === 0 || this.undoStack[this.undoStack.length - 1] !== content) {
-        this.undoStack.push(content);
-        if (this.undoStack.length > this.maxUndoLevels) {
-          this.undoStack.shift();
-        }
-        this.redoStack = [];
-      }
-    }
-
-    undo() {
-      if (this.undoStack.length > 1) {
-        this.redoStack.push(this.undoStack.pop());
-        this.contentArea.innerHTML = this.undoStack[this.undoStack.length - 1];
-        this.syncToElement();
-      }
-    }
-
-    redo() {
-      if (this.redoStack.length > 0) {
-        const content = this.redoStack.pop();
-        this.undoStack.push(content);
-        this.contentArea.innerHTML = content;
-        this.syncToElement();
-      }
-    }
-
-    updateToolbarState() {
-      const commands = ['bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript'];
-      commands.forEach(cmd => {
-        const btn = this.toolbar.querySelector(`[data-command="${cmd}"]`);
-        if (btn) {
-          btn.classList.toggle('active', document.queryCommandState(cmd));
-        }
-      });
-
-      // Update alignment
-      const alignments = [
-        { justify: 'justifyLeft', align: 'alignLeft' },
-        { justify: 'justifyCenter', align: 'alignCenter' },
-        { justify: 'justifyRight', align: 'alignRight' },
-        { justify: 'justifyFull', align: 'alignJustify' }
-      ];
-      alignments.forEach(mapping => {
-        const btn = this.toolbar.querySelector(`[data-command="${mapping.align}"]`);
-        if (btn) {
-          btn.classList.toggle('active', document.queryCommandState(mapping.justify));
-        }
-      });
-
-      // Update foreColor button indicator
-      const foreColorBtn = this.toolbar.querySelector('.neiki-color-btn[data-type="foreColor"]');
-      if (foreColorBtn) {
-        const indicator = foreColorBtn.querySelector('.neiki-color-indicator');
-        if (indicator) {
-          const color = document.queryCommandValue('foreColor');
-          if (color && color !== '') {
-            indicator.style.backgroundColor = color;
-          }
-        }
+    triggerChange() {
+      if (this.config.onChange) {
+        this.config.onChange(this.getContent(), this);
       }
 
-      // Update backColor button indicator
-      const backColorBtn = this.toolbar.querySelector('.neiki-color-btn[data-type="backColor"]');
-      if (backColorBtn) {
-        const indicator = backColorBtn.querySelector('.neiki-color-indicator');
-        if (indicator) {
-          const color = document.queryCommandValue('backColor');
-          if (color && color !== '') {
-            indicator.style.backgroundColor = color;
-          }
-        }
-      }
-
-      // Update path
-      this.updatePath();
+      // Dispatch custom event
+      this.container.dispatchEvent(new CustomEvent('neiki:change', {
+        detail: { content: this.getContent(), editor: this }
+      }));
     }
 
-    updatePath() {
-      const selection = window.getSelection();
-      if (!selection.rangeCount) return;
+    // ============================================
+    // PUBLIC API
+    // ============================================
 
-      let node = selection.anchorNode;
-      const path = [];
-
-      while (node && node !== this.contentArea) {
-        if (node.nodeType === 1) {
-          path.unshift(node.tagName.toLowerCase());
-        }
-        node = node.parentNode;
-      }
-
-      const pathEl = this.statusBar.querySelector('.neiki-path');
-      if (pathEl) {
-        pathEl.textContent = path.join(' > ');
-      }
-    }
-
-    updateStats() {
-      const text = this.contentArea.innerText || '';
-      const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
-      const chars = text.length;
-
-      const wordCount = this.statusBar.querySelector('.neiki-word-count');
-      const charCount = this.statusBar.querySelector('.neiki-char-count');
-
-      if (wordCount) wordCount.textContent = `Slova: ${words}`;
-      if (charCount) charCount.textContent = `Znaky: ${chars}`;
-    }
-
-    syncToElement() {
-      if (this.element.tagName === 'TEXTAREA' || this.element.tagName === 'INPUT') {
-        this.element.value = this.isSourceMode ? this.sourceEditor.value : this.contentArea.innerHTML;
-      } else {
-        this.element.innerHTML = this.isSourceMode ? this.sourceEditor.value : this.contentArea.innerHTML;
-      }
-    }
-
-    closeAllDropdowns() {
-      this.container.querySelectorAll('.neiki-color-dropdown, .neiki-emoji-dropdown, .neiki-special-dropdown').forEach(d => {
-        d.classList.remove('show');
-      });
-    }
-
-    // Public API
     getContent() {
-      return this.isSourceMode ? this.sourceEditor.value : this.contentArea.innerHTML;
+      return this.contentArea.innerHTML;
     }
 
     setContent(html) {
-      this.contentArea.innerHTML = html;
-      this.sourceEditor.value = this.formatHTML(html);
-      this.syncToElement();
-      this.saveState();
+      this.contentArea.innerHTML = Utils.sanitizeHTML(html);
+      this.syncToOriginal();
     }
 
     getText() {
-      return this.contentArea.innerText;
+      return this.contentArea.textContent || this.contentArea.innerText;
     }
 
-    clear() {
-      this.setContent('<p><br></p>');
+    isEmpty() {
+      const text = this.getText().trim();
+      return text === '' || text === '\n';
     }
 
     focus() {
       this.contentArea.focus();
     }
 
+    blur() {
+      this.contentArea.blur();
+    }
+
+    enable() {
+      this.contentArea.contentEditable = 'true';
+      this.container.classList.remove('neiki-disabled');
+    }
+
+    disable() {
+      this.contentArea.contentEditable = 'false';
+      this.container.classList.add('neiki-disabled');
+    }
+
     destroy() {
+      this.modal.close();
+      this.dropdown.close();
+      this.colorPicker.close();
+
       this.container.remove();
-      this.element.style.display = '';
-      this.linkModal.remove();
-      this.imageModal.remove();
-      this.tableModal.remove();
+      this.originalElement.style.display = '';
+
+      if (this.modal.overlay) {
+        this.modal.overlay.remove();
+      }
     }
 
     setTheme(theme) {
       this.config.theme = theme;
-      this.container.classList.toggle('neiki-editor-dark', theme === 'dark');
+      this.container.classList.toggle('neiki-dark', theme === 'dark');
+      StorageManager.setGlobal('theme', theme);
     }
+
+    createStatusBar() {
+      this.statusBar = Utils.createElement('div', { className: 'neiki-statusbar' });
+      const left = Utils.createElement('div', { className: 'neiki-statusbar-left' });
+      const right = Utils.createElement('div', { className: 'neiki-statusbar-right' });
+
+      this.statusWordCount = Utils.createElement('span', {
+        className: 'neiki-statusbar-item',
+        textContent: '0 words'
+      });
+      this.statusCharCount = Utils.createElement('span', {
+        className: 'neiki-statusbar-item',
+        textContent: '0 chars'
+      });
+      this.statusBlockType = Utils.createElement('span', {
+        className: 'neiki-statusbar-item neiki-statusbar-block',
+        textContent: 'p'
+      });
+
+      left.appendChild(this.statusWordCount);
+      left.appendChild(this.statusCharCount);
+      right.appendChild(this.statusBlockType);
+      this.statusBar.appendChild(left);
+      this.statusBar.appendChild(right);
+      this.container.appendChild(this.statusBar);
+    }
+
+    updateStatusBar() {
+      if (!this.statusBar) return;
+      const text = this.getText().trim();
+      const words = text ? text.split(/\s+/).filter(w => w.length > 0).length : 0;
+      const chars = this.getText().length;
+      this.statusWordCount.textContent = words + (words === 1 ? ' word' : ' words');
+      this.statusCharCount.textContent = chars + (chars === 1 ? ' char' : ' chars');
+      this.statusBlockType.textContent = this.getCurrentBlockType();
+    }
+
+    getCurrentBlockType() {
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount) return 'p';
+      let node = sel.getRangeAt(0).startContainer;
+      if (node.nodeType === Node.TEXT_NODE) node = node.parentNode;
+      const blockTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'BLOCKQUOTE', 'PRE', 'LI', 'DIV'];
+      while (node && node !== this.contentArea) {
+        if (blockTags.includes(node.tagName)) return node.tagName.toLowerCase();
+        node = node.parentNode;
+      }
+      return 'div';
+    }
+
+    toggleCodeView() {
+      if (!this.isCodeViewOpen) {
+        this.codeViewTextarea.value = this.contentArea.innerHTML;
+        this.codeView.classList.add('show');
+        this.isCodeViewOpen = true;
+        this.codeViewTextarea.focus();
+        this._codeViewEsc = (e) => { if (e.key === 'Escape') this.toggleCodeView(); };
+        document.addEventListener('keydown', this._codeViewEsc);
+      } else {
+        this.contentArea.innerHTML = Utils.sanitizeHTML(this.codeViewTextarea.value);
+        this.codeView.classList.remove('show');
+        this.isCodeViewOpen = false;
+        this.history.record();
+        this.syncToOriginal();
+        this.triggerChange();
+        this.updateStatusBar();
+        if (this._codeViewEsc) {
+          document.removeEventListener('keydown', this._codeViewEsc);
+          this._codeViewEsc = null;
+        }
+      }
+      this.updateToolbar();
+    }
+
+    // ============================================
+    // AUTOSAVE METHODS
+    // ============================================
+
+    toggleAutosave() {
+      if (this.isAutosaveEnabled) {
+        this.disableAutosave();
+      } else {
+        this.enableAutosave();
+      }
+      this.updateToolbar();
+    }
+
+    enableAutosave() {
+      this.isAutosaveEnabled = true;
+      this.storage.set('autosave_enabled', true);
+      this.autosaveInterval = setInterval(() => {
+        this.storage.set('autosave_content', this.getContent());
+      }, 5000); // Save every 5 seconds
+      // Save immediately
+      this.storage.set('autosave_content', this.getContent());
+    }
+
+    disableAutosave() {
+      this.isAutosaveEnabled = false;
+      this.storage.set('autosave_enabled', false);
+      if (this.autosaveInterval) {
+        clearInterval(this.autosaveInterval);
+        this.autosaveInterval = null;
+      }
+    }
+
+    // ============================================
+    // PRINT METHOD
+    // ============================================
+
+    printContent() {
+      const printWindow = window.open('', '_blank');
+      const content = this.getContent();
+      printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Print</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+                        table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+                        td, th { border: 1px solid #ccc; padding: 8px; }
+                        img { max-width: 100%; }
+                        blockquote { border-left: 4px solid #ccc; margin: 1em 0; padding-left: 1em; font-style: italic; }
+                        pre { background: #f5f5f5; padding: 1em; overflow-x: auto; }
+                    </style>
+                </head>
+                <body>${content}</body>
+                </html>
+            `);
+      printWindow.document.close();
+      printWindow.focus();
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+      }, 250);
+    }
+
+    // ============================================
+    // JSON API
+    // ============================================
+
+    getJSON() {
+      const parseNode = (node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          return { type: 'text', content: node.textContent };
+        }
+        if (node.nodeType !== Node.ELEMENT_NODE) return null;
+
+        const result = {
+          type: node.tagName.toLowerCase(),
+          children: []
+        };
+
+        // Capture attributes
+        if (node.attributes.length > 0) {
+          result.attrs = {};
+          for (let attr of node.attributes) {
+            result.attrs[attr.name] = attr.value;
+          }
+        }
+
+        // Capture inline styles as separate object
+        if (node.style && node.style.cssText) {
+          result.style = node.style.cssText;
+        }
+
+        // Process children
+        for (let child of node.childNodes) {
+          const parsed = parseNode(child);
+          if (parsed) result.children.push(parsed);
+        }
+
+        return result;
+      };
+
+      const children = [];
+      for (let child of this.contentArea.childNodes) {
+        const parsed = parseNode(child);
+        if (parsed) children.push(parsed);
+      }
+
+      return {
+        version: '1.0',
+        content: children
+      };
+    }
+
+    setJSON(json) {
+      if (!json || !json.content) return;
+
+      const buildNode = (data) => {
+        if (data.type === 'text') {
+          return document.createTextNode(data.content || '');
+        }
+
+        const el = document.createElement(data.type);
+
+        // Set attributes
+        if (data.attrs) {
+          for (let [key, value] of Object.entries(data.attrs)) {
+            el.setAttribute(key, value);
+          }
+        }
+
+        // Set inline style
+        if (data.style) {
+          el.style.cssText = data.style;
+        }
+
+        // Build children
+        if (data.children) {
+          for (let child of data.children) {
+            const childNode = buildNode(child);
+            if (childNode) el.appendChild(childNode);
+          }
+        }
+
+        return el;
+      };
+
+      this.contentArea.innerHTML = '';
+      for (let child of json.content) {
+        const node = buildNode(child);
+        if (node) this.contentArea.appendChild(node);
+      }
+
+      this.history.record();
+      this.syncToOriginal();
+      this.triggerChange();
+      this.updateStatusBar();
+    }
+
+    getHTML() {
+      return this.getContent();
+    }
+
+    setHTML(html) {
+      this.setContent(html);
+    }
+
+    // ============================================
+    // PLUGIN SUPPORT
+    // ============================================
+
+    initPlugins() {
+      const plugins = NeikiEditor.getPlugins();
+      plugins.forEach(plugin => {
+        try {
+          // Add plugin button to toolbar if it has icon
+          if (plugin.icon && plugin.action) {
+            const button = Utils.createElement('button', {
+              className: 'neiki-toolbar-btn neiki-plugin-btn',
+              title: plugin.tooltip || plugin.name,
+              type: 'button',
+              innerHTML: plugin.icon,
+              'data-plugin': plugin.name
+            });
+
+            button.addEventListener('click', (e) => {
+              e.preventDefault();
+              plugin.action(this);
+            });
+
+            this.toolbar.appendChild(button);
+          }
+
+          // Call plugin init if exists
+          if (plugin.init) {
+            plugin.init(this);
+          }
+        } catch (err) {
+          console.error(`NeikiEditor: Plugin "${plugin.name}" failed to initialize`, err);
+        }
+      });
+    }
+
+    // Plugin API methods
+    insertHTML(html) {
+      this.commands.insertHTML(html);
+    }
+
+    getSelection() {
+      return Utils.getSelection();
+    }
+
+    wrapSelection(tagName, attributes = {}) {
+      const sel = window.getSelection();
+      if (!sel.rangeCount || sel.getRangeAt(0).collapsed) return;
+
+      const range = sel.getRangeAt(0);
+      const wrapper = document.createElement(tagName);
+
+      Object.entries(attributes).forEach(([key, value]) => {
+        wrapper.setAttribute(key, value);
+      });
+
+      try {
+        range.surroundContents(wrapper);
+        this.history.record();
+        this.triggerChange();
+      } catch (e) {
+        // surroundContents fails if selection crosses element boundaries
+        const fragment = range.extractContents();
+        wrapper.appendChild(fragment);
+        range.insertNode(wrapper);
+        this.history.record();
+        this.triggerChange();
+      }
+    }
+
+    unwrapSelection(tagName) {
+      const sel = window.getSelection();
+      if (!sel.rangeCount) return;
+
+      const range = sel.getRangeAt(0);
+      let node = range.commonAncestorContainer;
+      if (node.nodeType === Node.TEXT_NODE) node = node.parentNode;
+
+      const wrapper = node.closest(tagName);
+      if (wrapper && this.contentArea.contains(wrapper)) {
+        const parent = wrapper.parentNode;
+        while (wrapper.firstChild) {
+          parent.insertBefore(wrapper.firstChild, wrapper);
+        }
+        parent.removeChild(wrapper);
+        this.history.record();
+        this.triggerChange();
+      }
+    }
+
+    execCommand(command, value = null) {
+      this.commands.exec(command, value);
+    }
+
+    // ============================================
+    // DRAG & DROP
+    // ============================================
+
+    initDragDrop() {
+      let dragCounter = 0;
+
+      this.contentArea.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        dragCounter++;
+        this.contentArea.classList.add('neiki-drag-over');
+      });
+
+      this.contentArea.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dragCounter--;
+        if (dragCounter === 0) {
+          this.contentArea.classList.remove('neiki-drag-over');
+        }
+      });
+
+      this.contentArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+      });
+
+      this.contentArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dragCounter = 0;
+        this.contentArea.classList.remove('neiki-drag-over');
+
+        const files = Array.from(e.dataTransfer.files);
+        const imageFiles = files.filter(file => file.type.startsWith('image/'));
+
+        if (imageFiles.length > 0) {
+          // Get cursor position from drop event
+          const dropX = e.clientX;
+          const dropY = e.clientY;
+
+          imageFiles.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (readerEvent) => {
+              // Set cursor position at drop location
+              const range = document.caretRangeFromPoint(dropX, dropY);
+              if (range) {
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+              }
+
+              this.commands.insertImage(readerEvent.target.result, file.name, '');
+            };
+            reader.readAsDataURL(file);
+          });
+        }
+      });
+    }
+  }
+
+  // ============================================
+  // SECTION 10: FLOATING SELECTION TOOLBAR
+  // ============================================
+
+  class FloatingToolbar {
+    constructor(editor) {
+      this.editor = editor;
+      this.toolbar = null;
+      this.isVisible = false;
+      this.hideTimeout = null;
+
+      this.createToolbar();
+      this.bindEvents();
+    }
+
+    createToolbar() {
+      this.toolbar = Utils.createElement('div', { className: 'neiki-floating-toolbar' });
+
+      const buttons = [
+        { item: 'bold', icon: Icons.bold, title: 'Bold' },
+        { item: 'italic', icon: Icons.italic, title: 'Italic' },
+        { item: 'underline', icon: Icons.underline, title: 'Underline' },
+        { item: 'strikeThrough', icon: Icons.strikethrough, title: 'Strikethrough' },
+        { item: 'link', icon: Icons.link, title: 'Link' }
+      ];
+
+      buttons.forEach(({ item, icon, title }) => {
+        const button = Utils.createElement('button', {
+          className: 'neiki-toolbar-btn neiki-floating-btn',
+          title: title,
+          type: 'button',
+          innerHTML: icon,
+          'data-command': item
+        });
+
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.handleButtonClick(item);
+        });
+
+        this.toolbar.appendChild(button);
+      });
+
+      document.body.appendChild(this.toolbar);
+    }
+
+    bindEvents() {
+      document.addEventListener('selectionchange', () => {
+        clearTimeout(this.hideTimeout);
+        this.hideTimeout = setTimeout(() => this.updatePosition(), 100);
+      });
+
+      document.addEventListener('mouseup', () => {
+        setTimeout(() => this.updatePosition(), 10);
+      });
+
+      document.addEventListener('scroll', () => {
+        if (this.isVisible) this.updatePosition();
+      });
+    }
+
+    updatePosition() {
+      const sel = window.getSelection();
+
+      if (!sel.rangeCount || sel.isCollapsed || !this.editor.contentArea.contains(sel.anchorNode)) {
+        this.hide();
+        return;
+      }
+
+      const range = sel.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+
+      if (rect.width === 0 && rect.height === 0) {
+        this.hide();
+        return;
+      }
+
+      this.show();
+
+      const toolbarRect = this.toolbar.getBoundingClientRect();
+      const x = rect.left + (rect.width / 2) - (toolbarRect.width / 2);
+      const y = rect.top - toolbarRect.height - 10;
+
+      // Keep toolbar within viewport
+      const finalX = Math.max(10, Math.min(x, window.innerWidth - toolbarRect.width - 10));
+      const finalY = Math.max(10, y);
+
+      this.toolbar.style.left = finalX + 'px';
+      this.toolbar.style.top = finalY + 'px';
+    }
+
+    show() {
+      if (!this.isVisible) {
+        this.toolbar.classList.add('show');
+        this.isVisible = true;
+      }
+    }
+
+    hide() {
+      if (this.isVisible) {
+        this.toolbar.classList.remove('show');
+        this.isVisible = false;
+      }
+    }
+
+    handleButtonClick(item) {
+      if (item === 'link') {
+        const sel = Utils.getSelection();
+        this.editor.modal.open('link', { text: sel.toString() });
+      } else {
+        this.editor.commands[item]();
+      }
+      this.hide();
+    }
+  }
+
+  // ============================================
+  // SECTION 11: PLUGIN SYSTEM
+  // ============================================
+
+  const registeredPlugins = [];
+
+  NeikiEditor.registerPlugin = function (plugin) {
+    if (!plugin.name) {
+      console.error('NeikiEditor: Plugin must have a name');
+      return;
+    }
+    registeredPlugins.push(plugin);
+  };
+
+  NeikiEditor.getPlugins = function () {
+    return [...registeredPlugins];
+  };
+
+  // ============================================
+  // SECTION 11: TABLE CONTEXT MENU
+  // ============================================
+
+  class TableContextMenu {
+    constructor(editor) {
+      this.editor = editor;
+      this.menu = null;
+      this.currentCell = null;
+
+      this.createMenu();
+      this.bindEvents();
+    }
+
+    createMenu() {
+      this.menu = Utils.createElement('div', { className: 'neiki-context-menu' });
+      this.menu.innerHTML = `
+                <div class="neiki-context-item" data-action="insertRowAbove">${Icons.table} Insert Row Above</div>
+                <div class="neiki-context-item" data-action="insertRowBelow">${Icons.table} Insert Row Below</div>
+                <div class="neiki-context-item" data-action="insertColLeft">${Icons.table} Insert Column Left</div>
+                <div class="neiki-context-item" data-action="insertColRight">${Icons.table} Insert Column Right</div>
+                <div class="neiki-context-divider"></div>
+                <div class="neiki-context-item" data-action="deleteRow">${Icons.eraser} Delete Row</div>
+                <div class="neiki-context-item" data-action="deleteCol">${Icons.eraser} Delete Column</div>
+                <div class="neiki-context-item neiki-context-danger" data-action="deleteTable">${Icons.eraser} Delete Table</div>
+                <div class="neiki-context-divider"></div>
+                <div class="neiki-context-item" data-action="mergeCells">${Icons.table} Merge Cells</div>
+                <div class="neiki-context-item" data-action="splitCell">${Icons.table} Split Cell</div>
+            `;
+      document.body.appendChild(this.menu);
+
+      this.menu.querySelectorAll('.neiki-context-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+          const action = item.dataset.action;
+          this.executeAction(action);
+          this.hide();
+        });
+      });
+    }
+
+    bindEvents() {
+      this.editor.contentArea.addEventListener('contextmenu', (e) => {
+        const cell = e.target.closest('td, th');
+        if (cell) {
+          e.preventDefault();
+          this.currentCell = cell;
+          this.show(e.clientX, e.clientY);
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!this.menu.contains(e.target)) {
+          this.hide();
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') this.hide();
+      });
+    }
+
+    show(x, y) {
+      this.menu.style.display = 'block';
+
+      // Adjust position to stay within viewport
+      const rect = this.menu.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      if (x + rect.width > viewportWidth) {
+        x = viewportWidth - rect.width - 10;
+      }
+      if (y + rect.height > viewportHeight) {
+        y = viewportHeight - rect.height - 10;
+      }
+
+      this.menu.style.left = x + 'px';
+      this.menu.style.top = y + 'px';
+    }
+
+    hide() {
+      this.menu.style.display = 'none';
+      this.currentCell = null;
+    }
+
+    executeAction(action) {
+      if (!this.currentCell) return;
+
+      const table = this.currentCell.closest('table');
+      const row = this.currentCell.closest('tr');
+      if (!table || !row) return;
+
+      const rowIndex = Array.from(table.rows).indexOf(row);
+      const cellIndex = Array.from(row.cells).indexOf(this.currentCell);
+
+      switch (action) {
+        case 'insertRowAbove':
+          this.insertRow(table, rowIndex, 'before');
+          break;
+        case 'insertRowBelow':
+          this.insertRow(table, rowIndex, 'after');
+          break;
+        case 'insertColLeft':
+          this.insertColumn(table, cellIndex, 'before');
+          break;
+        case 'insertColRight':
+          this.insertColumn(table, cellIndex, 'after');
+          break;
+        case 'deleteRow':
+          this.deleteRow(table, rowIndex);
+          break;
+        case 'deleteCol':
+          this.deleteColumn(table, cellIndex);
+          break;
+        case 'deleteTable':
+          table.remove();
+          break;
+        case 'mergeCells':
+          this.mergeCells();
+          break;
+        case 'splitCell':
+          this.splitCell();
+          break;
+      }
+
+      this.editor.history.record();
+      this.editor.triggerChange();
+    }
+
+    insertRow(table, index, position) {
+      const refRow = table.rows[index];
+      const colCount = refRow.cells.length;
+      const newRow = table.insertRow(position === 'before' ? index : index + 1);
+
+      for (let i = 0; i < colCount; i++) {
+        const cell = newRow.insertCell();
+        cell.innerHTML = '&nbsp;';
+      }
+    }
+
+    insertColumn(table, index, position) {
+      const insertIndex = position === 'before' ? index : index + 1;
+
+      for (let row of table.rows) {
+        const cell = row.insertCell(insertIndex);
+        cell.innerHTML = '&nbsp;';
+        // Match header/cell type
+        if (row.cells[0] && row.cells[0].tagName === 'TH') {
+          const th = document.createElement('th');
+          th.innerHTML = '&nbsp;';
+          cell.parentNode.replaceChild(th, cell);
+        }
+      }
+    }
+
+    deleteRow(table, index) {
+      if (table.rows.length > 1) {
+        table.deleteRow(index);
+      }
+    }
+
+    deleteColumn(table, index) {
+      for (let row of table.rows) {
+        if (row.cells.length > 1 && row.cells[index]) {
+          row.deleteCell(index);
+        }
+      }
+    }
+
+    mergeCells() {
+      const sel = window.getSelection();
+      if (!sel.rangeCount) return;
+
+      // Simple merge: just add colspan/rowspan info
+      // Full implementation would need selection tracking
+      const cell = this.currentCell;
+      const colspan = parseInt(cell.getAttribute('colspan') || 1);
+      cell.setAttribute('colspan', colspan + 1);
+
+      // Remove next cell if exists
+      const nextCell = cell.nextElementSibling;
+      if (nextCell && (nextCell.tagName === 'TD' || nextCell.tagName === 'TH')) {
+        cell.innerHTML += ' ' + nextCell.innerHTML;
+        nextCell.remove();
+      }
+    }
+
+    splitCell() {
+      const cell = this.currentCell;
+      const colspan = parseInt(cell.getAttribute('colspan') || 1);
+
+      if (colspan > 1) {
+        cell.setAttribute('colspan', colspan - 1);
+        const newCell = document.createElement(cell.tagName);
+        newCell.innerHTML = '&nbsp;';
+        cell.after(newCell);
+      }
+    }
+  }
+
+  // ============================================
+  // SECTION 12: EXPORT
+  // ============================================
+
+  // Factory function
+  function createEditor(element, options) {
+    return new NeikiEditor(element, options);
+  }
+
+  // jQuery-like initialization
+  if (typeof jQuery !== 'undefined') {
+    jQuery.fn.neikiEditor = function (options) {
+      return this.each(function () {
+        if (!jQuery.data(this, 'neikiEditor')) {
+          jQuery.data(this, 'neikiEditor', new NeikiEditor(this, options));
+        }
+      });
+    };
   }
 
   // Export
   global.NeikiEditor = NeikiEditor;
+  global.createNeikiEditor = createEditor;
 
-  // Auto-init
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-neiki-editor]').forEach(el => {
-      new NeikiEditor(el);
-    });
-  });
+  // AMD
+  if (typeof define === 'function' && define.amd) {
+    define('NeikiEditor', [], function () { return NeikiEditor; });
+  }
+
+  // CommonJS
+  if (typeof module === 'object' && module.exports) {
+    module.exports = NeikiEditor;
+  }
 
 })(typeof window !== 'undefined' ? window : this);
