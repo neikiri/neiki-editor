@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neiki's HTML Editor</title>
-    <link rel="stylesheet" href="../dist/neiki-editor.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.2.1/dist/neiki-editor.css">
     <style>
         * {
             margin: 0;
@@ -108,6 +108,80 @@
         .header-btn.btn-danger:hover {
             background: #7f1d1d;
             border-color: #991b1b;
+        }
+
+        /* ── Hamburger Menu ── */
+        .hamburger-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #e2e8f0;
+            cursor: pointer;
+            padding: 8px;
+            margin-left: auto;
+        }
+
+        .hamburger-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 65px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #1e1e1e;
+            z-index: 9999;
+            padding: 16px;
+            flex-direction: column;
+            gap: 8px;
+            overflow-y: auto;
+        }
+
+        .mobile-menu.active {
+            display: flex;
+        }
+
+        .mobile-menu .header-btn {
+            width: 100%;
+            justify-content: flex-start;
+            padding: 12px 16px;
+        }
+
+        .mobile-menu .header-separator {
+            width: 100%;
+            height: 1px;
+            margin: 8px 0;
+        }
+
+        .mobile-menu .lang-switcher-mobile {
+            width: 100%;
+            padding: 12px 16px;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            .header-title {
+                display: none;
+            }
+
+            .header-actions {
+                display: none;
+            }
+
+            .hamburger-btn {
+                display: block;
+            }
+        }
+
+        @media (min-width: 901px) {
+            .mobile-menu {
+                display: none !important;
+            }
         }
 
         /* ── Editor wrapper ── */
@@ -217,6 +291,14 @@
         <img src="logo.png" alt="Neiki Editor" class="header-logo">
         <span class="header-title">Neiki's HTML Editor</span>
 
+        <!-- Hamburger button (mobile) -->
+        <button class="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+            <svg viewBox="0 0 24 24" id="hamburgerIcon">
+                <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+            </svg>
+        </button>
+
+        <!-- Desktop actions -->
         <div class="header-actions">
             <!-- Document group -->
             <button class="header-btn" onclick="newDocument()" id="btnNew">
@@ -270,12 +352,64 @@
             <div class="header-separator"></div>
 
             <!-- Language switcher -->
-            <select id="langSwitcher" class="header-btn" style="padding: 7px 10px; cursor: pointer;" onchange="switchLanguage(this.value)" title="Language">
+            <select id="langSwitcher" class="header-btn" style="padding: 7px 10px; cursor: pointer;"
+                onchange="switchLanguage(this.value)" title="Language">
                 <option value="en">🇬🇧 EN</option>
                 <option value="cs">🇨🇿 CZ</option>
             </select>
         </div>
     </header>
+
+    <!-- ── Mobile Menu ── -->
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="header-btn" onclick="newDocument(); closeMobileMenu()">
+            <svg viewBox="0 0 24 24">
+                <path
+                    d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+            </svg>
+            <span data-i18n="new">New</span>
+        </button>
+        <button class="header-btn" onclick="uploadDocument(); closeMobileMenu()">
+            <svg viewBox="0 0 24 24">
+                <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z" />
+            </svg>
+            <span data-i18n="upload">Upload</span>
+        </button>
+        <div class="header-separator"></div>
+        <button class="header-btn" onclick="saveToCache(); closeMobileMenu()">
+            <svg viewBox="0 0 24 24">
+                <path
+                    d="M17 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z" />
+            </svg>
+            <span data-i18n="save">Save</span>
+        </button>
+        <button class="header-btn" onclick="downloadDocument(); closeMobileMenu()">
+            <svg viewBox="0 0 24 24">
+                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+            </svg>
+            <span data-i18n="download">Download</span>
+        </button>
+        <div class="header-separator"></div>
+        <button class="header-btn" onclick="previewDocument(); closeMobileMenu()">
+            <svg viewBox="0 0 24 24">
+                <path
+                    d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+            </svg>
+            <span data-i18n="preview">Preview</span>
+        </button>
+        <button class="header-btn btn-danger" onclick="clearDocument(); closeMobileMenu()">
+            <svg viewBox="0 0 24 24">
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+            </svg>
+            <span data-i18n="clear">Clear</span>
+        </button>
+        <div class="header-separator"></div>
+        <select id="langSwitcherMobile" class="header-btn lang-switcher-mobile" onchange="switchLanguage(this.value)"
+            title="Language">
+            <option value="en">🇬🇧 English</option>
+            <option value="cs">🇨🇿 Čeština</option>
+        </select>
+    </div>
 
     <!-- ── Editor ── -->
     <div class="editor-wrapper">
@@ -296,7 +430,7 @@
     <!-- Hidden file input -->
     <input type="file" id="fileInput" accept=".html,.htm" style="display:none" onchange="handleFileUpload(event)">
 
-    <script src="../dist/neiki-editor.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.2.1/dist/neiki-editor.js"></script>
     <script>
         // Demo UI translations
         const UI_TRANSLATIONS = {
@@ -349,9 +483,30 @@
 
         // Set language switcher to current language
         document.getElementById('langSwitcher').value = initialLang;
+        document.getElementById('langSwitcherMobile').value = initialLang;
 
         // Apply translations on load
         applyTranslations();
+
+        // Mobile menu functions
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('hamburgerIcon');
+            const isOpen = menu.classList.toggle('active');
+            // Change icon to X when open
+            if (isOpen) {
+                icon.innerHTML = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>';
+            } else {
+                icon.innerHTML = '<path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>';
+            }
+        }
+
+        function closeMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('hamburgerIcon');
+            menu.classList.remove('active');
+            icon.innerHTML = '<path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>';
+        }
 
         // Switch language function
         function switchLanguage(lang) {

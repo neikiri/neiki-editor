@@ -1,7 +1,7 @@
 <?php
 /**
  * Neiki Editor - PHP Integration Helper
- * Version: 2.2.0
+ * Version: 2.2.1
  *
  * A lightweight helper class for easy server-side integration
  * of Neiki Editor into PHP projects.
@@ -15,7 +15,7 @@
 class NeikiEditor
 {
     /** @var string CDN base URL */
-    private static $cdnBase = 'https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.2.0/dist';
+    private static $cdnBase = 'https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.2.1/dist';
 
     /** @var bool Whether assets have already been included */
     private static $assetsIncluded = false;

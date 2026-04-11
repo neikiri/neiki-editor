@@ -1,5 +1,7 @@
 # Changelog
-
+## [2.2.1]
+- Added preview image
+- Edited README.md - Added live version link
 ## [2.2.0]
 - Added localization support with English and Czech languages (`language` config option)
 - All UI strings (tooltips, modals, status bar, messages) are now translatable
