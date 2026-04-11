@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 2.1.0
+ * Version: 2.2.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -18,6 +18,301 @@
   // ============================================
   // SECTION 1: CONFIGURATION & CONSTANTS
   // ============================================
+
+  // ============================================
+  // TRANSLATIONS / i18n
+  // ============================================
+
+  const TRANSLATIONS = {
+    en: {
+      // Toolbar tooltips
+      'toolbar.undo': 'Undo (Ctrl+Z)',
+      'toolbar.redo': 'Redo (Ctrl+Y)',
+      'toolbar.bold': 'Bold (Ctrl+B)',
+      'toolbar.italic': 'Italic (Ctrl+I)',
+      'toolbar.underline': 'Underline (Ctrl+U)',
+      'toolbar.strikethrough': 'Strikethrough',
+      'toolbar.heading': 'Heading',
+      'toolbar.fontSize': 'Font Size',
+      'toolbar.fontFamily': 'Font Family',
+      'toolbar.foreColor': 'Text Color',
+      'toolbar.backColor': 'Background Color',
+      'toolbar.alignLeft': 'Align Left',
+      'toolbar.alignCenter': 'Align Center',
+      'toolbar.alignRight': 'Align Right',
+      'toolbar.alignJustify': 'Justify',
+      'toolbar.bulletList': 'Bullet List',
+      'toolbar.numberedList': 'Numbered List',
+      'toolbar.indent': 'Increase Indent',
+      'toolbar.outdent': 'Decrease Indent',
+      'toolbar.link': 'Insert Link (Ctrl+K)',
+      'toolbar.image': 'Insert Image',
+      'toolbar.table': 'Insert Table',
+      'toolbar.blockquote': 'Blockquote',
+      'toolbar.viewCode': 'View Code (Toggle HTML)',
+      'toolbar.horizontalRule': 'Horizontal Line',
+      'toolbar.subscript': 'Subscript',
+      'toolbar.superscript': 'Superscript',
+      'toolbar.removeFormat': 'Remove Formatting',
+      'toolbar.findReplace': 'Find & Replace',
+      'toolbar.emoji': 'Insert Emoji',
+      'toolbar.specialChars': 'Special Characters',
+      'toolbar.fullscreen': 'Fullscreen',
+      'toolbar.autosave': 'Toggle Autosave',
+      'toolbar.themeToggle': 'Toggle Theme',
+      'toolbar.print': 'Print',
+      'toolbar.insert': 'Insert',
+      'toolbar.moreOptions': 'More options',
+      'toolbar.decreaseFontSize': 'Decrease font size',
+      'toolbar.increaseFontSize': 'Increase font size',
+
+      // Headings select
+      'heading.paragraph': 'Paragraph',
+      'heading.h1': 'Heading 1',
+      'heading.h2': 'Heading 2',
+      'heading.h3': 'Heading 3',
+      'heading.h4': 'Heading 4',
+      'heading.h5': 'Heading 5',
+      'heading.h6': 'Heading 6',
+
+      // Font families
+      'font.sansSerif': 'Sans Serif',
+      'font.serif': 'Serif',
+      'font.monospace': 'Monospace',
+      'font.cursive': 'Cursive',
+
+      // Insert dropdown
+      'insert.link': 'Link',
+      'insert.image': 'Image',
+      'insert.table': 'Table',
+      'insert.emoji': 'Emoji',
+      'insert.symbol': 'Symbol',
+
+      // More menu
+      'menu.save': 'Save',
+      'menu.preview': 'Preview',
+      'menu.download': 'Download',
+      'menu.print': 'Print',
+      'menu.autosave': 'Autosave',
+      'menu.clearAll': 'Clear all',
+      'menu.toggleTheme': 'Toggle Theme',
+      'menu.fullscreen': 'Fullscreen',
+
+      // Link modal
+      'modal.insertLink': 'Insert Link',
+      'modal.url': 'URL',
+      'modal.text': 'Text',
+      'modal.linkText': 'Link text',
+      'modal.openInNewTab': 'Open in new tab',
+      'modal.cancel': 'Cancel',
+      'modal.insert': 'Insert',
+
+      // Image modal
+      'modal.insertImage': 'Insert Image',
+      'modal.uploadImage': 'Upload Image',
+      'modal.convertedToBase64': 'Will be converted to base64',
+      'modal.or': 'OR',
+      'modal.imageUrl': 'Image URL',
+      'modal.altText': 'Alt Text',
+      'modal.describeImage': 'Describe the image',
+      'modal.widthOptional': 'Width (optional)',
+      'modal.invalidImageFile': 'Please select a valid image file.',
+
+      // Table modal
+      'modal.insertTable': 'Insert Table',
+      'modal.rows': 'Rows',
+      'modal.columns': 'Columns',
+      'modal.includeHeaderRow': 'Include header row',
+
+      // Find & Replace modal
+      'modal.findReplace': 'Find & Replace',
+      'modal.find': 'Find',
+      'modal.searchText': 'Search text...',
+      'modal.replaceWith': 'Replace with',
+      'modal.replacementText': 'Replacement text...',
+      'modal.useRegex': 'Use Regular Expression',
+      'modal.caseSensitive': 'Case Sensitive',
+      'modal.findNext': 'Find Next',
+      'modal.replace': 'Replace',
+      'modal.replaceAll': 'Replace All',
+      'modal.invalidRegex': 'Invalid regex',
+      'modal.matchesFound': '{count} match(es) found',
+      'modal.matchOf': 'Match {current} of {total}',
+      'modal.matchesRemaining': '{count} match(es) remaining',
+      'modal.replacedOccurrences': 'Replaced {count} occurrence(s)',
+
+      // Status bar
+      'status.words': 'words',
+      'status.word': 'word',
+      'status.chars': 'chars',
+      'status.char': 'char',
+
+      // Autosave
+      'autosave.savedLocally': 'Saved locally',
+      'autosave.autosaving': 'Autosaving...',
+
+      // Preview
+      'preview.title': 'Document Preview',
+
+      // Clear all
+      'confirm.clearAll': 'Clear all content?',
+
+      // Placeholder
+      'placeholder': 'Start typing...'
+    },
+    cs: {
+      // Toolbar tooltips
+      'toolbar.undo': 'Zpět (Ctrl+Z)',
+      'toolbar.redo': 'Znovu (Ctrl+Y)',
+      'toolbar.bold': 'Tučné (Ctrl+B)',
+      'toolbar.italic': 'Kurzíva (Ctrl+I)',
+      'toolbar.underline': 'Podtržené (Ctrl+U)',
+      'toolbar.strikethrough': 'Přeškrtnuté',
+      'toolbar.heading': 'Nadpis',
+      'toolbar.fontSize': 'Velikost písma',
+      'toolbar.fontFamily': 'Rodina písma',
+      'toolbar.foreColor': 'Barva textu',
+      'toolbar.backColor': 'Barva pozadí',
+      'toolbar.alignLeft': 'Zarovnat vlevo',
+      'toolbar.alignCenter': 'Zarovnat na střed',
+      'toolbar.alignRight': 'Zarovnat vpravo',
+      'toolbar.alignJustify': 'Do bloku',
+      'toolbar.bulletList': 'Odrážkový seznam',
+      'toolbar.numberedList': 'Číslovaný seznam',
+      'toolbar.indent': 'Zvětšit odsazení',
+      'toolbar.outdent': 'Zmenšit odsazení',
+      'toolbar.link': 'Vložit odkaz (Ctrl+K)',
+      'toolbar.image': 'Vložit obrázek',
+      'toolbar.table': 'Vložit tabulku',
+      'toolbar.blockquote': 'Citace',
+      'toolbar.viewCode': 'Zobrazit kód (HTML)',
+      'toolbar.horizontalRule': 'Vodorovná čára',
+      'toolbar.subscript': 'Dolní index',
+      'toolbar.superscript': 'Horní index',
+      'toolbar.removeFormat': 'Odstranit formátování',
+      'toolbar.findReplace': 'Najít a nahradit',
+      'toolbar.emoji': 'Vložit emoji',
+      'toolbar.specialChars': 'Speciální znaky',
+      'toolbar.fullscreen': 'Celá obrazovka',
+      'toolbar.autosave': 'Auto. ukládání',
+      'toolbar.themeToggle': 'Přepnout motiv',
+      'toolbar.print': 'Tisk',
+      'toolbar.insert': 'Vložit',
+      'toolbar.moreOptions': 'Další možnosti',
+      'toolbar.decreaseFontSize': 'Zmenšit písmo',
+      'toolbar.increaseFontSize': 'Zvětšit písmo',
+
+      // Headings select
+      'heading.paragraph': 'Odstavec',
+      'heading.h1': 'Nadpis 1',
+      'heading.h2': 'Nadpis 2',
+      'heading.h3': 'Nadpis 3',
+      'heading.h4': 'Nadpis 4',
+      'heading.h5': 'Nadpis 5',
+      'heading.h6': 'Nadpis 6',
+
+      // Font families
+      'font.sansSerif': 'Sans Serif',
+      'font.serif': 'Serif',
+      'font.monospace': 'Monospace',
+      'font.cursive': 'Cursive',
+
+      // Insert dropdown
+      'insert.link': 'Odkaz',
+      'insert.image': 'Obrázek',
+      'insert.table': 'Tabulka',
+      'insert.emoji': 'Emoji',
+      'insert.symbol': 'Symbol',
+
+      // More menu
+      'menu.save': 'Uložit',
+      'menu.preview': 'Náhled',
+      'menu.download': 'Stáhnout',
+      'menu.print': 'Tisk',
+      'menu.autosave': 'Auto. ukládání',
+      'menu.clearAll': 'Vymazat vše',
+      'menu.toggleTheme': 'Přepnout motiv',
+      'menu.fullscreen': 'Celá obrazovka',
+
+      // Link modal
+      'modal.insertLink': 'Vložit odkaz',
+      'modal.url': 'URL',
+      'modal.text': 'Text',
+      'modal.linkText': 'Text odkazu',
+      'modal.openInNewTab': 'Otevřít v nové záložce',
+      'modal.cancel': 'Zrušit',
+      'modal.insert': 'Vložit',
+
+      // Image modal
+      'modal.insertImage': 'Vložit obrázek',
+      'modal.uploadImage': 'Nahrát obrázek',
+      'modal.convertedToBase64': 'Bude převeden na base64',
+      'modal.or': 'NEBO',
+      'modal.imageUrl': 'URL obrázku',
+      'modal.altText': 'Alternativní text',
+      'modal.describeImage': 'Popis obrázku',
+      'modal.widthOptional': 'Šířka (volitelné)',
+      'modal.invalidImageFile': 'Vyberte prosím platný soubor obrázku.',
+
+      // Table modal
+      'modal.insertTable': 'Vložit tabulku',
+      'modal.rows': 'Řádky',
+      'modal.columns': 'Sloupce',
+      'modal.includeHeaderRow': 'Včetně řádku záhlaví',
+
+      // Find & Replace modal
+      'modal.findReplace': 'Najít a nahradit',
+      'modal.find': 'Najít',
+      'modal.searchText': 'Hledaný text...',
+      'modal.replaceWith': 'Nahradit za',
+      'modal.replacementText': 'Text náhrady...',
+      'modal.useRegex': 'Použít regulární výraz',
+      'modal.caseSensitive': 'Rozlišovat velikost písmen',
+      'modal.findNext': 'Najít další',
+      'modal.replace': 'Nahradit',
+      'modal.replaceAll': 'Nahradit vše',
+      'modal.invalidRegex': 'Neplatný regulární výraz',
+      'modal.matchesFound': 'Nalezeno {count} shod',
+      'modal.matchOf': 'Shoda {current} z {total}',
+      'modal.matchesRemaining': 'Zbývá {count} shod',
+      'modal.replacedOccurrences': 'Nahrazeno {count} výskytů',
+
+      // Status bar
+      'status.words': 'slov',
+      'status.word': 'slovo',
+      'status.chars': 'znaků',
+      'status.char': 'znak',
+
+      // Autosave
+      'autosave.savedLocally': 'Uloženo lokálně',
+      'autosave.autosaving': 'Ukládám...',
+
+      // Preview
+      'preview.title': 'Náhled dokumentu',
+
+      // Clear all
+      'confirm.clearAll': 'Vymazat veškerý obsah?',
+
+      // Placeholder
+      'placeholder': 'Začněte psát...'
+    }
+  };
+
+  // Current language (will be set per editor instance)
+  let _currentLanguage = 'en';
+
+  // Translation helper function
+  function t(key, params = {}) {
+    const lang = _currentLanguage || 'en';
+    let text = TRANSLATIONS[lang]?.[key] || TRANSLATIONS['en']?.[key] || key;
+    
+    // Replace placeholders like {count}, {current}, {total}
+    Object.keys(params).forEach(param => {
+      text = text.replace(new RegExp(`\\{${param}\\}`, 'g'), params[param]);
+    });
+    
+    return text;
+  }
 
   const DEFAULT_CONFIG = {
     toolbar: [
@@ -48,62 +343,62 @@
   };
 
   const TOOLBAR_ITEMS = {
-    undo: { icon: 'undo', title: 'Undo (Ctrl+Z)', command: 'undo' },
-    redo: { icon: 'redo', title: 'Redo (Ctrl+Y)', command: 'redo' },
-    bold: { icon: 'bold', title: 'Bold (Ctrl+B)', command: 'bold' },
-    italic: { icon: 'italic', title: 'Italic (Ctrl+I)', command: 'italic' },
-    underline: { icon: 'underline', title: 'Underline (Ctrl+U)', command: 'underline' },
-    strikethrough: { icon: 'strikethrough', title: 'Strikethrough', command: 'strikeThrough' },
-    heading: { title: 'Heading', command: 'heading', type: 'select' },
-    fontSize: { title: 'Font Size', command: 'fontSize', type: 'fontSizeWidget' },
-    fontFamily: { title: 'Font Family', command: 'fontFamily', type: 'select' },
-    foreColor: { icon: 'text-color', title: 'Text Color', command: 'foreColor', picker: 'color' },
-    backColor: { icon: 'highlight', title: 'Background Color', command: 'backColor', picker: 'color' },
-    alignLeft: { icon: 'align-left', title: 'Align Left', command: 'justifyLeft' },
-    alignCenter: { icon: 'align-center', title: 'Align Center', command: 'justifyCenter' },
-    alignRight: { icon: 'align-right', title: 'Align Right', command: 'justifyRight' },
-    alignJustify: { icon: 'align-justify', title: 'Justify', command: 'justifyFull' },
-    bulletList: { icon: 'list-ul', title: 'Bullet List', command: 'insertUnorderedList' },
-    numberedList: { icon: 'list-ol', title: 'Numbered List', command: 'insertOrderedList' },
-    indent: { icon: 'indent', title: 'Increase Indent', command: 'indent' },
-    outdent: { icon: 'outdent', title: 'Decrease Indent', command: 'outdent' },
-    link: { icon: 'link', title: 'Insert Link (Ctrl+K)', command: 'createLink', modal: true },
-    image: { icon: 'image', title: 'Insert Image', command: 'insertImage', modal: true },
-    table: { icon: 'table', title: 'Insert Table', command: 'insertTable', modal: true },
-    blockquote: { icon: 'quote', title: 'Blockquote', command: 'formatBlock', value: 'blockquote' },
-    viewCode: { icon: 'code', title: 'View Code (Toggle HTML)', command: 'viewCode' },
-    horizontalRule: { icon: 'minus', title: 'Horizontal Line', command: 'insertHorizontalRule' },
-    subscript: { icon: 'subscript', title: 'Subscript', command: 'subscript' },
-    superscript: { icon: 'superscript', title: 'Superscript', command: 'superscript' },
-    removeFormat: { icon: 'eraser', title: 'Remove Formatting', command: 'removeFormat' },
-    findReplace: { icon: 'search', title: 'Find & Replace', command: 'findReplace', modal: true },
-    emoji: { icon: 'emoji', title: 'Insert Emoji', command: 'emoji', picker: 'emoji' },
-    specialChars: { icon: 'specialChars', title: 'Special Characters', command: 'specialChars', picker: 'specialChars' },
-    fullscreen: { icon: 'fullscreen', title: 'Fullscreen', command: 'fullscreen' },
-    autosave: { icon: 'save', title: 'Toggle Autosave', command: 'autosave', toggle: true },
-    themeToggle: { icon: 'sun', title: 'Toggle Theme', command: 'themeToggle', toggle: true },
-    print: { icon: 'print', title: 'Print', command: 'print' },
-    insertDropdown: { icon: 'plus', title: 'Insert', type: 'insertDropdown' },
-    moreMenu: { icon: 'more', title: 'More options', type: 'moreMenu' }
+    undo: { icon: 'undo', titleKey: 'toolbar.undo', command: 'undo' },
+    redo: { icon: 'redo', titleKey: 'toolbar.redo', command: 'redo' },
+    bold: { icon: 'bold', titleKey: 'toolbar.bold', command: 'bold' },
+    italic: { icon: 'italic', titleKey: 'toolbar.italic', command: 'italic' },
+    underline: { icon: 'underline', titleKey: 'toolbar.underline', command: 'underline' },
+    strikethrough: { icon: 'strikethrough', titleKey: 'toolbar.strikethrough', command: 'strikeThrough' },
+    heading: { titleKey: 'toolbar.heading', command: 'heading', type: 'select' },
+    fontSize: { titleKey: 'toolbar.fontSize', command: 'fontSize', type: 'fontSizeWidget' },
+    fontFamily: { titleKey: 'toolbar.fontFamily', command: 'fontFamily', type: 'select' },
+    foreColor: { icon: 'text-color', titleKey: 'toolbar.foreColor', command: 'foreColor', picker: 'color' },
+    backColor: { icon: 'highlight', titleKey: 'toolbar.backColor', command: 'backColor', picker: 'color' },
+    alignLeft: { icon: 'align-left', titleKey: 'toolbar.alignLeft', command: 'justifyLeft' },
+    alignCenter: { icon: 'align-center', titleKey: 'toolbar.alignCenter', command: 'justifyCenter' },
+    alignRight: { icon: 'align-right', titleKey: 'toolbar.alignRight', command: 'justifyRight' },
+    alignJustify: { icon: 'align-justify', titleKey: 'toolbar.alignJustify', command: 'justifyFull' },
+    bulletList: { icon: 'list-ul', titleKey: 'toolbar.bulletList', command: 'insertUnorderedList' },
+    numberedList: { icon: 'list-ol', titleKey: 'toolbar.numberedList', command: 'insertOrderedList' },
+    indent: { icon: 'indent', titleKey: 'toolbar.indent', command: 'indent' },
+    outdent: { icon: 'outdent', titleKey: 'toolbar.outdent', command: 'outdent' },
+    link: { icon: 'link', titleKey: 'toolbar.link', command: 'createLink', modal: true },
+    image: { icon: 'image', titleKey: 'toolbar.image', command: 'insertImage', modal: true },
+    table: { icon: 'table', titleKey: 'toolbar.table', command: 'insertTable', modal: true },
+    blockquote: { icon: 'quote', titleKey: 'toolbar.blockquote', command: 'formatBlock', value: 'blockquote' },
+    viewCode: { icon: 'code', titleKey: 'toolbar.viewCode', command: 'viewCode' },
+    horizontalRule: { icon: 'minus', titleKey: 'toolbar.horizontalRule', command: 'insertHorizontalRule' },
+    subscript: { icon: 'subscript', titleKey: 'toolbar.subscript', command: 'subscript' },
+    superscript: { icon: 'superscript', titleKey: 'toolbar.superscript', command: 'superscript' },
+    removeFormat: { icon: 'eraser', titleKey: 'toolbar.removeFormat', command: 'removeFormat' },
+    findReplace: { icon: 'search', titleKey: 'toolbar.findReplace', command: 'findReplace', modal: true },
+    emoji: { icon: 'emoji', titleKey: 'toolbar.emoji', command: 'emoji', picker: 'emoji' },
+    specialChars: { icon: 'specialChars', titleKey: 'toolbar.specialChars', command: 'specialChars', picker: 'specialChars' },
+    fullscreen: { icon: 'fullscreen', titleKey: 'toolbar.fullscreen', command: 'fullscreen' },
+    autosave: { icon: 'save', titleKey: 'toolbar.autosave', command: 'autosave', toggle: true },
+    themeToggle: { icon: 'sun', titleKey: 'toolbar.themeToggle', command: 'themeToggle', toggle: true },
+    print: { icon: 'print', titleKey: 'toolbar.print', command: 'print' },
+    insertDropdown: { icon: 'plus', titleKey: 'toolbar.insert', type: 'insertDropdown' },
+    moreMenu: { icon: 'more', titleKey: 'toolbar.moreOptions', type: 'moreMenu' }
   };
 
   const FONT_SIZES = [8, 9, 10, 11, 12, 14, 18, 24, 30, 36, 48, 60, 72, 96];
 
   const FONT_FAMILIES = [
-    { label: 'Sans Serif', value: 'Arial, sans-serif' },
-    { label: 'Serif', value: 'Georgia, serif' },
-    { label: 'Monospace', value: 'Consolas, monospace' },
-    { label: 'Cursive', value: 'Comic Sans MS, cursive' }
+    { labelKey: 'font.sansSerif', value: 'Arial, sans-serif' },
+    { labelKey: 'font.serif', value: 'Georgia, serif' },
+    { labelKey: 'font.monospace', value: 'Consolas, monospace' },
+    { labelKey: 'font.cursive', value: 'Comic Sans MS, cursive' }
   ];
 
   const HEADINGS = [
-    { label: 'Paragraph', value: 'p' },
-    { label: 'Heading 1', value: 'h1' },
-    { label: 'Heading 2', value: 'h2' },
-    { label: 'Heading 3', value: 'h3' },
-    { label: 'Heading 4', value: 'h4' },
-    { label: 'Heading 5', value: 'h5' },
-    { label: 'Heading 6', value: 'h6' }
+    { labelKey: 'heading.paragraph', value: 'p' },
+    { labelKey: 'heading.h1', value: 'h1' },
+    { labelKey: 'heading.h2', value: 'h2' },
+    { labelKey: 'heading.h3', value: 'h3' },
+    { labelKey: 'heading.h4', value: 'h4' },
+    { labelKey: 'heading.h5', value: 'h5' },
+    { labelKey: 'heading.h6', value: 'h6' }
   ];
 
   const EMOJIS = [
@@ -530,27 +825,27 @@
 
       modal.innerHTML = `
                 <div class="neiki-modal-header">
-                    <h3>Insert Link</h3>
+                    <h3>${t('modal.insertLink')}</h3>
                     <button class="neiki-modal-close" type="button">${Icons.close}</button>
                 </div>
                 <div class="neiki-modal-body">
                     <div class="neiki-form-group">
-                        <label>URL</label>
+                        <label>${t('modal.url')}</label>
                         <input type="url" class="neiki-input" name="url" placeholder="https://example.com" value="${data.url || ''}">
                     </div>
                     <div class="neiki-form-group">
-                        <label>Text</label>
-                        <input type="text" class="neiki-input" name="text" placeholder="Link text" value="${data.text || ''}">
+                        <label>${t('modal.text')}</label>
+                        <input type="text" class="neiki-input" name="text" placeholder="${t('modal.linkText')}" value="${data.text || ''}">
                     </div>
                     <div class="neiki-form-group">
                         <label>
-                            <input type="checkbox" name="newTab" ${data.newTab ? 'checked' : ''}> Open in new tab
+                            <input type="checkbox" name="newTab" ${data.newTab ? 'checked' : ''}> ${t('modal.openInNewTab')}
                         </label>
                     </div>
                 </div>
                 <div class="neiki-modal-footer">
-                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">Cancel</button>
-                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">Insert</button>
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">${t('modal.cancel')}</button>
+                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">${t('modal.insert')}</button>
                 </div>
             `;
 
@@ -575,34 +870,34 @@
 
       modal.innerHTML = `
                 <div class="neiki-modal-header">
-                    <h3>Insert Image</h3>
+                    <h3>${t('modal.insertImage')}</h3>
                     <button class="neiki-modal-close" type="button">${Icons.close}</button>
                 </div>
                 <div class="neiki-modal-body">
                     <div class="neiki-form-group">
-                        <label>Upload Image</label>
+                        <label>${t('modal.uploadImage')}</label>
                         <input type="file" class="neiki-input" name="upload" accept="image/*">
-                        <small style="color: var(--neiki-text-muted); font-size: 11px;">Will be converted to base64</small>
+                        <small style="color: var(--neiki-text-muted); font-size: 11px;">${t('modal.convertedToBase64')}</small>
                     </div>
                     <div class="neiki-form-divider">
-                        <span>OR</span>
+                        <span>${t('modal.or')}</span>
                     </div>
                     <div class="neiki-form-group">
-                        <label>Image URL</label>
+                        <label>${t('modal.imageUrl')}</label>
                         <input type="url" class="neiki-input" name="url" placeholder="https://example.com/image.jpg" value="${data.url || ''}">
                     </div>
                     <div class="neiki-form-group">
-                        <label>Alt Text</label>
-                        <input type="text" class="neiki-input" name="alt" placeholder="Describe the image" value="${data.alt || ''}">
+                        <label>${t('modal.altText')}</label>
+                        <input type="text" class="neiki-input" name="alt" placeholder="${t('modal.describeImage')}" value="${data.alt || ''}">
                     </div>
                     <div class="neiki-form-group">
-                        <label>Width (optional)</label>
+                        <label>${t('modal.widthOptional')}</label>
                         <input type="text" class="neiki-input" name="width" placeholder="e.g. 300px or 50%" value="${data.width || ''}">
                     </div>
                 </div>
                 <div class="neiki-modal-footer">
-                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">Cancel</button>
-                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">Insert</button>
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">${t('modal.cancel')}</button>
+                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">${t('modal.insert')}</button>
                 </div>
             `;
 
@@ -620,7 +915,7 @@
           };
           reader.readAsDataURL(file);
         } else if (file) {
-          alert('Please select a valid image file.');
+          alert(t('modal.invalidImageFile'));
           uploadInput.value = '';
         }
       });
@@ -654,29 +949,29 @@
 
       modal.innerHTML = `
                 <div class="neiki-modal-header">
-                    <h3>Insert Table</h3>
+                    <h3>${t('modal.insertTable')}</h3>
                     <button class="neiki-modal-close" type="button">${Icons.close}</button>
                 </div>
                 <div class="neiki-modal-body">
                     <div class="neiki-form-row">
                         <div class="neiki-form-group">
-                            <label>Rows</label>
+                            <label>${t('modal.rows')}</label>
                             <input type="number" class="neiki-input" name="rows" min="1" max="20" value="${data.rows || 3}">
                         </div>
                         <div class="neiki-form-group">
-                            <label>Columns</label>
+                            <label>${t('modal.columns')}</label>
                             <input type="number" class="neiki-input" name="cols" min="1" max="10" value="${data.cols || 3}">
                         </div>
                     </div>
                     <div class="neiki-form-group">
                         <label>
-                            <input type="checkbox" name="header" ${data.header !== false ? 'checked' : ''}> Include header row
+                            <input type="checkbox" name="header" ${data.header !== false ? 'checked' : ''}> ${t('modal.includeHeaderRow')}
                         </label>
                     </div>
                 </div>
                 <div class="neiki-modal-footer">
-                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">Cancel</button>
-                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">Insert</button>
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">${t('modal.cancel')}</button>
+                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">${t('modal.insert')}</button>
                 </div>
             `;
 
@@ -699,28 +994,28 @@
 
       modal.innerHTML = `
                 <div class="neiki-modal-header">
-                    <h3>Find & Replace</h3>
+                    <h3>${t('modal.findReplace')}</h3>
                     <button class="neiki-modal-close" type="button">${Icons.close}</button>
                 </div>
                 <div class="neiki-modal-body">
                     <div class="neiki-form-group">
-                        <label>Find</label>
-                        <input type="text" class="neiki-input" name="find" placeholder="Search text...">
+                        <label>${t('modal.find')}</label>
+                        <input type="text" class="neiki-input" name="find" placeholder="${t('modal.searchText')}">
                     </div>
                     <div class="neiki-form-group">
-                        <label>Replace with</label>
-                        <input type="text" class="neiki-input" name="replace" placeholder="Replacement text...">
+                        <label>${t('modal.replaceWith')}</label>
+                        <input type="text" class="neiki-input" name="replace" placeholder="${t('modal.replacementText')}">
                     </div>
                     <div class="neiki-form-group neiki-form-row">
-                        <label><input type="checkbox" name="regex"> Use Regular Expression</label>
-                        <label><input type="checkbox" name="caseSensitive"> Case Sensitive</label>
+                        <label><input type="checkbox" name="regex"> ${t('modal.useRegex')}</label>
+                        <label><input type="checkbox" name="caseSensitive"> ${t('modal.caseSensitive')}</label>
                     </div>
                     <div class="neiki-find-results" style="margin-top:10px;font-size:13px;color:var(--neiki-text-muted);"></div>
                 </div>
                 <div class="neiki-modal-footer">
-                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="findNext">Find Next</button>
-                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="replaceOne">Replace</button>
-                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="replaceAll">Replace All</button>
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="findNext">${t('modal.findNext')}</button>
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="replaceOne">${t('modal.replace')}</button>
+                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="replaceAll">${t('modal.replaceAll')}</button>
                 </div>
             `;
 
@@ -763,7 +1058,7 @@
             ? new RegExp(searchText, flags)
             : new RegExp(searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), flags);
         } catch (e) {
-          resultsDiv.textContent = 'Invalid regex';
+          resultsDiv.textContent = t('modal.invalidRegex');
           return;
         }
 
@@ -802,7 +1097,7 @@
           }
         });
 
-        resultsDiv.textContent = `${currentMatches.length} match(es) found`;
+        resultsDiv.textContent = t('modal.matchesFound', { count: currentMatches.length });
       };
 
       const findNext = () => {
@@ -820,7 +1115,7 @@
         const current = currentMatches[currentIndex];
         current.classList.add('neiki-highlight-current');
         current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        resultsDiv.textContent = `Match ${currentIndex + 1} of ${currentMatches.length}`;
+        resultsDiv.textContent = t('modal.matchOf', { current: currentIndex + 1, total: currentMatches.length });
       };
 
       const replaceOne = () => {
@@ -832,7 +1127,7 @@
           currentIndex--;
           this.editor.history.record();
           this.editor.triggerChange();
-          resultsDiv.textContent = `${currentMatches.length} match(es) remaining`;
+          resultsDiv.textContent = t('modal.matchesRemaining', { count: currentMatches.length });
           if (currentMatches.length > 0) findNext();
         }
       };
@@ -882,7 +1177,7 @@
         this.editor.triggerChange();
         currentMatches = [];
         currentIndex = -1;
-        resultsDiv.textContent = `Replaced ${count} occurrence(s)`;
+        resultsDiv.textContent = t('modal.replacedOccurrences', { count: count });
       };
 
       findInput.addEventListener('input', Utils.debounce(findMatches, 300));
@@ -1482,6 +1777,9 @@
       // Initialize storage first
       this.storage = new StorageManager(this.id);
 
+      // Set language for translations
+      _currentLanguage = this.config.language || 'en';
+
       // Load theme preference
       const savedTheme = StorageManager.getGlobal('theme', this.config.theme);
       this.config.theme = savedTheme;
@@ -1530,8 +1828,9 @@
     }
 
     createStructure() {
+      const langClass = _currentLanguage !== 'en' ? `neiki-lang-${_currentLanguage}` : '';
       this.container = Utils.createElement('div', {
-        className: `neiki-editor ${this.config.theme === 'dark' ? 'neiki-dark' : ''}`,
+        className: `neiki-editor ${this.config.theme === 'dark' ? 'neiki-dark' : ''} ${langClass}`.trim(),
         id: this.id
       });
 
@@ -1567,22 +1866,22 @@
         if (config.type === 'select') {
           const select = Utils.createElement('select', {
             className: 'neiki-select',
-            title: config.title,
+            title: t(config.titleKey),
             'data-command': item
           });
 
           if (item === 'heading') {
-            HEADINGS.forEach(({ label, value }) => {
+            HEADINGS.forEach(({ labelKey, value }) => {
               const opt = document.createElement('option');
               opt.value = value;
-              opt.textContent = label;
+              opt.textContent = t(labelKey);
               select.appendChild(opt);
             });
           } else if (item === 'fontFamily') {
-            FONT_FAMILIES.forEach(({ label, value }) => {
+            FONT_FAMILIES.forEach(({ labelKey, value }) => {
               const opt = document.createElement('option');
               opt.value = value;
-              opt.textContent = label;
+              opt.textContent = t(labelKey);
               opt.style.fontFamily = value;
               select.appendChild(opt);
             });
@@ -1610,21 +1909,21 @@
           const minusBtn = Utils.createElement('button', {
             className: 'neiki-fontsize-btn',
             type: 'button',
-            title: 'Decrease font size',
+            title: t('toolbar.decreaseFontSize'),
             innerHTML: '<svg viewBox="0 0 24 24" width="14" height="14"><path d="M19 13H5v-2h14v2z" fill="currentColor"/></svg>'
           });
 
           const input = Utils.createElement('input', {
             className: 'neiki-fontsize-input',
             type: 'text',
-            title: 'Font size',
+            title: t('toolbar.fontSize'),
             value: '16'
           });
 
           const plusBtn = Utils.createElement('button', {
             className: 'neiki-fontsize-btn',
             type: 'button',
-            title: 'Increase font size',
+            title: t('toolbar.increaseFontSize'),
             innerHTML: '<svg viewBox="0 0 24 24" width="14" height="14"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor"/></svg>'
           });
 
@@ -1744,26 +2043,26 @@
         if (config.type === 'insertDropdown') {
           const btn = Utils.createElement('button', {
             className: 'neiki-toolbar-btn neiki-insert-dropdown-btn',
-            title: config.title,
+            title: t(config.titleKey),
             type: 'button'
           });
-          btn.innerHTML = Icons[config.icon] + '<span class="neiki-insert-label">Insert</span><span class="neiki-chevron">' + Icons['chevron-down'] + '</span>';
+          btn.innerHTML = Icons[config.icon] + '<span class="neiki-insert-label">' + t('toolbar.insert') + '</span><span class="neiki-chevron">' + Icons['chevron-down'] + '</span>';
 
           const dropdown = Utils.createElement('div', { className: 'neiki-insert-dropdown' });
 
           const insertItems = [
-            { key: 'link', icon: Icons.link, label: 'Link', action: () => this.modal.open('link', { text: Utils.getSelection().toString() }) },
-            { key: 'image', icon: Icons.image, label: 'Image', action: () => this.modal.open('image', {}) },
-            { key: 'table', icon: Icons.table, label: 'Table', action: () => this.modal.open('table', {}) },
-            { key: 'emoji', icon: Icons.emoji, label: 'Emoji', action: () => this.emojiPicker.toggle(btn) },
-            { key: 'specialChars', icon: Icons.specialChars, label: 'Symbol', action: () => this.specialCharsPicker.toggle(btn) }
+            { key: 'link', icon: Icons.link, labelKey: 'insert.link', action: () => this.modal.open('link', { text: Utils.getSelection().toString() }) },
+            { key: 'image', icon: Icons.image, labelKey: 'insert.image', action: () => this.modal.open('image', {}) },
+            { key: 'table', icon: Icons.table, labelKey: 'insert.table', action: () => this.modal.open('table', {}) },
+            { key: 'emoji', icon: Icons.emoji, labelKey: 'insert.emoji', action: () => this.emojiPicker.toggle(btn) },
+            { key: 'specialChars', icon: Icons.specialChars, labelKey: 'insert.symbol', action: () => this.specialCharsPicker.toggle(btn) }
           ];
 
-          insertItems.forEach(({ icon, label, action }) => {
+          insertItems.forEach(({ icon, labelKey, action }) => {
             const item = Utils.createElement('div', {
               className: 'neiki-dropdown-item'
             });
-            item.innerHTML = '<span class="neiki-dropdown-item-icon">' + icon + '</span>' + label;
+            item.innerHTML = '<span class="neiki-dropdown-item-icon">' + icon + '</span>' + t(labelKey);
             item.addEventListener('click', (e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -1801,7 +2100,7 @@
         if (config.type === 'moreMenu') {
           const btn = Utils.createElement('button', {
             className: 'neiki-toolbar-btn neiki-more-btn',
-            title: config.title,
+            title: t(config.titleKey),
             type: 'button',
             innerHTML: Icons[config.icon],
             'data-command': item
@@ -1810,19 +2109,19 @@
           const dropdown = Utils.createElement('div', { className: 'neiki-more-dropdown' });
 
           const moreItems = [
-            { key: 'save', icon: Icons.save, label: 'Save', action: () => this.triggerSave() },
-            { key: 'preview', icon: Icons.eye, label: 'Preview', action: () => this.previewContent() },
-            { key: 'download', icon: Icons.download, label: 'Download', action: () => this.downloadContent() },
-            { key: 'print', icon: Icons.print, label: 'Print', action: () => this.printContent() },
+            { key: 'save', icon: Icons.save, labelKey: 'menu.save', action: () => this.triggerSave() },
+            { key: 'preview', icon: Icons.eye, labelKey: 'menu.preview', action: () => this.previewContent() },
+            { key: 'download', icon: Icons.download, labelKey: 'menu.download', action: () => this.downloadContent() },
+            { key: 'print', icon: Icons.print, labelKey: 'menu.print', action: () => this.printContent() },
             { key: 'divider' },
-            { key: 'autosave', icon: Icons.save, label: 'Autosave', action: () => this.toggleAutosave(), toggle: true },
+            { key: 'autosave', icon: Icons.save, labelKey: 'menu.autosave', action: () => this.toggleAutosave(), toggle: true },
             { key: 'divider' },
-            { key: 'clearAll', icon: Icons.trash, label: 'Clear all', action: () => this.clearAll(), danger: true },
-            { key: 'themeToggle', icon: Icons.sun, label: 'Toggle Theme', action: () => { this.toggleTheme(); this._updateThemeMenuItem(); } },
-            { key: 'fullscreen', icon: Icons.fullscreen, label: 'Fullscreen', action: () => this.toggleFullscreen() }
+            { key: 'clearAll', icon: Icons.trash, labelKey: 'menu.clearAll', action: () => this.clearAll(), danger: true },
+            { key: 'themeToggle', icon: Icons.sun, labelKey: 'menu.toggleTheme', action: () => { this.toggleTheme(); this._updateThemeMenuItem(); } },
+            { key: 'fullscreen', icon: Icons.fullscreen, labelKey: 'menu.fullscreen', action: () => this.toggleFullscreen() }
           ];
 
-          moreItems.forEach(({ key, icon, label, action, danger, toggle }) => {
+          moreItems.forEach(({ key, icon, labelKey, action, danger, toggle }) => {
             if (key === 'divider') {
               dropdown.appendChild(Utils.createElement('div', { className: 'neiki-dropdown-divider' }));
               return;
@@ -1830,7 +2129,7 @@
             const menuItem = Utils.createElement('div', {
               className: 'neiki-dropdown-item' + (danger ? ' neiki-dropdown-item-danger' : '')
             });
-            menuItem.innerHTML = '<span class="neiki-dropdown-item-icon">' + icon + '</span><span class="neiki-dropdown-item-label">' + label + '</span>';
+            menuItem.innerHTML = '<span class="neiki-dropdown-item-icon">' + icon + '</span><span class="neiki-dropdown-item-label">' + t(labelKey) + '</span>';
 
             if (key === 'autosave') {
               const badge = Utils.createElement('span', { className: 'neiki-autosave-badge' });
@@ -1879,7 +2178,7 @@
         // Default: regular button
         const button = Utils.createElement('button', {
           className: 'neiki-toolbar-btn',
-          title: config.title,
+          title: t(config.titleKey),
           type: 'button',
           innerHTML: Icons[config.icon] || '',
           'data-command': item
@@ -1908,7 +2207,7 @@
         className: 'neiki-content',
         contentEditable: !this.config.readonly,
         spellcheck: this.config.spellcheck,
-        'data-placeholder': this.config.placeholder
+        'data-placeholder': t('placeholder')
       });
 
       if (this.config.minHeight) {
@@ -2272,7 +2571,7 @@
       const modal = Utils.createElement('div', { className: 'neiki-preview-modal' });
 
       const header = Utils.createElement('div', { className: 'neiki-preview-header' });
-      header.innerHTML = '<span>Document Preview</span>';
+      header.innerHTML = '<span>' + t('preview.title') + '</span>';
       const closeBtn = Utils.createElement('button', {
         className: 'neiki-preview-close',
         type: 'button',
@@ -2316,7 +2615,7 @@
     }
 
     clearAll() {
-      if (this.getContent().trim() && !confirm('Clear all content?')) return;
+      if (this.getContent().trim() && !confirm(t('confirm.clearAll'))) return;
       this.setContent('');
       this.history.record();
       this.triggerChange();
@@ -2443,11 +2742,11 @@
 
       this.statusWordCount = Utils.createElement('span', {
         className: 'neiki-statusbar-item',
-        textContent: '0 words'
+        textContent: '0 ' + t('status.words')
       });
       this.statusCharCount = Utils.createElement('span', {
         className: 'neiki-statusbar-item',
-        textContent: '0 chars'
+        textContent: '0 ' + t('status.chars')
       });
       this.statusAutosave = Utils.createElement('span', {
         className: 'neiki-statusbar-item neiki-statusbar-autosave'
@@ -2472,8 +2771,8 @@
       const text = this.getText().trim();
       const words = text ? text.split(/\s+/).filter(w => w.length > 0).length : 0;
       const chars = this.getText().length;
-      this.statusWordCount.textContent = words + (words === 1 ? ' word' : ' words');
-      this.statusCharCount.textContent = chars + (chars === 1 ? ' char' : ' chars');
+      this.statusWordCount.textContent = words + ' ' + (words === 1 ? t('status.word') : t('status.words'));
+      this.statusCharCount.textContent = chars + ' ' + (chars === 1 ? t('status.char') : t('status.chars'));
       this.statusBlockType.textContent = this.getCurrentBlockType();
     }
 
@@ -2534,7 +2833,7 @@
       // Show autosave status
       if (this.statusAutosave) {
         this.statusAutosave.style.display = '';
-        this.statusAutosave.textContent = 'Saved locally';
+        this.statusAutosave.textContent = t('autosave.savedLocally');
       }
 
       // Listen for content changes to trigger autosave
@@ -2543,14 +2842,14 @@
           if (!this.isAutosaveEnabled) return;
           // Show "Autosaving..."
           if (this.statusAutosave) {
-            this.statusAutosave.textContent = 'Autosaving...';
+            this.statusAutosave.textContent = t('autosave.autosaving');
             this.statusAutosave.style.display = '';
           }
           this.storage.set('autosave_content', this.getContent());
           // Show "Saved locally" after brief delay
           setTimeout(() => {
             if (this.statusAutosave && this.isAutosaveEnabled) {
-              this.statusAutosave.textContent = 'Saved locally';
+              this.statusAutosave.textContent = t('autosave.savedLocally');
             }
           }, 500);
         }, 1000);

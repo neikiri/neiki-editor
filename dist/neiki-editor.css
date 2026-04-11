@@ -1843,6 +1843,11 @@
   animation: neiki-fade-in 0.15s ease;
 }
 
+/* Czech language - wider dropdown for longer labels */
+.neiki-lang-cs .neiki-more-dropdown {
+  min-width: 165px;
+}
+
 /* Dropdown item with icon */
 .neiki-dropdown-item-icon {
   display: inline-flex;

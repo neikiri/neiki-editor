@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0]
+- Added localization support with English and Czech languages (`language` config option)
+- All UI strings (tooltips, modals, status bar, messages) are now translatable
+- Added `t(key, params)` translation helper with placeholder support
+- Demo page includes language switcher for testing
+- Updated documentation (README, wiki) with i18n instructions
+
 ## [2.1.0]
 - Toolbar groups wrap as whole units; Insert dropdown and More menu (⋯) consolidate actions
 - Font size widget with ±/input/dropdown preserves text selection

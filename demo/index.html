@@ -219,53 +219,61 @@
 
         <div class="header-actions">
             <!-- Document group -->
-            <button class="header-btn" onclick="newDocument()" title="New Document">
+            <button class="header-btn" onclick="newDocument()" id="btnNew">
                 <svg viewBox="0 0 24 24">
                     <path
                         d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
                 </svg>
-                New
+                <span data-i18n="new">New</span>
             </button>
-            <button class="header-btn" onclick="uploadDocument()" title="Upload HTML File">
+            <button class="header-btn" onclick="uploadDocument()" id="btnUpload">
                 <svg viewBox="0 0 24 24">
                     <path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z" />
                 </svg>
-                Upload
+                <span data-i18n="upload">Upload</span>
             </button>
 
             <div class="header-separator"></div>
 
             <!-- Save group -->
-            <button class="header-btn" onclick="saveToCache()" title="Save to Browser Cache">
+            <button class="header-btn" onclick="saveToCache()" id="btnSave">
                 <svg viewBox="0 0 24 24">
                     <path
                         d="M17 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z" />
                 </svg>
-                Save
+                <span data-i18n="save">Save</span>
             </button>
-            <button class="header-btn" onclick="downloadDocument()" title="Download as HTML">
+            <button class="header-btn" onclick="downloadDocument()" id="btnDownload">
                 <svg viewBox="0 0 24 24">
                     <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
                 </svg>
-                Download
+                <span data-i18n="download">Download</span>
             </button>
 
             <div class="header-separator"></div>
 
             <!-- View group -->
-            <button class="header-btn" onclick="previewDocument()" title="Preview Document">
+            <button class="header-btn" onclick="previewDocument()" id="btnPreview">
                 <svg viewBox="0 0 24 24">
                     <path
                         d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
                 </svg>
-                Preview
+                <span data-i18n="preview">Preview</span>
             </button>
-            <button class="header-btn btn-danger" onclick="clearDocument()" title="Clear Content">
+            <button class="header-btn btn-danger" onclick="clearDocument()" id="btnClear">
                 <svg viewBox="0 0 24 24">
                     <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
                 </svg>
-                Clear
+                <span data-i18n="clear">Clear</span>
             </button>
+
+            <div class="header-separator"></div>
+
+            <!-- Language switcher -->
+            <select id="langSwitcher" class="header-btn" style="padding: 7px 10px; cursor: pointer;" onchange="switchLanguage(this.value)" title="Language">
+                <option value="en">🇬🇧 EN</option>
+                <option value="cs">🇨🇿 CZ</option>
+            </select>
         </div>
     </header>
 
@@ -290,8 +298,72 @@
 
     <script src="../dist/neiki-editor.js"></script>
     <script>
-        // Initialize editor
-        const editor = new NeikiEditor('#editor');
+        // Demo UI translations
+        const UI_TRANSLATIONS = {
+            en: {
+                new: 'New',
+                upload: 'Upload',
+                save: 'Save',
+                download: 'Download',
+                preview: 'Preview',
+                clear: 'Clear',
+                confirmNew: 'Create a new document? Unsaved changes will be lost.',
+                confirmClear: 'Clear all content?',
+                savedNotification: 'Document saved to browser cache'
+            },
+            cs: {
+                new: 'Nový',
+                upload: 'Nahrát',
+                save: 'Uložit',
+                download: 'Stáhnout',
+                preview: 'Náhled',
+                clear: 'Vymazat',
+                confirmNew: 'Vytvořit nový dokument? Neuložené změny budou ztraceny.',
+                confirmClear: 'Vymazat veškerý obsah?',
+                savedNotification: 'Dokument uložen do mezipaměti prohlížeče'
+            }
+        };
+
+        // Get language from URL or localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        const savedLang = localStorage.getItem('neiki-editor-lang') || 'en';
+        const initialLang = urlParams.get('lang') || savedLang;
+
+        // Translation helper for demo UI
+        function t(key) {
+            return UI_TRANSLATIONS[initialLang]?.[key] || UI_TRANSLATIONS['en'][key] || key;
+        }
+
+        // Apply translations to header buttons
+        function applyTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = t(key);
+            });
+        }
+
+        // Initialize editor with language
+        let editor = new NeikiEditor('#editor', {
+            language: initialLang
+        });
+
+        // Set language switcher to current language
+        document.getElementById('langSwitcher').value = initialLang;
+
+        // Apply translations on load
+        applyTranslations();
+
+        // Switch language function
+        function switchLanguage(lang) {
+            localStorage.setItem('neiki-editor-lang', lang);
+            // Save current content
+            const content = editor.getContent();
+            localStorage.setItem(CACHE_KEY, content);
+            // Reload page with new language
+            const url = new URL(window.location);
+            url.searchParams.set('lang', lang);
+            window.location.href = url.toString();
+        }
 
         const CACHE_KEY = 'neiki-html-editor-document';
 
@@ -305,7 +377,7 @@
 
         // ── New Document ──
         function newDocument() {
-            if (!editor.getContent().trim() || confirm('Create a new document? Unsaved changes will be lost.')) {
+            if (!editor.getContent().trim() || confirm(t('confirmNew'))) {
                 editor.setContent('');
             }
         }
@@ -341,7 +413,7 @@
         function saveToCache() {
             const content = editor.getContent();
             localStorage.setItem(CACHE_KEY, content);
-            showNotification('Document saved to browser cache');
+            showNotification(t('savedNotification'));
         }
 
         // ── Download as HTML ──
@@ -397,7 +469,7 @@ ${content}
 
         // ── Clear ──
         function clearDocument() {
-            if (!editor.getContent().trim() || confirm('Clear all content?')) {
+            if (!editor.getContent().trim() || confirm(t('confirmClear'))) {
                 editor.setContent('');
             }
         }

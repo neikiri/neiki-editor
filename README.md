@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/css-%23663399.svg?style=for-the-badge&logo=css&logoColor=white" alt="CSS">
   <br>
   <img src="https://img.shields.io/badge/License-MIT-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-2.1.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-2.2.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -33,8 +33,8 @@
 ### CDN (Recommended)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.1.0/dist/neiki-editor.css">
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.1.0/dist/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.2.0/dist/neiki-editor.css">
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.2.0/dist/neiki-editor.js"></script>
 ```
 
 ### Self-hosted
@@ -107,6 +107,7 @@ const editor = new NeikiEditor('#editor', {
 | `spellcheck` | `boolean` | `true` | Enable browser spellcheck |
 | `readonly` | `boolean` | `false` | Make editor read-only |
 | `theme` | `string` | `'light'` | `'light'` or `'dark'` |
+| `language` | `string` | `'en'` | UI language: `'en'` (English) or `'cs'` (Czech) |
 | `toolbar` | `array` | *(see above)* | Toolbar button configuration |
 | `onChange` | `function\|null` | `null` | Callback on content change |
 | `onSave` | `function\|null` | `null` | Callback on save (triggered by Ctrl+S or More menu → Save) |
@@ -222,6 +223,25 @@ editor.setTheme('dark');
 ```
 
 The selected theme persists across page reloads via `localStorage`.
+
+---
+
+## 🌍 Localization (i18n)
+
+Neiki Editor supports multiple UI languages. Currently available:
+
+- **English** (`en`) — default
+- **Czech** (`cs`)
+
+### Set language on init:
+
+```javascript
+const editor = new NeikiEditor('#editor', {
+    language: 'cs'  // Czech UI
+});
+```
+
+All toolbar tooltips, modal dialogs, status bar texts, and system messages are translated.
 
 ---
 

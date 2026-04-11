@@ -11,3 +11,6 @@
 # OS files
 .DS_Store
 Thumbs.db
+
+# Wiki Folder
+wiki/
