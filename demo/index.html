@@ -43,18 +43,18 @@
         }
 
         .header-title {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
+            flex: 1;
+            text-align: center;
             font-size: 16px;
             font-weight: 600;
             color: #f1f5f9;
             white-space: nowrap;
             letter-spacing: 0.3px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .header-actions {
-            margin-left: auto;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -355,6 +355,12 @@
                 onchange="switchLanguage(this.value)" title="Language">
                 <option value="en">🇬🇧 EN</option>
                 <option value="cs">🇨🇿 CZ</option>
+                <option value="zh">🇨🇳 ZH</option>
+                <option value="es">🇪🇸 ES</option>
+                <option value="de">🇩🇪 DE</option>
+                <option value="fr">🇫🇷 FR</option>
+                <option value="pt">🇵🇹 PT</option>
+                <option value="ja">🇯🇵 JA</option>
             </select>
         </div>
     </header>
@@ -407,6 +413,12 @@
             title="Language">
             <option value="en">🇬🇧 English</option>
             <option value="cs">🇨🇿 Čeština</option>
+            <option value="zh">🇨🇳 中文</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="de">🇩🇪 Deutsch</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="pt">🇵🇹 Português</option>
+            <option value="ja">🇯🇵 日本語</option>
         </select>
     </div>
 
@@ -429,7 +441,7 @@
     <!-- Hidden file input -->
     <input type="file" id="fileInput" accept=".html,.htm" style="display:none" onchange="handleFileUpload(event)">
 
-    <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.4.0/dist/neiki-editor.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.5.0/dist/neiki-editor.min.js"></script>
     <script>
         // Demo UI translations
         const UI_TRANSLATIONS = {
@@ -454,6 +466,72 @@
                 confirmNew: 'Vytvořit nový dokument? Neuložené změny budou ztraceny.',
                 confirmClear: 'Vymazat veškerý obsah?',
                 savedNotification: 'Dokument uložen do mezipaměti prohlížeče'
+            },
+            zh: {
+                new: '新建',
+                upload: '上传',
+                save: '保存',
+                download: '下载',
+                preview: '预览',
+                clear: '清除',
+                confirmNew: '创建新文档？未保存的更改将丢失。',
+                confirmClear: '清除所有内容？',
+                savedNotification: '文档已保存到浏览器缓存'
+            },
+            es: {
+                new: 'Nuevo',
+                upload: 'Subir',
+                save: 'Guardar',
+                download: 'Descargar',
+                preview: 'Vista previa',
+                clear: 'Borrar',
+                confirmNew: '¿Crear un nuevo documento? Los cambios no guardados se perderán.',
+                confirmClear: '¿Borrar todo el contenido?',
+                savedNotification: 'Documento guardado en la caché del navegador'
+            },
+            de: {
+                new: 'Neu',
+                upload: 'Hochladen',
+                save: 'Speichern',
+                download: 'Herunterladen',
+                preview: 'Vorschau',
+                clear: 'Löschen',
+                confirmNew: 'Neues Dokument erstellen? Ungespeicherte Änderungen gehen verloren.',
+                confirmClear: 'Gesamten Inhalt löschen?',
+                savedNotification: 'Dokument im Browser-Cache gespeichert'
+            },
+            fr: {
+                new: 'Nouveau',
+                upload: 'Téléverser',
+                save: 'Enregistrer',
+                download: 'Télécharger',
+                preview: 'Aperçu',
+                clear: 'Effacer',
+                confirmNew: 'Créer un nouveau document ? Les modifications non enregistrées seront perdues.',
+                confirmClear: 'Effacer tout le contenu ?',
+                savedNotification: 'Document enregistré dans le cache du navigateur'
+            },
+            pt: {
+                new: 'Novo',
+                upload: 'Enviar',
+                save: 'Salvar',
+                download: 'Baixar',
+                preview: 'Visualizar',
+                clear: 'Limpar',
+                confirmNew: 'Criar novo documento? Alterações não salvas serão perdidas.',
+                confirmClear: 'Limpar todo o conteúdo?',
+                savedNotification: 'Documento salvo no cache do navegador'
+            },
+            ja: {
+                new: '新規',
+                upload: 'アップロード',
+                save: '保存',
+                download: 'ダウンロード',
+                preview: 'プレビュー',
+                clear: '消去',
+                confirmNew: '新しいドキュメントを作成しますか？保存されていない変更は失われます。',
+                confirmClear: 'すべての内容を消去しますか？',
+                savedNotification: 'ドキュメントをブラウザキャッシュに保存しました'
             }
         };
 

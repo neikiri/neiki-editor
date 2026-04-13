@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.5.0]
+- Added 6 new built-in languages: Chinese (zh), Spanish (es), German (de), French (fr), Portuguese (pt), Japanese (ja)
+- Editor now ships with 8 languages out of the box
+- Additional languages can still be added via `NeikiEditor.addTranslation()` API
+- Fixed: pressing Enter at end of a blockquote (last element) now exits the quote and creates a new paragraph
+- Fixed: modal buttons (Insert, Cancel, etc.) were squished due to toolbar `.neiki-btn` styles overriding size
+- Fixed: demo page header title overlapping action buttons on smaller screens
+
 ## [2.4.0]
 - Added `neiki-editor.min.js` — single minified file with embedded CSS (no separate stylesheet needed)
 - CDN integration now requires only one `<script>` tag

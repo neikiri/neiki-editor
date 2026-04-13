@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 2.4.0
+ * Version: 2.5.0
  */
 
 /* ============================================
@@ -978,6 +978,15 @@
   gap: 10px;
   padding: 16px 20px;
   border-top: 1px solid var(--neiki-border-color);
+}
+
+.neiki-modal-footer .neiki-btn {
+  width: auto;
+  height: 38px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
 }
 
 /* Form Elements */
