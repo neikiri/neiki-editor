@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/css-%23663399.svg?style=for-the-badge&logo=css&logoColor=white" alt="CSS">
   <br>
   <img src="https://img.shields.io/badge/License-MIT-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-2.3.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-2.4.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -38,16 +38,38 @@
 
 ### CDN (Recommended)
 
+Just one file — CSS is embedded automatically:
+
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.3.0/dist/neiki-editor.css">
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.3.0/dist/neiki-editor.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.4.0/dist/neiki-editor.min.js"></script>
+```
+
+Or if you prefer loading CSS separately:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.4.0/dist/neiki-editor.css">
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.4.0/dist/neiki-editor.js"></script>
+```
+
+### Package Manager
+
+```bash
+npm install neiki-editor
+# or
+yarn add neiki-editor
+# or
+pnpm add neiki-editor
 ```
 
 ### Self-hosted
 
-Download `neiki-editor.js` and `neiki-editor.css`, then include them in your project:
+Download `neiki-editor.min.js` (includes CSS) or `neiki-editor.js` + `neiki-editor.css` separately:
 
 ```html
+<!-- Single file (recommended) -->
+<script src="path/to/neiki-editor.min.js"></script>
+
+<!-- Or separate files -->
 <link rel="stylesheet" href="path/to/neiki-editor.css">
 <script src="path/to/neiki-editor.js"></script>
 ```
@@ -609,8 +631,10 @@ function NeikiEditorComponent({ value, onChange }) {
 ```
 neiki-editor/
 ├── dist/
-│   ├── neiki-editor.js       # Editor core
-│   └── neiki-editor.css      # Editor styles
+│   ├── neiki-editor.min.js   # Minified editor + embedded CSS (recommended)
+│   ├── neiki-editor.min.css  # Minified styles
+│   ├── neiki-editor.js       # Editor core (unminified)
+│   └── neiki-editor.css      # Editor styles (unminified)
 ├── demo/
 │   └── index.html            # Interactive demo page
 │   └── logo.png              # Demo logo

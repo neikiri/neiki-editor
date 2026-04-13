@@ -1,6 +1,6 @@
 {
   "name": "neiki-editor",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Lightweight, dependency-free WYSIWYG editor",
   "keywords": [
     "wysiwyg",
@@ -11,6 +11,7 @@
   "main": "dist/neiki-editor.js",
   "exports": {
     ".": "./dist/neiki-editor.js",
+    "./min": "./dist/neiki-editor.min.js",
     "./style": "./dist/neiki-editor.css"
   },
   "files": [
@@ -24,8 +25,8 @@
   "bugs": {
     "url": "https://github.com/neikiri/neiki-editor/issues"
   },
-  "unpkg": "dist/neiki-editor.js",
-  "jsdelivr": "dist/neiki-editor.js",
+  "unpkg": "dist/neiki-editor.min.js",
+  "jsdelivr": "dist/neiki-editor.min.js",
   "homepage": "https://github.com/neikiri/neiki-editor#readme",
   "author": "Jindřich Stoklasa <jindrichstoklasa1@gmail.com>",
   "license": "MIT"

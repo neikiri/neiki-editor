@@ -1,7 +1,7 @@
 <?php
 /**
  * Neiki Editor - PHP Integration Helper
- * Version: 2.3.0
+ * Version: 2.4.0
  *
  * A lightweight helper class for easy server-side integration
  * of Neiki Editor into PHP projects.
@@ -15,33 +15,36 @@
 class NeikiEditor
 {
     /** @var string CDN base URL */
-    private static $cdnBase = 'https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.3.0/dist';
+    private static $cdnBase = 'https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.4.0/dist';
 
     /** @var bool Whether assets have already been included */
     private static $assetsIncluded = false;
 
     /**
-     * Output CSS & JS assets (call once per page, in <head> or before first editor).
+     * Output editor assets (call once per page, in <head> or before first editor).
+     * By default loads a single minified file with embedded CSS.
      *
-     * @param bool   $local    Use local files instead of CDN
-     * @param string $basePath Path to local dist/ directory (relative or absolute)
-     * @return string HTML link + script tags
+     * @param bool   $local     Use local files instead of CDN
+     * @param string $basePath  Path to local dist/ directory (relative or absolute)
+     * @param bool   $separate  If true, load CSS and JS as separate files instead of the single minified bundle
+     * @return string HTML script (and optionally link) tags
      */
-    public static function assets(bool $local = false, string $basePath = ''): string
+    public static function assets(bool $local = false, string $basePath = '', bool $separate = false): string
     {
         if (self::$assetsIncluded) return '';
         self::$assetsIncluded = true;
 
-        if ($local && $basePath) {
-            $css = rtrim($basePath, '/') . '/neiki-editor.css';
-            $js  = rtrim($basePath, '/') . '/neiki-editor.js';
-        } else {
-            $css = self::$cdnBase . '/neiki-editor.css';
-            $js  = self::$cdnBase . '/neiki-editor.js';
+        $base = ($local && $basePath) ? rtrim($basePath, '/') : self::$cdnBase;
+
+        if ($separate) {
+            $css = $base . '/neiki-editor.css';
+            $js  = $base . '/neiki-editor.js';
+            return '<link rel="stylesheet" href="' . self::escape($css) . '">' . "\n"
+                 . '<script src="' . self::escape($js) . '"></script>' . "\n";
         }
 
-        return '<link rel="stylesheet" href="' . self::escape($css) . '">' . "\n"
-             . '<script src="' . self::escape($js) . '"></script>' . "\n";
+        $js = $base . '/neiki-editor.min.js';
+        return '<script src="' . self::escape($js) . '"></script>' . "\n";
     }
 
     /**

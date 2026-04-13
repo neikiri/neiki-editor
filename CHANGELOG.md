@@ -1,7 +1,12 @@
 # Changelog
 
-## [2.3.0]
+## [2.4.0]
+- Added `neiki-editor.min.js` — single minified file with embedded CSS (no separate stylesheet needed)
+- CDN integration now requires only one `<script>` tag
+- Standalone `neiki-editor.js` + `neiki-editor.css` still available for separate loading
+- Updated documentation (README, wiki) with new installation instructions
 
+## [2.3.0]
 - Added `NeikiEditor.addTranslation(lang, keys)` static method for custom translations
 - Added `translations` config option to pass custom translations at initialization
 - Developers can now add any language without modifying the source file

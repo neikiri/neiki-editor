@@ -14,3 +14,6 @@ Thumbs.db
 
 # Wiki Folder
 wiki/
+
+# Minifier
+MINIFIER.txt
