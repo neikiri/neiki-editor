@@ -79,6 +79,8 @@ const editor = new NeikiEditor('#editor', {
     spellcheck: true,
     readonly: false,
     theme: 'light',       // 'light' or 'dark'
+    language: 'en',       // 'en', 'cs', or custom via addTranslation()
+    translations: null,   // custom translation keys (merged with built-in)
     toolbar: [
         'viewCode', 'undo', 'redo', 'findReplace', '|',
         'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'removeFormat', '|',
@@ -114,6 +116,7 @@ const editor = new NeikiEditor('#editor', {
 | `readonly` | `boolean` | `false` | Make editor read-only |
 | `theme` | `string` | `'light'` | `'light'` or `'dark'` |
 | `language` | `string` | `'en'` | UI language: `'en'` (English) or `'cs'` (Czech) |
+| `translations` | `object\|null` | `null` | Custom translation keys (merged with built-in) |
 | `toolbar` | `array` | *(see above)* | Toolbar button configuration |
 | `onChange` | `function\|null` | `null` | Callback on content change |
 | `onSave` | `function\|null` | `null` | Callback on save (triggered by Ctrl+S or More menu → Save) |
