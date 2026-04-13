@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 2.2.1
+ * Version: 2.3.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -301,6 +301,13 @@
   // Current language (will be set per editor instance)
   let _currentLanguage = 'en';
 
+  // Register a custom translation (static method — available before init)
+  function addTranslation(lang, keys) {
+    if (!lang || typeof keys !== 'object') return;
+    if (!TRANSLATIONS[lang]) TRANSLATIONS[lang] = {};
+    Object.assign(TRANSLATIONS[lang], keys);
+  }
+
   // Translation helper function
   function t(key, params = {}) {
     const lang = _currentLanguage || 'en';
@@ -334,6 +341,7 @@
     readonly: false,
     theme: 'light',
     language: 'en',
+    translations: null,
     plugins: [],
     onChange: null,
     onSave: null,
@@ -1779,6 +1787,13 @@
 
       // Set language for translations
       _currentLanguage = this.config.language || 'en';
+
+      // Merge custom translations from config
+      if (this.config.translations && typeof this.config.translations === 'object') {
+        Object.keys(this.config.translations).forEach(lang => {
+          addTranslation(lang, this.config.translations[lang]);
+        });
+      }
 
       // Load theme preference
       const savedTheme = StorageManager.getGlobal('theme', this.config.theme);
@@ -3515,6 +3530,9 @@
       });
     };
   }
+
+  // Static methods
+  NeikiEditor.addTranslation = addTranslation;
 
   // Export
   global.NeikiEditor = NeikiEditor;

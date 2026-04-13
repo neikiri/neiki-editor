@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/css-%23663399.svg?style=for-the-badge&logo=css&logoColor=white" alt="CSS">
   <br>
   <img src="https://img.shields.io/badge/License-MIT-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-2.2.1-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-2.3.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -39,8 +39,8 @@
 ### CDN (Recommended)
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.2.1/dist/neiki-editor.css">
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.2.1/dist/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.3.0/dist/neiki-editor.css">
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.3.0/dist/neiki-editor.js"></script>
 ```
 
 ### Self-hosted
@@ -234,7 +234,7 @@ The selected theme persists across page reloads via `localStorage`.
 
 ## 🌍 Localization (i18n)
 
-Neiki Editor supports multiple UI languages. Currently available:
+Neiki Editor supports multiple UI languages. Built-in:
 
 - **English** (`en`) — default
 - **Czech** (`cs`)
@@ -247,7 +247,37 @@ const editor = new NeikiEditor('#editor', {
 });
 ```
 
-All toolbar tooltips, modal dialogs, status bar texts, and system messages are translated.
+### Custom translations
+
+Add your own language or override existing translations using the static method:
+
+```javascript
+NeikiEditor.addTranslation('de', {
+    'toolbar.bold': 'Fett (Strg+B)',
+    'toolbar.italic': 'Kursiv (Strg+I)',
+    'toolbar.undo': 'Rückgängig (Strg+Z)',
+    // only override what you need — English is the fallback
+});
+
+const editor = new NeikiEditor('#editor', { language: 'de' });
+```
+
+Or pass translations directly in config:
+
+```javascript
+const editor = new NeikiEditor('#editor', {
+    language: 'de',
+    translations: {
+        de: {
+            'toolbar.bold': 'Fett (Strg+B)',
+            'toolbar.italic': 'Kursiv (Strg+I)',
+            // ...
+        }
+    }
+});
+```
+
+All toolbar tooltips, modal dialogs, status bar texts, and system messages are translatable.
 
 ---
 
@@ -295,6 +325,12 @@ editor.triggerSave();         // Trigger onSave callback
 editor.previewContent();      // Open preview modal
 editor.downloadContent();     // Download content as HTML file
 editor.clearAll();            // Clear all content
+```
+
+### Localization
+
+```javascript
+NeikiEditor.addTranslation('de', { ... });  // Add/override translations (static)
 ```
 
 ### Command Execution

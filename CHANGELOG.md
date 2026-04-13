@@ -1,4 +1,13 @@
 # Changelog
+
+## [2.3.0]
+
+- Added `NeikiEditor.addTranslation(lang, keys)` static method for custom translations
+- Added `translations` config option to pass custom translations at initialization
+- Developers can now add any language without modifying the source file
+- Missing translation keys automatically fall back to English
+- Responsive header in demo page with hamburger menu for mobile
+
 ## [2.2.1]
 - Added preview image
 - Edited README.md - Added live version link
