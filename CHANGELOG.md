@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.0]
+- Added custom CDN at `cdn.neiki.eu` — supports latest (`/neiki-editor/neiki-editor.min.js`) and versioned (`/neiki-editor/2.7.0/neiki-editor.min.js`) URLs
+- jsDelivr remains available as an alternative CDN
+- Added Help button to More menu (⋯) — shows logo, author, version, GitHub and documentation links
+- Help modal is fully translated in all 8 languages
+- New config option `showHelp` (default: `true`) to toggle Help button visibility in More menu
+
 ## [2.6.1]
 - Added welcome demo content with feature overview, shown on first visit (when no cached content exists)
 - Added GitHub repository link with icon to demo header (desktop and mobile menu)

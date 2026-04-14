@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 2.6.1
+ * Version: 2.7.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -97,6 +97,13 @@
       'menu.clearAll': 'Clear all',
       'menu.toggleTheme': 'Toggle Theme',
       'menu.fullscreen': 'Fullscreen',
+      'menu.help': 'Help',
+
+      // Help modal
+      'help.author': 'Author',
+      'help.version': 'Version',
+      'help.github': 'GitHub',
+      'help.documentation': 'Documentation',
 
       // Link modal
       'modal.insertLink': 'Insert Link',
@@ -238,6 +245,11 @@
       'menu.clearAll': 'Vymazat vše',
       'menu.toggleTheme': 'Přepnout motiv',
       'menu.fullscreen': 'Celá obrazovka',
+      'menu.help': 'Nápověda',
+      'help.author': 'Autor',
+      'help.version': 'Verze',
+      'help.github': 'GitHub',
+      'help.documentation': 'Dokumentace',
 
       // Link modal
       'modal.insertLink': 'Vložit odkaz',
@@ -367,6 +379,11 @@
       'menu.clearAll': '清除全部',
       'menu.toggleTheme': '切换主题',
       'menu.fullscreen': '全屏',
+      'menu.help': '帮助',
+      'help.author': '作者',
+      'help.version': '版本',
+      'help.github': 'GitHub',
+      'help.documentation': '文档',
       'modal.insertLink': '插入链接',
       'modal.url': 'URL',
       'modal.text': '文本',
@@ -479,6 +496,11 @@
       'menu.clearAll': 'Borrar todo',
       'menu.toggleTheme': 'Cambiar tema',
       'menu.fullscreen': 'Pantalla completa',
+      'menu.help': 'Ayuda',
+      'help.author': 'Autor',
+      'help.version': 'Versión',
+      'help.github': 'GitHub',
+      'help.documentation': 'Documentación',
       'modal.insertLink': 'Insertar enlace',
       'modal.url': 'URL',
       'modal.text': 'Texto',
@@ -591,6 +613,11 @@
       'menu.clearAll': 'Alles löschen',
       'menu.toggleTheme': 'Design wechseln',
       'menu.fullscreen': 'Vollbild',
+      'menu.help': 'Hilfe',
+      'help.author': 'Autor',
+      'help.version': 'Version',
+      'help.github': 'GitHub',
+      'help.documentation': 'Dokumentation',
       'modal.insertLink': 'Link einfügen',
       'modal.url': 'URL',
       'modal.text': 'Text',
@@ -703,6 +730,11 @@
       'menu.clearAll': 'Tout effacer',
       'menu.toggleTheme': 'Changer de thème',
       'menu.fullscreen': 'Plein écran',
+      'menu.help': 'Aide',
+      'help.author': 'Auteur',
+      'help.version': 'Version',
+      'help.github': 'GitHub',
+      'help.documentation': 'Documentation',
       'modal.insertLink': 'Insérer un lien',
       'modal.url': 'URL',
       'modal.text': 'Texte',
@@ -815,6 +847,11 @@
       'menu.clearAll': 'Limpar tudo',
       'menu.toggleTheme': 'Alternar tema',
       'menu.fullscreen': 'Tela cheia',
+      'menu.help': 'Ajuda',
+      'help.author': 'Autor',
+      'help.version': 'Versão',
+      'help.github': 'GitHub',
+      'help.documentation': 'Documentação',
       'modal.insertLink': 'Inserir link',
       'modal.url': 'URL',
       'modal.text': 'Texto',
@@ -927,6 +964,11 @@
       'menu.clearAll': 'すべて消去',
       'menu.toggleTheme': 'テーマ切替',
       'menu.fullscreen': '全画面',
+      'menu.help': 'ヘルプ',
+      'help.author': '作成者',
+      'help.version': 'バージョン',
+      'help.github': 'GitHub',
+      'help.documentation': 'ドキュメント',
       'modal.insertLink': 'リンク挿入',
       'modal.url': 'URL',
       'modal.text': 'テキスト',
@@ -1026,7 +1068,8 @@
     onSave: null,
     onFocus: null,
     onBlur: null,
-    onReady: null
+    onReady: null,
+    showHelp: true
   };
 
   const TOOLBAR_ITEMS = {
@@ -1298,7 +1341,8 @@
     download: '<svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>',
     eye: '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>',
     trash: '<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>',
-    'chevron-down': '<svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>'
+    'chevron-down': '<svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>',
+    help: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>'
   };
 
   // ============================================
@@ -1484,6 +1528,9 @@
           break;
         case 'findReplace':
           modal = this.createFindReplaceModal(data);
+          break;
+        case 'help':
+          modal = this.createHelpModal(data);
           break;
         default:
           return;
@@ -1878,6 +1925,30 @@
 
       return modal;
     }
+
+    createHelpModal() {
+      const modal = Utils.createElement('div', { className: 'neiki-modal' });
+
+      modal.innerHTML = `
+        <div class="neiki-modal-header">
+          <h3>${t('menu.help')}</h3>
+          <button class="neiki-modal-close" type="button">${Icons.close}</button>
+        </div>
+        <div class="neiki-modal-body" style="text-align: center; padding: 24px 20px;">
+          <img src="https://github.com/neikiri/neiki-editor/raw/main/logo.png" alt="Neiki Editor" style="width: 120px; height: auto; margin: 0 auto 16px; display: block;">
+          <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
+            <div><strong>${t('help.author')}:</strong> neikiri (Jindřich Stoklasa)</div>
+            <div><strong>${t('help.version')}:</strong> 2.7.0</div>
+            <div><strong>${t('help.github')}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
+            <div><strong>${t('help.documentation')}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" style="color: var(--neiki-accent);">Wiki</a></div>
+          </div>
+        </div>
+      `;
+
+      modal.querySelector('.neiki-modal-close').addEventListener('click', () => this.close());
+
+      return modal;
+    }
   }
 
   // ============================================
@@ -1986,6 +2057,7 @@
 
       return dropdown;
     }
+
   }
 
   // ============================================
@@ -2903,6 +2975,11 @@
             { key: 'themeToggle', icon: Icons.sun, labelKey: 'menu.toggleTheme', action: () => { this.toggleTheme(); this._updateThemeMenuItem(); } },
             { key: 'fullscreen', icon: Icons.fullscreen, labelKey: 'menu.fullscreen', action: () => this.toggleFullscreen() }
           ];
+
+          if (this.config.showHelp) {
+            moreItems.push({ key: 'divider' });
+            moreItems.push({ key: 'help', icon: Icons.help, labelKey: 'menu.help', action: () => this.modal.open('help') });
+          }
 
           moreItems.forEach(({ key, icon, labelKey, action, danger, toggle }) => {
             if (key === 'divider') {

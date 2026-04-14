@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/css-%23663399.svg?style=for-the-badge&logo=css&logoColor=white" alt="CSS">
   <br>
   <img src="https://img.shields.io/badge/License-MIT-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-2.6.1-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-2.7.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -36,22 +36,53 @@
 ---
 ## 📦 Installation
 
-### CDN (Recommended)
-
-Just one file — CSS is embedded automatically:
+Add this single line — CSS is included automatically, always the **latest version**:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.6.1/dist/neiki-editor.min.js"></script>
+<script src="https://cdn.neiki.eu/neiki-editor/neiki-editor.min.js"></script>
 ```
 
-Or if you prefer loading CSS separately:
+<details>
+<summary><b>📋 More installation options</b> (pinned version, separate CSS/JS, jsDelivr, npm, self-hosted)</summary>
+<br>
+
+#### Pin a specific version
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.6.1/dist/neiki-editor.css">
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.6.1/dist/neiki-editor.js"></script>
+<script src="https://cdn.neiki.eu/neiki-editor/2.7.0/neiki-editor.min.js"></script>
 ```
 
-### Package Manager
+#### Load CSS and JS separately
+
+```html
+<!-- Latest -->
+<link rel="stylesheet" href="https://cdn.neiki.eu/neiki-editor/neiki-editor.css">
+<script src="https://cdn.neiki.eu/neiki-editor/neiki-editor.js"></script>
+
+<!-- Or pinned -->
+<link rel="stylesheet" href="https://cdn.neiki.eu/neiki-editor/2.7.0/neiki-editor.css">
+<script src="https://cdn.neiki.eu/neiki-editor/2.7.0/neiki-editor.js"></script>
+```
+
+#### Alternative CDN — jsDelivr
+
+```html
+<!-- Latest -->
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.min.js"></script>
+
+<!-- Pinned -->
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.7.0/dist/neiki-editor.min.js"></script>
+
+<!-- Separate files (latest) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.css">
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.js"></script>
+
+<!-- Separate files (pinned) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.7.0/dist/neiki-editor.css">
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.7.0/dist/neiki-editor.js"></script>
+```
+
+#### Package Manager
 
 ```bash
 npm install neiki-editor
@@ -61,18 +92,17 @@ yarn add neiki-editor
 pnpm add neiki-editor
 ```
 
-### Self-hosted
-
-Download `neiki-editor.min.js` (includes CSS) or `neiki-editor.js` + `neiki-editor.css` separately:
+#### Self-hosted
 
 ```html
-<!-- Single file (recommended) -->
 <script src="path/to/neiki-editor.min.js"></script>
 
 <!-- Or separate files -->
 <link rel="stylesheet" href="path/to/neiki-editor.css">
 <script src="path/to/neiki-editor.js"></script>
 ```
+
+</details>
 
 ---
 
@@ -145,6 +175,7 @@ const editor = new NeikiEditor('#editor', {
 | `onFocus` | `function\|null` | `null` | Callback when editor gains focus |
 | `onBlur` | `function\|null` | `null` | Callback when editor loses focus |
 | `onReady` | `function\|null` | `null` | Callback when editor is ready |
+| `showHelp` | `boolean` | `true` | Show Help button in More menu (⋯) |
 
 ---
 
@@ -217,6 +248,7 @@ The `moreMenu` toolbar item renders a **⋯** button (pushed to the right) that 
 | **Clear all** | Clear all editor content |
 | **Toggle Theme** | Switch between light/dark theme |
 | **Fullscreen** | Toggle fullscreen mode |
+| **Help** | Show help modal with author, version, and links (configurable via `showHelp`) |
 
 ### Standalone Tools
 
