@@ -157,9 +157,34 @@
             margin: 8px 0;
         }
 
-        .mobile-menu .lang-switcher-mobile {
+        .mobile-lang-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
             width: 100%;
-            padding: 12px 16px;
+        }
+
+        .lang-btn {
+            background: #334155;
+            border: 1px solid #475569;
+            color: #e2e8f0;
+            padding: 10px 0;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .lang-btn:hover {
+            background: #475569;
+            border-color: #64748b;
+        }
+
+        .lang-btn.active {
+            background: #2563eb;
+            border-color: #3b82f6;
+            color: #fff;
         }
 
         /* ── Responsive ── */
@@ -425,17 +450,16 @@
             <span data-i18n="clear">Clear</span>
         </button>
         <div class="header-separator"></div>
-        <select id="langSwitcherMobile" class="header-btn lang-switcher-mobile" onchange="switchLanguage(this.value)"
-            title="Language">
-            <option value="en">🇬🇧 English</option>
-            <option value="cs">🇨🇿 Čeština</option>
-            <option value="zh">🇨🇳 中文</option>
-            <option value="es">🇪🇸 Español</option>
-            <option value="de">🇩🇪 Deutsch</option>
-            <option value="fr">🇫🇷 Français</option>
-            <option value="pt">🇵🇹 Português</option>
-            <option value="ja">🇯🇵 日本語</option>
-        </select>
+        <div class="mobile-lang-grid" id="mobileLangGrid">
+            <button class="lang-btn" data-lang="en" onclick="switchLanguage('en')">🇬🇧 EN</button>
+            <button class="lang-btn" data-lang="cs" onclick="switchLanguage('cs')">🇨🇿 CZ</button>
+            <button class="lang-btn" data-lang="zh" onclick="switchLanguage('zh')">🇨🇳 ZH</button>
+            <button class="lang-btn" data-lang="es" onclick="switchLanguage('es')">🇪🇸 ES</button>
+            <button class="lang-btn" data-lang="de" onclick="switchLanguage('de')">🇩🇪 DE</button>
+            <button class="lang-btn" data-lang="fr" onclick="switchLanguage('fr')">🇫🇷 FR</button>
+            <button class="lang-btn" data-lang="pt" onclick="switchLanguage('pt')">🇵🇹 PT</button>
+            <button class="lang-btn" data-lang="ja" onclick="switchLanguage('ja')">🇯🇵 JA</button>
+        </div>
     </div>
 
     <!-- ── Editor ── -->
@@ -576,7 +600,8 @@
 
         // Set language switcher to current language
         document.getElementById('langSwitcher').value = initialLang;
-        document.getElementById('langSwitcherMobile').value = initialLang;
+        const activeBtn = document.querySelector(`.lang-btn[data-lang="${initialLang}"]`);
+        if (activeBtn) activeBtn.classList.add('active');
 
         // Apply translations on load
         applyTranslations();

@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 2.7.0
+ * Version: 2.7.1
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -1938,7 +1938,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/logo.png" alt="Neiki Editor" style="width: 120px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${t('help.author')}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${t('help.version')}:</strong> 2.7.0</div>
+            <div><strong>${t('help.version')}:</strong> 2.7.1</div>
             <div><strong>${t('help.github')}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${t('help.documentation')}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>

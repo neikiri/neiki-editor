@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/css-%23663399.svg?style=for-the-badge&logo=css&logoColor=white" alt="CSS">
   <br>
   <img src="https://img.shields.io/badge/License-MIT-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-2.7.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-2.7.1-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -49,7 +49,7 @@ Add this single line — CSS is included automatically, always the **latest vers
 #### Pin a specific version
 
 ```html
-<script src="https://cdn.neiki.eu/neiki-editor/2.7.0/neiki-editor.min.js"></script>
+<script src="https://cdn.neiki.eu/neiki-editor/2.7.1/neiki-editor.min.js"></script>
 ```
 
 #### Load CSS and JS separately
@@ -60,8 +60,8 @@ Add this single line — CSS is included automatically, always the **latest vers
 <script src="https://cdn.neiki.eu/neiki-editor/neiki-editor.js"></script>
 
 <!-- Or pinned -->
-<link rel="stylesheet" href="https://cdn.neiki.eu/neiki-editor/2.7.0/neiki-editor.css">
-<script src="https://cdn.neiki.eu/neiki-editor/2.7.0/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.neiki.eu/neiki-editor/2.7.1/neiki-editor.css">
+<script src="https://cdn.neiki.eu/neiki-editor/2.7.1/neiki-editor.js"></script>
 ```
 
 #### Alternative CDN — jsDelivr
@@ -71,15 +71,15 @@ Add this single line — CSS is included automatically, always the **latest vers
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.min.js"></script>
 
 <!-- Pinned -->
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.7.0/dist/neiki-editor.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.7.1/dist/neiki-editor.min.js"></script>
 
 <!-- Separate files (latest) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.css">
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.js"></script>
 
 <!-- Separate files (pinned) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.7.0/dist/neiki-editor.css">
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.7.0/dist/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.7.1/dist/neiki-editor.css">
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.7.1/dist/neiki-editor.js"></script>
 ```
 
 #### Package Manager
