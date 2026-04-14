@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/css-%23663399.svg?style=for-the-badge&logo=css&logoColor=white" alt="CSS">
   <br>
   <img src="https://img.shields.io/badge/License-MIT-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-2.5.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-2.6.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -41,14 +41,14 @@
 Just one file — CSS is embedded automatically:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.5.0/dist/neiki-editor.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.6.0/dist/neiki-editor.min.js"></script>
 ```
 
 Or if you prefer loading CSS separately:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.5.0/dist/neiki-editor.css">
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.5.0/dist/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.6.0/dist/neiki-editor.css">
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.6.0/dist/neiki-editor.js"></script>
 ```
 
 ### Package Manager
@@ -173,8 +173,8 @@ Use the `toolbar` array to customize which buttons appear and in what order. Use
 | `heading` | Select | Paragraph, H1, H2, H3, H4, H5, H6. Defaults to Paragraph. |
 | `fontSize` | Widget | Font size widget with **[−]** / **[+]** buttons, text input, and dropdown presets: 8, 9, 10, 11, 12, 14, 18, 24, 30, 36, 48, 60, 72, 96 |
 | `fontFamily` | Select | Sans Serif (Arial), Serif (Georgia), Monospace (Consolas), Cursive (Comic Sans MS) |
-| `foreColor` | Color Picker | Text color picker with reset option |
-| `backColor` | Color Picker | Background color picker with reset option |
+| `foreColor` | Color Picker | Text color — palette, native color input, hex code input |
+| `backColor` | Color Picker | Background color — palette, native color input, hex code input |
 
 ### Alignment & Lists
 

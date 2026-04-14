@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.0]
+- Added custom color picker with native color input, hex code input, and Apply button
+- Fixed: color picker closing when clicking on hex input or native color input
+- Fixed: color palette swatches overflowing the picker container
+- Fixed: color picker opening off-screen on mobile — now auto-flips alignment based on viewport
+- Fixed: "Drop images here" overlay appearing when dragging selected text within the editor
+
 ## [2.5.0]
 - Added 6 new built-in languages: Chinese (zh), Spanish (es), German (de), French (fr), Portuguese (pt), Japanese (ja)
 - Editor now ships with 8 languages out of the box

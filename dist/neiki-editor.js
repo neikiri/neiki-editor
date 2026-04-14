@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 2.5.0
+ * Version: 2.6.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -157,6 +157,11 @@
       // Clear all
       'confirm.clearAll': 'Clear all content?',
 
+      // Color picker
+      'color.reset': 'Reset to default',
+      'color.pick': 'Pick a color',
+      'color.apply': 'Apply',
+
       // Placeholder
       'placeholder': 'Start typing...'
     },
@@ -292,8 +297,9 @@
 
       // Clear all
       'confirm.clearAll': 'Vymazat veškerý obsah?',
-
-      // Placeholder
+      'color.reset': 'Obnovit výchozí',
+      'color.pick': 'Vybrat barvu',
+      'color.apply': 'Použít',
       'placeholder': 'Začněte psát...'
     },
     zh: {
@@ -404,6 +410,9 @@
       'autosave.autosaving': '正在保存...',
       'preview.title': '文档预览',
       'confirm.clearAll': '清除所有内容？',
+      'color.reset': '重置为默认',
+      'color.pick': '选择颜色',
+      'color.apply': '应用',
       'placeholder': '开始输入...'
     },
     es: {
@@ -513,6 +522,9 @@
       'autosave.autosaving': 'Guardando...',
       'preview.title': 'Vista previa del documento',
       'confirm.clearAll': '¿Borrar todo el contenido?',
+      'color.reset': 'Restablecer',
+      'color.pick': 'Elegir color',
+      'color.apply': 'Aplicar',
       'placeholder': 'Empiece a escribir...'
     },
     de: {
@@ -622,6 +634,9 @@
       'autosave.autosaving': 'Speichern...',
       'preview.title': 'Dokumentvorschau',
       'confirm.clearAll': 'Gesamten Inhalt löschen?',
+      'color.reset': 'Zurücksetzen',
+      'color.pick': 'Farbe wählen',
+      'color.apply': 'Anwenden',
       'placeholder': 'Hier schreiben...'
     },
     fr: {
@@ -731,6 +746,9 @@
       'autosave.autosaving': 'Enregistrement...',
       'preview.title': 'Aperçu du document',
       'confirm.clearAll': 'Effacer tout le contenu ?',
+      'color.reset': 'Réinitialiser',
+      'color.pick': 'Choisir une couleur',
+      'color.apply': 'Appliquer',
       'placeholder': 'Commencez à écrire...'
     },
     pt: {
@@ -840,6 +858,9 @@
       'autosave.autosaving': 'Salvando...',
       'preview.title': 'Visualização do documento',
       'confirm.clearAll': 'Limpar todo o conteúdo?',
+      'color.reset': 'Redefinir',
+      'color.pick': 'Escolher cor',
+      'color.apply': 'Aplicar',
       'placeholder': 'Comece a digitar...'
     },
     ja: {
@@ -949,6 +970,9 @@
       'autosave.autosaving': '保存中...',
       'preview.title': 'ドキュメントプレビュー',
       'confirm.clearAll': 'すべての内容を消去しますか？',
+      'color.reset': 'デフォルトに戻す',
+      'color.pick': '色を選択',
+      'color.apply': '適用',
       'placeholder': '入力してください...'
     }
   };
@@ -1993,9 +2017,12 @@
 
       const picker = Utils.createElement('div', { className: 'neiki-color-picker' });
 
+      // Color grid
+      const grid = Utils.createElement('div', { className: 'neiki-color-grid' });
+
       const resetSwatch = Utils.createElement('div', {
         className: 'neiki-color-swatch neiki-color-reset',
-        title: 'Reset to default'
+        title: t('color.reset')
       });
       resetSwatch.addEventListener('mousedown', (e) => {
         e.preventDefault();
@@ -2007,7 +2034,7 @@
         }
         this.close();
       });
-      picker.appendChild(resetSwatch);
+      grid.appendChild(resetSwatch);
 
       COLORS.forEach(color => {
         const swatch = Utils.createElement('div', {
@@ -2025,10 +2052,96 @@
           }
           this.close();
         });
-        picker.appendChild(swatch);
+        grid.appendChild(swatch);
+      });
+
+      picker.appendChild(grid);
+
+      // Custom color section
+      const customRow = Utils.createElement('div', { className: 'neiki-color-custom' });
+
+      const colorInput = Utils.createElement('input', {
+        className: 'neiki-color-custom-input',
+        type: 'color',
+        value: '#000000',
+        title: t('color.pick')
+      });
+
+      const hexInput = Utils.createElement('input', {
+        className: 'neiki-color-hex-input',
+        type: 'text',
+        value: '#000000',
+        placeholder: '#hex',
+        maxLength: 7
+      });
+
+      const applyBtn = Utils.createElement('button', {
+        className: 'neiki-color-apply-btn',
+        type: 'button'
+      });
+      applyBtn.textContent = t('color.apply');
+
+      // Sync color input → hex input
+      colorInput.addEventListener('input', (e) => {
+        hexInput.value = e.target.value;
+      });
+
+      // Sync hex input → color input
+      hexInput.addEventListener('input', (e) => {
+        const val = e.target.value;
+        if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+          colorInput.value = val;
+        }
+      });
+
+      const applyColor = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        let color = hexInput.value.trim();
+        if (!/^#/.test(color)) color = '#' + color;
+        if (/^#[0-9A-Fa-f]{6}$/.test(color)) {
+          if (command === 'foreColor') {
+            this.editor.commands.foreColor(color);
+          } else {
+            this.editor.commands.backColor(color);
+          }
+          this.close();
+        }
+      };
+
+      applyBtn.addEventListener('mousedown', applyColor);
+      hexInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') applyColor(e);
+      });
+
+      customRow.appendChild(colorInput);
+      customRow.appendChild(hexInput);
+      customRow.appendChild(applyBtn);
+      picker.appendChild(customRow);
+
+      // Prevent clicks inside picker from propagating to toolbar button
+      picker.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+      });
+      picker.addEventListener('click', (e) => {
+        e.stopPropagation();
       });
 
       button.appendChild(picker);
+
+      // Smart positioning: flip to right-aligned if overflowing viewport
+      requestAnimationFrame(() => {
+        const rect = picker.getBoundingClientRect();
+        if (rect.right > window.innerWidth) {
+          picker.style.left = 'auto';
+          picker.style.right = '0';
+        }
+        if (rect.left < 0) {
+          picker.style.left = '0';
+          picker.style.right = 'auto';
+        }
+      });
+
       this.activePicker = picker;
       this.activeButton = button;
     }
@@ -3812,12 +3925,14 @@
 
       this.contentArea.addEventListener('dragenter', (e) => {
         e.preventDefault();
+        if (!e.dataTransfer.types.includes('Files')) return;
         dragCounter++;
         this.contentArea.classList.add('neiki-drag-over');
       });
 
       this.contentArea.addEventListener('dragleave', (e) => {
         e.preventDefault();
+        if (!e.dataTransfer.types.includes('Files')) return;
         dragCounter--;
         if (dragCounter === 0) {
           this.contentArea.classList.remove('neiki-drag-over');

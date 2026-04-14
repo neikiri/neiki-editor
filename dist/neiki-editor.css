@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 2.5.0
+ * Version: 2.6.0
  */
 
 /* ============================================
@@ -585,21 +585,96 @@
   top: 100%;
   left: 0;
   z-index: 1000;
-  width: 220px;
   background: var(--neiki-bg-primary);
   border: 1px solid var(--neiki-border-color);
   border-radius: 8px;
   box-shadow: var(--neiki-shadow-lg);
   padding: 8px;
   margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.neiki-color-grid {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   gap: 2px;
 }
 
+.neiki-color-custom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--neiki-border-color);
+}
+
+.neiki-color-custom-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 4px;
+  padding: 2px;
+  cursor: pointer;
+  background: transparent;
+}
+
+.neiki-color-custom-input::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.neiki-color-custom-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 2px;
+}
+
+.neiki-color-custom-input::-moz-color-swatch {
+  border: none;
+  border-radius: 2px;
+}
+
+.neiki-color-hex-input {
+  flex: 1;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: monospace;
+  background: var(--neiki-bg-secondary);
+  color: var(--neiki-text-primary);
+  outline: none;
+}
+
+.neiki-color-hex-input:focus {
+  border-color: var(--neiki-accent-color);
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15);
+}
+
+.neiki-color-apply-btn {
+  height: 28px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--neiki-accent-color);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.neiki-color-apply-btn:hover {
+  background: var(--neiki-accent-hover);
+}
+
 .neiki-color-swatch {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 3px;
   cursor: pointer;
   border: 1px solid var(--neiki-border-color);
@@ -1631,6 +1706,11 @@
   .neiki-checkbox-wrapper {
     padding: 0 4px;
     font-size: 11px;
+  }
+
+  .neiki-color-picker {
+    left: auto;
+    right: 0;
   }
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "neiki-editor",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "Lightweight, dependency-free WYSIWYG editor",
   "keywords": [
     "wysiwyg",
@@ -20,7 +20,7 @@
   "style": "dist/neiki-editor.css",
   "repository": {
     "type": "git",
-    "url": "https://github.com/neikiri/neiki-editor.git"
+    "url": "git+https://github.com/neikiri/neiki-editor.git"
   },
   "bugs": {
     "url": "https://github.com/neikiri/neiki-editor/issues"
