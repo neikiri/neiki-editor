@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.6.1]
+- Added welcome demo content with feature overview, shown on first visit (when no cached content exists)
+- Added GitHub repository link with icon to demo header (desktop and mobile menu)
+- Updated logo and preview image
+
 ## [2.6.0]
 - Added custom color picker with native color input, hex code input, and Apply button
 - Fixed: color picker closing when clicking on hex input or native color input
