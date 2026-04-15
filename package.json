@@ -28,6 +28,6 @@
   "unpkg": "dist/neiki-editor.min.js",
   "jsdelivr": "dist/neiki-editor.min.js",
   "homepage": "https://github.com/neikiri/neiki-editor#readme",
-  "author": "Jindřich Stoklasa <jindrichstoklasa1@gmail.com>",
+  "author": "neikiri <dev@neiki.eu>",
   "license": "MIT"
 }

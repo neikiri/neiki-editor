@@ -14,7 +14,7 @@ If you discover a security vulnerability in neiki-editor, please report it respo
 
 **Do not open a public issue.**
 
-Instead, send an email to **jindrichstoklasa1@gmail.com** with:
+Instead, send an email to **dev@neiki.eu** with:
 
 - A description of the vulnerability
 - Steps to reproduce the issue

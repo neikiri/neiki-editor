@@ -33,7 +33,7 @@ This Code of Conduct applies within all project spaces — including issues, pul
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project maintainer at **jindrichstoklasa1@gmail.com**. All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project maintainer at **dev@neiki.eu**. All complaints will be reviewed and investigated promptly and fairly.
 
 ## Attribution
 
