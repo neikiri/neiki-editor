@@ -1,6 +1,6 @@
 {
   "name": "neiki-editor",
-  "version": "2.7.1",
+  "version": "2.8.0",
   "description": "Lightweight, dependency-free WYSIWYG editor",
   "keywords": [
     "wysiwyg",
@@ -28,6 +28,6 @@
   "unpkg": "dist/neiki-editor.min.js",
   "jsdelivr": "dist/neiki-editor.min.js",
   "homepage": "https://github.com/neikiri/neiki-editor#readme",
-  "author": "neikiri <dev@neiki.eu>",
+  "author": "Jindřich Stoklasa <jindrichstoklasa1@gmail.com>",
   "license": "MIT"
 }

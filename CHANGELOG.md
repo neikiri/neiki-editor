@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.8.0]
+- Added **Image Resize** — click any image to show resize handles on corners, drag to resize while maintaining aspect ratio; displays live size label (width × height)
+- Added **Table Column Resize** — hover near a column border to reveal a drag handle, drag to resize adjacent columns
+- Added **Block Drag & Drop Reordering** — hover over any content block (paragraph, heading, table, image, list, blockquote, etc.) to reveal a grip handle on the left; drag to reorder blocks within the editor
+- Added **Move Block Up / Down** buttons to the floating selection toolbar (left side, before formatting buttons) — quickly reorder the current block without dragging
+- `getContent()` now cleans up editor UI elements (resize wrappers, grip handles, placeholders) before returning HTML
+- Updated print styles to hide all new interactive elements
+
 ## [2.7.1]
 - Fixed: mobile language switcher not displaying on iOS Safari — replaced `<select>` with button grid
 

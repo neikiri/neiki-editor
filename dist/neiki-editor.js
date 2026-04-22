@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 2.7.1
+ * Version: 2.8.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -1342,7 +1342,10 @@
     eye: '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>',
     trash: '<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>',
     'chevron-down': '<svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>',
-    help: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>'
+    help: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>',
+    grip: '<svg viewBox="0 0 24 24"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg>',
+    moveUp: '<svg viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>',
+    moveDown: '<svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>'
   };
 
   // ============================================
@@ -1938,7 +1941,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/logo.png" alt="Neiki Editor" style="width: 120px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${t('help.author')}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${t('help.version')}:</strong> 2.7.1</div>
+            <div><strong>${t('help.version')}:</strong> 2.8.0</div>
             <div><strong>${t('help.github')}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${t('help.documentation')}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -2653,6 +2656,9 @@
       this.commands = new Commands(this);
       this.tableContextMenu = new TableContextMenu(this);
       this.floatingToolbar = new FloatingToolbar(this);
+      this.imageResizer = new ImageResizer(this);
+      this.tableColumnResizer = new TableColumnResizer(this);
+      this.blockDragDrop = new BlockDragDrop(this);
 
       this.bindEvents();
       this.initDragDrop();
@@ -3570,7 +3576,17 @@
     // ============================================
 
     getContent() {
-      return this.contentArea.innerHTML;
+      // Clone content and clean up editor UI elements
+      const clone = this.contentArea.cloneNode(true);
+      // Unwrap image resizer wrappers
+      clone.querySelectorAll('.neiki-img-resizable').forEach(wrapper => {
+        const img = wrapper.querySelector('img');
+        if (img) wrapper.parentNode.insertBefore(img, wrapper);
+        wrapper.remove();
+      });
+      // Remove grip handles, placeholders, resize handles
+      clone.querySelectorAll('.neiki-block-grip, .neiki-block-placeholder, .neiki-table-col-resize-handle, .neiki-img-resize-handle, .neiki-img-size-label').forEach(el => el.remove());
+      return clone.innerHTML;
     }
 
     setContent(html) {
@@ -3610,6 +3626,10 @@
       this.modal.close();
       this.dropdown.close();
       this.colorPicker.close();
+
+      if (this.imageResizer) this.imageResizer.destroy();
+      if (this.tableColumnResizer) this.tableColumnResizer.destroy();
+      if (this.blockDragDrop) this.blockDragDrop.destroy();
 
       this.container.remove();
       this.originalElement.style.display = '';
@@ -4054,6 +4074,528 @@
   }
 
   // ============================================
+  // SECTION 10a: IMAGE RESIZER
+  // ============================================
+
+  class ImageResizer {
+    constructor(editor) {
+      this.editor = editor;
+      this.wrapper = null;
+      this.currentImg = null;
+      this.isResizing = false;
+      this.startX = 0;
+      this.startY = 0;
+      this.startWidth = 0;
+      this.startHeight = 0;
+      this.aspectRatio = 1;
+      this.handle = null;
+
+      this.bindEvents();
+    }
+
+    bindEvents() {
+      this.editor.contentArea.addEventListener('click', (e) => {
+        const img = e.target.closest('img');
+        if (img && this.editor.contentArea.contains(img)) {
+          e.preventDefault();
+          this.selectImage(img);
+        } else if (!e.target.closest('.neiki-img-resize-handle')) {
+          this.deselect();
+        }
+      });
+
+      // Prevent native image drag inside editor (causes duplicate on drop)
+      this.editor.contentArea.addEventListener('dragstart', (e) => {
+        if (e.target.tagName === 'IMG') {
+          e.preventDefault();
+        }
+      });
+
+      document.addEventListener('mousedown', (e) => {
+        if (this.wrapper && !this.wrapper.contains(e.target) && !this.editor.contentArea.contains(e.target)) {
+          this.deselect();
+        }
+      });
+
+      document.addEventListener('touchstart', (e) => {
+        if (this.wrapper && !this.wrapper.contains(e.target) && !this.editor.contentArea.contains(e.target)) {
+          this.deselect();
+        }
+      });
+    }
+
+    selectImage(img) {
+      this.deselect();
+      this.currentImg = img;
+
+      // Create wrapper around image
+      this.wrapper = document.createElement('span');
+      this.wrapper.className = 'neiki-img-resizable';
+      this.wrapper.contentEditable = 'false';
+      this.wrapper.setAttribute('data-neiki-resizer', 'true');
+
+      img.parentNode.insertBefore(this.wrapper, img);
+      this.wrapper.appendChild(img);
+
+      // Add resize handles
+      ['nw', 'ne', 'sw', 'se'].forEach(pos => {
+        const handle = document.createElement('span');
+        handle.className = 'neiki-img-resize-handle ' + pos;
+        handle.setAttribute('data-pos', pos);
+        handle.addEventListener('mousedown', (e) => this.startResize(e, pos));
+        handle.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          this.startResize(touch, pos, true);
+        }, { passive: false });
+        this.wrapper.appendChild(handle);
+      });
+
+      // Add size label
+      this.sizeLabel = document.createElement('span');
+      this.sizeLabel.className = 'neiki-img-size-label';
+      this.sizeLabel.textContent = Math.round(img.offsetWidth) + ' × ' + Math.round(img.offsetHeight);
+      this.wrapper.appendChild(this.sizeLabel);
+    }
+
+    deselect() {
+      if (this.wrapper && this.currentImg) {
+        const img = this.currentImg;
+        const parent = this.wrapper.parentNode;
+        if (parent) {
+          parent.insertBefore(img, this.wrapper);
+          this.wrapper.remove();
+        }
+      }
+      this.wrapper = null;
+      this.currentImg = null;
+      this.sizeLabel = null;
+    }
+
+    startResize(e, pos, isTouch = false) {
+      if (e.preventDefault) { e.preventDefault(); }
+      if (e.stopPropagation) { e.stopPropagation(); }
+
+      this.isResizing = true;
+      this.handle = pos;
+      this.startX = e.clientX;
+      this.startY = e.clientY;
+      this.startWidth = this.currentImg.offsetWidth;
+      this.startHeight = this.currentImg.offsetHeight;
+      this.aspectRatio = this.startWidth / this.startHeight;
+
+      if (isTouch) {
+        const onTouchMove = (ev) => {
+          ev.preventDefault();
+          this.onResize(ev.touches[0]);
+        };
+        const onTouchEnd = () => {
+          this.isResizing = false;
+          document.removeEventListener('touchmove', onTouchMove);
+          document.removeEventListener('touchend', onTouchEnd);
+          this.editor.history.record();
+          this.editor.triggerChange();
+        };
+        document.addEventListener('touchmove', onTouchMove, { passive: false });
+        document.addEventListener('touchend', onTouchEnd);
+      } else {
+        const onMove = (ev) => this.onResize(ev);
+        const onUp = () => {
+          this.isResizing = false;
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+          this.editor.history.record();
+          this.editor.triggerChange();
+        };
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      }
+    }
+
+    onResize(e) {
+      if (!this.isResizing || !this.currentImg) return;
+
+      const dx = e.clientX - this.startX;
+      const dy = e.clientY - this.startY;
+
+      let newWidth, newHeight;
+
+      switch (this.handle) {
+        case 'se':
+          newWidth = this.startWidth + dx;
+          break;
+        case 'sw':
+          newWidth = this.startWidth - dx;
+          break;
+        case 'ne':
+          newWidth = this.startWidth + dx;
+          break;
+        case 'nw':
+          newWidth = this.startWidth - dx;
+          break;
+      }
+
+      newWidth = Math.max(30, newWidth);
+      newHeight = Math.round(newWidth / this.aspectRatio);
+
+      this.currentImg.style.width = newWidth + 'px';
+      this.currentImg.style.height = newHeight + 'px';
+      this.currentImg.removeAttribute('width');
+      this.currentImg.removeAttribute('height');
+
+      if (this.sizeLabel) {
+        this.sizeLabel.textContent = Math.round(newWidth) + ' × ' + Math.round(newHeight);
+      }
+    }
+
+    destroy() {
+      this.deselect();
+    }
+  }
+
+  // ============================================
+  // SECTION 10b: TABLE COLUMN RESIZER
+  // ============================================
+
+  class TableColumnResizer {
+    constructor(editor) {
+      this.editor = editor;
+      this.isResizing = false;
+      this.currentHandle = null;
+      this.startX = 0;
+      this.startWidthLeft = 0;
+      this.startWidthRight = 0;
+      this.cellLeft = null;
+      this.cellRight = null;
+
+      this.bindEvents();
+    }
+
+    bindEvents() {
+      this.editor.contentArea.addEventListener('mousemove', (e) => {
+        if (this.isResizing) return;
+        const cell = e.target.closest('td, th');
+        if (!cell) {
+          this.removeHandles();
+          return;
+        }
+        this.showHandle(cell, e);
+      });
+
+      this.editor.contentArea.addEventListener('mouseleave', () => {
+        if (!this.isResizing) this.removeHandles();
+      });
+    }
+
+    showHandle(cell, e) {
+      const rect = cell.getBoundingClientRect();
+      const threshold = 6;
+      const isNearRight = (e.clientX > rect.right - threshold);
+      const isNearLeft = (e.clientX < rect.left + threshold);
+
+      this.removeHandles();
+
+      if (!isNearRight && !isNearLeft) return;
+
+      const table = cell.closest('table');
+      if (!table) return;
+
+      let leftCell, rightCell;
+      const row = cell.closest('tr');
+      const cellIndex = Array.from(row.cells).indexOf(cell);
+
+      if (isNearRight && cellIndex < row.cells.length - 1) {
+        leftCell = cell;
+        rightCell = row.cells[cellIndex + 1];
+      } else if (isNearLeft && cellIndex > 0) {
+        leftCell = row.cells[cellIndex - 1];
+        rightCell = cell;
+      } else {
+        return;
+      }
+
+      const handle = document.createElement('div');
+      handle.className = 'neiki-table-col-resize-handle';
+      const leftRect = leftCell.getBoundingClientRect();
+      const contentRect = this.editor.contentArea.getBoundingClientRect();
+
+      handle.style.left = (leftRect.right - contentRect.left - 3 + this.editor.contentArea.scrollLeft) + 'px';
+      handle.style.top = (table.getBoundingClientRect().top - contentRect.top + this.editor.contentArea.scrollTop) + 'px';
+      handle.style.height = table.offsetHeight + 'px';
+
+      handle.addEventListener('mousedown', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        this.startResize(ev, leftCell, rightCell, table);
+      });
+
+      this.editor.contentArea.appendChild(handle);
+      this.currentHandle = handle;
+    }
+
+    removeHandles() {
+      if (this.currentHandle) {
+        this.currentHandle.remove();
+        this.currentHandle = null;
+      }
+    }
+
+    startResize(e, leftCell, rightCell, table) {
+      this.isResizing = true;
+      this.startX = e.clientX;
+      this.cellLeft = leftCell;
+      this.cellRight = rightCell;
+
+      // Set table to fixed layout
+      table.style.tableLayout = 'fixed';
+
+      // Initialize all cell widths as px if not set
+      const firstRow = table.rows[0];
+      if (firstRow) {
+        Array.from(firstRow.cells).forEach(c => {
+          if (!c.style.width) c.style.width = c.offsetWidth + 'px';
+        });
+      }
+
+      this.startWidthLeft = leftCell.offsetWidth;
+      this.startWidthRight = rightCell.offsetWidth;
+
+      this.removeHandles();
+
+      const onMove = (ev) => {
+        const dx = ev.clientX - this.startX;
+        const newLeft = Math.max(40, this.startWidthLeft + dx);
+        const newRight = Math.max(40, this.startWidthRight - dx);
+
+        // Apply to all cells in same column
+        const leftIdx = Array.from(leftCell.closest('tr').cells).indexOf(leftCell);
+        const rightIdx = Array.from(rightCell.closest('tr').cells).indexOf(rightCell);
+        Array.from(table.rows).forEach(row => {
+          if (row.cells[leftIdx]) row.cells[leftIdx].style.width = newLeft + 'px';
+          if (row.cells[rightIdx]) row.cells[rightIdx].style.width = newRight + 'px';
+        });
+      };
+
+      const onUp = () => {
+        this.isResizing = false;
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        this.editor.history.record();
+        this.editor.triggerChange();
+      };
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    }
+
+    destroy() {
+      this.removeHandles();
+    }
+  }
+
+  // ============================================
+  // SECTION 10c: BLOCK DRAG & DROP REORDERING
+  // ============================================
+
+  class BlockDragDrop {
+    constructor(editor) {
+      this.editor = editor;
+      this.gripEl = null;
+      this.dragBlock = null;
+      this.placeholder = null;
+      this.isDragging = false;
+      this.offsetY = 0;
+      this.ghostEl = null;
+
+      this.bindEvents();
+    }
+
+    getTopLevelBlocks() {
+      return Array.from(this.editor.contentArea.children).filter(el =>
+        el.nodeType === Node.ELEMENT_NODE &&
+        !el.classList.contains('neiki-block-placeholder') &&
+        !el.classList.contains('neiki-block-grip')
+      );
+    }
+
+    getBlockFromPoint(y) {
+      const blocks = this.getTopLevelBlocks();
+      for (let i = blocks.length - 1; i >= 0; i--) {
+        const rect = blocks[i].getBoundingClientRect();
+        if (y >= rect.top) return { block: blocks[i], index: i };
+      }
+      return blocks.length > 0 ? { block: blocks[0], index: 0 } : null;
+    }
+
+    bindEvents() {
+      // Show grip on hover
+      this.editor.contentArea.addEventListener('mousemove', (e) => {
+        if (this.isDragging) return;
+        const block = this.getBlockAt(e.target);
+        if (block) {
+          this.showGrip(block);
+        } else {
+          this.hideGrip();
+        }
+      });
+
+      this.editor.contentArea.addEventListener('mouseleave', () => {
+        if (!this.isDragging) this.hideGrip();
+      });
+    }
+
+    getBlockAt(target) {
+      if (!target || target === this.editor.contentArea) return null;
+      let node = target;
+      while (node && node.parentNode !== this.editor.contentArea) {
+        node = node.parentNode;
+      }
+      if (node && node.nodeType === Node.ELEMENT_NODE && node.parentNode === this.editor.contentArea) {
+        return node;
+      }
+      return null;
+    }
+
+    showGrip(block) {
+      if (this.gripEl && this.gripEl._block === block) return;
+      this.hideGrip();
+
+      const grip = document.createElement('div');
+      grip.className = 'neiki-block-grip';
+      grip.innerHTML = Icons.grip;
+      grip.title = 'Drag to reorder';
+      grip.contentEditable = 'false';
+      grip._block = block;
+
+      // Position grip
+      const contentRect = this.editor.contentArea.getBoundingClientRect();
+      const blockRect = block.getBoundingClientRect();
+      grip.style.top = (blockRect.top - contentRect.top + this.editor.contentArea.scrollTop) + 'px';
+      grip.style.left = '-28px';
+
+      grip.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.startDrag(e, block);
+      });
+
+      this.editor.contentArea.appendChild(grip);
+      this.gripEl = grip;
+    }
+
+    hideGrip() {
+      if (this.gripEl) {
+        this.gripEl.remove();
+        this.gripEl = null;
+      }
+    }
+
+    startDrag(e, block) {
+      this.isDragging = true;
+      this.dragBlock = block;
+      this.hideGrip();
+
+      // Create ghost
+      this.ghostEl = block.cloneNode(true);
+      this.ghostEl.className = (this.ghostEl.className || '') + ' neiki-block-ghost';
+      this.ghostEl.style.width = block.offsetWidth + 'px';
+      document.body.appendChild(this.ghostEl);
+
+      const rect = block.getBoundingClientRect();
+      this.offsetY = e.clientY - rect.top;
+      this.ghostEl.style.left = rect.left + 'px';
+      this.ghostEl.style.top = (e.clientY - this.offsetY) + 'px';
+
+      // Create placeholder
+      this.placeholder = document.createElement('div');
+      this.placeholder.className = 'neiki-block-placeholder';
+      this.placeholder.style.height = block.offsetHeight + 'px';
+      block.parentNode.insertBefore(this.placeholder, block);
+
+      // Hide original
+      block.style.display = 'none';
+
+      const onMove = (ev) => {
+        this.ghostEl.style.top = (ev.clientY - this.offsetY) + 'px';
+
+        // Find target position
+        const target = this.getBlockFromPoint(ev.clientY);
+        if (target && target.block !== this.dragBlock && target.block !== this.placeholder) {
+          const targetRect = target.block.getBoundingClientRect();
+          const mid = targetRect.top + targetRect.height / 2;
+          if (ev.clientY < mid) {
+            target.block.parentNode.insertBefore(this.placeholder, target.block);
+          } else {
+            target.block.parentNode.insertBefore(this.placeholder, target.block.nextSibling);
+          }
+        }
+      };
+
+      const onUp = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+
+        // Move block to placeholder position
+        this.placeholder.parentNode.insertBefore(this.dragBlock, this.placeholder);
+        this.dragBlock.style.display = '';
+        this.placeholder.remove();
+        this.ghostEl.remove();
+
+        this.isDragging = false;
+        this.dragBlock = null;
+        this.placeholder = null;
+        this.ghostEl = null;
+
+        this.editor.history.record();
+        this.editor.triggerChange();
+      };
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    }
+
+    moveBlockUp(block) {
+      if (!block) block = this.getSelectedBlock();
+      if (!block) return;
+      const prev = block.previousElementSibling;
+      if (prev && prev.parentNode === this.editor.contentArea) {
+        prev.parentNode.insertBefore(block, prev);
+        this.editor.history.record();
+        this.editor.triggerChange();
+      }
+    }
+
+    moveBlockDown(block) {
+      if (!block) block = this.getSelectedBlock();
+      if (!block) return;
+      const next = block.nextElementSibling;
+      if (next && next.parentNode === this.editor.contentArea) {
+        next.parentNode.insertBefore(block, next.nextSibling);
+        this.editor.history.record();
+        this.editor.triggerChange();
+      }
+    }
+
+    getSelectedBlock() {
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount) return null;
+      let node = sel.getRangeAt(0).startContainer;
+      if (node.nodeType === Node.TEXT_NODE) node = node.parentNode;
+      while (node && node.parentNode !== this.editor.contentArea) {
+        node = node.parentNode;
+      }
+      if (node && node.parentNode === this.editor.contentArea) return node;
+      return null;
+    }
+
+    destroy() {
+      this.hideGrip();
+      if (this.ghostEl) this.ghostEl.remove();
+      if (this.placeholder) this.placeholder.remove();
+    }
+  }
+
+  // ============================================
   // SECTION 10: FLOATING SELECTION TOOLBAR
   // ============================================
 
@@ -4071,6 +4613,35 @@
     createToolbar() {
       this.toolbar = Utils.createElement('div', { className: 'neiki-floating-toolbar' });
 
+      // Move block buttons (left side)
+      const moveButtons = [
+        { item: 'moveUp', icon: Icons.moveUp, title: 'Move block up' },
+        { item: 'moveDown', icon: Icons.moveDown, title: 'Move block down' }
+      ];
+
+      moveButtons.forEach(({ item, icon, title }) => {
+        const button = Utils.createElement('button', {
+          className: 'neiki-toolbar-btn neiki-floating-btn neiki-floating-move-btn',
+          title: title,
+          type: 'button',
+          innerHTML: icon,
+          'data-command': item
+        });
+
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.handleButtonClick(item);
+        });
+
+        this.toolbar.appendChild(button);
+      });
+
+      // Divider
+      const divider = Utils.createElement('span', { className: 'neiki-floating-divider' });
+      this.toolbar.appendChild(divider);
+
+      // Formatting buttons
       const buttons = [
         { item: 'bold', icon: Icons.bold, title: 'Bold' },
         { item: 'italic', icon: Icons.italic, title: 'Italic' },
@@ -4163,6 +4734,10 @@
       if (item === 'link') {
         const sel = Utils.getSelection();
         this.editor.modal.open('link', { text: sel.toString() });
+      } else if (item === 'moveUp') {
+        if (this.editor.blockDragDrop) this.editor.blockDragDrop.moveBlockUp();
+      } else if (item === 'moveDown') {
+        if (this.editor.blockDragDrop) this.editor.blockDragDrop.moveBlockDown();
       } else {
         this.editor.commands[item]();
       }

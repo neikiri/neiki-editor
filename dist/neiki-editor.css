@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 2.7.1
+ * Version: 2.8.0
  */
 
 /* ============================================
@@ -1533,6 +1533,18 @@
   height: 14px;
 }
 
+.neiki-floating-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--neiki-border-color);
+  margin: 0 2px;
+}
+
+.neiki-floating-move-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
 /* ============================================
    Tooltips
    ============================================ */
@@ -1598,28 +1610,146 @@
 /* ============================================
    Image Resize Handles
    ============================================ */
-.neiki-image-wrapper {
+.neiki-img-resizable {
   display: inline-block;
   position: relative;
-}
-
-.neiki-image-wrapper.selected {
   outline: 2px solid var(--neiki-accent-color);
+  outline-offset: 2px;
+  border-radius: 4px;
+  line-height: 0;
 }
 
-.neiki-resize-handle {
+.neiki-img-resizable img {
+  display: block;
+  max-width: 100%;
+}
+
+.neiki-img-resize-handle {
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   background: var(--neiki-accent-color);
   border: 2px solid #fff;
   border-radius: 2px;
+  z-index: 10;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-.neiki-resize-handle.nw { top: -5px; left: -5px; cursor: nw-resize; }
-.neiki-resize-handle.ne { top: -5px; right: -5px; cursor: ne-resize; }
-.neiki-resize-handle.sw { bottom: -5px; left: -5px; cursor: sw-resize; }
-.neiki-resize-handle.se { bottom: -5px; right: -5px; cursor: se-resize; }
+.neiki-img-resize-handle.nw { top: -6px; left: -6px; cursor: nw-resize; }
+.neiki-img-resize-handle.ne { top: -6px; right: -6px; cursor: ne-resize; }
+.neiki-img-resize-handle.sw { bottom: -6px; left: -6px; cursor: sw-resize; }
+.neiki-img-resize-handle.se { bottom: -6px; right: -6px; cursor: se-resize; }
+
+.neiki-img-size-label {
+  position: absolute;
+  bottom: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--neiki-text-primary);
+  color: var(--neiki-bg-primary);
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.9;
+}
+
+/* Touch-friendly resize handles */
+@media (pointer: coarse) {
+  .neiki-img-resize-handle {
+    width: 20px;
+    height: 20px;
+  }
+  .neiki-img-resize-handle.nw { top: -10px; left: -10px; }
+  .neiki-img-resize-handle.ne { top: -10px; right: -10px; }
+  .neiki-img-resize-handle.sw { bottom: -10px; left: -10px; }
+  .neiki-img-resize-handle.se { bottom: -10px; right: -10px; }
+}
+
+/* ============================================
+   Table Column Resize Handle
+   ============================================ */
+.neiki-table-col-resize-handle {
+  position: absolute;
+  width: 6px;
+  cursor: col-resize;
+  z-index: 10;
+  background: transparent;
+  transition: background 0.1s;
+}
+
+.neiki-table-col-resize-handle:hover,
+.neiki-table-col-resize-handle:active {
+  background: var(--neiki-accent-color);
+  opacity: 0.6;
+  border-radius: 3px;
+}
+
+/* ============================================
+   Block Drag & Drop
+   ============================================ */
+.neiki-block-grip {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  color: var(--neiki-text-muted);
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+  border-radius: 4px;
+  z-index: 5;
+  user-select: none;
+}
+
+.neiki-content:hover .neiki-block-grip {
+  opacity: 0.5;
+}
+
+.neiki-block-grip:hover {
+  opacity: 1 !important;
+  color: var(--neiki-text-primary);
+  background: var(--neiki-bg-hover);
+}
+
+.neiki-block-grip:active {
+  cursor: grabbing;
+}
+
+.neiki-block-grip svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  pointer-events: none;
+}
+
+.neiki-block-ghost {
+  position: fixed;
+  z-index: 100000;
+  pointer-events: none;
+  opacity: 0.7;
+  background: var(--neiki-bg-primary);
+  border: 2px solid var(--neiki-accent-color);
+  border-radius: 6px;
+  padding: 8px 12px;
+  box-shadow: var(--neiki-shadow-lg);
+  max-height: 120px;
+  overflow: hidden;
+}
+
+.neiki-block-placeholder {
+  border: 2px dashed var(--neiki-accent-color);
+  border-radius: 6px;
+  background: rgba(13, 110, 253, 0.05);
+  margin: 2px 0;
+  transition: height 0.15s ease;
+}
 
 /* ============================================
    Print Styles
@@ -1634,7 +1764,11 @@
   .neiki-statusbar,
   .neiki-floating-toolbar,
   .neiki-find-replace,
-  .neiki-code-view-header {
+  .neiki-code-view-header,
+  .neiki-block-grip,
+  .neiki-img-resize-handle,
+  .neiki-img-size-label,
+  .neiki-table-col-resize-handle {
     display: none !important;
   }
 
