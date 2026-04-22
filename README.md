@@ -28,7 +28,7 @@
 
 ---
 <p align="center">
-  <img src="preview.png" alt="neiki-editor" width="902">
+  <img src="preview.png" alt="neiki-editor" width="900">
 </p>
 
 **Live version:** [https://neiki.eu/editor](https://neiki.eu/editor)
