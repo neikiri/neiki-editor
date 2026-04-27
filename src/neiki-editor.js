@@ -1,0 +1,5003 @@
+/**
+ * NeikiEditor - A Modern WYSIWYG Editor
+ * Version: 2.8.0
+ *
+ * A lightweight, feature-rich text editor with support for:
+ * - Rich text formatting (bold, italic, underline, etc.)
+ * - Lists (ordered, unordered)
+ * - Links and images
+ * - Tables
+ * - Code blocks
+ * - Undo/Redo
+ * - Keyboard shortcuts
+ */
+
+(function (global) {
+  'use strict';
+
+  // ============================================
+  // SECTION 1: CONFIGURATION & CONSTANTS
+  // ============================================
+
+  // ============================================
+  // TRANSLATIONS / i18n
+  // ============================================
+
+  const TRANSLATIONS = {
+    en: {
+      // Toolbar tooltips
+      'toolbar.undo': 'Undo (Ctrl+Z)',
+      'toolbar.redo': 'Redo (Ctrl+Y)',
+      'toolbar.bold': 'Bold (Ctrl+B)',
+      'toolbar.italic': 'Italic (Ctrl+I)',
+      'toolbar.underline': 'Underline (Ctrl+U)',
+      'toolbar.strikethrough': 'Strikethrough',
+      'toolbar.heading': 'Heading',
+      'toolbar.fontSize': 'Font Size',
+      'toolbar.fontFamily': 'Font Family',
+      'toolbar.foreColor': 'Text Color',
+      'toolbar.backColor': 'Background Color',
+      'toolbar.alignLeft': 'Align Left',
+      'toolbar.alignCenter': 'Align Center',
+      'toolbar.alignRight': 'Align Right',
+      'toolbar.alignJustify': 'Justify',
+      'toolbar.bulletList': 'Bullet List',
+      'toolbar.numberedList': 'Numbered List',
+      'toolbar.indent': 'Increase Indent',
+      'toolbar.outdent': 'Decrease Indent',
+      'toolbar.link': 'Insert Link (Ctrl+K)',
+      'toolbar.image': 'Insert Image',
+      'toolbar.table': 'Insert Table',
+      'toolbar.blockquote': 'Blockquote',
+      'toolbar.viewCode': 'View Code (Toggle HTML)',
+      'toolbar.horizontalRule': 'Horizontal Line',
+      'toolbar.subscript': 'Subscript',
+      'toolbar.superscript': 'Superscript',
+      'toolbar.removeFormat': 'Remove Formatting',
+      'toolbar.findReplace': 'Find & Replace',
+      'toolbar.emoji': 'Insert Emoji',
+      'toolbar.specialChars': 'Special Characters',
+      'toolbar.fullscreen': 'Fullscreen',
+      'toolbar.autosave': 'Toggle Autosave',
+      'toolbar.themeToggle': 'Toggle Theme',
+      'toolbar.print': 'Print',
+      'toolbar.insert': 'Insert',
+      'toolbar.moreOptions': 'More options',
+      'toolbar.decreaseFontSize': 'Decrease font size',
+      'toolbar.increaseFontSize': 'Increase font size',
+
+      // Headings select
+      'heading.paragraph': 'Paragraph',
+      'heading.h1': 'Heading 1',
+      'heading.h2': 'Heading 2',
+      'heading.h3': 'Heading 3',
+      'heading.h4': 'Heading 4',
+      'heading.h5': 'Heading 5',
+      'heading.h6': 'Heading 6',
+
+      // Font families
+      'font.sansSerif': 'Sans Serif',
+      'font.serif': 'Serif',
+      'font.monospace': 'Monospace',
+      'font.cursive': 'Cursive',
+
+      // Insert dropdown
+      'insert.link': 'Link',
+      'insert.image': 'Image',
+      'insert.table': 'Table',
+      'insert.emoji': 'Emoji',
+      'insert.symbol': 'Symbol',
+
+      // More menu
+      'menu.save': 'Save',
+      'menu.preview': 'Preview',
+      'menu.download': 'Download',
+      'menu.print': 'Print',
+      'menu.autosave': 'Autosave',
+      'menu.clearAll': 'Clear all',
+      'menu.toggleTheme': 'Toggle Theme',
+      'menu.fullscreen': 'Fullscreen',
+      'menu.help': 'Help',
+
+      // Help modal
+      'help.author': 'Author',
+      'help.version': 'Version',
+      'help.github': 'GitHub',
+      'help.documentation': 'Documentation',
+
+      // Link modal
+      'modal.insertLink': 'Insert Link',
+      'modal.url': 'URL',
+      'modal.text': 'Text',
+      'modal.linkText': 'Link text',
+      'modal.openInNewTab': 'Open in new tab',
+      'modal.cancel': 'Cancel',
+      'modal.insert': 'Insert',
+
+      // Image modal
+      'modal.insertImage': 'Insert Image',
+      'modal.uploadImage': 'Upload Image',
+      'modal.convertedToBase64': 'Will be converted to base64',
+      'modal.or': 'OR',
+      'modal.imageUrl': 'Image URL',
+      'modal.altText': 'Alt Text',
+      'modal.describeImage': 'Describe the image',
+      'modal.widthOptional': 'Width (optional)',
+      'modal.invalidImageFile': 'Please select a valid image file.',
+
+      // Table modal
+      'modal.insertTable': 'Insert Table',
+      'modal.rows': 'Rows',
+      'modal.columns': 'Columns',
+      'modal.includeHeaderRow': 'Include header row',
+
+      // Find & Replace modal
+      'modal.findReplace': 'Find & Replace',
+      'modal.find': 'Find',
+      'modal.searchText': 'Search text...',
+      'modal.replaceWith': 'Replace with',
+      'modal.replacementText': 'Replacement text...',
+      'modal.useRegex': 'Use Regular Expression',
+      'modal.caseSensitive': 'Case Sensitive',
+      'modal.findNext': 'Find Next',
+      'modal.replace': 'Replace',
+      'modal.replaceAll': 'Replace All',
+      'modal.invalidRegex': 'Invalid regex',
+      'modal.matchesFound': '{count} match(es) found',
+      'modal.matchOf': 'Match {current} of {total}',
+      'modal.matchesRemaining': '{count} match(es) remaining',
+      'modal.replacedOccurrences': 'Replaced {count} occurrence(s)',
+
+      // Status bar
+      'status.words': 'words',
+      'status.word': 'word',
+      'status.chars': 'chars',
+      'status.char': 'char',
+
+      // Autosave
+      'autosave.savedLocally': 'Saved locally',
+      'autosave.autosaving': 'Autosaving...',
+
+      // Preview
+      'preview.title': 'Document Preview',
+
+      // Clear all
+      'confirm.clearAll': 'Clear all content?',
+
+      // Color picker
+      'color.reset': 'Reset to default',
+      'color.pick': 'Pick a color',
+      'color.apply': 'Apply',
+
+      // Placeholder
+      'placeholder': 'Start typing...'
+    },
+    cs: {
+      // Toolbar tooltips
+      'toolbar.undo': 'Zpět (Ctrl+Z)',
+      'toolbar.redo': 'Znovu (Ctrl+Y)',
+      'toolbar.bold': 'Tučné (Ctrl+B)',
+      'toolbar.italic': 'Kurzíva (Ctrl+I)',
+      'toolbar.underline': 'Podtržené (Ctrl+U)',
+      'toolbar.strikethrough': 'Přeškrtnuté',
+      'toolbar.heading': 'Nadpis',
+      'toolbar.fontSize': 'Velikost písma',
+      'toolbar.fontFamily': 'Rodina písma',
+      'toolbar.foreColor': 'Barva textu',
+      'toolbar.backColor': 'Barva pozadí',
+      'toolbar.alignLeft': 'Zarovnat vlevo',
+      'toolbar.alignCenter': 'Zarovnat na střed',
+      'toolbar.alignRight': 'Zarovnat vpravo',
+      'toolbar.alignJustify': 'Do bloku',
+      'toolbar.bulletList': 'Odrážkový seznam',
+      'toolbar.numberedList': 'Číslovaný seznam',
+      'toolbar.indent': 'Zvětšit odsazení',
+      'toolbar.outdent': 'Zmenšit odsazení',
+      'toolbar.link': 'Vložit odkaz (Ctrl+K)',
+      'toolbar.image': 'Vložit obrázek',
+      'toolbar.table': 'Vložit tabulku',
+      'toolbar.blockquote': 'Citace',
+      'toolbar.viewCode': 'Zobrazit kód (HTML)',
+      'toolbar.horizontalRule': 'Vodorovná čára',
+      'toolbar.subscript': 'Dolní index',
+      'toolbar.superscript': 'Horní index',
+      'toolbar.removeFormat': 'Odstranit formátování',
+      'toolbar.findReplace': 'Najít a nahradit',
+      'toolbar.emoji': 'Vložit emoji',
+      'toolbar.specialChars': 'Speciální znaky',
+      'toolbar.fullscreen': 'Celá obrazovka',
+      'toolbar.autosave': 'Auto. ukládání',
+      'toolbar.themeToggle': 'Přepnout motiv',
+      'toolbar.print': 'Tisk',
+      'toolbar.insert': 'Vložit',
+      'toolbar.moreOptions': 'Další možnosti',
+      'toolbar.decreaseFontSize': 'Zmenšit písmo',
+      'toolbar.increaseFontSize': 'Zvětšit písmo',
+
+      // Headings select
+      'heading.paragraph': 'Odstavec',
+      'heading.h1': 'Nadpis 1',
+      'heading.h2': 'Nadpis 2',
+      'heading.h3': 'Nadpis 3',
+      'heading.h4': 'Nadpis 4',
+      'heading.h5': 'Nadpis 5',
+      'heading.h6': 'Nadpis 6',
+
+      // Font families
+      'font.sansSerif': 'Sans Serif',
+      'font.serif': 'Serif',
+      'font.monospace': 'Monospace',
+      'font.cursive': 'Cursive',
+
+      // Insert dropdown
+      'insert.link': 'Odkaz',
+      'insert.image': 'Obrázek',
+      'insert.table': 'Tabulka',
+      'insert.emoji': 'Emoji',
+      'insert.symbol': 'Symbol',
+
+      // More menu
+      'menu.save': 'Uložit',
+      'menu.preview': 'Náhled',
+      'menu.download': 'Stáhnout',
+      'menu.print': 'Tisk',
+      'menu.autosave': 'Auto. ukládání',
+      'menu.clearAll': 'Vymazat vše',
+      'menu.toggleTheme': 'Přepnout motiv',
+      'menu.fullscreen': 'Celá obrazovka',
+      'menu.help': 'Nápověda',
+      'help.author': 'Autor',
+      'help.version': 'Verze',
+      'help.github': 'GitHub',
+      'help.documentation': 'Dokumentace',
+
+      // Link modal
+      'modal.insertLink': 'Vložit odkaz',
+      'modal.url': 'URL',
+      'modal.text': 'Text',
+      'modal.linkText': 'Text odkazu',
+      'modal.openInNewTab': 'Otevřít v nové záložce',
+      'modal.cancel': 'Zrušit',
+      'modal.insert': 'Vložit',
+
+      // Image modal
+      'modal.insertImage': 'Vložit obrázek',
+      'modal.uploadImage': 'Nahrát obrázek',
+      'modal.convertedToBase64': 'Bude převeden na base64',
+      'modal.or': 'NEBO',
+      'modal.imageUrl': 'URL obrázku',
+      'modal.altText': 'Alternativní text',
+      'modal.describeImage': 'Popis obrázku',
+      'modal.widthOptional': 'Šířka (volitelné)',
+      'modal.invalidImageFile': 'Vyberte prosím platný soubor obrázku.',
+
+      // Table modal
+      'modal.insertTable': 'Vložit tabulku',
+      'modal.rows': 'Řádky',
+      'modal.columns': 'Sloupce',
+      'modal.includeHeaderRow': 'Včetně řádku záhlaví',
+
+      // Find & Replace modal
+      'modal.findReplace': 'Najít a nahradit',
+      'modal.find': 'Najít',
+      'modal.searchText': 'Hledaný text...',
+      'modal.replaceWith': 'Nahradit za',
+      'modal.replacementText': 'Text náhrady...',
+      'modal.useRegex': 'Použít regulární výraz',
+      'modal.caseSensitive': 'Rozlišovat velikost písmen',
+      'modal.findNext': 'Najít další',
+      'modal.replace': 'Nahradit',
+      'modal.replaceAll': 'Nahradit vše',
+      'modal.invalidRegex': 'Neplatný regulární výraz',
+      'modal.matchesFound': 'Nalezeno {count} shod',
+      'modal.matchOf': 'Shoda {current} z {total}',
+      'modal.matchesRemaining': 'Zbývá {count} shod',
+      'modal.replacedOccurrences': 'Nahrazeno {count} výskytů',
+
+      // Status bar
+      'status.words': 'slov',
+      'status.word': 'slovo',
+      'status.chars': 'znaků',
+      'status.char': 'znak',
+
+      // Autosave
+      'autosave.savedLocally': 'Uloženo lokálně',
+      'autosave.autosaving': 'Ukládám...',
+
+      // Preview
+      'preview.title': 'Náhled dokumentu',
+
+      // Clear all
+      'confirm.clearAll': 'Vymazat veškerý obsah?',
+      'color.reset': 'Obnovit výchozí',
+      'color.pick': 'Vybrat barvu',
+      'color.apply': 'Použít',
+      'placeholder': 'Začněte psát...'
+    },
+    zh: {
+      // Toolbar tooltips
+      'toolbar.undo': '撤销 (Ctrl+Z)',
+      'toolbar.redo': '重做 (Ctrl+Y)',
+      'toolbar.bold': '粗体 (Ctrl+B)',
+      'toolbar.italic': '斜体 (Ctrl+I)',
+      'toolbar.underline': '下划线 (Ctrl+U)',
+      'toolbar.strikethrough': '删除线',
+      'toolbar.heading': '标题',
+      'toolbar.fontSize': '字体大小',
+      'toolbar.fontFamily': '字体',
+      'toolbar.foreColor': '文字颜色',
+      'toolbar.backColor': '背景颜色',
+      'toolbar.alignLeft': '左对齐',
+      'toolbar.alignCenter': '居中对齐',
+      'toolbar.alignRight': '右对齐',
+      'toolbar.alignJustify': '两端对齐',
+      'toolbar.bulletList': '无序列表',
+      'toolbar.numberedList': '有序列表',
+      'toolbar.indent': '增加缩进',
+      'toolbar.outdent': '减少缩进',
+      'toolbar.link': '插入链接 (Ctrl+K)',
+      'toolbar.image': '插入图片',
+      'toolbar.table': '插入表格',
+      'toolbar.blockquote': '引用',
+      'toolbar.viewCode': '查看代码 (HTML)',
+      'toolbar.horizontalRule': '水平线',
+      'toolbar.subscript': '下标',
+      'toolbar.superscript': '上标',
+      'toolbar.removeFormat': '清除格式',
+      'toolbar.findReplace': '查找和替换',
+      'toolbar.emoji': '插入表情',
+      'toolbar.specialChars': '特殊字符',
+      'toolbar.fullscreen': '全屏',
+      'toolbar.autosave': '自动保存',
+      'toolbar.themeToggle': '切换主题',
+      'toolbar.print': '打印',
+      'toolbar.insert': '插入',
+      'toolbar.moreOptions': '更多选项',
+      'toolbar.decreaseFontSize': '缩小字体',
+      'toolbar.increaseFontSize': '增大字体',
+      'heading.paragraph': '段落',
+      'heading.h1': '标题 1',
+      'heading.h2': '标题 2',
+      'heading.h3': '标题 3',
+      'heading.h4': '标题 4',
+      'heading.h5': '标题 5',
+      'heading.h6': '标题 6',
+      'font.sansSerif': '无衬线',
+      'font.serif': '衬线',
+      'font.monospace': '等宽',
+      'font.cursive': '手写',
+      'insert.link': '链接',
+      'insert.image': '图片',
+      'insert.table': '表格',
+      'insert.emoji': '表情',
+      'insert.symbol': '符号',
+      'menu.save': '保存',
+      'menu.preview': '预览',
+      'menu.download': '下载',
+      'menu.print': '打印',
+      'menu.autosave': '自动保存',
+      'menu.clearAll': '清除全部',
+      'menu.toggleTheme': '切换主题',
+      'menu.fullscreen': '全屏',
+      'menu.help': '帮助',
+      'help.author': '作者',
+      'help.version': '版本',
+      'help.github': 'GitHub',
+      'help.documentation': '文档',
+      'modal.insertLink': '插入链接',
+      'modal.url': 'URL',
+      'modal.text': '文本',
+      'modal.linkText': '链接文字',
+      'modal.openInNewTab': '在新标签页中打开',
+      'modal.cancel': '取消',
+      'modal.insert': '插入',
+      'modal.insertImage': '插入图片',
+      'modal.uploadImage': '上传图片',
+      'modal.convertedToBase64': '将转换为base64',
+      'modal.or': '或',
+      'modal.imageUrl': '图片URL',
+      'modal.altText': '替代文本',
+      'modal.describeImage': '描述图片',
+      'modal.widthOptional': '宽度（可选）',
+      'modal.invalidImageFile': '请选择有效的图片文件。',
+      'modal.insertTable': '插入表格',
+      'modal.rows': '行',
+      'modal.columns': '列',
+      'modal.includeHeaderRow': '包含标题行',
+      'modal.findReplace': '查找和替换',
+      'modal.find': '查找',
+      'modal.searchText': '搜索文本...',
+      'modal.replaceWith': '替换为',
+      'modal.replacementText': '替换文本...',
+      'modal.useRegex': '使用正则表达式',
+      'modal.caseSensitive': '区分大小写',
+      'modal.findNext': '查找下一个',
+      'modal.replace': '替换',
+      'modal.replaceAll': '全部替换',
+      'modal.invalidRegex': '无效的正则表达式',
+      'modal.matchesFound': '找到 {count} 个匹配',
+      'modal.matchOf': '第 {current} 个，共 {total} 个',
+      'modal.matchesRemaining': '剩余 {count} 个匹配',
+      'modal.replacedOccurrences': '已替换 {count} 处',
+      'status.words': '词',
+      'status.word': '词',
+      'status.chars': '字符',
+      'status.char': '字符',
+      'autosave.savedLocally': '已本地保存',
+      'autosave.autosaving': '正在保存...',
+      'preview.title': '文档预览',
+      'confirm.clearAll': '清除所有内容？',
+      'color.reset': '重置为默认',
+      'color.pick': '选择颜色',
+      'color.apply': '应用',
+      'placeholder': '开始输入...'
+    },
+    es: {
+      'toolbar.undo': 'Deshacer (Ctrl+Z)',
+      'toolbar.redo': 'Rehacer (Ctrl+Y)',
+      'toolbar.bold': 'Negrita (Ctrl+B)',
+      'toolbar.italic': 'Cursiva (Ctrl+I)',
+      'toolbar.underline': 'Subrayado (Ctrl+U)',
+      'toolbar.strikethrough': 'Tachado',
+      'toolbar.heading': 'Encabezado',
+      'toolbar.fontSize': 'Tamaño de fuente',
+      'toolbar.fontFamily': 'Familia de fuente',
+      'toolbar.foreColor': 'Color de texto',
+      'toolbar.backColor': 'Color de fondo',
+      'toolbar.alignLeft': 'Alinear a la izquierda',
+      'toolbar.alignCenter': 'Centrar',
+      'toolbar.alignRight': 'Alinear a la derecha',
+      'toolbar.alignJustify': 'Justificar',
+      'toolbar.bulletList': 'Lista con viñetas',
+      'toolbar.numberedList': 'Lista numerada',
+      'toolbar.indent': 'Aumentar sangría',
+      'toolbar.outdent': 'Disminuir sangría',
+      'toolbar.link': 'Insertar enlace (Ctrl+K)',
+      'toolbar.image': 'Insertar imagen',
+      'toolbar.table': 'Insertar tabla',
+      'toolbar.blockquote': 'Cita',
+      'toolbar.viewCode': 'Ver código (HTML)',
+      'toolbar.horizontalRule': 'Línea horizontal',
+      'toolbar.subscript': 'Subíndice',
+      'toolbar.superscript': 'Superíndice',
+      'toolbar.removeFormat': 'Eliminar formato',
+      'toolbar.findReplace': 'Buscar y reemplazar',
+      'toolbar.emoji': 'Insertar emoji',
+      'toolbar.specialChars': 'Caracteres especiales',
+      'toolbar.fullscreen': 'Pantalla completa',
+      'toolbar.autosave': 'Guardado automático',
+      'toolbar.themeToggle': 'Cambiar tema',
+      'toolbar.print': 'Imprimir',
+      'toolbar.insert': 'Insertar',
+      'toolbar.moreOptions': 'Más opciones',
+      'toolbar.decreaseFontSize': 'Reducir tamaño de fuente',
+      'toolbar.increaseFontSize': 'Aumentar tamaño de fuente',
+      'heading.paragraph': 'Párrafo',
+      'heading.h1': 'Encabezado 1',
+      'heading.h2': 'Encabezado 2',
+      'heading.h3': 'Encabezado 3',
+      'heading.h4': 'Encabezado 4',
+      'heading.h5': 'Encabezado 5',
+      'heading.h6': 'Encabezado 6',
+      'font.sansSerif': 'Sans Serif',
+      'font.serif': 'Serif',
+      'font.monospace': 'Monospace',
+      'font.cursive': 'Cursiva',
+      'insert.link': 'Enlace',
+      'insert.image': 'Imagen',
+      'insert.table': 'Tabla',
+      'insert.emoji': 'Emoji',
+      'insert.symbol': 'Símbolo',
+      'menu.save': 'Guardar',
+      'menu.preview': 'Vista previa',
+      'menu.download': 'Descargar',
+      'menu.print': 'Imprimir',
+      'menu.autosave': 'Guardado automático',
+      'menu.clearAll': 'Borrar todo',
+      'menu.toggleTheme': 'Cambiar tema',
+      'menu.fullscreen': 'Pantalla completa',
+      'menu.help': 'Ayuda',
+      'help.author': 'Autor',
+      'help.version': 'Versión',
+      'help.github': 'GitHub',
+      'help.documentation': 'Documentación',
+      'modal.insertLink': 'Insertar enlace',
+      'modal.url': 'URL',
+      'modal.text': 'Texto',
+      'modal.linkText': 'Texto del enlace',
+      'modal.openInNewTab': 'Abrir en nueva pestaña',
+      'modal.cancel': 'Cancelar',
+      'modal.insert': 'Insertar',
+      'modal.insertImage': 'Insertar imagen',
+      'modal.uploadImage': 'Subir imagen',
+      'modal.convertedToBase64': 'Se convertirá a base64',
+      'modal.or': 'O',
+      'modal.imageUrl': 'URL de imagen',
+      'modal.altText': 'Texto alternativo',
+      'modal.describeImage': 'Describir la imagen',
+      'modal.widthOptional': 'Ancho (opcional)',
+      'modal.invalidImageFile': 'Por favor, seleccione un archivo de imagen válido.',
+      'modal.insertTable': 'Insertar tabla',
+      'modal.rows': 'Filas',
+      'modal.columns': 'Columnas',
+      'modal.includeHeaderRow': 'Incluir fila de encabezado',
+      'modal.findReplace': 'Buscar y reemplazar',
+      'modal.find': 'Buscar',
+      'modal.searchText': 'Texto a buscar...',
+      'modal.replaceWith': 'Reemplazar con',
+      'modal.replacementText': 'Texto de reemplazo...',
+      'modal.useRegex': 'Usar expresión regular',
+      'modal.caseSensitive': 'Distinguir mayúsculas',
+      'modal.findNext': 'Buscar siguiente',
+      'modal.replace': 'Reemplazar',
+      'modal.replaceAll': 'Reemplazar todo',
+      'modal.invalidRegex': 'Expresión regular no válida',
+      'modal.matchesFound': '{count} coincidencia(s) encontrada(s)',
+      'modal.matchOf': 'Coincidencia {current} de {total}',
+      'modal.matchesRemaining': '{count} coincidencia(s) restante(s)',
+      'modal.replacedOccurrences': '{count} ocurrencia(s) reemplazada(s)',
+      'status.words': 'palabras',
+      'status.word': 'palabra',
+      'status.chars': 'caracteres',
+      'status.char': 'carácter',
+      'autosave.savedLocally': 'Guardado localmente',
+      'autosave.autosaving': 'Guardando...',
+      'preview.title': 'Vista previa del documento',
+      'confirm.clearAll': '¿Borrar todo el contenido?',
+      'color.reset': 'Restablecer',
+      'color.pick': 'Elegir color',
+      'color.apply': 'Aplicar',
+      'placeholder': 'Empiece a escribir...'
+    },
+    de: {
+      'toolbar.undo': 'Rückgängig (Strg+Z)',
+      'toolbar.redo': 'Wiederholen (Strg+Y)',
+      'toolbar.bold': 'Fett (Strg+B)',
+      'toolbar.italic': 'Kursiv (Strg+I)',
+      'toolbar.underline': 'Unterstrichen (Strg+U)',
+      'toolbar.strikethrough': 'Durchgestrichen',
+      'toolbar.heading': 'Überschrift',
+      'toolbar.fontSize': 'Schriftgröße',
+      'toolbar.fontFamily': 'Schriftart',
+      'toolbar.foreColor': 'Textfarbe',
+      'toolbar.backColor': 'Hintergrundfarbe',
+      'toolbar.alignLeft': 'Linksbündig',
+      'toolbar.alignCenter': 'Zentriert',
+      'toolbar.alignRight': 'Rechtsbündig',
+      'toolbar.alignJustify': 'Blocksatz',
+      'toolbar.bulletList': 'Aufzählungsliste',
+      'toolbar.numberedList': 'Nummerierte Liste',
+      'toolbar.indent': 'Einzug vergrößern',
+      'toolbar.outdent': 'Einzug verkleinern',
+      'toolbar.link': 'Link einfügen (Strg+K)',
+      'toolbar.image': 'Bild einfügen',
+      'toolbar.table': 'Tabelle einfügen',
+      'toolbar.blockquote': 'Zitat',
+      'toolbar.viewCode': 'Code anzeigen (HTML)',
+      'toolbar.horizontalRule': 'Horizontale Linie',
+      'toolbar.subscript': 'Tiefgestellt',
+      'toolbar.superscript': 'Hochgestellt',
+      'toolbar.removeFormat': 'Formatierung entfernen',
+      'toolbar.findReplace': 'Suchen und Ersetzen',
+      'toolbar.emoji': 'Emoji einfügen',
+      'toolbar.specialChars': 'Sonderzeichen',
+      'toolbar.fullscreen': 'Vollbild',
+      'toolbar.autosave': 'Automatisch speichern',
+      'toolbar.themeToggle': 'Design wechseln',
+      'toolbar.print': 'Drucken',
+      'toolbar.insert': 'Einfügen',
+      'toolbar.moreOptions': 'Weitere Optionen',
+      'toolbar.decreaseFontSize': 'Schrift verkleinern',
+      'toolbar.increaseFontSize': 'Schrift vergrößern',
+      'heading.paragraph': 'Absatz',
+      'heading.h1': 'Überschrift 1',
+      'heading.h2': 'Überschrift 2',
+      'heading.h3': 'Überschrift 3',
+      'heading.h4': 'Überschrift 4',
+      'heading.h5': 'Überschrift 5',
+      'heading.h6': 'Überschrift 6',
+      'font.sansSerif': 'Sans Serif',
+      'font.serif': 'Serif',
+      'font.monospace': 'Monospace',
+      'font.cursive': 'Schreibschrift',
+      'insert.link': 'Link',
+      'insert.image': 'Bild',
+      'insert.table': 'Tabelle',
+      'insert.emoji': 'Emoji',
+      'insert.symbol': 'Symbol',
+      'menu.save': 'Speichern',
+      'menu.preview': 'Vorschau',
+      'menu.download': 'Herunterladen',
+      'menu.print': 'Drucken',
+      'menu.autosave': 'Automatisch speichern',
+      'menu.clearAll': 'Alles löschen',
+      'menu.toggleTheme': 'Design wechseln',
+      'menu.fullscreen': 'Vollbild',
+      'menu.help': 'Hilfe',
+      'help.author': 'Autor',
+      'help.version': 'Version',
+      'help.github': 'GitHub',
+      'help.documentation': 'Dokumentation',
+      'modal.insertLink': 'Link einfügen',
+      'modal.url': 'URL',
+      'modal.text': 'Text',
+      'modal.linkText': 'Linktext',
+      'modal.openInNewTab': 'In neuem Tab öffnen',
+      'modal.cancel': 'Abbrechen',
+      'modal.insert': 'Einfügen',
+      'modal.insertImage': 'Bild einfügen',
+      'modal.uploadImage': 'Bild hochladen',
+      'modal.convertedToBase64': 'Wird in Base64 konvertiert',
+      'modal.or': 'ODER',
+      'modal.imageUrl': 'Bild-URL',
+      'modal.altText': 'Alternativtext',
+      'modal.describeImage': 'Bild beschreiben',
+      'modal.widthOptional': 'Breite (optional)',
+      'modal.invalidImageFile': 'Bitte wählen Sie eine gültige Bilddatei.',
+      'modal.insertTable': 'Tabelle einfügen',
+      'modal.rows': 'Zeilen',
+      'modal.columns': 'Spalten',
+      'modal.includeHeaderRow': 'Kopfzeile einfügen',
+      'modal.findReplace': 'Suchen und Ersetzen',
+      'modal.find': 'Suchen',
+      'modal.searchText': 'Suchtext...',
+      'modal.replaceWith': 'Ersetzen durch',
+      'modal.replacementText': 'Ersatztext...',
+      'modal.useRegex': 'Regulären Ausdruck verwenden',
+      'modal.caseSensitive': 'Groß-/Kleinschreibung beachten',
+      'modal.findNext': 'Weitersuchen',
+      'modal.replace': 'Ersetzen',
+      'modal.replaceAll': 'Alle ersetzen',
+      'modal.invalidRegex': 'Ungültiger regulärer Ausdruck',
+      'modal.matchesFound': '{count} Treffer gefunden',
+      'modal.matchOf': 'Treffer {current} von {total}',
+      'modal.matchesRemaining': '{count} Treffer verbleibend',
+      'modal.replacedOccurrences': '{count} Vorkommen ersetzt',
+      'status.words': 'Wörter',
+      'status.word': 'Wort',
+      'status.chars': 'Zeichen',
+      'status.char': 'Zeichen',
+      'autosave.savedLocally': 'Lokal gespeichert',
+      'autosave.autosaving': 'Speichern...',
+      'preview.title': 'Dokumentvorschau',
+      'confirm.clearAll': 'Gesamten Inhalt löschen?',
+      'color.reset': 'Zurücksetzen',
+      'color.pick': 'Farbe wählen',
+      'color.apply': 'Anwenden',
+      'placeholder': 'Hier schreiben...'
+    },
+    fr: {
+      'toolbar.undo': 'Annuler (Ctrl+Z)',
+      'toolbar.redo': 'Rétablir (Ctrl+Y)',
+      'toolbar.bold': 'Gras (Ctrl+B)',
+      'toolbar.italic': 'Italique (Ctrl+I)',
+      'toolbar.underline': 'Souligné (Ctrl+U)',
+      'toolbar.strikethrough': 'Barré',
+      'toolbar.heading': 'Titre',
+      'toolbar.fontSize': 'Taille de police',
+      'toolbar.fontFamily': 'Police',
+      'toolbar.foreColor': 'Couleur du texte',
+      'toolbar.backColor': 'Couleur de fond',
+      'toolbar.alignLeft': 'Aligner à gauche',
+      'toolbar.alignCenter': 'Centrer',
+      'toolbar.alignRight': 'Aligner à droite',
+      'toolbar.alignJustify': 'Justifier',
+      'toolbar.bulletList': 'Liste à puces',
+      'toolbar.numberedList': 'Liste numérotée',
+      'toolbar.indent': 'Augmenter le retrait',
+      'toolbar.outdent': 'Diminuer le retrait',
+      'toolbar.link': 'Insérer un lien (Ctrl+K)',
+      'toolbar.image': 'Insérer une image',
+      'toolbar.table': 'Insérer un tableau',
+      'toolbar.blockquote': 'Citation',
+      'toolbar.viewCode': 'Voir le code (HTML)',
+      'toolbar.horizontalRule': 'Ligne horizontale',
+      'toolbar.subscript': 'Indice',
+      'toolbar.superscript': 'Exposant',
+      'toolbar.removeFormat': 'Supprimer la mise en forme',
+      'toolbar.findReplace': 'Rechercher et remplacer',
+      'toolbar.emoji': 'Insérer un emoji',
+      'toolbar.specialChars': 'Caractères spéciaux',
+      'toolbar.fullscreen': 'Plein écran',
+      'toolbar.autosave': 'Sauvegarde automatique',
+      'toolbar.themeToggle': 'Changer de thème',
+      'toolbar.print': 'Imprimer',
+      'toolbar.insert': 'Insérer',
+      'toolbar.moreOptions': 'Plus d\'options',
+      'toolbar.decreaseFontSize': 'Réduire la taille de police',
+      'toolbar.increaseFontSize': 'Augmenter la taille de police',
+      'heading.paragraph': 'Paragraphe',
+      'heading.h1': 'Titre 1',
+      'heading.h2': 'Titre 2',
+      'heading.h3': 'Titre 3',
+      'heading.h4': 'Titre 4',
+      'heading.h5': 'Titre 5',
+      'heading.h6': 'Titre 6',
+      'font.sansSerif': 'Sans Serif',
+      'font.serif': 'Serif',
+      'font.monospace': 'Monospace',
+      'font.cursive': 'Cursive',
+      'insert.link': 'Lien',
+      'insert.image': 'Image',
+      'insert.table': 'Tableau',
+      'insert.emoji': 'Emoji',
+      'insert.symbol': 'Symbole',
+      'menu.save': 'Enregistrer',
+      'menu.preview': 'Aperçu',
+      'menu.download': 'Télécharger',
+      'menu.print': 'Imprimer',
+      'menu.autosave': 'Sauvegarde auto',
+      'menu.clearAll': 'Tout effacer',
+      'menu.toggleTheme': 'Changer de thème',
+      'menu.fullscreen': 'Plein écran',
+      'menu.help': 'Aide',
+      'help.author': 'Auteur',
+      'help.version': 'Version',
+      'help.github': 'GitHub',
+      'help.documentation': 'Documentation',
+      'modal.insertLink': 'Insérer un lien',
+      'modal.url': 'URL',
+      'modal.text': 'Texte',
+      'modal.linkText': 'Texte du lien',
+      'modal.openInNewTab': 'Ouvrir dans un nouvel onglet',
+      'modal.cancel': 'Annuler',
+      'modal.insert': 'Insérer',
+      'modal.insertImage': 'Insérer une image',
+      'modal.uploadImage': 'Téléverser une image',
+      'modal.convertedToBase64': 'Sera converti en base64',
+      'modal.or': 'OU',
+      'modal.imageUrl': 'URL de l\'image',
+      'modal.altText': 'Texte alternatif',
+      'modal.describeImage': 'Décrire l\'image',
+      'modal.widthOptional': 'Largeur (optionnel)',
+      'modal.invalidImageFile': 'Veuillez sélectionner un fichier image valide.',
+      'modal.insertTable': 'Insérer un tableau',
+      'modal.rows': 'Lignes',
+      'modal.columns': 'Colonnes',
+      'modal.includeHeaderRow': 'Inclure la ligne d\'en-tête',
+      'modal.findReplace': 'Rechercher et remplacer',
+      'modal.find': 'Rechercher',
+      'modal.searchText': 'Texte à rechercher...',
+      'modal.replaceWith': 'Remplacer par',
+      'modal.replacementText': 'Texte de remplacement...',
+      'modal.useRegex': 'Utiliser une expression régulière',
+      'modal.caseSensitive': 'Sensible à la casse',
+      'modal.findNext': 'Suivant',
+      'modal.replace': 'Remplacer',
+      'modal.replaceAll': 'Tout remplacer',
+      'modal.invalidRegex': 'Expression régulière invalide',
+      'modal.matchesFound': '{count} correspondance(s) trouvée(s)',
+      'modal.matchOf': 'Correspondance {current} sur {total}',
+      'modal.matchesRemaining': '{count} correspondance(s) restante(s)',
+      'modal.replacedOccurrences': '{count} occurrence(s) remplacée(s)',
+      'status.words': 'mots',
+      'status.word': 'mot',
+      'status.chars': 'caractères',
+      'status.char': 'caractère',
+      'autosave.savedLocally': 'Enregistré localement',
+      'autosave.autosaving': 'Enregistrement...',
+      'preview.title': 'Aperçu du document',
+      'confirm.clearAll': 'Effacer tout le contenu ?',
+      'color.reset': 'Réinitialiser',
+      'color.pick': 'Choisir une couleur',
+      'color.apply': 'Appliquer',
+      'placeholder': 'Commencez à écrire...'
+    },
+    pt: {
+      'toolbar.undo': 'Desfazer (Ctrl+Z)',
+      'toolbar.redo': 'Refazer (Ctrl+Y)',
+      'toolbar.bold': 'Negrito (Ctrl+B)',
+      'toolbar.italic': 'Itálico (Ctrl+I)',
+      'toolbar.underline': 'Sublinhado (Ctrl+U)',
+      'toolbar.strikethrough': 'Tachado',
+      'toolbar.heading': 'Título',
+      'toolbar.fontSize': 'Tamanho da fonte',
+      'toolbar.fontFamily': 'Família da fonte',
+      'toolbar.foreColor': 'Cor do texto',
+      'toolbar.backColor': 'Cor de fundo',
+      'toolbar.alignLeft': 'Alinhar à esquerda',
+      'toolbar.alignCenter': 'Centralizar',
+      'toolbar.alignRight': 'Alinhar à direita',
+      'toolbar.alignJustify': 'Justificar',
+      'toolbar.bulletList': 'Lista com marcadores',
+      'toolbar.numberedList': 'Lista numerada',
+      'toolbar.indent': 'Aumentar recuo',
+      'toolbar.outdent': 'Diminuir recuo',
+      'toolbar.link': 'Inserir link (Ctrl+K)',
+      'toolbar.image': 'Inserir imagem',
+      'toolbar.table': 'Inserir tabela',
+      'toolbar.blockquote': 'Citação',
+      'toolbar.viewCode': 'Ver código (HTML)',
+      'toolbar.horizontalRule': 'Linha horizontal',
+      'toolbar.subscript': 'Subscrito',
+      'toolbar.superscript': 'Sobrescrito',
+      'toolbar.removeFormat': 'Remover formatação',
+      'toolbar.findReplace': 'Localizar e substituir',
+      'toolbar.emoji': 'Inserir emoji',
+      'toolbar.specialChars': 'Caracteres especiais',
+      'toolbar.fullscreen': 'Tela cheia',
+      'toolbar.autosave': 'Salvamento automático',
+      'toolbar.themeToggle': 'Alternar tema',
+      'toolbar.print': 'Imprimir',
+      'toolbar.insert': 'Inserir',
+      'toolbar.moreOptions': 'Mais opções',
+      'toolbar.decreaseFontSize': 'Diminuir fonte',
+      'toolbar.increaseFontSize': 'Aumentar fonte',
+      'heading.paragraph': 'Parágrafo',
+      'heading.h1': 'Título 1',
+      'heading.h2': 'Título 2',
+      'heading.h3': 'Título 3',
+      'heading.h4': 'Título 4',
+      'heading.h5': 'Título 5',
+      'heading.h6': 'Título 6',
+      'font.sansSerif': 'Sans Serif',
+      'font.serif': 'Serif',
+      'font.monospace': 'Monospace',
+      'font.cursive': 'Cursiva',
+      'insert.link': 'Link',
+      'insert.image': 'Imagem',
+      'insert.table': 'Tabela',
+      'insert.emoji': 'Emoji',
+      'insert.symbol': 'Símbolo',
+      'menu.save': 'Salvar',
+      'menu.preview': 'Visualizar',
+      'menu.download': 'Baixar',
+      'menu.print': 'Imprimir',
+      'menu.autosave': 'Salvamento automático',
+      'menu.clearAll': 'Limpar tudo',
+      'menu.toggleTheme': 'Alternar tema',
+      'menu.fullscreen': 'Tela cheia',
+      'menu.help': 'Ajuda',
+      'help.author': 'Autor',
+      'help.version': 'Versão',
+      'help.github': 'GitHub',
+      'help.documentation': 'Documentação',
+      'modal.insertLink': 'Inserir link',
+      'modal.url': 'URL',
+      'modal.text': 'Texto',
+      'modal.linkText': 'Texto do link',
+      'modal.openInNewTab': 'Abrir em nova aba',
+      'modal.cancel': 'Cancelar',
+      'modal.insert': 'Inserir',
+      'modal.insertImage': 'Inserir imagem',
+      'modal.uploadImage': 'Enviar imagem',
+      'modal.convertedToBase64': 'Será convertido para base64',
+      'modal.or': 'OU',
+      'modal.imageUrl': 'URL da imagem',
+      'modal.altText': 'Texto alternativo',
+      'modal.describeImage': 'Descrever a imagem',
+      'modal.widthOptional': 'Largura (opcional)',
+      'modal.invalidImageFile': 'Por favor, selecione um arquivo de imagem válido.',
+      'modal.insertTable': 'Inserir tabela',
+      'modal.rows': 'Linhas',
+      'modal.columns': 'Colunas',
+      'modal.includeHeaderRow': 'Incluir linha de cabeçalho',
+      'modal.findReplace': 'Localizar e substituir',
+      'modal.find': 'Localizar',
+      'modal.searchText': 'Texto a localizar...',
+      'modal.replaceWith': 'Substituir por',
+      'modal.replacementText': 'Texto de substituição...',
+      'modal.useRegex': 'Usar expressão regular',
+      'modal.caseSensitive': 'Diferenciar maiúsculas',
+      'modal.findNext': 'Localizar próximo',
+      'modal.replace': 'Substituir',
+      'modal.replaceAll': 'Substituir tudo',
+      'modal.invalidRegex': 'Expressão regular inválida',
+      'modal.matchesFound': '{count} correspondência(s) encontrada(s)',
+      'modal.matchOf': 'Correspondência {current} de {total}',
+      'modal.matchesRemaining': '{count} correspondência(s) restante(s)',
+      'modal.replacedOccurrences': '{count} ocorrência(s) substituída(s)',
+      'status.words': 'palavras',
+      'status.word': 'palavra',
+      'status.chars': 'caracteres',
+      'status.char': 'caractere',
+      'autosave.savedLocally': 'Salvo localmente',
+      'autosave.autosaving': 'Salvando...',
+      'preview.title': 'Visualização do documento',
+      'confirm.clearAll': 'Limpar todo o conteúdo?',
+      'color.reset': 'Redefinir',
+      'color.pick': 'Escolher cor',
+      'color.apply': 'Aplicar',
+      'placeholder': 'Comece a digitar...'
+    },
+    ja: {
+      'toolbar.undo': '元に戻す (Ctrl+Z)',
+      'toolbar.redo': 'やり直し (Ctrl+Y)',
+      'toolbar.bold': '太字 (Ctrl+B)',
+      'toolbar.italic': '斜体 (Ctrl+I)',
+      'toolbar.underline': '下線 (Ctrl+U)',
+      'toolbar.strikethrough': '取り消し線',
+      'toolbar.heading': '見出し',
+      'toolbar.fontSize': 'フォントサイズ',
+      'toolbar.fontFamily': 'フォント',
+      'toolbar.foreColor': '文字色',
+      'toolbar.backColor': '背景色',
+      'toolbar.alignLeft': '左揃え',
+      'toolbar.alignCenter': '中央揃え',
+      'toolbar.alignRight': '右揃え',
+      'toolbar.alignJustify': '両端揃え',
+      'toolbar.bulletList': '箇条書き',
+      'toolbar.numberedList': '番号付きリスト',
+      'toolbar.indent': 'インデント増',
+      'toolbar.outdent': 'インデント減',
+      'toolbar.link': 'リンク挿入 (Ctrl+K)',
+      'toolbar.image': '画像挿入',
+      'toolbar.table': '表挿入',
+      'toolbar.blockquote': '引用',
+      'toolbar.viewCode': 'コード表示 (HTML)',
+      'toolbar.horizontalRule': '水平線',
+      'toolbar.subscript': '下付き',
+      'toolbar.superscript': '上付き',
+      'toolbar.removeFormat': '書式解除',
+      'toolbar.findReplace': '検索と置換',
+      'toolbar.emoji': '絵文字挿入',
+      'toolbar.specialChars': '特殊文字',
+      'toolbar.fullscreen': '全画面',
+      'toolbar.autosave': '自動保存',
+      'toolbar.themeToggle': 'テーマ切替',
+      'toolbar.print': '印刷',
+      'toolbar.insert': '挿入',
+      'toolbar.moreOptions': 'その他',
+      'toolbar.decreaseFontSize': 'フォント縮小',
+      'toolbar.increaseFontSize': 'フォント拡大',
+      'heading.paragraph': '段落',
+      'heading.h1': '見出し 1',
+      'heading.h2': '見出し 2',
+      'heading.h3': '見出し 3',
+      'heading.h4': '見出し 4',
+      'heading.h5': '見出し 5',
+      'heading.h6': '見出し 6',
+      'font.sansSerif': 'ゴシック',
+      'font.serif': '明朝',
+      'font.monospace': '等幅',
+      'font.cursive': '手書き',
+      'insert.link': 'リンク',
+      'insert.image': '画像',
+      'insert.table': '表',
+      'insert.emoji': '絵文字',
+      'insert.symbol': '記号',
+      'menu.save': '保存',
+      'menu.preview': 'プレビュー',
+      'menu.download': 'ダウンロード',
+      'menu.print': '印刷',
+      'menu.autosave': '自動保存',
+      'menu.clearAll': 'すべて消去',
+      'menu.toggleTheme': 'テーマ切替',
+      'menu.fullscreen': '全画面',
+      'menu.help': 'ヘルプ',
+      'help.author': '作成者',
+      'help.version': 'バージョン',
+      'help.github': 'GitHub',
+      'help.documentation': 'ドキュメント',
+      'modal.insertLink': 'リンク挿入',
+      'modal.url': 'URL',
+      'modal.text': 'テキスト',
+      'modal.linkText': 'リンクテキスト',
+      'modal.openInNewTab': '新しいタブで開く',
+      'modal.cancel': 'キャンセル',
+      'modal.insert': '挿入',
+      'modal.insertImage': '画像挿入',
+      'modal.uploadImage': '画像アップロード',
+      'modal.convertedToBase64': 'Base64に変換されます',
+      'modal.or': 'または',
+      'modal.imageUrl': '画像URL',
+      'modal.altText': '代替テキスト',
+      'modal.describeImage': '画像の説明',
+      'modal.widthOptional': '幅（任意）',
+      'modal.invalidImageFile': '有効な画像ファイルを選択してください。',
+      'modal.insertTable': '表挿入',
+      'modal.rows': '行',
+      'modal.columns': '列',
+      'modal.includeHeaderRow': 'ヘッダー行を含む',
+      'modal.findReplace': '検索と置換',
+      'modal.find': '検索',
+      'modal.searchText': '検索テキスト...',
+      'modal.replaceWith': '置換後',
+      'modal.replacementText': '置換テキスト...',
+      'modal.useRegex': '正規表現を使用',
+      'modal.caseSensitive': '大文字小文字を区別',
+      'modal.findNext': '次を検索',
+      'modal.replace': '置換',
+      'modal.replaceAll': 'すべて置換',
+      'modal.invalidRegex': '無効な正規表現',
+      'modal.matchesFound': '{count} 件見つかりました',
+      'modal.matchOf': '{total} 件中 {current} 件目',
+      'modal.matchesRemaining': '残り {count} 件',
+      'modal.replacedOccurrences': '{count} 件を置換しました',
+      'status.words': '語',
+      'status.word': '語',
+      'status.chars': '文字',
+      'status.char': '文字',
+      'autosave.savedLocally': 'ローカルに保存済み',
+      'autosave.autosaving': '保存中...',
+      'preview.title': 'ドキュメントプレビュー',
+      'confirm.clearAll': 'すべての内容を消去しますか？',
+      'color.reset': 'デフォルトに戻す',
+      'color.pick': '色を選択',
+      'color.apply': '適用',
+      'placeholder': '入力してください...'
+    }
+  };
+
+  // Current language (will be set per editor instance)
+  let _currentLanguage = 'en';
+
+  // Register a custom translation (static method — available before init)
+  function addTranslation(lang, keys) {
+    if (!lang || typeof keys !== 'object') return;
+    if (!TRANSLATIONS[lang]) TRANSLATIONS[lang] = {};
+    Object.assign(TRANSLATIONS[lang], keys);
+  }
+
+  // Translation helper function
+  function t(key, params = {}) {
+    const lang = _currentLanguage || 'en';
+    let text = TRANSLATIONS[lang]?.[key] || TRANSLATIONS['en']?.[key] || key;
+    
+    // Replace placeholders like {count}, {current}, {total}
+    Object.keys(params).forEach(param => {
+      text = text.replace(new RegExp(`\\{${param}\\}`, 'g'), params[param]);
+    });
+    
+    return text;
+  }
+
+  const DEFAULT_CONFIG = {
+    toolbar: [
+      'viewCode', 'undo', 'redo', 'findReplace', '|',
+      'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'removeFormat', '|',
+      'heading', 'fontFamily', 'fontSize', '|',
+      'foreColor', 'backColor', '|',
+      'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', '|',
+      'indent', 'outdent', '|',
+      'bulletList', 'numberedList', 'blockquote', 'horizontalRule', '|',
+      'insertDropdown', '|',
+      'moreMenu'
+    ],
+    placeholder: 'Start typing...',
+    minHeight: 300,
+    maxHeight: null,
+    autofocus: false,
+    spellcheck: true,
+    readonly: false,
+    theme: 'light',
+    language: 'en',
+    translations: null,
+    plugins: [],
+    onChange: null,
+    onSave: null,
+    onFocus: null,
+    onBlur: null,
+    onReady: null,
+    showHelp: true
+  };
+
+  const TOOLBAR_ITEMS = {
+    undo: { icon: 'undo', titleKey: 'toolbar.undo', command: 'undo' },
+    redo: { icon: 'redo', titleKey: 'toolbar.redo', command: 'redo' },
+    bold: { icon: 'bold', titleKey: 'toolbar.bold', command: 'bold' },
+    italic: { icon: 'italic', titleKey: 'toolbar.italic', command: 'italic' },
+    underline: { icon: 'underline', titleKey: 'toolbar.underline', command: 'underline' },
+    strikethrough: { icon: 'strikethrough', titleKey: 'toolbar.strikethrough', command: 'strikeThrough' },
+    heading: { titleKey: 'toolbar.heading', command: 'heading', type: 'select' },
+    fontSize: { titleKey: 'toolbar.fontSize', command: 'fontSize', type: 'fontSizeWidget' },
+    fontFamily: { titleKey: 'toolbar.fontFamily', command: 'fontFamily', type: 'select' },
+    foreColor: { icon: 'text-color', titleKey: 'toolbar.foreColor', command: 'foreColor', picker: 'color' },
+    backColor: { icon: 'highlight', titleKey: 'toolbar.backColor', command: 'backColor', picker: 'color' },
+    alignLeft: { icon: 'align-left', titleKey: 'toolbar.alignLeft', command: 'justifyLeft' },
+    alignCenter: { icon: 'align-center', titleKey: 'toolbar.alignCenter', command: 'justifyCenter' },
+    alignRight: { icon: 'align-right', titleKey: 'toolbar.alignRight', command: 'justifyRight' },
+    alignJustify: { icon: 'align-justify', titleKey: 'toolbar.alignJustify', command: 'justifyFull' },
+    bulletList: { icon: 'list-ul', titleKey: 'toolbar.bulletList', command: 'insertUnorderedList' },
+    numberedList: { icon: 'list-ol', titleKey: 'toolbar.numberedList', command: 'insertOrderedList' },
+    indent: { icon: 'indent', titleKey: 'toolbar.indent', command: 'indent' },
+    outdent: { icon: 'outdent', titleKey: 'toolbar.outdent', command: 'outdent' },
+    link: { icon: 'link', titleKey: 'toolbar.link', command: 'createLink', modal: true },
+    image: { icon: 'image', titleKey: 'toolbar.image', command: 'insertImage', modal: true },
+    table: { icon: 'table', titleKey: 'toolbar.table', command: 'insertTable', modal: true },
+    blockquote: { icon: 'quote', titleKey: 'toolbar.blockquote', command: 'formatBlock', value: 'blockquote' },
+    viewCode: { icon: 'code', titleKey: 'toolbar.viewCode', command: 'viewCode' },
+    horizontalRule: { icon: 'minus', titleKey: 'toolbar.horizontalRule', command: 'insertHorizontalRule' },
+    subscript: { icon: 'subscript', titleKey: 'toolbar.subscript', command: 'subscript' },
+    superscript: { icon: 'superscript', titleKey: 'toolbar.superscript', command: 'superscript' },
+    removeFormat: { icon: 'eraser', titleKey: 'toolbar.removeFormat', command: 'removeFormat' },
+    findReplace: { icon: 'search', titleKey: 'toolbar.findReplace', command: 'findReplace', modal: true },
+    emoji: { icon: 'emoji', titleKey: 'toolbar.emoji', command: 'emoji', picker: 'emoji' },
+    specialChars: { icon: 'specialChars', titleKey: 'toolbar.specialChars', command: 'specialChars', picker: 'specialChars' },
+    fullscreen: { icon: 'fullscreen', titleKey: 'toolbar.fullscreen', command: 'fullscreen' },
+    autosave: { icon: 'save', titleKey: 'toolbar.autosave', command: 'autosave', toggle: true },
+    themeToggle: { icon: 'sun', titleKey: 'toolbar.themeToggle', command: 'themeToggle', toggle: true },
+    print: { icon: 'print', titleKey: 'toolbar.print', command: 'print' },
+    insertDropdown: { icon: 'plus', titleKey: 'toolbar.insert', type: 'insertDropdown' },
+    moreMenu: { icon: 'more', titleKey: 'toolbar.moreOptions', type: 'moreMenu' }
+  };
+
+  const FONT_SIZES = [8, 9, 10, 11, 12, 14, 18, 24, 30, 36, 48, 60, 72, 96];
+
+  const FONT_FAMILIES = [
+    { labelKey: 'font.sansSerif', value: 'Arial, sans-serif' },
+    { labelKey: 'font.serif', value: 'Georgia, serif' },
+    { labelKey: 'font.monospace', value: 'Consolas, monospace' },
+    { labelKey: 'font.cursive', value: 'Comic Sans MS, cursive' }
+  ];
+
+  const HEADINGS = [
+    { labelKey: 'heading.paragraph', value: 'p' },
+    { labelKey: 'heading.h1', value: 'h1' },
+    { labelKey: 'heading.h2', value: 'h2' },
+    { labelKey: 'heading.h3', value: 'h3' },
+    { labelKey: 'heading.h4', value: 'h4' },
+    { labelKey: 'heading.h5', value: 'h5' },
+    { labelKey: 'heading.h6', value: 'h6' }
+  ];
+
+  const EMOJIS = [
+    '😀', '😃', '😄', '😁', '😅', '😂', '🤣', '😊', '😇', '🙂',
+    '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛',
+    '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨',
+    '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔',
+    '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵',
+    '👍', '👎', '👌', '✌️', '🤞', '🤟', '🤘', '🤙', '👈', '👉',
+    '👆', '👇', '☝️', '👋', '🤚', '🖐️', '✋', '🖖', '👏', '🙌',
+    '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔',
+    '⭐', '🌟', '✨', '💫', '🔥', '💥', '💯', '✅', '❌', '❓'
+  ];
+
+  const SPECIAL_CHARS = [
+    { char: '©', name: 'Copyright' },
+    { char: '®', name: 'Registered' },
+    { char: '™', name: 'Trademark' },
+    { char: '€', name: 'Euro' },
+    { char: '£', name: 'Pound' },
+    { char: '¥', name: 'Yen' },
+    { char: '¢', name: 'Cent' },
+    { char: '°', name: 'Degree' },
+    { char: '±', name: 'Plus-Minus' },
+    { char: '×', name: 'Multiply' },
+    { char: '÷', name: 'Divide' },
+    { char: '≠', name: 'Not Equal' },
+    { char: '≤', name: 'Less or Equal' },
+    { char: '≥', name: 'Greater or Equal' },
+    { char: '∞', name: 'Infinity' },
+    { char: '√', name: 'Square Root' },
+    { char: 'π', name: 'Pi' },
+    { char: 'Ω', name: 'Omega' },
+    { char: 'α', name: 'Alpha' },
+    { char: 'β', name: 'Beta' },
+    { char: 'γ', name: 'Gamma' },
+    { char: 'δ', name: 'Delta' },
+    { char: 'µ', name: 'Micro' },
+    { char: '∑', name: 'Sum' },
+    { char: '∆', name: 'Delta (big)' },
+    { char: '←', name: 'Left Arrow' },
+    { char: '→', name: 'Right Arrow' },
+    { char: '↑', name: 'Up Arrow' },
+    { char: '↓', name: 'Down Arrow' },
+    { char: '↔', name: 'Left-Right Arrow' },
+    { char: '•', name: 'Bullet' },
+    { char: '…', name: 'Ellipsis' },
+    { char: '—', name: 'Em Dash' },
+    { char: '–', name: 'En Dash' },
+    { char: '§', name: 'Section' },
+    { char: '¶', name: 'Paragraph' },
+    { char: '†', name: 'Dagger' },
+    { char: '‡', name: 'Double Dagger' },
+    { char: '♠', name: 'Spade' },
+    { char: '♣', name: 'Club' },
+    { char: '♥', name: 'Heart' },
+    { char: '♦', name: 'Diamond' }
+  ];
+
+  const COLORS = [
+    '#000000', '#434343', '#666666', '#999999', '#b7b7b7', '#cccccc', '#d9d9d9', '#efefef', '#f3f3f3', '#ffffff',
+    '#980000', '#ff0000', '#ff9900', '#ffff00', '#00ff00', '#00ffff', '#4a86e8', '#0000ff', '#9900ff', '#ff00ff',
+    '#e6b8af', '#f4cccc', '#fce5cd', '#fff2cc', '#d9ead3', '#d0e0e3', '#c9daf8', '#cfe2f3', '#d9d2e9', '#ead1dc',
+    '#dd7e6b', '#ea9999', '#f9cb9c', '#ffe599', '#b6d7a8', '#a2c4c9', '#a4c2f4', '#9fc5e8', '#b4a7d6', '#d5a6bd',
+    '#cc4125', '#e06666', '#f6b26b', '#ffd966', '#93c47d', '#76a5af', '#6d9eeb', '#6fa8dc', '#8e7cc3', '#c27ba0',
+    '#a61c00', '#cc0000', '#e69138', '#f1c232', '#6aa84f', '#45818e', '#3c78d8', '#3d85c6', '#674ea7', '#a64d79',
+    '#85200c', '#990000', '#b45f06', '#bf9000', '#38761d', '#134f5c', '#1155cc', '#0b5394', '#351c75', '#741b47',
+    '#5b0f00', '#660000', '#783f04', '#7f6000', '#274e13', '#0c343d', '#1c4587', '#073763', '#20124d', '#4c1130'
+  ];
+
+  // ============================================
+  // SECTION 2: UTILITY FUNCTIONS
+  // ============================================
+
+  const Utils = {
+    generateId() {
+      return 'neiki-' + Math.random().toString(36).substr(2, 9);
+    },
+
+    createElement(tag, attrs = {}, children = []) {
+      const el = document.createElement(tag);
+      Object.entries(attrs).forEach(([key, value]) => {
+        if (key === 'className') {
+          el.className = value;
+        } else if (key === 'innerHTML') {
+          el.innerHTML = value;
+        } else if (key === 'textContent') {
+          el.textContent = value;
+        } else if (key.startsWith('on') && typeof value === 'function') {
+          el.addEventListener(key.slice(2).toLowerCase(), value);
+        } else if (key === 'style' && typeof value === 'object') {
+          Object.assign(el.style, value);
+        } else {
+          el.setAttribute(key, value);
+        }
+      });
+      children.forEach(child => {
+        if (typeof child === 'string') {
+          el.appendChild(document.createTextNode(child));
+        } else if (child instanceof Node) {
+          el.appendChild(child);
+        }
+      });
+      return el;
+    },
+
+    debounce(fn, delay) {
+      let timeout;
+      return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => fn.apply(this, args), delay);
+      };
+    },
+
+    deepMerge(target, source) {
+      const result = { ...target };
+      Object.keys(source).forEach(key => {
+        if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+          result[key] = Utils.deepMerge(result[key] || {}, source[key]);
+        } else {
+          result[key] = source[key];
+        }
+      });
+      return result;
+    },
+
+    sanitizeHTML(html) {
+      const temp = document.createElement('div');
+      temp.innerHTML = html;
+      const scripts = temp.querySelectorAll('script');
+      scripts.forEach(s => s.remove());
+      return temp.innerHTML;
+    },
+
+    isValidUrl(string) {
+      try {
+        new URL(string);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    },
+
+    getSelection() {
+      return window.getSelection();
+    },
+
+    saveSelection() {
+      const sel = window.getSelection();
+      if (sel.rangeCount > 0) {
+        return sel.getRangeAt(0).cloneRange();
+      }
+      return null;
+    },
+
+    restoreSelection(range) {
+      if (range) {
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    }
+  };
+
+  // ============================================
+  // SECTION 3: ICONS (SVG)
+  // ============================================
+
+  const Icons = {
+    undo: '<svg viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>',
+    redo: '<svg viewBox="0 0 24 24"><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/></svg>',
+    bold: '<svg viewBox="0 0 24 24"><path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></svg>',
+    italic: '<svg viewBox="0 0 24 24"><path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z"/></svg>',
+    underline: '<svg viewBox="0 0 24 24"><path d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"/></svg>',
+    strikethrough: '<svg viewBox="0 0 24 24"><path d="M10 19h4v-3h-4v3zM5 4v3h5v3h4V7h5V4H5zM3 14h18v-2H3v2z"/></svg>',
+    heading: '<svg viewBox="0 0 24 24"><path d="M5 4v3h5.5v12h3V7H19V4z"/></svg>',
+    'font-size': '<svg viewBox="0 0 24 24"><path d="M9 4v3h5v12h3V7h5V4H9zm-6 8h3v7h3v-7h3v-3H3v3z"/></svg>',
+    font: '<svg viewBox="0 0 24 24"><path d="M9.93 13.5h4.14L12 7.98 9.93 13.5zM20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-4.05 16.5l-1.14-3H9.17l-1.12 3H5.96l5.11-13h1.86l5.11 13h-2.09z"/></svg>',
+    'text-color': '<svg viewBox="0 0 24 24"><path d="M11 3L5.5 17h2.25l1.12-3h6.25l1.12 3h2.25L13 3h-2zm-1.38 9L12 5.67 14.38 12H9.62z"/><rect x="3" y="19" width="18" height="3" fill="currentColor"/></svg>',
+    highlight: '<svg viewBox="0 0 24 24"><path d="M16.56 8.94L7.62 0 6.21 1.41l2.38 2.38-5.15 5.15c-.59.59-.59 1.54 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10L10 5.21 14.79 10H5.21zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5z"/><rect x="0" y="20" width="24" height="4"/></svg>',
+    'align-left': '<svg viewBox="0 0 24 24"><path d="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"/></svg>',
+    'align-center': '<svg viewBox="0 0 24 24"><path d="M7 15v2h10v-2H7zm-4 6h18v-2H3v2zm0-8h18v-2H3v2zm4-6v2h10V7H7zM3 3v2h18V3H3z"/></svg>',
+    'align-right': '<svg viewBox="0 0 24 24"><path d="M3 21h18v-2H3v2zm6-4h12v-2H9v2zm-6-4h18v-2H3v2zm6-4h12V7H9v2zM3 3v2h18V3H3z"/></svg>',
+    'align-justify': '<svg viewBox="0 0 24 24"><path d="M3 21h18v-2H3v2zm0-4h18v-2H3v2zm0-4h18v-2H3v2zm0-4h18V7H3v2zm0-6v2h18V3H3z"/></svg>',
+    'list-ul': '<svg viewBox="0 0 24 24"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/></svg>',
+    'list-ol': '<svg viewBox="0 0 24 24"><path d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"/></svg>',
+    indent: '<svg viewBox="0 0 24 24"><path d="M3 21h18v-2H3v2zM3 8v8l4-4-4-4zm8 9h10v-2H11v2zM3 3v2h18V3H3zm8 6h10V7H11v2zm0 4h10v-2H11v2z"/></svg>',
+    outdent: '<svg viewBox="0 0 24 24"><path d="M11 17h10v-2H11v2zm-8-5l4 4V8l-4 4zm0 9h18v-2H3v2zM3 3v2h18V3H3zm8 6h10V7H11v2zm0 4h10v-2H11v2z"/></svg>',
+    link: '<svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>',
+    image: '<svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>',
+    table: '<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"/></svg>',
+    quote: '<svg viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>',
+    code: '<svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>',
+    minus: '<svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>',
+    eraser: '<svg viewBox="0 0 24 24"><path d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 01-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.6-10.6c.79-.78 2.05-.78 2.83 0zm-1.41 1.42L6.93 12.9l4.24 4.24 7.9-7.9-4.24-4.26z"/></svg>',
+    fullscreen: '<svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>',
+    close: '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>',
+    check: '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>',
+    save: '<svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>',
+    print: '<svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>',
+    subscript: '<svg viewBox="0 0 24 24"><path d="M22 18h-2v1h3v1h-4v-2.5c0-.83.67-1.5 1.5-1.5h1.5v-1h-3v-1h2.5c.83 0 1.5.67 1.5 1.5v1c0 .83-.67 1.5-1.5 1.5zM5.88 18h2.66l3.4-5.42h.12l3.4 5.42h2.66l-4.65-7.27L17.81 4h-2.68l-3.07 4.99h-.12L8.87 4H6.19l4.32 6.73L5.88 18z"/></svg>',
+    superscript: '<svg viewBox="0 0 24 24"><path d="M22 7h-2v1h3v1h-4V6.5c0-.83.67-1.5 1.5-1.5h1.5V4h-3V3h2.5c.83 0 1.5.67 1.5 1.5v1c0 .83-.67 1.5-1.5 1.5zM5.88 20h2.66l3.4-5.42h.12l3.4 5.42h2.66l-4.65-7.27L17.81 6h-2.68l-3.07 4.99h-.12L8.87 6H6.19l4.32 6.73L5.88 20z"/></svg>',
+    search: '<svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>',
+    emoji: '<svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>',
+    specialChars: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><text x="12" y="16" text-anchor="middle" font-size="12" font-weight="bold" fill="currentColor">©</text></svg>',
+    sun: '<svg viewBox="0 0 24 24"><path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"/></svg>',
+    moon: '<svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>',
+    plus: '<svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>',
+    more: '<svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>',
+    download: '<svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>',
+    eye: '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>',
+    trash: '<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>',
+    'chevron-down': '<svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>',
+    help: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>',
+    grip: '<svg viewBox="0 0 24 24"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg>',
+    moveUp: '<svg viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>',
+    moveDown: '<svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>'
+  };
+
+  // ============================================
+  // SECTION 4: STORAGE MANAGER (Persistence)
+  // ============================================
+
+  class StorageManager {
+    constructor(editorId) {
+      this.prefix = 'neiki_' + editorId + '_';
+    }
+
+    set(key, value) {
+      try {
+        localStorage.setItem(this.prefix + key, JSON.stringify(value));
+      } catch (e) {
+        console.warn('NeikiEditor: localStorage not available');
+      }
+    }
+
+    get(key, defaultValue = null) {
+      try {
+        const item = localStorage.getItem(this.prefix + key);
+        return item ? JSON.parse(item) : defaultValue;
+      } catch (e) {
+        return defaultValue;
+      }
+    }
+
+    remove(key) {
+      try {
+        localStorage.removeItem(this.prefix + key);
+      } catch (e) { }
+    }
+
+    // Global storage (shared across all editors)
+    static setGlobal(key, value) {
+      try {
+        localStorage.setItem('neiki_global_' + key, JSON.stringify(value));
+      } catch (e) { }
+    }
+
+    static getGlobal(key, defaultValue = null) {
+      try {
+        const item = localStorage.getItem('neiki_global_' + key);
+        return item ? JSON.parse(item) : defaultValue;
+      } catch (e) {
+        return defaultValue;
+      }
+    }
+  }
+
+  // ============================================
+  // SECTION 5: HISTORY MANAGER (Undo/Redo with Persistence)
+  // ============================================
+
+  class HistoryManager {
+    constructor(editor, maxSize = 100) {
+      this.editor = editor;
+      this.maxSize = maxSize;
+      this.undoStack = [];
+      this.redoStack = [];
+      this.isRecording = true;
+      // Load persisted history if available
+      this.loadFromStorage();
+    }
+
+    record() {
+      if (!this.isRecording) return;
+
+      const content = this.editor.getContent();
+      const lastState = this.undoStack[this.undoStack.length - 1];
+
+      if (lastState !== content) {
+        this.undoStack.push(content);
+        this.redoStack = [];
+
+        if (this.undoStack.length > this.maxSize) {
+          this.undoStack.shift();
+        }
+        this.saveToStorage();
+      }
+    }
+
+    undo() {
+      if (this.undoStack.length <= 1) return false;
+
+      const current = this.undoStack.pop();
+      this.redoStack.push(current);
+
+      const previous = this.undoStack[this.undoStack.length - 1];
+      this.isRecording = false;
+      this.editor.setContent(previous);
+      this.isRecording = true;
+      this.saveToStorage();
+
+      return true;
+    }
+
+    redo() {
+      if (this.redoStack.length === 0) return false;
+
+      const next = this.redoStack.pop();
+      this.undoStack.push(next);
+
+      this.isRecording = false;
+      this.editor.setContent(next);
+      this.isRecording = true;
+      this.saveToStorage();
+
+      return true;
+    }
+
+    canUndo() {
+      return this.undoStack.length > 1;
+    }
+
+    canRedo() {
+      return this.redoStack.length > 0;
+    }
+
+    clear() {
+      this.undoStack = [];
+      this.redoStack = [];
+      this.record();
+    }
+
+    saveToStorage() {
+      // Undo/Redo history is NOT persisted across page reloads
+      // This is intentional - after saving content and returning to edit,
+      // the "initial state" should be the saved version, not old history
+    }
+
+    loadFromStorage() {
+      // No-op - history is session-only
+    }
+
+    clearStorage() {
+      // No-op - history is session-only
+    }
+  }
+
+  // ============================================
+  // SECTION 6: MODAL MANAGER
+  // ============================================
+
+  class ModalManager {
+    constructor(editor) {
+      this.editor = editor;
+      this.activeModal = null;
+      this.overlay = null;
+    }
+
+    createOverlay() {
+      if (this.overlay) return this.overlay;
+
+      this.overlay = Utils.createElement('div', {
+        className: 'neiki-modal-overlay',
+        onClick: (e) => {
+          if (e.target === this.overlay) {
+            this.close();
+          }
+        }
+      });
+
+      document.body.appendChild(this.overlay);
+      return this.overlay;
+    }
+
+    open(type, data = {}) {
+      this.close();
+      this.createOverlay();
+
+      let modal;
+      switch (type) {
+        case 'link':
+          modal = this.createLinkModal(data);
+          break;
+        case 'image':
+          modal = this.createImageModal(data);
+          break;
+        case 'table':
+          modal = this.createTableModal(data);
+          break;
+        case 'findReplace':
+          modal = this.createFindReplaceModal(data);
+          break;
+        case 'help':
+          modal = this.createHelpModal(data);
+          break;
+        default:
+          return;
+      }
+
+      this.activeModal = modal;
+      this.overlay.appendChild(modal);
+      this.overlay.classList.add('active');
+
+      const firstInput = modal.querySelector('input');
+      if (firstInput) firstInput.focus();
+    }
+
+    close() {
+      if (this.overlay) {
+        this.overlay.classList.remove('active');
+        if (this.activeModal) {
+          this.activeModal.remove();
+          this.activeModal = null;
+        }
+      }
+    }
+
+    createLinkModal(data) {
+      const modal = Utils.createElement('div', { className: 'neiki-modal' });
+
+      modal.innerHTML = `
+                <div class="neiki-modal-header">
+                    <h3>${t('modal.insertLink')}</h3>
+                    <button class="neiki-modal-close" type="button">${Icons.close}</button>
+                </div>
+                <div class="neiki-modal-body">
+                    <div class="neiki-form-group">
+                        <label>${t('modal.url')}</label>
+                        <input type="url" class="neiki-input" name="url" placeholder="https://example.com" value="${data.url || ''}">
+                    </div>
+                    <div class="neiki-form-group">
+                        <label>${t('modal.text')}</label>
+                        <input type="text" class="neiki-input" name="text" placeholder="${t('modal.linkText')}" value="${data.text || ''}">
+                    </div>
+                    <div class="neiki-form-group">
+                        <label>
+                            <input type="checkbox" name="newTab" ${data.newTab ? 'checked' : ''}> ${t('modal.openInNewTab')}
+                        </label>
+                    </div>
+                </div>
+                <div class="neiki-modal-footer">
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">${t('modal.cancel')}</button>
+                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">${t('modal.insert')}</button>
+                </div>
+            `;
+
+      modal.querySelector('.neiki-modal-close').addEventListener('click', () => this.close());
+      modal.querySelector('[data-action="cancel"]').addEventListener('click', () => this.close());
+      modal.querySelector('[data-action="insert"]').addEventListener('click', () => {
+        const url = modal.querySelector('[name="url"]').value;
+        const text = modal.querySelector('[name="text"]').value || url;
+        const newTab = modal.querySelector('[name="newTab"]').checked;
+
+        if (url) {
+          this.editor.commands.insertLink(url, text, newTab);
+        }
+        this.close();
+      });
+
+      return modal;
+    }
+
+    createImageModal(data) {
+      const modal = Utils.createElement('div', { className: 'neiki-modal' });
+
+      modal.innerHTML = `
+                <div class="neiki-modal-header">
+                    <h3>${t('modal.insertImage')}</h3>
+                    <button class="neiki-modal-close" type="button">${Icons.close}</button>
+                </div>
+                <div class="neiki-modal-body">
+                    <div class="neiki-form-group">
+                        <label>${t('modal.uploadImage')}</label>
+                        <input type="file" class="neiki-input" name="upload" accept="image/*">
+                        <small style="color: var(--neiki-text-muted); font-size: 11px;">${t('modal.convertedToBase64')}</small>
+                    </div>
+                    <div class="neiki-form-divider">
+                        <span>${t('modal.or')}</span>
+                    </div>
+                    <div class="neiki-form-group">
+                        <label>${t('modal.imageUrl')}</label>
+                        <input type="url" class="neiki-input" name="url" placeholder="https://example.com/image.jpg" value="${data.url || ''}">
+                    </div>
+                    <div class="neiki-form-group">
+                        <label>${t('modal.altText')}</label>
+                        <input type="text" class="neiki-input" name="alt" placeholder="${t('modal.describeImage')}" value="${data.alt || ''}">
+                    </div>
+                    <div class="neiki-form-group">
+                        <label>${t('modal.widthOptional')}</label>
+                        <input type="text" class="neiki-input" name="width" placeholder="e.g. 300px or 50%" value="${data.width || ''}">
+                    </div>
+                </div>
+                <div class="neiki-modal-footer">
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">${t('modal.cancel')}</button>
+                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">${t('modal.insert')}</button>
+                </div>
+            `;
+
+      const uploadInput = modal.querySelector('[name="upload"]');
+      const urlInput = modal.querySelector('[name="url"]');
+
+      // Handle file upload
+      uploadInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            urlInput.value = e.target.result;
+            urlInput.disabled = true;
+          };
+          reader.readAsDataURL(file);
+        } else if (file) {
+          alert(t('modal.invalidImageFile'));
+          uploadInput.value = '';
+        }
+      });
+
+      // Clear URL when upload is cleared
+      urlInput.addEventListener('input', () => {
+        if (!urlInput.value) {
+          urlInput.disabled = false;
+          uploadInput.value = '';
+        }
+      });
+
+      modal.querySelector('.neiki-modal-close').addEventListener('click', () => this.close());
+      modal.querySelector('[data-action="cancel"]').addEventListener('click', () => this.close());
+      modal.querySelector('[data-action="insert"]').addEventListener('click', () => {
+        const url = modal.querySelector('[name="url"]').value;
+        const alt = modal.querySelector('[name="alt"]').value;
+        const width = modal.querySelector('[name="width"]').value;
+
+        if (url) {
+          this.editor.commands.insertImage(url, alt, width);
+        }
+        this.close();
+      });
+
+      return modal;
+    }
+
+    createTableModal(data) {
+      const modal = Utils.createElement('div', { className: 'neiki-modal' });
+
+      modal.innerHTML = `
+                <div class="neiki-modal-header">
+                    <h3>${t('modal.insertTable')}</h3>
+                    <button class="neiki-modal-close" type="button">${Icons.close}</button>
+                </div>
+                <div class="neiki-modal-body">
+                    <div class="neiki-form-row">
+                        <div class="neiki-form-group">
+                            <label>${t('modal.rows')}</label>
+                            <input type="number" class="neiki-input" name="rows" min="1" max="20" value="${data.rows || 3}">
+                        </div>
+                        <div class="neiki-form-group">
+                            <label>${t('modal.columns')}</label>
+                            <input type="number" class="neiki-input" name="cols" min="1" max="10" value="${data.cols || 3}">
+                        </div>
+                    </div>
+                    <div class="neiki-form-group">
+                        <label>
+                            <input type="checkbox" name="header" ${data.header !== false ? 'checked' : ''}> ${t('modal.includeHeaderRow')}
+                        </label>
+                    </div>
+                </div>
+                <div class="neiki-modal-footer">
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">${t('modal.cancel')}</button>
+                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">${t('modal.insert')}</button>
+                </div>
+            `;
+
+      modal.querySelector('.neiki-modal-close').addEventListener('click', () => this.close());
+      modal.querySelector('[data-action="cancel"]').addEventListener('click', () => this.close());
+      modal.querySelector('[data-action="insert"]').addEventListener('click', () => {
+        const rows = parseInt(modal.querySelector('[name="rows"]').value) || 3;
+        const cols = parseInt(modal.querySelector('[name="cols"]').value) || 3;
+        const header = modal.querySelector('[name="header"]').checked;
+
+        this.editor.commands.insertTable(rows, cols, header);
+        this.close();
+      });
+
+      return modal;
+    }
+
+    createFindReplaceModal(data) {
+      const modal = Utils.createElement('div', { className: 'neiki-modal neiki-modal-wide' });
+
+      modal.innerHTML = `
+                <div class="neiki-modal-header">
+                    <h3>${t('modal.findReplace')}</h3>
+                    <button class="neiki-modal-close" type="button">${Icons.close}</button>
+                </div>
+                <div class="neiki-modal-body">
+                    <div class="neiki-form-group">
+                        <label>${t('modal.find')}</label>
+                        <input type="text" class="neiki-input" name="find" placeholder="${t('modal.searchText')}">
+                    </div>
+                    <div class="neiki-form-group">
+                        <label>${t('modal.replaceWith')}</label>
+                        <input type="text" class="neiki-input" name="replace" placeholder="${t('modal.replacementText')}">
+                    </div>
+                    <div class="neiki-form-group neiki-form-row">
+                        <label><input type="checkbox" name="regex"> ${t('modal.useRegex')}</label>
+                        <label><input type="checkbox" name="caseSensitive"> ${t('modal.caseSensitive')}</label>
+                    </div>
+                    <div class="neiki-find-results" style="margin-top:10px;font-size:13px;color:var(--neiki-text-muted);"></div>
+                </div>
+                <div class="neiki-modal-footer">
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="findNext">${t('modal.findNext')}</button>
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="replaceOne">${t('modal.replace')}</button>
+                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="replaceAll">${t('modal.replaceAll')}</button>
+                </div>
+            `;
+
+      const findInput = modal.querySelector('[name="find"]');
+      const replaceInput = modal.querySelector('[name="replace"]');
+      const regexCheck = modal.querySelector('[name="regex"]');
+      const caseCheck = modal.querySelector('[name="caseSensitive"]');
+      const resultsDiv = modal.querySelector('.neiki-find-results');
+
+      let currentMatches = [];
+      let currentIndex = -1;
+
+      const clearHighlights = () => {
+        const highlights = this.editor.contentArea.querySelectorAll('.neiki-highlight-find');
+        highlights.forEach(h => {
+          const text = document.createTextNode(h.textContent);
+          h.parentNode.replaceChild(text, h);
+        });
+        this.editor.contentArea.normalize();
+      };
+
+      const findMatches = () => {
+        clearHighlights();
+        currentMatches = [];
+        currentIndex = -1;
+
+        const searchText = findInput.value;
+        if (!searchText) {
+          resultsDiv.textContent = '';
+          return;
+        }
+
+        const content = this.editor.contentArea.innerHTML;
+        let flags = 'g';
+        if (!caseCheck.checked) flags += 'i';
+
+        let regex;
+        try {
+          regex = regexCheck.checked
+            ? new RegExp(searchText, flags)
+            : new RegExp(searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), flags);
+        } catch (e) {
+          resultsDiv.textContent = t('modal.invalidRegex');
+          return;
+        }
+
+        // Find and highlight in text nodes
+        const walker = document.createTreeWalker(
+          this.editor.contentArea,
+          NodeFilter.SHOW_TEXT,
+          null,
+          false
+        );
+
+        const textNodes = [];
+        while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+        textNodes.forEach(node => {
+          const text = node.textContent;
+          const matches = [...text.matchAll(regex)];
+          if (matches.length > 0) {
+            const frag = document.createDocumentFragment();
+            let lastIndex = 0;
+            matches.forEach(match => {
+              if (match.index > lastIndex) {
+                frag.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+              }
+              const span = document.createElement('span');
+              span.className = 'neiki-highlight-find';
+              span.textContent = match[0];
+              frag.appendChild(span);
+              currentMatches.push(span);
+              lastIndex = match.index + match[0].length;
+            });
+            if (lastIndex < text.length) {
+              frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+            }
+            node.parentNode.replaceChild(frag, node);
+          }
+        });
+
+        resultsDiv.textContent = t('modal.matchesFound', { count: currentMatches.length });
+      };
+
+      const findNext = () => {
+        if (currentMatches.length === 0) {
+          findMatches();
+        }
+        if (currentMatches.length === 0) return;
+
+        // Remove current highlight
+        if (currentIndex >= 0 && currentMatches[currentIndex]) {
+          currentMatches[currentIndex].classList.remove('neiki-highlight-current');
+        }
+
+        currentIndex = (currentIndex + 1) % currentMatches.length;
+        const current = currentMatches[currentIndex];
+        current.classList.add('neiki-highlight-current');
+        current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        resultsDiv.textContent = t('modal.matchOf', { current: currentIndex + 1, total: currentMatches.length });
+      };
+
+      const replaceOne = () => {
+        if (currentIndex >= 0 && currentMatches[currentIndex]) {
+          const match = currentMatches[currentIndex];
+          match.textContent = replaceInput.value;
+          match.classList.remove('neiki-highlight-find', 'neiki-highlight-current');
+          currentMatches.splice(currentIndex, 1);
+          currentIndex--;
+          this.editor.history.record();
+          this.editor.triggerChange();
+          resultsDiv.textContent = t('modal.matchesRemaining', { count: currentMatches.length });
+          if (currentMatches.length > 0) findNext();
+        }
+      };
+
+      const replaceAll = () => {
+        clearHighlights();
+        const searchText = findInput.value;
+        const replaceText = replaceInput.value;
+        if (!searchText) return;
+
+        let flags = 'g';
+        if (!caseCheck.checked) flags += 'i';
+
+        let regex;
+        try {
+          regex = regexCheck.checked
+            ? new RegExp(searchText, flags)
+            : new RegExp(searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), flags);
+        } catch (e) {
+          return;
+        }
+
+        // Replace in text nodes
+        const walker = document.createTreeWalker(
+          this.editor.contentArea,
+          NodeFilter.SHOW_TEXT,
+          null,
+          false
+        );
+
+        const textNodes = [];
+        while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+        let count = 0;
+        textNodes.forEach(node => {
+          const text = node.textContent;
+          const newText = text.replace(regex, () => {
+            count++;
+            return replaceText;
+          });
+          if (newText !== text) {
+            node.textContent = newText;
+          }
+        });
+
+        this.editor.history.record();
+        this.editor.triggerChange();
+        currentMatches = [];
+        currentIndex = -1;
+        resultsDiv.textContent = t('modal.replacedOccurrences', { count: count });
+      };
+
+      findInput.addEventListener('input', Utils.debounce(findMatches, 300));
+      modal.querySelector('.neiki-modal-close').addEventListener('click', () => {
+        clearHighlights();
+        this.close();
+      });
+      modal.querySelector('[data-action="findNext"]').addEventListener('click', findNext);
+      modal.querySelector('[data-action="replaceOne"]').addEventListener('click', replaceOne);
+      modal.querySelector('[data-action="replaceAll"]').addEventListener('click', replaceAll);
+
+      return modal;
+    }
+
+    createHelpModal() {
+      const modal = Utils.createElement('div', { className: 'neiki-modal' });
+
+      modal.innerHTML = `
+        <div class="neiki-modal-header">
+          <h3>${t('menu.help')}</h3>
+          <button class="neiki-modal-close" type="button">${Icons.close}</button>
+        </div>
+        <div class="neiki-modal-body" style="text-align: center; padding: 24px 20px;">
+          <img src="https://github.com/neikiri/neiki-editor/raw/main/logo.png" alt="Neiki Editor" style="width: 120px; height: auto; margin: 0 auto 16px; display: block;">
+          <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
+            <div><strong>${t('help.author')}:</strong> neikiri (Jindřich Stoklasa)</div>
+            <div><strong>${t('help.version')}:</strong> 2.8.0</div>
+            <div><strong>${t('help.github')}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
+            <div><strong>${t('help.documentation')}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" style="color: var(--neiki-accent);">Wiki</a></div>
+          </div>
+        </div>
+      `;
+
+      modal.querySelector('.neiki-modal-close').addEventListener('click', () => this.close());
+
+      return modal;
+    }
+  }
+
+  // ============================================
+  // SECTION 6: DROPDOWN MANAGER
+  // ============================================
+
+  class DropdownManager {
+    constructor(editor) {
+      this.editor = editor;
+      this.activeDropdown = null;
+
+      document.addEventListener('click', (e) => {
+        if (this.activeDropdown && !this.activeDropdown.contains(e.target)) {
+          this.close();
+        }
+      });
+    }
+
+    toggle(button, type) {
+      const existing = button.querySelector('.neiki-dropdown');
+
+      if (existing) {
+        this.close();
+        return;
+      }
+
+      this.close();
+
+      let dropdown;
+      switch (type) {
+        case 'heading':
+          dropdown = this.createHeadingDropdown();
+          break;
+        case 'fontSize':
+          dropdown = this.createFontSizeDropdown();
+          break;
+        case 'fontFamily':
+          dropdown = this.createFontFamilyDropdown();
+          break;
+        default:
+          return;
+      }
+
+      button.appendChild(dropdown);
+      this.activeDropdown = dropdown;
+    }
+
+    close() {
+      if (this.activeDropdown) {
+        this.activeDropdown.remove();
+        this.activeDropdown = null;
+      }
+    }
+
+    createHeadingDropdown() {
+      const dropdown = Utils.createElement('div', { className: 'neiki-dropdown' });
+
+      HEADINGS.forEach(({ label, value }) => {
+        const item = Utils.createElement('div', {
+          className: 'neiki-dropdown-item',
+          innerHTML: `<${value}>${label}</${value}>`,
+          onClick: () => {
+            this.editor.commands.formatBlock(value);
+            this.close();
+          }
+        });
+        dropdown.appendChild(item);
+      });
+
+      return dropdown;
+    }
+
+    createFontSizeDropdown() {
+      const dropdown = Utils.createElement('div', { className: 'neiki-dropdown' });
+
+      FONT_SIZES.forEach(size => {
+        const item = Utils.createElement('div', {
+          className: 'neiki-dropdown-item',
+          textContent: size + 'px',
+          onClick: () => {
+            this.editor.commands.fontSize(size + 'px');
+            this.close();
+          }
+        });
+        dropdown.appendChild(item);
+      });
+
+      return dropdown;
+    }
+
+    createFontFamilyDropdown() {
+      const dropdown = Utils.createElement('div', { className: 'neiki-dropdown' });
+
+      FONT_FAMILIES.forEach(({ label, value }) => {
+        const item = Utils.createElement('div', {
+          className: 'neiki-dropdown-item',
+          textContent: label,
+          style: { fontFamily: value },
+          onClick: () => {
+            this.editor.commands.fontFamily(value);
+            this.close();
+          }
+        });
+        dropdown.appendChild(item);
+      });
+
+      return dropdown;
+    }
+
+  }
+
+  // ============================================
+  // SECTION 7: COLOR PICKER
+  // ============================================
+
+  class ColorPicker {
+    constructor(editor) {
+      this.editor = editor;
+      this.activePicker = null;
+      this.activeButton = null;
+
+      document.addEventListener('mousedown', (e) => {
+        if (this.activePicker &&
+          !this.activePicker.contains(e.target) &&
+          (!this.activeButton || !this.activeButton.contains(e.target))) {
+          this.close();
+        }
+      });
+    }
+
+    toggle(button, command) {
+      if (this.activeButton === button && this.activePicker) {
+        this.close();
+        return;
+      }
+
+      this.close();
+
+      const picker = Utils.createElement('div', { className: 'neiki-color-picker' });
+
+      // Color grid
+      const grid = Utils.createElement('div', { className: 'neiki-color-grid' });
+
+      const resetSwatch = Utils.createElement('div', {
+        className: 'neiki-color-swatch neiki-color-reset',
+        title: t('color.reset')
+      });
+      resetSwatch.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (command === 'foreColor') {
+          this.editor.commands.resetForeColor();
+        } else {
+          this.editor.commands.resetBackColor();
+        }
+        this.close();
+      });
+      grid.appendChild(resetSwatch);
+
+      COLORS.forEach(color => {
+        const swatch = Utils.createElement('div', {
+          className: 'neiki-color-swatch',
+          style: { backgroundColor: color },
+          title: color
+        });
+        swatch.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (command === 'foreColor') {
+            this.editor.commands.foreColor(color);
+          } else {
+            this.editor.commands.backColor(color);
+          }
+          this.close();
+        });
+        grid.appendChild(swatch);
+      });
+
+      picker.appendChild(grid);
+
+      // Custom color section
+      const customRow = Utils.createElement('div', { className: 'neiki-color-custom' });
+
+      const colorInput = Utils.createElement('input', {
+        className: 'neiki-color-custom-input',
+        type: 'color',
+        value: '#000000',
+        title: t('color.pick')
+      });
+
+      const hexInput = Utils.createElement('input', {
+        className: 'neiki-color-hex-input',
+        type: 'text',
+        value: '#000000',
+        placeholder: '#hex',
+        maxLength: 7
+      });
+
+      const applyBtn = Utils.createElement('button', {
+        className: 'neiki-color-apply-btn',
+        type: 'button'
+      });
+      applyBtn.textContent = t('color.apply');
+
+      // Sync color input → hex input
+      colorInput.addEventListener('input', (e) => {
+        hexInput.value = e.target.value;
+      });
+
+      // Sync hex input → color input
+      hexInput.addEventListener('input', (e) => {
+        const val = e.target.value;
+        if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+          colorInput.value = val;
+        }
+      });
+
+      const applyColor = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        let color = hexInput.value.trim();
+        if (!/^#/.test(color)) color = '#' + color;
+        if (/^#[0-9A-Fa-f]{6}$/.test(color)) {
+          if (command === 'foreColor') {
+            this.editor.commands.foreColor(color);
+          } else {
+            this.editor.commands.backColor(color);
+          }
+          this.close();
+        }
+      };
+
+      applyBtn.addEventListener('mousedown', applyColor);
+      hexInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') applyColor(e);
+      });
+
+      customRow.appendChild(colorInput);
+      customRow.appendChild(hexInput);
+      customRow.appendChild(applyBtn);
+      picker.appendChild(customRow);
+
+      // Prevent clicks inside picker from propagating to toolbar button
+      picker.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+      });
+      picker.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+
+      button.appendChild(picker);
+
+      // Smart positioning: flip to right-aligned if overflowing viewport
+      requestAnimationFrame(() => {
+        const rect = picker.getBoundingClientRect();
+        if (rect.right > window.innerWidth) {
+          picker.style.left = 'auto';
+          picker.style.right = '0';
+        }
+        if (rect.left < 0) {
+          picker.style.left = '0';
+          picker.style.right = 'auto';
+        }
+      });
+
+      this.activePicker = picker;
+      this.activeButton = button;
+    }
+
+    close() {
+      if (this.activePicker) {
+        this.activePicker.remove();
+        this.activePicker = null;
+        this.activeButton = null;
+      }
+    }
+  }
+
+  // ============================================
+  // SECTION 7b: EMOJI PICKER
+  // ============================================
+
+  class EmojiPicker {
+    constructor(editor) {
+      this.editor = editor;
+      this.picker = null;
+      this.activeButton = null;
+
+      document.addEventListener('mousedown', (e) => {
+        if (this.picker &&
+          !this.picker.contains(e.target) &&
+          (!this.activeButton || !this.activeButton.contains(e.target))) {
+          this.close();
+        }
+      });
+    }
+
+    toggle(button) {
+      if (this.activeButton === button && this.picker) {
+        this.close();
+        return;
+      }
+
+      this.close();
+
+      this.picker = Utils.createElement('div', { className: 'neiki-emoji-picker' });
+
+      EMOJIS.forEach(emoji => {
+        const item = document.createElement('span');
+        item.className = 'neiki-emoji-item';
+        item.textContent = emoji;
+        item.title = emoji;
+        item.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.editor.focus();
+          document.execCommand('insertText', false, emoji);
+          this.editor.history.record();
+          this.editor.triggerChange();
+          this.close();
+        });
+        this.picker.appendChild(item);
+      });
+
+      button.appendChild(this.picker);
+      this.activeButton = button;
+    }
+
+    close() {
+      if (this.picker) {
+        this.picker.remove();
+        this.picker = null;
+        this.activeButton = null;
+      }
+    }
+  }
+
+  // ============================================
+  // SECTION 7c: SPECIAL CHARS PICKER
+  // ============================================
+
+  class SpecialCharsPicker {
+    constructor(editor) {
+      this.editor = editor;
+      this.picker = null;
+      this.activeButton = null;
+
+      document.addEventListener('mousedown', (e) => {
+        if (this.picker &&
+          !this.picker.contains(e.target) &&
+          (!this.activeButton || !this.activeButton.contains(e.target))) {
+          this.close();
+        }
+      });
+    }
+
+    toggle(button) {
+      if (this.activeButton === button && this.picker) {
+        this.close();
+        return;
+      }
+
+      this.close();
+
+      this.picker = Utils.createElement('div', { className: 'neiki-special-picker' });
+
+      SPECIAL_CHARS.forEach(({ char, name }) => {
+        const item = document.createElement('span');
+        item.className = 'neiki-special-item';
+        item.textContent = char;
+        item.title = name;
+        item.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.editor.focus();
+          document.execCommand('insertText', false, char);
+          this.editor.history.record();
+          this.editor.triggerChange();
+          this.close();
+        });
+        this.picker.appendChild(item);
+      });
+
+      button.appendChild(this.picker);
+      this.activeButton = button;
+    }
+
+    close() {
+      if (this.picker) {
+        this.picker.remove();
+        this.picker = null;
+        this.activeButton = null;
+      }
+    }
+  }
+
+  // ============================================
+  // SECTION 8: COMMANDS
+  // ============================================
+
+  class Commands {
+    constructor(editor) {
+      this.editor = editor;
+    }
+
+    exec(command, value = null) {
+      this.editor.focus();
+      const inlineCommands = ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'foreColor', 'backColor', 'fontName', 'fontSize', 'removeFormat'];
+      if (inlineCommands.includes(command)) {
+        this._expandToWordIfCollapsed();
+      }
+      document.execCommand(command, false, value);
+      this.editor.history.record();
+      this.editor.updateToolbar();
+      this.editor.triggerChange();
+    }
+
+    _expandToWordIfCollapsed() {
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount || !sel.isCollapsed) return;
+      const range = sel.getRangeAt(0);
+      const node = range.startContainer;
+      if (node.nodeType !== Node.TEXT_NODE) return;
+      const text = node.textContent;
+      let start = range.startOffset;
+      let end = range.startOffset;
+      // Expand backward
+      while (start > 0 && /\S/.test(text[start - 1])) start--;
+      // Expand forward
+      while (end < text.length && /\S/.test(text[end])) end++;
+      if (start === end) return;
+      range.setStart(node, start);
+      range.setEnd(node, end);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+
+    bold() { this.exec('bold'); }
+    italic() { this.exec('italic'); }
+    underline() { this.exec('underline'); }
+    strikeThrough() { this.exec('strikeThrough'); }
+    subscript() { this.exec('subscript'); }
+    superscript() { this.exec('superscript'); }
+
+    justifyLeft() { this.exec('justifyLeft'); }
+    justifyCenter() { this.exec('justifyCenter'); }
+    justifyRight() { this.exec('justifyRight'); }
+    justifyFull() { this.exec('justifyFull'); }
+
+    insertUnorderedList() { this.exec('insertUnorderedList'); }
+    insertOrderedList() { this.exec('insertOrderedList'); }
+
+    indent() { this.exec('indent'); }
+    outdent() { this.exec('outdent'); }
+
+    removeFormat() { this.exec('removeFormat'); }
+
+    insertHorizontalRule() { this.exec('insertHorizontalRule'); }
+
+    formatBlock(tag) {
+      this.exec('formatBlock', `<${tag}>`);
+    }
+
+    fontSize(sizeStr) {
+      this.editor.focus();
+      this._expandToWordIfCollapsed();
+      document.execCommand('fontSize', false, '7');
+      const marked = this.editor.contentArea.querySelectorAll('font[size="7"]');
+      marked.forEach(el => {
+        const span = document.createElement('span');
+        span.style.fontSize = sizeStr;
+        while (el.firstChild) span.appendChild(el.firstChild);
+        el.parentNode.replaceChild(span, el);
+      });
+      this.editor.history.record();
+      this.editor.updateToolbar();
+      this.editor.triggerChange();
+    }
+
+    fontFamily(font) {
+      this.exec('fontName', font);
+    }
+
+    foreColor(color) {
+      this.exec('foreColor', color);
+    }
+
+    backColor(color) {
+      this.exec('backColor', color);
+    }
+
+    resetForeColor() {
+      this._resetColorProperty('color');
+    }
+
+    resetBackColor() {
+      this._resetColorProperty('backgroundColor');
+    }
+
+    _resetColorProperty(cssProp) {
+      this.editor.focus();
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount) return;
+      const range = sel.getRangeAt(0);
+      if (range.collapsed) return;
+
+      const fragment = range.extractContents();
+
+      const processNode = (node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          if (node.style && node.style[cssProp]) {
+            node.style[cssProp] = '';
+            if (!node.getAttribute('style') || !node.getAttribute('style').trim()) {
+              node.removeAttribute('style');
+            }
+          }
+          if (cssProp === 'color' && node.tagName === 'FONT' && node.hasAttribute('color')) {
+            node.removeAttribute('color');
+          }
+          if (cssProp === 'backgroundColor' && node.tagName === 'FONT' && node.style.backgroundColor) {
+            node.style.backgroundColor = '';
+          }
+          if (node.tagName === 'FONT' && !node.hasAttribute('color') && !node.hasAttribute('face') &&
+            !node.hasAttribute('size') && (!node.getAttribute('style') || !node.getAttribute('style').trim())) {
+            const parent = node.parentNode;
+            if (parent) {
+              while (node.firstChild) parent.insertBefore(node.firstChild, node);
+              parent.removeChild(node);
+            }
+            return;
+          }
+          if (node.tagName === 'SPAN' && (!node.getAttribute('style') || !node.getAttribute('style').trim()) && !node.className) {
+            const parent = node.parentNode;
+            if (parent) {
+              while (node.firstChild) parent.insertBefore(node.firstChild, node);
+              parent.removeChild(node);
+            }
+            return;
+          }
+          Array.from(node.childNodes).forEach(processNode);
+        }
+      };
+
+      Array.from(fragment.childNodes).forEach(processNode);
+      range.insertNode(fragment);
+      sel.removeAllRanges();
+      sel.addRange(range);
+
+      this.editor.history.record();
+      this.editor.updateToolbar();
+      this.editor.triggerChange();
+    }
+
+    viewCode() {
+      this.editor.toggleCodeView();
+    }
+
+    autosave() {
+      this.editor.toggleAutosave();
+    }
+
+    print() {
+      this.editor.printContent();
+    }
+
+    insertHTML(html) {
+      this.editor.focus();
+      document.execCommand('insertHTML', false, html);
+      this.editor.history.record();
+      this.editor.triggerChange();
+    }
+
+    insertLink(url, text, newTab = false) {
+      const selection = Utils.getSelection();
+      const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+
+      if (range && !range.collapsed) {
+        this.exec('createLink', url);
+        if (newTab) {
+          const links = this.editor.contentArea.querySelectorAll('a[href="' + url + '"]');
+          links.forEach(link => link.setAttribute('target', '_blank'));
+        }
+      } else {
+        const link = document.createElement('a');
+        link.href = url;
+        link.textContent = text || url;
+        if (newTab) link.target = '_blank';
+
+        this.editor.focus();
+        document.execCommand('insertHTML', false, link.outerHTML);
+        this.editor.history.record();
+        this.editor.triggerChange();
+      }
+    }
+
+    insertImage(url, alt = '', width = '') {
+      let html = `<img src="${url}"`;
+      if (alt) html += ` alt="${alt}"`;
+      if (width) html += ` width="${width}"`;
+      html += '>';
+
+      this.editor.focus();
+      document.execCommand('insertHTML', false, html);
+      this.editor.history.record();
+      this.editor.triggerChange();
+    }
+
+    insertTable(rows, cols, hasHeader = true) {
+      let html = '<table class="neiki-table">';
+
+      for (let i = 0; i < rows; i++) {
+        html += '<tr>';
+        for (let j = 0; j < cols; j++) {
+          if (i === 0 && hasHeader) {
+            html += '<th>Header</th>';
+          } else {
+            html += '<td>Cell</td>';
+          }
+        }
+        html += '</tr>';
+      }
+
+      html += '</table><p><br></p>';
+
+      this.editor.focus();
+      document.execCommand('insertHTML', false, html);
+      this.editor.history.record();
+      this.editor.triggerChange();
+    }
+
+    undo() {
+      if (this.editor.history.undo()) {
+        this.editor.updateToolbar();
+        this.editor.triggerChange();
+      }
+    }
+
+    redo() {
+      if (this.editor.history.redo()) {
+        this.editor.updateToolbar();
+        this.editor.triggerChange();
+      }
+    }
+  }
+
+  // ============================================
+  // SECTION 9: MAIN EDITOR CLASS
+  // ============================================
+
+  class NeikiEditor {
+    constructor(element, options = {}) {
+      this.originalElement = typeof element === 'string'
+        ? document.querySelector(element)
+        : element;
+
+      if (!this.originalElement) {
+        throw new Error('NeikiEditor: Element not found');
+      }
+
+      // Use stable ID based on element's id or a hash of selector, not random
+      this.id = this.originalElement.id ||
+        this.originalElement.getAttribute('data-neiki-id') ||
+        'neiki_' + (typeof element === 'string' ? element.replace(/[^a-zA-Z0-9]/g, '_') : 'editor');
+
+      this.config = Utils.deepMerge(DEFAULT_CONFIG, options);
+      this.isFullscreen = false;
+      this.isAutosaveEnabled = false;
+      this.autosaveInterval = null;
+
+      this.init();
+    }
+
+    init() {
+      // Initialize storage first
+      this.storage = new StorageManager(this.id);
+
+      // Set language for translations
+      _currentLanguage = this.config.language || 'en';
+
+      // Merge custom translations from config
+      if (this.config.translations && typeof this.config.translations === 'object') {
+        Object.keys(this.config.translations).forEach(lang => {
+          addTranslation(lang, this.config.translations[lang]);
+        });
+      }
+
+      // Load theme preference
+      const savedTheme = StorageManager.getGlobal('theme', this.config.theme);
+      this.config.theme = savedTheme;
+
+      this.createStructure();
+      this.createToolbar();
+      this.createContentArea();
+      this.createStatusBar();
+
+      this.history = new HistoryManager(this);
+      this.modal = new ModalManager(this);
+      this.dropdown = new DropdownManager(this);
+      this.colorPicker = new ColorPicker(this);
+      this.emojiPicker = new EmojiPicker(this);
+      this.specialCharsPicker = new SpecialCharsPicker(this);
+      this.commands = new Commands(this);
+      this.tableContextMenu = new TableContextMenu(this);
+      this.floatingToolbar = new FloatingToolbar(this);
+      this.imageResizer = new ImageResizer(this);
+      this.tableColumnResizer = new TableColumnResizer(this);
+      this.blockDragDrop = new BlockDragDrop(this);
+
+      this.bindEvents();
+      this.initDragDrop();
+      this.initPlugins();
+
+      // Sync restored content to original element
+      this.syncToOriginal();
+
+      // Record initial state (content already restored in createContentArea)
+      this.history.record();
+
+      // Restore autosave state
+      const savedAutosave = this.storage.get('autosave_enabled', false);
+      if (savedAutosave) {
+        this.enableAutosave();
+      }
+
+      this.updateStatusBar();
+      this.updateToolbar();
+
+      if (this.config.autofocus) {
+        this.focus();
+      }
+
+      if (this.config.onReady) {
+        this.config.onReady(this);
+      }
+    }
+
+    createStructure() {
+      const langClass = _currentLanguage !== 'en' ? `neiki-lang-${_currentLanguage}` : '';
+      this.container = Utils.createElement('div', {
+        className: `neiki-editor ${this.config.theme === 'dark' ? 'neiki-dark' : ''} ${langClass}`.trim(),
+        id: this.id
+      });
+
+      this.originalElement.style.display = 'none';
+      this.originalElement.parentNode.insertBefore(this.container, this.originalElement);
+    }
+
+    createToolbar() {
+      this.toolbar = Utils.createElement('div', { className: 'neiki-toolbar' });
+      this.toolbarButtons = {};
+      this.toolbarSelects = {};
+
+      let currentGroup = Utils.createElement('div', { className: 'neiki-toolbar-group' });
+
+      const appendToGroup = (el) => { currentGroup.appendChild(el); };
+      const flushGroup = () => {
+        if (currentGroup.childNodes.length > 0) {
+          this.toolbar.appendChild(currentGroup);
+        }
+        currentGroup = Utils.createElement('div', { className: 'neiki-toolbar-group' });
+      };
+
+      this.config.toolbar.forEach(item => {
+        if (item === '|') {
+          flushGroup();
+          return;
+        }
+
+        const config = TOOLBAR_ITEMS[item];
+        if (!config) return;
+
+        // Handle <select> type (heading, fontFamily)
+        if (config.type === 'select') {
+          const select = Utils.createElement('select', {
+            className: 'neiki-select',
+            title: t(config.titleKey),
+            'data-command': item
+          });
+
+          if (item === 'heading') {
+            HEADINGS.forEach(({ labelKey, value }) => {
+              const opt = document.createElement('option');
+              opt.value = value;
+              opt.textContent = t(labelKey);
+              select.appendChild(opt);
+            });
+          } else if (item === 'fontFamily') {
+            FONT_FAMILIES.forEach(({ labelKey, value }) => {
+              const opt = document.createElement('option');
+              opt.value = value;
+              opt.textContent = t(labelKey);
+              opt.style.fontFamily = value;
+              select.appendChild(opt);
+            });
+          }
+
+          select.addEventListener('change', (e) => {
+            e.preventDefault();
+            if (item === 'heading') {
+              this.commands.formatBlock(select.value);
+            } else if (item === 'fontFamily') {
+              this.commands.fontFamily(select.value);
+            }
+            this.focus();
+          });
+
+          this.toolbarSelects[item] = select;
+          appendToGroup(select);
+          return;
+        }
+
+        // Handle fontSizeWidget type
+        if (config.type === 'fontSizeWidget') {
+          const wrapper = Utils.createElement('div', { className: 'neiki-fontsize-widget' });
+
+          const minusBtn = Utils.createElement('button', {
+            className: 'neiki-fontsize-btn',
+            type: 'button',
+            title: t('toolbar.decreaseFontSize'),
+            innerHTML: '<svg viewBox="0 0 24 24" width="14" height="14"><path d="M19 13H5v-2h14v2z" fill="currentColor"/></svg>'
+          });
+
+          const input = Utils.createElement('input', {
+            className: 'neiki-fontsize-input',
+            type: 'text',
+            title: t('toolbar.fontSize'),
+            value: '16'
+          });
+
+          const plusBtn = Utils.createElement('button', {
+            className: 'neiki-fontsize-btn',
+            type: 'button',
+            title: t('toolbar.increaseFontSize'),
+            innerHTML: '<svg viewBox="0 0 24 24" width="14" height="14"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor"/></svg>'
+          });
+
+          // Save/restore selection for font size operations
+          let _savedRange = null;
+          const _saveSelection = () => {
+            const sel = window.getSelection();
+            if (sel && sel.rangeCount > 0) {
+              _savedRange = sel.getRangeAt(0).cloneRange();
+            }
+          };
+          const _restoreSelection = () => {
+            if (_savedRange) {
+              const sel = window.getSelection();
+              sel.removeAllRanges();
+              sel.addRange(_savedRange);
+            }
+          };
+
+          // Dropdown for preset sizes
+          const dropdown = Utils.createElement('div', { className: 'neiki-fontsize-dropdown' });
+          FONT_SIZES.forEach(size => {
+            const item = Utils.createElement('div', {
+              className: 'neiki-fontsize-dropdown-item',
+              textContent: size,
+              'data-size': String(size)
+            });
+            item.addEventListener('mousedown', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            });
+            item.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              input.value = size;
+              _restoreSelection();
+              this.commands.fontSize(size + 'px');
+              dropdown.classList.remove('show');
+            });
+            dropdown.appendChild(item);
+          });
+
+          const applyFontSize = () => {
+            const val = parseInt(input.value);
+            if (val && val > 0) {
+              _restoreSelection();
+              this.commands.fontSize(val + 'px');
+            }
+          };
+
+          minusBtn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            _saveSelection();
+          });
+          minusBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            _restoreSelection();
+            const current = parseInt(input.value) || 16;
+            const newSize = Math.max(1, current - 1);
+            input.value = newSize;
+            this.commands.fontSize(newSize + 'px');
+          });
+
+          plusBtn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            _saveSelection();
+          });
+          plusBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            _restoreSelection();
+            const current = parseInt(input.value) || 16;
+            const newSize = Math.min(999, current + 1);
+            input.value = newSize;
+            this.commands.fontSize(newSize + 'px');
+          });
+
+          input.addEventListener('mousedown', (e) => {
+            _saveSelection();
+          });
+
+          input.addEventListener('focus', () => {
+            dropdown.classList.add('show');
+          });
+
+          input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              applyFontSize();
+              dropdown.classList.remove('show');
+              this.focus();
+            }
+            if (e.key === 'Escape') {
+              dropdown.classList.remove('show');
+              this.focus();
+            }
+          });
+
+          document.addEventListener('mousedown', (e) => {
+            if (!wrapper.contains(e.target)) {
+              dropdown.classList.remove('show');
+            }
+          });
+
+          wrapper.appendChild(minusBtn);
+          wrapper.appendChild(input);
+          wrapper.appendChild(plusBtn);
+          wrapper.appendChild(dropdown);
+
+          this.fontSizeInput = input;
+          appendToGroup(wrapper);
+          return;
+        }
+
+        // Handle Insert dropdown
+        if (config.type === 'insertDropdown') {
+          const btn = Utils.createElement('button', {
+            className: 'neiki-toolbar-btn neiki-insert-dropdown-btn',
+            title: t(config.titleKey),
+            type: 'button'
+          });
+          btn.innerHTML = Icons[config.icon] + '<span class="neiki-insert-label">' + t('toolbar.insert') + '</span><span class="neiki-chevron">' + Icons['chevron-down'] + '</span>';
+
+          const dropdown = Utils.createElement('div', { className: 'neiki-insert-dropdown' });
+
+          const insertItems = [
+            { key: 'link', icon: Icons.link, labelKey: 'insert.link', action: () => this.modal.open('link', { text: Utils.getSelection().toString() }) },
+            { key: 'image', icon: Icons.image, labelKey: 'insert.image', action: () => this.modal.open('image', {}) },
+            { key: 'table', icon: Icons.table, labelKey: 'insert.table', action: () => this.modal.open('table', {}) },
+            { key: 'emoji', icon: Icons.emoji, labelKey: 'insert.emoji', action: () => this.emojiPicker.toggle(btn) },
+            { key: 'specialChars', icon: Icons.specialChars, labelKey: 'insert.symbol', action: () => this.specialCharsPicker.toggle(btn) }
+          ];
+
+          insertItems.forEach(({ icon, labelKey, action }) => {
+            const item = Utils.createElement('div', {
+              className: 'neiki-dropdown-item'
+            });
+            item.innerHTML = '<span class="neiki-dropdown-item-icon">' + icon + '</span>' + t(labelKey);
+            item.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              dropdown.classList.remove('show');
+              action();
+            });
+            dropdown.appendChild(item);
+          });
+
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            // Close moreMenu if open
+            const moreDD = this.toolbar.querySelector('.neiki-more-dropdown.show');
+            if (moreDD) moreDD.classList.remove('show');
+            // Close emoji/specialChars pickers if open
+            this.emojiPicker.close();
+            this.specialCharsPicker.close();
+            dropdown.classList.toggle('show');
+          });
+
+          document.addEventListener('mousedown', (e) => {
+            if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+              dropdown.classList.remove('show');
+            }
+          });
+
+          btn.appendChild(dropdown);
+          this.toolbarButtons[item] = btn;
+          appendToGroup(btn);
+          return;
+        }
+
+        // Handle More menu (⋯)
+        if (config.type === 'moreMenu') {
+          const btn = Utils.createElement('button', {
+            className: 'neiki-toolbar-btn neiki-more-btn',
+            title: t(config.titleKey),
+            type: 'button',
+            innerHTML: Icons[config.icon],
+            'data-command': item
+          });
+
+          const dropdown = Utils.createElement('div', { className: 'neiki-more-dropdown' });
+
+          const moreItems = [
+            { key: 'save', icon: Icons.save, labelKey: 'menu.save', action: () => this.triggerSave() },
+            { key: 'preview', icon: Icons.eye, labelKey: 'menu.preview', action: () => this.previewContent() },
+            { key: 'download', icon: Icons.download, labelKey: 'menu.download', action: () => this.downloadContent() },
+            { key: 'print', icon: Icons.print, labelKey: 'menu.print', action: () => this.printContent() },
+            { key: 'divider' },
+            { key: 'autosave', icon: Icons.save, labelKey: 'menu.autosave', action: () => this.toggleAutosave(), toggle: true },
+            { key: 'divider' },
+            { key: 'clearAll', icon: Icons.trash, labelKey: 'menu.clearAll', action: () => this.clearAll(), danger: true },
+            { key: 'themeToggle', icon: Icons.sun, labelKey: 'menu.toggleTheme', action: () => { this.toggleTheme(); this._updateThemeMenuItem(); } },
+            { key: 'fullscreen', icon: Icons.fullscreen, labelKey: 'menu.fullscreen', action: () => this.toggleFullscreen() }
+          ];
+
+          if (this.config.showHelp) {
+            moreItems.push({ key: 'divider' });
+            moreItems.push({ key: 'help', icon: Icons.help, labelKey: 'menu.help', action: () => this.modal.open('help') });
+          }
+
+          moreItems.forEach(({ key, icon, labelKey, action, danger, toggle }) => {
+            if (key === 'divider') {
+              dropdown.appendChild(Utils.createElement('div', { className: 'neiki-dropdown-divider' }));
+              return;
+            }
+            const menuItem = Utils.createElement('div', {
+              className: 'neiki-dropdown-item' + (danger ? ' neiki-dropdown-item-danger' : '')
+            });
+            menuItem.innerHTML = '<span class="neiki-dropdown-item-icon">' + icon + '</span><span class="neiki-dropdown-item-label">' + t(labelKey) + '</span>';
+
+            if (key === 'autosave') {
+              const badge = Utils.createElement('span', { className: 'neiki-autosave-badge' });
+              badge.textContent = '✕';
+              menuItem.appendChild(badge);
+              this._autosaveMenuItem = menuItem;
+              this._autosaveBadge = badge;
+            }
+
+            if (key === 'themeToggle') {
+              this._themeMenuItem = menuItem;
+              this._themeMenuIcon = menuItem.querySelector('.neiki-dropdown-item-icon');
+            }
+
+            menuItem.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (key !== 'autosave') dropdown.classList.remove('show');
+              action();
+            });
+            dropdown.appendChild(menuItem);
+          });
+
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            // Close insertDropdown if open
+            const insDD = this.toolbar.querySelector('.neiki-insert-dropdown.show');
+            if (insDD) insDD.classList.remove('show');
+            dropdown.classList.toggle('show');
+          });
+
+          document.addEventListener('mousedown', (e) => {
+            if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+              dropdown.classList.remove('show');
+            }
+          });
+
+          btn.appendChild(dropdown);
+          this.toolbarButtons[item] = btn;
+          appendToGroup(btn);
+          currentGroup.style.marginLeft = 'auto';
+          return;
+        }
+
+        // Default: regular button
+        const button = Utils.createElement('button', {
+          className: 'neiki-toolbar-btn',
+          title: t(config.titleKey),
+          type: 'button',
+          innerHTML: Icons[config.icon] || '',
+          'data-command': item
+        });
+
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.handleToolbarClick(item, button);
+        });
+
+        this.toolbarButtons[item] = button;
+        appendToGroup(button);
+      });
+
+      // Flush the last group
+      flushGroup();
+
+      this.container.appendChild(this.toolbar);
+    }
+
+    createContentArea() {
+      this.contentWrapper = Utils.createElement('div', { className: 'neiki-content-wrapper' });
+
+      this.contentArea = Utils.createElement('div', {
+        className: 'neiki-content',
+        contentEditable: !this.config.readonly,
+        spellcheck: this.config.spellcheck,
+        'data-placeholder': t('placeholder')
+      });
+
+      if (this.config.minHeight) {
+        this.contentArea.style.minHeight = this.config.minHeight + 'px';
+      }
+      if (this.config.maxHeight) {
+        this.contentArea.style.maxHeight = this.config.maxHeight + 'px';
+        this.contentArea.style.overflowY = 'auto';
+      }
+
+      // Check if autosave is enabled AND has saved content
+      const autosaveEnabled = this.storage.get('autosave_enabled', false);
+      const autosavedContent = this.storage.get('autosave_content', null);
+
+      if (autosaveEnabled && autosavedContent) {
+        // Restore autosaved content only if autosave was enabled
+        this.contentArea.innerHTML = autosavedContent;
+      } else {
+        // Always use original element content (textarea value or innerHTML)
+        // This ensures the page's actual content is shown, not old localStorage data
+        if (this.originalElement.value) {
+          this.contentArea.innerHTML = this.originalElement.value;
+        } else if (this.originalElement.innerHTML.trim()) {
+          this.contentArea.innerHTML = this.originalElement.innerHTML;
+        }
+      }
+
+      this._ensureDefaultBlock();
+
+      this.contentWrapper.appendChild(this.contentArea);
+
+      // Code view overlay
+      this.isCodeViewOpen = false;
+      this.codeView = Utils.createElement('div', { className: 'neiki-code-view' });
+      const codeViewHeader = Utils.createElement('div', { className: 'neiki-code-view-header' });
+      const codeViewTitle = Utils.createElement('span', {
+        className: 'neiki-code-view-title',
+        textContent: 'HTML Source'
+      });
+      const codeViewApply = Utils.createElement('button', {
+        className: 'neiki-btn neiki-code-view-apply',
+        type: 'button',
+        title: 'Apply changes and close'
+      });
+      codeViewApply.innerHTML = Icons.close + '<span style="margin-left:5px;font-size:12px;font-weight:500;">Apply & Close</span>';
+      codeViewApply.addEventListener('click', () => this.toggleCodeView());
+      codeViewHeader.appendChild(codeViewTitle);
+      codeViewHeader.appendChild(codeViewApply);
+      this.codeViewTextarea = Utils.createElement('textarea', {
+        className: 'neiki-code-view-textarea',
+        spellcheck: 'false'
+      });
+      this.codeView.appendChild(codeViewHeader);
+      this.codeView.appendChild(this.codeViewTextarea);
+      this.contentWrapper.appendChild(this.codeView);
+
+      this.container.appendChild(this.contentWrapper);
+    }
+
+    bindEvents() {
+      // Content changes
+      this.contentArea.addEventListener('input', Utils.debounce(() => {
+        this._ensureDefaultBlock();
+        this.history.record();
+        this.syncToOriginal();
+        this.triggerChange();
+        this.updateStatusBar();
+      }, 300));
+
+      // Selection changes
+      document.addEventListener('selectionchange', () => {
+        if (this.contentArea.contains(document.activeElement) ||
+          document.activeElement === this.contentArea) {
+          this.updateToolbar();
+          this.updateStatusBar();
+        }
+      });
+
+      // Focus/Blur
+      this.contentArea.addEventListener('focus', () => {
+        if (this.config.onFocus) this.config.onFocus(this);
+      });
+
+      this.contentArea.addEventListener('blur', () => {
+        if (this.config.onBlur) this.config.onBlur(this);
+      });
+
+      // Keyboard shortcuts
+      this.contentArea.addEventListener('keydown', (e) => this.handleKeydown(e));
+
+      // Paste handling
+      this.contentArea.addEventListener('paste', (e) => this.handlePaste(e));
+    }
+
+    handleToolbarClick(item, button) {
+      const config = TOOLBAR_ITEMS[item];
+      if (!config) return;
+
+      // Skip custom types (handled in createToolbar)
+      if (config.type) return;
+
+      // Handle color pickers
+      if (config.picker === 'color') {
+        this.colorPicker.toggle(button, config.command);
+        return;
+      }
+
+      // Handle emoji picker
+      if (config.picker === 'emoji') {
+        this.emojiPicker.toggle(button);
+        return;
+      }
+
+      // Handle special chars picker
+      if (config.picker === 'specialChars') {
+        this.specialCharsPicker.toggle(button);
+        return;
+      }
+
+      // Handle modals
+      if (config.modal) {
+        const savedRange = Utils.saveSelection();
+        let data = {};
+
+        if (item === 'link') {
+          const sel = Utils.getSelection();
+          data.text = sel.toString();
+        }
+
+        this.modal.open(item, data);
+        Utils.restoreSelection(savedRange);
+        return;
+      }
+
+      // Handle fullscreen
+      if (item === 'fullscreen') {
+        this.toggleFullscreen();
+        return;
+      }
+
+      // Handle theme toggle
+      if (item === 'themeToggle') {
+        this.toggleTheme();
+        return;
+      }
+
+      // Handle regular commands
+      if (config.value) {
+        this.commands[config.command](config.value);
+      } else if (this.commands[config.command]) {
+        this.commands[config.command]();
+      } else {
+        this.commands.exec(config.command);
+      }
+    }
+
+    handleKeydown(e) {
+      // Ctrl/Cmd shortcuts
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key.toLowerCase()) {
+          case 'b':
+            e.preventDefault();
+            this.commands.bold();
+            break;
+          case 'i':
+            e.preventDefault();
+            this.commands.italic();
+            break;
+          case 'u':
+            e.preventDefault();
+            this.commands.underline();
+            break;
+          case 'k':
+            e.preventDefault();
+            this.modal.open('link', { text: Utils.getSelection().toString() });
+            break;
+          case 'z':
+            e.preventDefault();
+            if (e.shiftKey) {
+              this.commands.redo();
+            } else {
+              this.commands.undo();
+            }
+            break;
+          case 'y':
+            e.preventDefault();
+            this.commands.redo();
+            break;
+          case 's':
+            e.preventDefault();
+            this.triggerSave();
+            break;
+        }
+      }
+
+      // Exit blockquote at end of document
+      if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
+        const sel = window.getSelection();
+        if (sel.rangeCount) {
+          const node = sel.anchorNode;
+          const bq = node.nodeType === Node.TEXT_NODE
+            ? node.parentElement?.closest('blockquote')
+            : node.closest?.('blockquote');
+          if (bq && bq === this.contentArea.lastElementChild) {
+            const range = sel.getRangeAt(0);
+            const bqRange = document.createRange();
+            bqRange.selectNodeContents(bq);
+            bqRange.setStart(range.endContainer, range.endOffset);
+            if (bqRange.toString().trim() === '') {
+              e.preventDefault();
+              const p = document.createElement('p');
+              p.innerHTML = '<br>';
+              bq.after(p);
+              const newRange = document.createRange();
+              newRange.setStart(p, 0);
+              newRange.collapse(true);
+              sel.removeAllRanges();
+              sel.addRange(newRange);
+              this.history.record();
+              this.triggerChange();
+            }
+          }
+        }
+      }
+
+      // Tab handling
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        if (e.shiftKey) {
+          this.commands.outdent();
+        } else {
+          this.commands.indent();
+        }
+      }
+    }
+
+    handlePaste(e) {
+      // Get plain text and sanitize
+      e.preventDefault();
+
+      let text = '';
+      if (e.clipboardData) {
+        // Try to get HTML first
+        let html = e.clipboardData.getData('text/html');
+        if (html) {
+          text = Utils.sanitizeHTML(html);
+        } else {
+          text = e.clipboardData.getData('text/plain');
+          // Convert line breaks to <br>
+          text = text.replace(/\n/g, '<br>');
+        }
+      }
+
+      document.execCommand('insertHTML', false, text);
+      this.history.record();
+      this.triggerChange();
+    }
+
+    updateToolbar() {
+      Object.entries(this.toolbarButtons).forEach(([item, button]) => {
+        const config = TOOLBAR_ITEMS[item];
+        if (!config || config.type) return;
+
+        let isActive = false;
+
+        try {
+          switch (config.command) {
+            case 'bold':
+            case 'italic':
+            case 'underline':
+            case 'strikeThrough':
+            case 'subscript':
+            case 'superscript':
+            case 'insertUnorderedList':
+            case 'insertOrderedList':
+              isActive = document.queryCommandState(config.command);
+              break;
+            case 'justifyLeft':
+            case 'justifyCenter':
+            case 'justifyRight':
+            case 'justifyFull':
+              isActive = document.queryCommandState(config.command);
+              break;
+          }
+        } catch (e) {
+          // queryCommandState can throw in some browsers
+        }
+
+        button.classList.toggle('active', isActive);
+      });
+
+      // Update undo/redo states
+      if (this.toolbarButtons.undo) {
+        this.toolbarButtons.undo.disabled = !this.history.canUndo();
+      }
+      if (this.toolbarButtons.redo) {
+        this.toolbarButtons.redo.disabled = !this.history.canRedo();
+      }
+      // Update viewCode active state
+      if (this.toolbarButtons.viewCode) {
+        this.toolbarButtons.viewCode.classList.toggle('active', this.isCodeViewOpen);
+      }
+
+      // Sync heading select
+      if (this.toolbarSelects.heading) {
+        const block = this.getCurrentBlockType();
+        const validValues = HEADINGS.map(h => h.value);
+        this.toolbarSelects.heading.value = validValues.includes(block) ? block : 'p';
+      }
+
+      // Sync fontFamily select
+      if (this.toolbarSelects.fontFamily) {
+        try {
+          const font = document.queryCommandValue('fontName');
+          if (font) {
+            const match = FONT_FAMILIES.find(f => f.value.toLowerCase().includes(font.toLowerCase().replace(/"/g, '')));
+            if (match) this.toolbarSelects.fontFamily.value = match.value;
+          }
+        } catch (e) {}
+      }
+
+      // Sync font size input
+      if (this.fontSizeInput) {
+        try {
+          const sel = window.getSelection();
+          if (sel && sel.rangeCount) {
+            let node = sel.getRangeAt(0).startContainer;
+            if (node.nodeType === Node.TEXT_NODE) node = node.parentNode;
+            const computed = window.getComputedStyle(node);
+            const size = Math.round(parseFloat(computed.fontSize));
+            if (size) this.fontSizeInput.value = size;
+          }
+        } catch (e) {}
+      }
+
+      // Update autosave badge in more menu
+      if (this._autosaveBadge) {
+        this._autosaveBadge.textContent = this.isAutosaveEnabled ? '✓' : '✕';
+        this._autosaveBadge.classList.toggle('active', this.isAutosaveEnabled);
+      }
+    }
+
+    toggleFullscreen() {
+      this.isFullscreen = !this.isFullscreen;
+      this.container.classList.toggle('neiki-fullscreen', this.isFullscreen);
+      document.body.classList.toggle('neiki-fullscreen-active', this.isFullscreen);
+
+      if (this.toolbarButtons.fullscreen) {
+        this.toolbarButtons.fullscreen.classList.toggle('active', this.isFullscreen);
+      }
+    }
+
+    toggleTheme() {
+      const isDark = this.container.classList.contains('neiki-dark');
+      const newTheme = isDark ? 'light' : 'dark';
+
+      this.container.classList.toggle('neiki-dark', !isDark);
+      this.config.theme = newTheme;
+
+      // Persist theme choice
+      StorageManager.setGlobal('theme', newTheme);
+
+      // Update button icon and active state
+      if (this.toolbarButtons.themeToggle) {
+        this.toolbarButtons.themeToggle.innerHTML = isDark ? Icons.sun : Icons.moon;
+        this.toolbarButtons.themeToggle.classList.toggle('active', !isDark);
+        this.toolbarButtons.themeToggle.title = isDark ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+      }
+      this._updateThemeMenuItem();
+    }
+
+    _updateThemeMenuItem() {
+      if (this._themeMenuIcon) {
+        const isDark = this.container.classList.contains('neiki-dark');
+        this._themeMenuIcon.innerHTML = isDark ? Icons.moon : Icons.sun;
+      }
+    }
+
+    triggerSave() {
+      if (this.config.onSave) {
+        this.config.onSave(this.getContent(), this);
+      }
+    }
+
+    previewContent() {
+      const content = this.getContent();
+
+      // Create overlay
+      const overlay = Utils.createElement('div', { className: 'neiki-preview-overlay' });
+
+      const modal = Utils.createElement('div', { className: 'neiki-preview-modal' });
+
+      const header = Utils.createElement('div', { className: 'neiki-preview-header' });
+      header.innerHTML = '<span>' + t('preview.title') + '</span>';
+      const closeBtn = Utils.createElement('button', {
+        className: 'neiki-preview-close',
+        type: 'button',
+        innerHTML: Icons.close
+      });
+      closeBtn.addEventListener('click', () => overlay.remove());
+      header.appendChild(closeBtn);
+
+      const body = Utils.createElement('div', { className: 'neiki-preview-body' });
+      body.innerHTML = content;
+
+      modal.appendChild(header);
+      modal.appendChild(body);
+      overlay.appendChild(modal);
+
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.remove();
+      });
+
+      document.addEventListener('keydown', function escHandler(e) {
+        if (e.key === 'Escape') {
+          overlay.remove();
+          document.removeEventListener('keydown', escHandler);
+        }
+      });
+
+      document.body.appendChild(overlay);
+    }
+
+    downloadContent() {
+      const content = this.getContent();
+      const fullHTML = '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Document</title>\n<style>\nbody{font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,sans-serif;max-width:800px;margin:40px auto;padding:0 20px;line-height:1.7;color:#1e293b;}\nimg{max-width:100%;}\ntable{border-collapse:collapse;width:100%;}\ntable td,table th{border:1px solid #d1d5db;padding:8px 12px;}\n</style>\n</head>\n<body>\n' + content + '\n</body>\n</html>';
+
+      const blob = new Blob([fullHTML], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'document.html';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    clearAll() {
+      if (this.getContent().trim() && !confirm(t('confirm.clearAll'))) return;
+      this.setContent('');
+      this.history.record();
+      this.triggerChange();
+      this.updateStatusBar();
+    }
+
+    _ensureDefaultBlock() {
+      // Ensure the content area always has at least one <p> block
+      if (!this.contentArea) return;
+      const html = this.contentArea.innerHTML.trim();
+      if (!html || html === '<br>') {
+        this.contentArea.innerHTML = '<p><br></p>';
+        // Place cursor inside the paragraph if focused
+        try {
+          if (document.activeElement === this.contentArea) {
+            const p = this.contentArea.querySelector('p');
+            if (p) {
+              const sel = window.getSelection();
+              const range = document.createRange();
+              range.setStart(p, 0);
+              range.collapse(true);
+              sel.removeAllRanges();
+              sel.addRange(range);
+            }
+          }
+        } catch (e) {}
+        return;
+      }
+      // Wrap bare text nodes in <p>
+      const childNodes = Array.from(this.contentArea.childNodes);
+      childNodes.forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+          const p = document.createElement('p');
+          node.parentNode.insertBefore(p, node);
+          p.appendChild(node);
+        }
+      });
+    }
+
+    syncToOriginal() {
+      if (this.originalElement.tagName === 'TEXTAREA' ||
+        this.originalElement.tagName === 'INPUT') {
+        this.originalElement.value = this.getContent();
+      } else {
+        this.originalElement.innerHTML = this.getContent();
+      }
+    }
+
+    triggerChange() {
+      if (this.config.onChange) {
+        this.config.onChange(this.getContent(), this);
+      }
+
+      // Dispatch custom event
+      this.container.dispatchEvent(new CustomEvent('neiki:change', {
+        detail: { content: this.getContent(), editor: this }
+      }));
+    }
+
+    // ============================================
+    // PUBLIC API
+    // ============================================
+
+    getContent() {
+      // Clone content and clean up editor UI elements
+      const clone = this.contentArea.cloneNode(true);
+      // Unwrap image resizer wrappers
+      clone.querySelectorAll('.neiki-img-resizable').forEach(wrapper => {
+        const img = wrapper.querySelector('img');
+        if (img) wrapper.parentNode.insertBefore(img, wrapper);
+        wrapper.remove();
+      });
+      // Remove grip handles, placeholders, resize handles
+      clone.querySelectorAll('.neiki-block-grip, .neiki-block-placeholder, .neiki-table-col-resize-handle, .neiki-img-resize-handle, .neiki-img-size-label').forEach(el => el.remove());
+      return clone.innerHTML;
+    }
+
+    setContent(html) {
+      this.contentArea.innerHTML = Utils.sanitizeHTML(html);
+      this._ensureDefaultBlock();
+      this.syncToOriginal();
+    }
+
+    getText() {
+      return this.contentArea.textContent || this.contentArea.innerText;
+    }
+
+    isEmpty() {
+      const text = this.getText().trim();
+      return text === '' || text === '\n';
+    }
+
+    focus() {
+      this.contentArea.focus();
+    }
+
+    blur() {
+      this.contentArea.blur();
+    }
+
+    enable() {
+      this.contentArea.contentEditable = 'true';
+      this.container.classList.remove('neiki-disabled');
+    }
+
+    disable() {
+      this.contentArea.contentEditable = 'false';
+      this.container.classList.add('neiki-disabled');
+    }
+
+    destroy() {
+      this.modal.close();
+      this.dropdown.close();
+      this.colorPicker.close();
+
+      if (this.imageResizer) this.imageResizer.destroy();
+      if (this.tableColumnResizer) this.tableColumnResizer.destroy();
+      if (this.blockDragDrop) this.blockDragDrop.destroy();
+
+      this.container.remove();
+      this.originalElement.style.display = '';
+
+      if (this.modal.overlay) {
+        this.modal.overlay.remove();
+      }
+    }
+
+    setTheme(theme) {
+      this.config.theme = theme;
+      this.container.classList.toggle('neiki-dark', theme === 'dark');
+      StorageManager.setGlobal('theme', theme);
+    }
+
+    createStatusBar() {
+      this.statusBar = Utils.createElement('div', { className: 'neiki-statusbar' });
+      const left = Utils.createElement('div', { className: 'neiki-statusbar-left' });
+      const right = Utils.createElement('div', { className: 'neiki-statusbar-right' });
+
+      this.statusWordCount = Utils.createElement('span', {
+        className: 'neiki-statusbar-item',
+        textContent: '0 ' + t('status.words')
+      });
+      this.statusCharCount = Utils.createElement('span', {
+        className: 'neiki-statusbar-item',
+        textContent: '0 ' + t('status.chars')
+      });
+      this.statusAutosave = Utils.createElement('span', {
+        className: 'neiki-statusbar-item neiki-statusbar-autosave'
+      });
+      this.statusAutosave.style.display = 'none';
+      this.statusBlockType = Utils.createElement('span', {
+        className: 'neiki-statusbar-item neiki-statusbar-block',
+        textContent: 'p'
+      });
+
+      left.appendChild(this.statusWordCount);
+      left.appendChild(this.statusCharCount);
+      right.appendChild(this.statusAutosave);
+      right.appendChild(this.statusBlockType);
+      this.statusBar.appendChild(left);
+      this.statusBar.appendChild(right);
+      this.container.appendChild(this.statusBar);
+    }
+
+    updateStatusBar() {
+      if (!this.statusBar) return;
+      const text = this.getText().trim();
+      const words = text ? text.split(/\s+/).filter(w => w.length > 0).length : 0;
+      const chars = this.getText().length;
+      this.statusWordCount.textContent = words + ' ' + (words === 1 ? t('status.word') : t('status.words'));
+      this.statusCharCount.textContent = chars + ' ' + (chars === 1 ? t('status.char') : t('status.chars'));
+      this.statusBlockType.textContent = this.getCurrentBlockType();
+    }
+
+    getCurrentBlockType() {
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount) return 'p';
+      let node = sel.getRangeAt(0).startContainer;
+      if (node.nodeType === Node.TEXT_NODE) node = node.parentNode;
+      const blockTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'BLOCKQUOTE', 'PRE', 'LI', 'DIV'];
+      while (node && node !== this.contentArea) {
+        if (blockTags.includes(node.tagName)) return node.tagName.toLowerCase();
+        node = node.parentNode;
+      }
+      return 'p';
+    }
+
+    toggleCodeView() {
+      if (!this.isCodeViewOpen) {
+        this.codeViewTextarea.value = this.contentArea.innerHTML;
+        this.codeView.classList.add('show');
+        this.isCodeViewOpen = true;
+        this.codeViewTextarea.focus();
+        this._codeViewEsc = (e) => { if (e.key === 'Escape') this.toggleCodeView(); };
+        document.addEventListener('keydown', this._codeViewEsc);
+      } else {
+        this.contentArea.innerHTML = Utils.sanitizeHTML(this.codeViewTextarea.value);
+        this.codeView.classList.remove('show');
+        this.isCodeViewOpen = false;
+        this.history.record();
+        this.syncToOriginal();
+        this.triggerChange();
+        this.updateStatusBar();
+        if (this._codeViewEsc) {
+          document.removeEventListener('keydown', this._codeViewEsc);
+          this._codeViewEsc = null;
+        }
+      }
+      this.updateToolbar();
+    }
+
+    // ============================================
+    // AUTOSAVE METHODS
+    // ============================================
+
+    toggleAutosave() {
+      if (this.isAutosaveEnabled) {
+        this.disableAutosave();
+      } else {
+        this.enableAutosave();
+      }
+      this.updateToolbar();
+    }
+
+    enableAutosave() {
+      this.isAutosaveEnabled = true;
+      this.storage.set('autosave_enabled', true);
+
+      // Show autosave status
+      if (this.statusAutosave) {
+        this.statusAutosave.style.display = '';
+        this.statusAutosave.textContent = t('autosave.savedLocally');
+      }
+
+      // Listen for content changes to trigger autosave
+      if (!this._autosaveContentHandler) {
+        this._autosaveContentHandler = Utils.debounce(() => {
+          if (!this.isAutosaveEnabled) return;
+          // Show "Autosaving..."
+          if (this.statusAutosave) {
+            this.statusAutosave.textContent = t('autosave.autosaving');
+            this.statusAutosave.style.display = '';
+          }
+          this.storage.set('autosave_content', this.getContent());
+          // Show "Saved locally" after brief delay
+          setTimeout(() => {
+            if (this.statusAutosave && this.isAutosaveEnabled) {
+              this.statusAutosave.textContent = t('autosave.savedLocally');
+            }
+          }, 500);
+        }, 1000);
+        this.contentArea.addEventListener('input', this._autosaveContentHandler);
+      }
+
+      // Save immediately
+      this.storage.set('autosave_content', this.getContent());
+      this.updateToolbar();
+    }
+
+    disableAutosave() {
+      this.isAutosaveEnabled = false;
+      this.storage.set('autosave_enabled', false);
+      if (this.autosaveInterval) {
+        clearInterval(this.autosaveInterval);
+        this.autosaveInterval = null;
+      }
+      if (this.statusAutosave) {
+        this.statusAutosave.style.display = 'none';
+      }
+      this.updateToolbar();
+    }
+
+    // ============================================
+    // PRINT METHOD
+    // ============================================
+
+    printContent() {
+      const printWindow = window.open('', '_blank');
+      const content = this.getContent();
+      printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Print</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+                        table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+                        td, th { border: 1px solid #ccc; padding: 8px; }
+                        img { max-width: 100%; }
+                        blockquote { border-left: 4px solid #ccc; margin: 1em 0; padding-left: 1em; font-style: italic; }
+                        pre { background: #f5f5f5; padding: 1em; overflow-x: auto; }
+                    </style>
+                </head>
+                <body>${content}</body>
+                </html>
+            `);
+      printWindow.document.close();
+      printWindow.focus();
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+      }, 250);
+    }
+
+    // ============================================
+    // JSON API
+    // ============================================
+
+    getJSON() {
+      const parseNode = (node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          return { type: 'text', content: node.textContent };
+        }
+        if (node.nodeType !== Node.ELEMENT_NODE) return null;
+
+        const result = {
+          type: node.tagName.toLowerCase(),
+          children: []
+        };
+
+        // Capture attributes
+        if (node.attributes.length > 0) {
+          result.attrs = {};
+          for (let attr of node.attributes) {
+            result.attrs[attr.name] = attr.value;
+          }
+        }
+
+        // Capture inline styles as separate object
+        if (node.style && node.style.cssText) {
+          result.style = node.style.cssText;
+        }
+
+        // Process children
+        for (let child of node.childNodes) {
+          const parsed = parseNode(child);
+          if (parsed) result.children.push(parsed);
+        }
+
+        return result;
+      };
+
+      const children = [];
+      for (let child of this.contentArea.childNodes) {
+        const parsed = parseNode(child);
+        if (parsed) children.push(parsed);
+      }
+
+      return {
+        version: '1.0',
+        content: children
+      };
+    }
+
+    setJSON(json) {
+      if (!json || !json.content) return;
+
+      const buildNode = (data) => {
+        if (data.type === 'text') {
+          return document.createTextNode(data.content || '');
+        }
+
+        const el = document.createElement(data.type);
+
+        // Set attributes
+        if (data.attrs) {
+          for (let [key, value] of Object.entries(data.attrs)) {
+            el.setAttribute(key, value);
+          }
+        }
+
+        // Set inline style
+        if (data.style) {
+          el.style.cssText = data.style;
+        }
+
+        // Build children
+        if (data.children) {
+          for (let child of data.children) {
+            const childNode = buildNode(child);
+            if (childNode) el.appendChild(childNode);
+          }
+        }
+
+        return el;
+      };
+
+      this.contentArea.innerHTML = '';
+      for (let child of json.content) {
+        const node = buildNode(child);
+        if (node) this.contentArea.appendChild(node);
+      }
+
+      this.history.record();
+      this.syncToOriginal();
+      this.triggerChange();
+      this.updateStatusBar();
+    }
+
+    getHTML() {
+      return this.getContent();
+    }
+
+    setHTML(html) {
+      this.setContent(html);
+    }
+
+    // ============================================
+    // PLUGIN SUPPORT
+    // ============================================
+
+    initPlugins() {
+      const plugins = NeikiEditor.getPlugins();
+      plugins.forEach(plugin => {
+        try {
+          // Add plugin button to toolbar if it has icon
+          if (plugin.icon && plugin.action) {
+            const button = Utils.createElement('button', {
+              className: 'neiki-toolbar-btn neiki-plugin-btn',
+              title: plugin.tooltip || plugin.name,
+              type: 'button',
+              innerHTML: plugin.icon,
+              'data-plugin': plugin.name
+            });
+
+            button.addEventListener('click', (e) => {
+              e.preventDefault();
+              plugin.action(this);
+            });
+
+            this.toolbar.appendChild(button);
+          }
+
+          // Call plugin init if exists
+          if (plugin.init) {
+            plugin.init(this);
+          }
+        } catch (err) {
+          console.error(`NeikiEditor: Plugin "${plugin.name}" failed to initialize`, err);
+        }
+      });
+    }
+
+    // Plugin API methods
+    insertHTML(html) {
+      this.commands.insertHTML(html);
+    }
+
+    getSelection() {
+      return Utils.getSelection();
+    }
+
+    wrapSelection(tagName, attributes = {}) {
+      const sel = window.getSelection();
+      if (!sel.rangeCount || sel.getRangeAt(0).collapsed) return;
+
+      const range = sel.getRangeAt(0);
+      const wrapper = document.createElement(tagName);
+
+      Object.entries(attributes).forEach(([key, value]) => {
+        wrapper.setAttribute(key, value);
+      });
+
+      try {
+        range.surroundContents(wrapper);
+        this.history.record();
+        this.triggerChange();
+      } catch (e) {
+        // surroundContents fails if selection crosses element boundaries
+        const fragment = range.extractContents();
+        wrapper.appendChild(fragment);
+        range.insertNode(wrapper);
+        this.history.record();
+        this.triggerChange();
+      }
+    }
+
+    unwrapSelection(tagName) {
+      const sel = window.getSelection();
+      if (!sel.rangeCount) return;
+
+      const range = sel.getRangeAt(0);
+      let node = range.commonAncestorContainer;
+      if (node.nodeType === Node.TEXT_NODE) node = node.parentNode;
+
+      const wrapper = node.closest(tagName);
+      if (wrapper && this.contentArea.contains(wrapper)) {
+        const parent = wrapper.parentNode;
+        while (wrapper.firstChild) {
+          parent.insertBefore(wrapper.firstChild, wrapper);
+        }
+        parent.removeChild(wrapper);
+        this.history.record();
+        this.triggerChange();
+      }
+    }
+
+    execCommand(command, value = null) {
+      this.commands.exec(command, value);
+    }
+
+    // ============================================
+    // DRAG & DROP
+    // ============================================
+
+    initDragDrop() {
+      let dragCounter = 0;
+
+      this.contentArea.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        if (!e.dataTransfer.types.includes('Files')) return;
+        dragCounter++;
+        this.contentArea.classList.add('neiki-drag-over');
+      });
+
+      this.contentArea.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        if (!e.dataTransfer.types.includes('Files')) return;
+        dragCounter--;
+        if (dragCounter === 0) {
+          this.contentArea.classList.remove('neiki-drag-over');
+        }
+      });
+
+      this.contentArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+      });
+
+      this.contentArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dragCounter = 0;
+        this.contentArea.classList.remove('neiki-drag-over');
+
+        const files = Array.from(e.dataTransfer.files);
+        const imageFiles = files.filter(file => file.type.startsWith('image/'));
+
+        if (imageFiles.length > 0) {
+          // Get cursor position from drop event
+          const dropX = e.clientX;
+          const dropY = e.clientY;
+
+          imageFiles.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (readerEvent) => {
+              // Set cursor position at drop location
+              const range = document.caretRangeFromPoint(dropX, dropY);
+              if (range) {
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+              }
+
+              this.commands.insertImage(readerEvent.target.result, file.name, '');
+            };
+            reader.readAsDataURL(file);
+          });
+        }
+      });
+    }
+  }
+
+  // ============================================
+  // SECTION 10a: IMAGE RESIZER
+  // ============================================
+
+  class ImageResizer {
+    constructor(editor) {
+      this.editor = editor;
+      this.wrapper = null;
+      this.currentImg = null;
+      this.isResizing = false;
+      this.startX = 0;
+      this.startY = 0;
+      this.startWidth = 0;
+      this.startHeight = 0;
+      this.aspectRatio = 1;
+      this.handle = null;
+
+      this.bindEvents();
+    }
+
+    bindEvents() {
+      this.editor.contentArea.addEventListener('click', (e) => {
+        const img = e.target.closest('img');
+        if (img && this.editor.contentArea.contains(img)) {
+          e.preventDefault();
+          this.selectImage(img);
+        } else if (!e.target.closest('.neiki-img-resize-handle')) {
+          this.deselect();
+        }
+      });
+
+      // Prevent native image drag inside editor (causes duplicate on drop)
+      this.editor.contentArea.addEventListener('dragstart', (e) => {
+        if (e.target.tagName === 'IMG') {
+          e.preventDefault();
+        }
+      });
+
+      document.addEventListener('mousedown', (e) => {
+        if (this.wrapper && !this.wrapper.contains(e.target) && !this.editor.contentArea.contains(e.target)) {
+          this.deselect();
+        }
+      });
+
+      document.addEventListener('touchstart', (e) => {
+        if (this.wrapper && !this.wrapper.contains(e.target) && !this.editor.contentArea.contains(e.target)) {
+          this.deselect();
+        }
+      });
+    }
+
+    selectImage(img) {
+      this.deselect();
+      this.currentImg = img;
+
+      // Create wrapper around image
+      this.wrapper = document.createElement('span');
+      this.wrapper.className = 'neiki-img-resizable';
+      this.wrapper.contentEditable = 'false';
+      this.wrapper.setAttribute('data-neiki-resizer', 'true');
+
+      img.parentNode.insertBefore(this.wrapper, img);
+      this.wrapper.appendChild(img);
+
+      // Add resize handles
+      ['nw', 'ne', 'sw', 'se'].forEach(pos => {
+        const handle = document.createElement('span');
+        handle.className = 'neiki-img-resize-handle ' + pos;
+        handle.setAttribute('data-pos', pos);
+        handle.addEventListener('mousedown', (e) => this.startResize(e, pos));
+        handle.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          this.startResize(touch, pos, true);
+        }, { passive: false });
+        this.wrapper.appendChild(handle);
+      });
+
+      // Add size label
+      this.sizeLabel = document.createElement('span');
+      this.sizeLabel.className = 'neiki-img-size-label';
+      this.sizeLabel.textContent = Math.round(img.offsetWidth) + ' × ' + Math.round(img.offsetHeight);
+      this.wrapper.appendChild(this.sizeLabel);
+    }
+
+    deselect() {
+      if (this.wrapper && this.currentImg) {
+        const img = this.currentImg;
+        const parent = this.wrapper.parentNode;
+        if (parent) {
+          parent.insertBefore(img, this.wrapper);
+          this.wrapper.remove();
+        }
+      }
+      this.wrapper = null;
+      this.currentImg = null;
+      this.sizeLabel = null;
+    }
+
+    startResize(e, pos, isTouch = false) {
+      if (e.preventDefault) { e.preventDefault(); }
+      if (e.stopPropagation) { e.stopPropagation(); }
+
+      this.isResizing = true;
+      this.handle = pos;
+      this.startX = e.clientX;
+      this.startY = e.clientY;
+      this.startWidth = this.currentImg.offsetWidth;
+      this.startHeight = this.currentImg.offsetHeight;
+      this.aspectRatio = this.startWidth / this.startHeight;
+
+      if (isTouch) {
+        const onTouchMove = (ev) => {
+          ev.preventDefault();
+          this.onResize(ev.touches[0]);
+        };
+        const onTouchEnd = () => {
+          this.isResizing = false;
+          document.removeEventListener('touchmove', onTouchMove);
+          document.removeEventListener('touchend', onTouchEnd);
+          this.editor.history.record();
+          this.editor.triggerChange();
+        };
+        document.addEventListener('touchmove', onTouchMove, { passive: false });
+        document.addEventListener('touchend', onTouchEnd);
+      } else {
+        const onMove = (ev) => this.onResize(ev);
+        const onUp = () => {
+          this.isResizing = false;
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+          this.editor.history.record();
+          this.editor.triggerChange();
+        };
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      }
+    }
+
+    onResize(e) {
+      if (!this.isResizing || !this.currentImg) return;
+
+      const dx = e.clientX - this.startX;
+      const dy = e.clientY - this.startY;
+
+      let newWidth, newHeight;
+
+      switch (this.handle) {
+        case 'se':
+          newWidth = this.startWidth + dx;
+          break;
+        case 'sw':
+          newWidth = this.startWidth - dx;
+          break;
+        case 'ne':
+          newWidth = this.startWidth + dx;
+          break;
+        case 'nw':
+          newWidth = this.startWidth - dx;
+          break;
+      }
+
+      newWidth = Math.max(30, newWidth);
+      newHeight = Math.round(newWidth / this.aspectRatio);
+
+      this.currentImg.style.width = newWidth + 'px';
+      this.currentImg.style.height = newHeight + 'px';
+      this.currentImg.removeAttribute('width');
+      this.currentImg.removeAttribute('height');
+
+      if (this.sizeLabel) {
+        this.sizeLabel.textContent = Math.round(newWidth) + ' × ' + Math.round(newHeight);
+      }
+    }
+
+    destroy() {
+      this.deselect();
+    }
+  }
+
+  // ============================================
+  // SECTION 10b: TABLE COLUMN RESIZER
+  // ============================================
+
+  class TableColumnResizer {
+    constructor(editor) {
+      this.editor = editor;
+      this.isResizing = false;
+      this.currentHandle = null;
+      this.startX = 0;
+      this.startWidthLeft = 0;
+      this.startWidthRight = 0;
+      this.cellLeft = null;
+      this.cellRight = null;
+
+      this.bindEvents();
+    }
+
+    bindEvents() {
+      this.editor.contentArea.addEventListener('mousemove', (e) => {
+        if (this.isResizing) return;
+        const cell = e.target.closest('td, th');
+        if (!cell) {
+          this.removeHandles();
+          return;
+        }
+        this.showHandle(cell, e);
+      });
+
+      this.editor.contentArea.addEventListener('mouseleave', () => {
+        if (!this.isResizing) this.removeHandles();
+      });
+    }
+
+    showHandle(cell, e) {
+      const rect = cell.getBoundingClientRect();
+      const threshold = 6;
+      const isNearRight = (e.clientX > rect.right - threshold);
+      const isNearLeft = (e.clientX < rect.left + threshold);
+
+      this.removeHandles();
+
+      if (!isNearRight && !isNearLeft) return;
+
+      const table = cell.closest('table');
+      if (!table) return;
+
+      let leftCell, rightCell;
+      const row = cell.closest('tr');
+      const cellIndex = Array.from(row.cells).indexOf(cell);
+
+      if (isNearRight && cellIndex < row.cells.length - 1) {
+        leftCell = cell;
+        rightCell = row.cells[cellIndex + 1];
+      } else if (isNearLeft && cellIndex > 0) {
+        leftCell = row.cells[cellIndex - 1];
+        rightCell = cell;
+      } else {
+        return;
+      }
+
+      const handle = document.createElement('div');
+      handle.className = 'neiki-table-col-resize-handle';
+      const leftRect = leftCell.getBoundingClientRect();
+      const contentRect = this.editor.contentArea.getBoundingClientRect();
+
+      handle.style.left = (leftRect.right - contentRect.left - 3 + this.editor.contentArea.scrollLeft) + 'px';
+      handle.style.top = (table.getBoundingClientRect().top - contentRect.top + this.editor.contentArea.scrollTop) + 'px';
+      handle.style.height = table.offsetHeight + 'px';
+
+      handle.addEventListener('mousedown', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        this.startResize(ev, leftCell, rightCell, table);
+      });
+
+      this.editor.contentArea.appendChild(handle);
+      this.currentHandle = handle;
+    }
+
+    removeHandles() {
+      if (this.currentHandle) {
+        this.currentHandle.remove();
+        this.currentHandle = null;
+      }
+    }
+
+    startResize(e, leftCell, rightCell, table) {
+      this.isResizing = true;
+      this.startX = e.clientX;
+      this.cellLeft = leftCell;
+      this.cellRight = rightCell;
+
+      // Set table to fixed layout
+      table.style.tableLayout = 'fixed';
+
+      // Initialize all cell widths as px if not set
+      const firstRow = table.rows[0];
+      if (firstRow) {
+        Array.from(firstRow.cells).forEach(c => {
+          if (!c.style.width) c.style.width = c.offsetWidth + 'px';
+        });
+      }
+
+      this.startWidthLeft = leftCell.offsetWidth;
+      this.startWidthRight = rightCell.offsetWidth;
+
+      this.removeHandles();
+
+      const onMove = (ev) => {
+        const dx = ev.clientX - this.startX;
+        const newLeft = Math.max(40, this.startWidthLeft + dx);
+        const newRight = Math.max(40, this.startWidthRight - dx);
+
+        // Apply to all cells in same column
+        const leftIdx = Array.from(leftCell.closest('tr').cells).indexOf(leftCell);
+        const rightIdx = Array.from(rightCell.closest('tr').cells).indexOf(rightCell);
+        Array.from(table.rows).forEach(row => {
+          if (row.cells[leftIdx]) row.cells[leftIdx].style.width = newLeft + 'px';
+          if (row.cells[rightIdx]) row.cells[rightIdx].style.width = newRight + 'px';
+        });
+      };
+
+      const onUp = () => {
+        this.isResizing = false;
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        this.editor.history.record();
+        this.editor.triggerChange();
+      };
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    }
+
+    destroy() {
+      this.removeHandles();
+    }
+  }
+
+  // ============================================
+  // SECTION 10c: BLOCK DRAG & DROP REORDERING
+  // ============================================
+
+  class BlockDragDrop {
+    constructor(editor) {
+      this.editor = editor;
+      this.gripEl = null;
+      this.dragBlock = null;
+      this.placeholder = null;
+      this.isDragging = false;
+      this.offsetY = 0;
+      this.ghostEl = null;
+
+      this.bindEvents();
+    }
+
+    getTopLevelBlocks() {
+      return Array.from(this.editor.contentArea.children).filter(el =>
+        el.nodeType === Node.ELEMENT_NODE &&
+        !el.classList.contains('neiki-block-placeholder') &&
+        !el.classList.contains('neiki-block-grip')
+      );
+    }
+
+    getBlockFromPoint(y) {
+      const blocks = this.getTopLevelBlocks();
+      for (let i = blocks.length - 1; i >= 0; i--) {
+        const rect = blocks[i].getBoundingClientRect();
+        if (y >= rect.top) return { block: blocks[i], index: i };
+      }
+      return blocks.length > 0 ? { block: blocks[0], index: 0 } : null;
+    }
+
+    bindEvents() {
+      // Show grip on hover
+      this.editor.contentArea.addEventListener('mousemove', (e) => {
+        if (this.isDragging) return;
+        const block = this.getBlockAt(e.target);
+        if (block) {
+          this.showGrip(block);
+        } else {
+          this.hideGrip();
+        }
+      });
+
+      this.editor.contentArea.addEventListener('mouseleave', () => {
+        if (!this.isDragging) this.hideGrip();
+      });
+    }
+
+    getBlockAt(target) {
+      if (!target || target === this.editor.contentArea) return null;
+      let node = target;
+      while (node && node.parentNode !== this.editor.contentArea) {
+        node = node.parentNode;
+      }
+      if (node && node.nodeType === Node.ELEMENT_NODE && node.parentNode === this.editor.contentArea) {
+        return node;
+      }
+      return null;
+    }
+
+    showGrip(block) {
+      if (this.gripEl && this.gripEl._block === block) return;
+      this.hideGrip();
+
+      const grip = document.createElement('div');
+      grip.className = 'neiki-block-grip';
+      grip.innerHTML = Icons.grip;
+      grip.title = 'Drag to reorder';
+      grip.contentEditable = 'false';
+      grip._block = block;
+
+      // Position grip
+      const contentRect = this.editor.contentArea.getBoundingClientRect();
+      const blockRect = block.getBoundingClientRect();
+      grip.style.top = (blockRect.top - contentRect.top + this.editor.contentArea.scrollTop) + 'px';
+      grip.style.left = '-28px';
+
+      grip.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.startDrag(e, block);
+      });
+
+      this.editor.contentArea.appendChild(grip);
+      this.gripEl = grip;
+    }
+
+    hideGrip() {
+      if (this.gripEl) {
+        this.gripEl.remove();
+        this.gripEl = null;
+      }
+    }
+
+    startDrag(e, block) {
+      this.isDragging = true;
+      this.dragBlock = block;
+      this.hideGrip();
+
+      // Create ghost
+      this.ghostEl = block.cloneNode(true);
+      this.ghostEl.className = (this.ghostEl.className || '') + ' neiki-block-ghost';
+      this.ghostEl.style.width = block.offsetWidth + 'px';
+      document.body.appendChild(this.ghostEl);
+
+      const rect = block.getBoundingClientRect();
+      this.offsetY = e.clientY - rect.top;
+      this.ghostEl.style.left = rect.left + 'px';
+      this.ghostEl.style.top = (e.clientY - this.offsetY) + 'px';
+
+      // Create placeholder
+      this.placeholder = document.createElement('div');
+      this.placeholder.className = 'neiki-block-placeholder';
+      this.placeholder.style.height = block.offsetHeight + 'px';
+      block.parentNode.insertBefore(this.placeholder, block);
+
+      // Hide original
+      block.style.display = 'none';
+
+      const onMove = (ev) => {
+        this.ghostEl.style.top = (ev.clientY - this.offsetY) + 'px';
+
+        // Find target position
+        const target = this.getBlockFromPoint(ev.clientY);
+        if (target && target.block !== this.dragBlock && target.block !== this.placeholder) {
+          const targetRect = target.block.getBoundingClientRect();
+          const mid = targetRect.top + targetRect.height / 2;
+          if (ev.clientY < mid) {
+            target.block.parentNode.insertBefore(this.placeholder, target.block);
+          } else {
+            target.block.parentNode.insertBefore(this.placeholder, target.block.nextSibling);
+          }
+        }
+      };
+
+      const onUp = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+
+        // Move block to placeholder position
+        this.placeholder.parentNode.insertBefore(this.dragBlock, this.placeholder);
+        this.dragBlock.style.display = '';
+        this.placeholder.remove();
+        this.ghostEl.remove();
+
+        this.isDragging = false;
+        this.dragBlock = null;
+        this.placeholder = null;
+        this.ghostEl = null;
+
+        this.editor.history.record();
+        this.editor.triggerChange();
+      };
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    }
+
+    moveBlockUp(block) {
+      if (!block) block = this.getSelectedBlock();
+      if (!block) return;
+      const prev = block.previousElementSibling;
+      if (prev && prev.parentNode === this.editor.contentArea) {
+        prev.parentNode.insertBefore(block, prev);
+        this.editor.history.record();
+        this.editor.triggerChange();
+      }
+    }
+
+    moveBlockDown(block) {
+      if (!block) block = this.getSelectedBlock();
+      if (!block) return;
+      const next = block.nextElementSibling;
+      if (next && next.parentNode === this.editor.contentArea) {
+        next.parentNode.insertBefore(block, next.nextSibling);
+        this.editor.history.record();
+        this.editor.triggerChange();
+      }
+    }
+
+    getSelectedBlock() {
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount) return null;
+      let node = sel.getRangeAt(0).startContainer;
+      if (node.nodeType === Node.TEXT_NODE) node = node.parentNode;
+      while (node && node.parentNode !== this.editor.contentArea) {
+        node = node.parentNode;
+      }
+      if (node && node.parentNode === this.editor.contentArea) return node;
+      return null;
+    }
+
+    destroy() {
+      this.hideGrip();
+      if (this.ghostEl) this.ghostEl.remove();
+      if (this.placeholder) this.placeholder.remove();
+    }
+  }
+
+  // ============================================
+  // SECTION 10: FLOATING SELECTION TOOLBAR
+  // ============================================
+
+  class FloatingToolbar {
+    constructor(editor) {
+      this.editor = editor;
+      this.toolbar = null;
+      this.isVisible = false;
+      this.hideTimeout = null;
+
+      this.createToolbar();
+      this.bindEvents();
+    }
+
+    createToolbar() {
+      this.toolbar = Utils.createElement('div', { className: 'neiki-floating-toolbar' });
+
+      // Move block buttons (left side)
+      const moveButtons = [
+        { item: 'moveUp', icon: Icons.moveUp, title: 'Move block up' },
+        { item: 'moveDown', icon: Icons.moveDown, title: 'Move block down' }
+      ];
+
+      moveButtons.forEach(({ item, icon, title }) => {
+        const button = Utils.createElement('button', {
+          className: 'neiki-toolbar-btn neiki-floating-btn neiki-floating-move-btn',
+          title: title,
+          type: 'button',
+          innerHTML: icon,
+          'data-command': item
+        });
+
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.handleButtonClick(item);
+        });
+
+        this.toolbar.appendChild(button);
+      });
+
+      // Divider
+      const divider = Utils.createElement('span', { className: 'neiki-floating-divider' });
+      this.toolbar.appendChild(divider);
+
+      // Formatting buttons
+      const buttons = [
+        { item: 'bold', icon: Icons.bold, title: 'Bold' },
+        { item: 'italic', icon: Icons.italic, title: 'Italic' },
+        { item: 'underline', icon: Icons.underline, title: 'Underline' },
+        { item: 'strikeThrough', icon: Icons.strikethrough, title: 'Strikethrough' },
+        { item: 'link', icon: Icons.link, title: 'Link' }
+      ];
+
+      buttons.forEach(({ item, icon, title }) => {
+        const button = Utils.createElement('button', {
+          className: 'neiki-toolbar-btn neiki-floating-btn',
+          title: title,
+          type: 'button',
+          innerHTML: icon,
+          'data-command': item
+        });
+
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.handleButtonClick(item);
+        });
+
+        this.toolbar.appendChild(button);
+      });
+
+      document.body.appendChild(this.toolbar);
+    }
+
+    bindEvents() {
+      document.addEventListener('selectionchange', () => {
+        clearTimeout(this.hideTimeout);
+        this.hideTimeout = setTimeout(() => this.updatePosition(), 100);
+      });
+
+      document.addEventListener('mouseup', () => {
+        setTimeout(() => this.updatePosition(), 10);
+      });
+
+      document.addEventListener('scroll', () => {
+        if (this.isVisible) this.updatePosition();
+      });
+    }
+
+    updatePosition() {
+      const sel = window.getSelection();
+
+      if (!sel.rangeCount || sel.isCollapsed || !this.editor.contentArea.contains(sel.anchorNode)) {
+        this.hide();
+        return;
+      }
+
+      const range = sel.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+
+      if (rect.width === 0 && rect.height === 0) {
+        this.hide();
+        return;
+      }
+
+      this.show();
+
+      const toolbarRect = this.toolbar.getBoundingClientRect();
+      const x = rect.left + (rect.width / 2) - (toolbarRect.width / 2);
+      const y = rect.top - toolbarRect.height - 10;
+
+      // Keep toolbar within viewport
+      const finalX = Math.max(10, Math.min(x, window.innerWidth - toolbarRect.width - 10));
+      const finalY = Math.max(10, y);
+
+      this.toolbar.style.left = finalX + 'px';
+      this.toolbar.style.top = finalY + 'px';
+    }
+
+    show() {
+      if (!this.isVisible) {
+        this.toolbar.classList.add('show');
+        this.isVisible = true;
+      }
+    }
+
+    hide() {
+      if (this.isVisible) {
+        this.toolbar.classList.remove('show');
+        this.isVisible = false;
+      }
+    }
+
+    handleButtonClick(item) {
+      if (item === 'link') {
+        const sel = Utils.getSelection();
+        this.editor.modal.open('link', { text: sel.toString() });
+      } else if (item === 'moveUp') {
+        if (this.editor.blockDragDrop) this.editor.blockDragDrop.moveBlockUp();
+      } else if (item === 'moveDown') {
+        if (this.editor.blockDragDrop) this.editor.blockDragDrop.moveBlockDown();
+      } else {
+        this.editor.commands[item]();
+      }
+      this.hide();
+    }
+  }
+
+  // ============================================
+  // SECTION 11: PLUGIN SYSTEM
+  // ============================================
+
+  const registeredPlugins = [];
+
+  NeikiEditor.registerPlugin = function (plugin) {
+    if (!plugin.name) {
+      console.error('NeikiEditor: Plugin must have a name');
+      return;
+    }
+    registeredPlugins.push(plugin);
+  };
+
+  NeikiEditor.getPlugins = function () {
+    return [...registeredPlugins];
+  };
+
+  // ============================================
+  // SECTION 11: TABLE CONTEXT MENU
+  // ============================================
+
+  class TableContextMenu {
+    constructor(editor) {
+      this.editor = editor;
+      this.menu = null;
+      this.currentCell = null;
+
+      this.createMenu();
+      this.bindEvents();
+    }
+
+    createMenu() {
+      this.menu = Utils.createElement('div', { className: 'neiki-context-menu' });
+      this.menu.innerHTML = `
+                <div class="neiki-context-item" data-action="insertRowAbove">${Icons.table} Insert Row Above</div>
+                <div class="neiki-context-item" data-action="insertRowBelow">${Icons.table} Insert Row Below</div>
+                <div class="neiki-context-item" data-action="insertColLeft">${Icons.table} Insert Column Left</div>
+                <div class="neiki-context-item" data-action="insertColRight">${Icons.table} Insert Column Right</div>
+                <div class="neiki-context-divider"></div>
+                <div class="neiki-context-item" data-action="deleteRow">${Icons.eraser} Delete Row</div>
+                <div class="neiki-context-item" data-action="deleteCol">${Icons.eraser} Delete Column</div>
+                <div class="neiki-context-item neiki-context-danger" data-action="deleteTable">${Icons.eraser} Delete Table</div>
+                <div class="neiki-context-divider"></div>
+                <div class="neiki-context-item" data-action="mergeCells">${Icons.table} Merge Cells</div>
+                <div class="neiki-context-item" data-action="splitCell">${Icons.table} Split Cell</div>
+            `;
+      document.body.appendChild(this.menu);
+
+      this.menu.querySelectorAll('.neiki-context-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+          const action = item.dataset.action;
+          this.executeAction(action);
+          this.hide();
+        });
+      });
+    }
+
+    bindEvents() {
+      this.editor.contentArea.addEventListener('contextmenu', (e) => {
+        const cell = e.target.closest('td, th');
+        if (cell) {
+          e.preventDefault();
+          this.currentCell = cell;
+          this.show(e.clientX, e.clientY);
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!this.menu.contains(e.target)) {
+          this.hide();
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') this.hide();
+      });
+    }
+
+    show(x, y) {
+      this.menu.style.display = 'block';
+
+      // Adjust position to stay within viewport
+      const rect = this.menu.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      if (x + rect.width > viewportWidth) {
+        x = viewportWidth - rect.width - 10;
+      }
+      if (y + rect.height > viewportHeight) {
+        y = viewportHeight - rect.height - 10;
+      }
+
+      this.menu.style.left = x + 'px';
+      this.menu.style.top = y + 'px';
+    }
+
+    hide() {
+      this.menu.style.display = 'none';
+      this.currentCell = null;
+    }
+
+    executeAction(action) {
+      if (!this.currentCell) return;
+
+      const table = this.currentCell.closest('table');
+      const row = this.currentCell.closest('tr');
+      if (!table || !row) return;
+
+      const rowIndex = Array.from(table.rows).indexOf(row);
+      const cellIndex = Array.from(row.cells).indexOf(this.currentCell);
+
+      switch (action) {
+        case 'insertRowAbove':
+          this.insertRow(table, rowIndex, 'before');
+          break;
+        case 'insertRowBelow':
+          this.insertRow(table, rowIndex, 'after');
+          break;
+        case 'insertColLeft':
+          this.insertColumn(table, cellIndex, 'before');
+          break;
+        case 'insertColRight':
+          this.insertColumn(table, cellIndex, 'after');
+          break;
+        case 'deleteRow':
+          this.deleteRow(table, rowIndex);
+          break;
+        case 'deleteCol':
+          this.deleteColumn(table, cellIndex);
+          break;
+        case 'deleteTable':
+          table.remove();
+          break;
+        case 'mergeCells':
+          this.mergeCells();
+          break;
+        case 'splitCell':
+          this.splitCell();
+          break;
+      }
+
+      this.editor.history.record();
+      this.editor.triggerChange();
+    }
+
+    insertRow(table, index, position) {
+      const refRow = table.rows[index];
+      const colCount = refRow.cells.length;
+      const newRow = table.insertRow(position === 'before' ? index : index + 1);
+
+      for (let i = 0; i < colCount; i++) {
+        const cell = newRow.insertCell();
+        cell.innerHTML = '&nbsp;';
+      }
+    }
+
+    insertColumn(table, index, position) {
+      const insertIndex = position === 'before' ? index : index + 1;
+
+      for (let row of table.rows) {
+        const cell = row.insertCell(insertIndex);
+        cell.innerHTML = '&nbsp;';
+        // Match header/cell type
+        if (row.cells[0] && row.cells[0].tagName === 'TH') {
+          const th = document.createElement('th');
+          th.innerHTML = '&nbsp;';
+          cell.parentNode.replaceChild(th, cell);
+        }
+      }
+    }
+
+    deleteRow(table, index) {
+      if (table.rows.length > 1) {
+        table.deleteRow(index);
+      }
+    }
+
+    deleteColumn(table, index) {
+      for (let row of table.rows) {
+        if (row.cells.length > 1 && row.cells[index]) {
+          row.deleteCell(index);
+        }
+      }
+    }
+
+    mergeCells() {
+      const sel = window.getSelection();
+      if (!sel.rangeCount) return;
+
+      // Simple merge: just add colspan/rowspan info
+      // Full implementation would need selection tracking
+      const cell = this.currentCell;
+      const colspan = parseInt(cell.getAttribute('colspan') || 1);
+      cell.setAttribute('colspan', colspan + 1);
+
+      // Remove next cell if exists
+      const nextCell = cell.nextElementSibling;
+      if (nextCell && (nextCell.tagName === 'TD' || nextCell.tagName === 'TH')) {
+        cell.innerHTML += ' ' + nextCell.innerHTML;
+        nextCell.remove();
+      }
+    }
+
+    splitCell() {
+      const cell = this.currentCell;
+      const colspan = parseInt(cell.getAttribute('colspan') || 1);
+
+      if (colspan > 1) {
+        cell.setAttribute('colspan', colspan - 1);
+        const newCell = document.createElement(cell.tagName);
+        newCell.innerHTML = '&nbsp;';
+        cell.after(newCell);
+      }
+    }
+  }
+
+  // ============================================
+  // SECTION 12: EXPORT
+  // ============================================
+
+  // Factory function
+  function createEditor(element, options) {
+    return new NeikiEditor(element, options);
+  }
+
+  // jQuery-like initialization
+  if (typeof jQuery !== 'undefined') {
+    jQuery.fn.neikiEditor = function (options) {
+      return this.each(function () {
+        if (!jQuery.data(this, 'neikiEditor')) {
+          jQuery.data(this, 'neikiEditor', new NeikiEditor(this, options));
+        }
+      });
+    };
+  }
+
+  // Static methods
+  NeikiEditor.addTranslation = addTranslation;
+
+  // Export
+  global.NeikiEditor = NeikiEditor;
+  global.createNeikiEditor = createEditor;
+
+  // AMD
+  if (typeof define === 'function' && define.amd) {
+    define('NeikiEditor', [], function () { return NeikiEditor; });
+  }
+
+  // CommonJS
+  if (typeof module === 'object' && module.exports) {
+    module.exports = NeikiEditor;
+  }
+
+})(typeof window !== 'undefined' ? window : this);

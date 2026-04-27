@@ -1,0 +1,2204 @@
+/**
+ * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
+ * CSS Stylesheet
+ * Version: 2.8.0
+ */
+
+/* ============================================
+   CSS Custom Properties (Light/Dark Themes)
+   ============================================ */
+:root {
+  /* Light Theme (default) */
+  --neiki-bg-primary: #ffffff;
+  --neiki-bg-secondary: #f8f9fa;
+  --neiki-bg-tertiary: #e9ecef;
+  --neiki-bg-hover: #dee2e6;
+  --neiki-bg-active: #ced4da;
+  --neiki-border-color: #dee2e6;
+  --neiki-border-color-dark: #adb5bd;
+  --neiki-text-primary: #212529;
+  --neiki-text-secondary: #495057;
+  --neiki-text-muted: #6c757d;
+  --neiki-accent-color: #0d6efd;
+  --neiki-accent-hover: #0b5ed7;
+  --neiki-danger-color: #dc3545;
+  --neiki-success-color: #198754;
+  --neiki-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --neiki-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --neiki-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --neiki-editor-bg: #ffffff;
+  --neiki-toolbar-bg: #f8f9fa;
+  --neiki-statusbar-bg: #f8f9fa;
+  --neiki-modal-overlay: rgba(0, 0, 0, 0.5);
+  --neiki-scrollbar-thumb: #ced4da;
+  --neiki-scrollbar-track: #f8f9fa;
+  --neiki-selection-bg: #b3d7ff;
+  --neiki-highlight-color: #fff3cd;
+  --neiki-table-border: #dee2e6;
+}
+
+/* Dark Theme */
+.neiki-editor.neiki-dark {
+  --neiki-bg-primary: #1e1e1e;
+  --neiki-bg-secondary: #252526;
+  --neiki-bg-tertiary: #2d2d30;
+  --neiki-bg-hover: #3e3e42;
+  --neiki-bg-active: #505050;
+  --neiki-border-color: #3e3e42;
+  --neiki-border-color-dark: #505050;
+  --neiki-text-primary: #d4d4d4;
+  --neiki-text-secondary: #a0a0a0;
+  --neiki-text-muted: #808080;
+  --neiki-accent-color: #4fc3f7;
+  --neiki-accent-hover: #29b6f6;
+  --neiki-danger-color: #f44336;
+  --neiki-success-color: #4caf50;
+  --neiki-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --neiki-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --neiki-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4);
+  --neiki-editor-bg: #1e1e1e;
+  --neiki-toolbar-bg: #252526;
+  --neiki-statusbar-bg: #252526;
+  --neiki-modal-overlay: rgba(0, 0, 0, 0.7);
+  --neiki-scrollbar-thumb: #505050;
+  --neiki-scrollbar-track: #2d2d30;
+  --neiki-selection-bg: #264f78;
+  --neiki-highlight-color: #5c4d00;
+  --neiki-table-border: #3e3e42;
+}
+
+/* ============================================
+   Base Editor Container
+   ============================================ */
+.neiki-editor {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  color: var(--neiki-text-primary);
+  box-shadow: var(--neiki-shadow-md);
+}
+
+.neiki-editor * {
+  box-sizing: border-box;
+}
+
+/* Fullscreen Mode */
+.neiki-editor.neiki-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 999999 !important;
+  border-radius: 0 !important;
+  border: none !important;
+}
+
+/* ============================================
+   Toolbar
+   ============================================ */
+.neiki-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px;
+  background: var(--neiki-toolbar-bg);
+  border-bottom: 1px solid var(--neiki-border-color);
+  min-height: 44px;
+}
+
+.neiki-toolbar-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 4px;
+  flex-wrap: nowrap;
+}
+
+.neiki-toolbar-group:not(:last-child) {
+  border-right: 1px solid var(--neiki-border-color);
+  padding-right: 8px;
+  margin-right: 4px;
+}
+
+.neiki-toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--neiki-border-color);
+  margin: 0 4px;
+}
+
+/* Toolbar Buttons */
+.neiki-btn,
+.neiki-toolbar-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--neiki-text-secondary);
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.neiki-btn:hover,
+.neiki-toolbar-btn:hover {
+  background: var(--neiki-bg-hover);
+  color: var(--neiki-text-primary);
+}
+
+.neiki-btn:active,
+.neiki-toolbar-btn:active {
+  background: var(--neiki-bg-active);
+}
+
+.neiki-btn.active,
+.neiki-toolbar-btn.active {
+  background: var(--neiki-bg-active);
+  color: var(--neiki-accent-color);
+  border-color: var(--neiki-accent-color);
+}
+
+.neiki-btn:disabled,
+.neiki-toolbar-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.neiki-btn svg,
+.neiki-toolbar-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  pointer-events: none;
+}
+
+/* Toolbar Selects */
+.neiki-select {
+  height: 32px;
+  padding: 0 28px 0 10px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 4px;
+  color: var(--neiki-text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  min-width: 100px;
+}
+
+.neiki-select:hover {
+  border-color: var(--neiki-border-color-dark);
+}
+
+.neiki-select:focus {
+  outline: none;
+  border-color: var(--neiki-accent-color);
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15);
+}
+
+/* Color Picker Button */
+.neiki-color-btn {
+  position: relative;
+  width: 36px;
+}
+
+.neiki-color-btn .neiki-color-indicator {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 3px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+/* Checkbox Toggle */
+.neiki-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  height: 32px;
+  font-size: 12px;
+  color: var(--neiki-text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.neiki-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--neiki-accent-color);
+  cursor: pointer;
+}
+
+/* ============================================
+   Editor Content Area
+   ============================================ */
+.neiki-editor-wrapper,
+.neiki-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.neiki-content {
+  flex: 1;
+  padding: 20px 24px;
+  background: var(--neiki-editor-bg);
+  overflow-y: auto;
+  outline: none;
+  line-height: 1.6;
+  color: var(--neiki-text-primary);
+  min-height: 200px;
+}
+
+.neiki-content:focus {
+  outline: none;
+}
+
+/* Placeholder */
+.neiki-content:empty::before {
+  content: attr(data-placeholder);
+  color: var(--neiki-text-muted);
+  font-style: italic;
+  pointer-events: none;
+}
+
+.neiki-content.neiki-drag-over {
+  border: 2px dashed var(--neiki-accent-color);
+  background: rgba(13, 110, 253, 0.05);
+}
+
+.neiki-content.neiki-drag-over::after {
+  content: 'Drop images here';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--neiki-accent-color);
+  font-weight: 600;
+  font-size: 16px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Focus state for editor container - disabled */
+/* .neiki-editor.neiki-focused removed */
+
+/* Disabled state */
+.neiki-editor.neiki-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Content Scrollbar */
+.neiki-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.neiki-content::-webkit-scrollbar-track {
+  background: var(--neiki-scrollbar-track);
+}
+
+.neiki-content::-webkit-scrollbar-thumb {
+  background: var(--neiki-scrollbar-thumb);
+  border-radius: 5px;
+}
+
+.neiki-content::-webkit-scrollbar-thumb:hover {
+  background: var(--neiki-border-color-dark);
+}
+
+/* Content Typography */
+.neiki-content p {
+  margin: 0 0 1em 0;
+}
+
+.neiki-content h1 {
+  font-size: 2em;
+  font-weight: 700;
+  margin: 0 0 0.5em 0;
+}
+
+.neiki-content h2 {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin: 0 0 0.5em 0;
+}
+
+.neiki-content h3 {
+  font-size: 1.25em;
+  font-weight: 600;
+  margin: 0 0 0.5em 0;
+}
+
+.neiki-content h4 {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin: 0 0 0.5em 0;
+}
+
+.neiki-content h5 {
+  font-size: 1em;
+  font-weight: 600;
+  margin: 0 0 0.5em 0;
+}
+
+.neiki-content h6 {
+  font-size: 0.9em;
+  font-weight: 600;
+  margin: 0 0 0.5em 0;
+}
+
+.neiki-content ul,
+.neiki-content ol {
+  margin: 0 0 1em 0;
+  padding-left: 2em;
+}
+
+.neiki-content li {
+  margin-bottom: 0.25em;
+}
+
+.neiki-content blockquote {
+  margin: 0 0 1em 0;
+  padding: 10px 20px;
+  border-left: 4px solid var(--neiki-accent-color);
+  background: var(--neiki-bg-secondary);
+  font-style: italic;
+}
+
+.neiki-content pre {
+  margin: 0 0 1em 0;
+  padding: 16px;
+  background: var(--neiki-bg-tertiary);
+  border-radius: 4px;
+  overflow-x: auto;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 13px;
+}
+
+.neiki-content code {
+  padding: 2px 6px;
+  background: var(--neiki-bg-tertiary);
+  border-radius: 3px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.9em;
+}
+
+.neiki-content a {
+  color: var(--neiki-accent-color);
+  text-decoration: underline;
+}
+
+.neiki-content a:hover {
+  color: var(--neiki-accent-hover);
+}
+
+.neiki-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.neiki-content img.neiki-selected {
+  outline: 2px solid var(--neiki-accent-color);
+  outline-offset: 2px;
+}
+
+/* Search Highlight */
+.neiki-highlight {
+  background: var(--neiki-highlight-color);
+  padding: 1px 0;
+}
+
+.neiki-highlight-current {
+  background: #ffc107;
+  outline: 2px solid #ff9800;
+}
+
+/* ============================================
+   Tables
+   ============================================ */
+.neiki-content table,
+.neiki-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  table-layout: fixed;
+}
+
+.neiki-content table td,
+.neiki-content table th {
+  border: 1px solid var(--neiki-table-border);
+  padding: 8px 12px;
+  min-width: 50px;
+  vertical-align: top;
+  position: relative;
+}
+
+.neiki-content table th {
+  background: var(--neiki-bg-secondary);
+  font-weight: 600;
+}
+
+.neiki-content table td:hover,
+.neiki-content table th:hover {
+  background: var(--neiki-bg-hover);
+}
+
+.neiki-content table td.neiki-cell-selected,
+.neiki-content table th.neiki-cell-selected {
+  background: var(--neiki-selection-bg);
+}
+
+/* Table Resize Handle */
+.neiki-table-resize-handle {
+  position: absolute;
+  top: 0;
+  right: -3px;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 10;
+}
+
+.neiki-table-resize-handle:hover {
+  background: var(--neiki-accent-color);
+}
+
+/* ============================================
+   Status Bar
+   ============================================ */
+.neiki-statusbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  background: var(--neiki-statusbar-bg);
+  border-top: 1px solid var(--neiki-border-color);
+  font-size: 12px;
+  color: var(--neiki-text-muted);
+}
+
+.neiki-statusbar-left,
+.neiki-statusbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.neiki-statusbar-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.neiki-statusbar-block {
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 11px;
+  padding: 2px 6px;
+  background: var(--neiki-bg-tertiary);
+  border-radius: 3px;
+  color: var(--neiki-accent-color);
+  font-weight: 600;
+  border: 1px solid var(--neiki-border-color);
+}
+
+/* ============================================
+   Dropdowns & Popups
+   ============================================ */
+.neiki-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  min-width: 180px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 6px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 4px;
+  margin-top: 4px;
+}
+
+/* Remove the .show requirement - JS adds/removes element directly */
+
+.neiki-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--neiki-text-primary);
+  font-size: 13px;
+  transition: background 0.1s;
+}
+
+.neiki-dropdown-item:hover {
+  background: var(--neiki-bg-hover);
+}
+
+.neiki-dropdown-item.active {
+  background: var(--neiki-bg-active);
+  color: var(--neiki-accent-color);
+}
+
+.neiki-dropdown-divider {
+  height: 1px;
+  background: var(--neiki-border-color);
+  margin: 4px 0;
+}
+
+/* ============================================
+   Color Picker
+   ============================================ */
+.neiki-color-picker {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 8px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 8px;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.neiki-color-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2px;
+}
+
+.neiki-color-custom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--neiki-border-color);
+}
+
+.neiki-color-custom-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 4px;
+  padding: 2px;
+  cursor: pointer;
+  background: transparent;
+}
+
+.neiki-color-custom-input::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.neiki-color-custom-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 2px;
+}
+
+.neiki-color-custom-input::-moz-color-swatch {
+  border: none;
+  border-radius: 2px;
+}
+
+.neiki-color-hex-input {
+  flex: 1;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: monospace;
+  background: var(--neiki-bg-secondary);
+  color: var(--neiki-text-primary);
+  outline: none;
+}
+
+.neiki-color-hex-input:focus {
+  border-color: var(--neiki-accent-color);
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15);
+}
+
+.neiki-color-apply-btn {
+  height: 28px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--neiki-accent-color);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.neiki-color-apply-btn:hover {
+  background: var(--neiki-accent-hover);
+}
+
+.neiki-color-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 1px solid var(--neiki-border-color);
+  transition: transform 0.1s;
+}
+
+.neiki-color-swatch:hover {
+  transform: scale(1.2);
+  z-index: 1;
+}
+
+.neiki-color-swatch.neiki-color-reset {
+  background: white;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #ccc;
+}
+
+.neiki-color-swatch.neiki-color-reset::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -2px;
+  right: -2px;
+  height: 2px;
+  background: #e53935;
+  transform: rotate(-45deg);
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.neiki-color-picker-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--neiki-text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+/* Emoji Picker */
+.neiki-emoji-picker {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  width: 280px;
+  max-height: 250px;
+  overflow-y: auto;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 8px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 8px;
+  margin-top: 4px;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2px;
+}
+
+.neiki-emoji-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.neiki-emoji-item:hover {
+  background: var(--neiki-bg-hover);
+  transform: scale(1.2);
+}
+
+/* Special Characters Picker */
+.neiki-special-picker {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  width: 320px;
+  max-height: 280px;
+  overflow-y: auto;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 8px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 8px;
+  margin-top: 4px;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+}
+
+.neiki-special-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid var(--neiki-border-color);
+  background: var(--neiki-bg-secondary);
+  transition: all 0.15s;
+}
+
+.neiki-special-item:hover {
+  background: var(--neiki-accent-color);
+  color: white;
+  border-color: var(--neiki-accent-color);
+  transform: scale(1.1);
+}
+
+/* Find & Replace Highlights */
+.neiki-highlight-find {
+  background: #ffeb3b;
+  padding: 1px 0;
+  border-radius: 2px;
+}
+
+.neiki-highlight-current {
+  background: #ff9800;
+  outline: 2px solid #e65100;
+}
+
+.neiki-color-presets {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.neiki-color-preset {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.1s, border-color 0.1s;
+}
+
+.neiki-color-preset:hover {
+  transform: scale(1.1);
+}
+
+.neiki-color-preset.active {
+  border-color: var(--neiki-accent-color);
+}
+
+.neiki-color-preset.neiki-color-reset {
+  background: linear-gradient(45deg, #fff 45%, #ff0000 45%, #ff0000 55%, #fff 55%);
+  border: 1px solid var(--neiki-border-color);
+}
+
+.neiki-color-custom {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--neiki-border-color);
+}
+
+.neiki-color-custom input[type="color"] {
+  width: 40px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.neiki-color-custom input[type="text"] {
+  flex: 1;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 4px;
+  background: var(--neiki-bg-primary);
+  color: var(--neiki-text-primary);
+  font-size: 12px;
+  font-family: monospace;
+}
+
+/* ============================================
+   Table Picker
+   ============================================ */
+.neiki-table-picker {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 8px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 12px;
+  display: none;
+}
+
+.neiki-table-picker.show {
+  display: block;
+}
+
+.neiki-table-picker-label {
+  font-size: 12px;
+  color: var(--neiki-text-secondary);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.neiki-table-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 20px);
+  gap: 2px;
+}
+
+.neiki-table-picker-cell {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 2px;
+  background: var(--neiki-bg-primary);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.neiki-table-picker-cell:hover,
+.neiki-table-picker-cell.active {
+  background: var(--neiki-accent-color);
+  border-color: var(--neiki-accent-color);
+}
+
+/* ============================================
+   Special Characters Picker (duplicate removed)
+   ============================================ */
+.neiki-special-chars {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  width: 280px;
+  max-height: 300px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 8px;
+  box-shadow: var(--neiki-shadow-lg);
+  display: none;
+  overflow: hidden;
+}
+
+.neiki-special-chars.show {
+  display: flex;
+  flex-direction: column;
+}
+
+.neiki-special-chars-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2px;
+  padding: 8px;
+  overflow-y: auto;
+}
+
+.neiki-special-char-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.neiki-special-char-item:hover {
+  background: var(--neiki-bg-hover);
+}
+
+/* ============================================
+   Modals
+   ============================================ */
+.neiki-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--neiki-modal-overlay);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+.neiki-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.neiki-modal {
+  background: var(--neiki-bg-primary);
+  border-radius: 12px;
+  box-shadow: var(--neiki-shadow-lg);
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: neiki-modal-in 0.2s ease;
+}
+
+.neiki-modal-wide {
+  max-width: 520px;
+}
+
+.neiki-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--neiki-border-color);
+}
+
+.neiki-modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--neiki-text-primary);
+  margin: 0;
+}
+
+.neiki-modal-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--neiki-text-muted);
+  transition: background 0.15s;
+}
+
+.neiki-modal-close:hover {
+  background: var(--neiki-bg-hover);
+  color: var(--neiki-text-primary);
+}
+
+.neiki-modal-body {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.neiki-modal h3,
+.neiki-modal-header h3 {
+  color: #000000;
+  margin: 0;
+}
+
+.neiki-dark .neiki-modal h3,
+.neiki-dark .neiki-modal-header h3 {
+  color: var(--neiki-text-primary);
+}
+
+.neiki-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--neiki-border-color);
+}
+
+.neiki-modal-footer .neiki-btn {
+  width: auto;
+  height: 38px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+}
+
+/* Form Elements */
+.neiki-form-group {
+  margin-bottom: 16px;
+}
+
+.neiki-form-group:last-child {
+  margin-bottom: 0;
+}
+
+.neiki-form-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--neiki-text-secondary);
+}
+
+.neiki-form-input,
+.neiki-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 6px;
+  background: var(--neiki-bg-primary);
+  color: var(--neiki-text-primary);
+  font-size: 14px;
+  transition: border-color 0.15s;
+}
+
+.neiki-form-input:focus,
+.neiki-input:focus {
+  outline: none;
+  border-color: var(--neiki-accent-color);
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+.neiki-form-input::placeholder,
+.neiki-input::placeholder {
+  color: var(--neiki-text-muted);
+}
+
+.neiki-form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.neiki-form-divider {
+  display: flex;
+  align-items: center;
+  margin: 16px 0;
+  text-align: center;
+  position: relative;
+}
+
+.neiki-form-divider::before {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--neiki-border-color);
+  margin-right: 12px;
+}
+
+.neiki-form-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--neiki-border-color);
+  margin-left: 12px;
+}
+
+.neiki-form-divider span {
+  color: var(--neiki-text-muted);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.neiki-form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--neiki-text-secondary);
+}
+
+.neiki-form-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 6px;
+  background: var(--neiki-bg-primary);
+  color: var(--neiki-text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.15s;
+}
+
+.neiki-form-textarea:focus {
+  outline: none;
+  border-color: var(--neiki-accent-color);
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+/* Buttons */
+.neiki-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.neiki-button-primary,
+.neiki-btn-primary {
+  background: var(--neiki-accent-color);
+  color: #fff;
+}
+
+.neiki-button-primary:hover,
+.neiki-btn-primary:hover {
+  background: var(--neiki-accent-hover);
+}
+
+.neiki-button-secondary,
+.neiki-btn-secondary {
+  background: var(--neiki-bg-secondary);
+  color: var(--neiki-text-primary);
+  border-color: var(--neiki-border-color);
+}
+
+.neiki-btn-primary,
+.neiki-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.neiki-btn-secondary {
+  border-color: var(--neiki-border-color);
+}
+
+.neiki-btn-secondary:hover {
+  background: var(--neiki-bg-hover);
+}
+
+.neiki-button-secondary:hover {
+  background: var(--neiki-bg-hover);
+}
+
+.neiki-button-danger {
+  background: var(--neiki-danger-color);
+  color: #fff;
+}
+
+.neiki-button-danger:hover {
+  opacity: 0.9;
+}
+
+/* ============================================
+   Find & Replace Panel
+   ============================================ */
+.neiki-find-replace {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  width: 360px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 0 0 0 8px;
+  box-shadow: var(--neiki-shadow-lg);
+  display: none;
+}
+
+.neiki-find-replace.show {
+  display: block;
+}
+
+.neiki-find-replace-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--neiki-border-color);
+}
+
+.neiki-find-replace-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--neiki-text-primary);
+}
+
+.neiki-find-replace-body {
+  padding: 12px;
+}
+
+.neiki-find-replace-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.neiki-find-replace-row:last-child {
+  margin-bottom: 0;
+}
+
+.neiki-find-replace-input {
+  flex: 1;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 4px;
+  background: var(--neiki-bg-primary);
+  color: var(--neiki-text-primary);
+  font-size: 13px;
+}
+
+.neiki-find-replace-input:focus {
+  outline: none;
+  border-color: var(--neiki-accent-color);
+}
+
+.neiki-find-replace-options {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.neiki-find-replace-option {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--neiki-text-secondary);
+  cursor: pointer;
+}
+
+.neiki-find-replace-option input {
+  accent-color: var(--neiki-accent-color);
+}
+
+.neiki-find-replace-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.neiki-find-replace-btn {
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+.neiki-find-replace-count {
+  font-size: 12px;
+  color: var(--neiki-text-muted);
+  margin-left: auto;
+}
+
+/* ============================================
+   HTML Code View
+   ============================================ */
+.neiki-code-view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  background: var(--neiki-bg-primary);
+  display: none;
+  flex-direction: column;
+}
+
+.neiki-code-view.show {
+  display: flex;
+}
+
+.neiki-code-view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: var(--neiki-bg-secondary);
+  border-bottom: 1px solid var(--neiki-border-color);
+  flex-shrink: 0;
+}
+
+.neiki-code-view-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--neiki-text-primary);
+}
+
+.neiki-code-view-textarea {
+  flex: 1;
+  width: 100%;
+  padding: 16px;
+  border: none;
+  background: var(--neiki-bg-primary);
+  color: var(--neiki-text-primary);
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  resize: none;
+}
+
+.neiki-code-view-textarea:focus {
+  outline: none;
+}
+
+.neiki-code-view-apply {
+  width: auto !important;
+  padding: 0 12px !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 30px;
+  font-size: 12px;
+  background: var(--neiki-accent-color) !important;
+  color: white !important;
+  border-radius: 5px;
+}
+
+.neiki-code-view-apply:hover {
+  background: var(--neiki-accent-hover) !important;
+  color: white !important;
+}
+
+.neiki-code-view-apply svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+/* ============================================
+   Context Menu
+   ============================================ */
+.neiki-context-menu {
+  position: fixed;
+  z-index: 10001;
+  min-width: 180px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 8px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 4px;
+  display: none;
+}
+
+.neiki-context-menu.show {
+  display: block;
+}
+
+.neiki-context-item,
+.neiki-context-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--neiki-text-primary);
+  font-size: 13px;
+  transition: background 0.1s;
+}
+
+.neiki-context-item:hover,
+.neiki-context-menu-item:hover {
+  background: var(--neiki-bg-hover);
+}
+
+.neiki-context-item.neiki-context-danger,
+.neiki-context-menu-item.danger {
+  color: var(--neiki-danger-color);
+}
+
+.neiki-context-item svg,
+.neiki-context-menu-item svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.neiki-context-divider,
+.neiki-context-menu-divider {
+  height: 1px;
+  background: var(--neiki-border-color);
+  margin: 4px 0;
+}
+
+/* ============================================
+   Floating Selection Toolbar
+   ============================================ */
+.neiki-floating-toolbar {
+  position: absolute;
+  z-index: 1000;
+  display: none;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 8px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 4px;
+}
+
+.neiki-floating-toolbar.show {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.neiki-floating-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--neiki-bg-primary);
+  color: var(--neiki-text-primary);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.neiki-floating-btn:hover {
+  background: var(--neiki-bg-hover);
+  color: var(--neiki-accent-color);
+}
+
+.neiki-floating-btn:active {
+  background: var(--neiki-bg-active);
+}
+
+.neiki-floating-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.neiki-floating-toolbar .neiki-btn {
+  width: 28px;
+  height: 28px;
+}
+
+.neiki-floating-toolbar .neiki-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.neiki-floating-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--neiki-border-color);
+  margin: 0 2px;
+}
+
+.neiki-floating-move-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ============================================
+   Tooltips
+   ============================================ */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  background: var(--neiki-text-primary);
+  color: var(--neiki-bg-primary);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  border-radius: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s, visibility 0.15s;
+  pointer-events: none;
+  z-index: 10002;
+  margin-bottom: 6px;
+}
+
+[data-tooltip]:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ============================================
+   Drag & Drop Overlay
+   ============================================ */
+.neiki-drop-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(13, 110, 253, 0.1);
+  border: 3px dashed var(--neiki-accent-color);
+  border-radius: 8px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.neiki-drop-overlay.show {
+  display: flex;
+}
+
+.neiki-drop-overlay-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--neiki-accent-color);
+}
+
+/* ============================================
+   Image Resize Handles
+   ============================================ */
+.neiki-img-resizable {
+  display: inline-block;
+  position: relative;
+  outline: 2px solid var(--neiki-accent-color);
+  outline-offset: 2px;
+  border-radius: 4px;
+  line-height: 0;
+}
+
+.neiki-img-resizable img {
+  display: block;
+  max-width: 100%;
+}
+
+.neiki-img-resize-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--neiki-accent-color);
+  border: 2px solid #fff;
+  border-radius: 2px;
+  z-index: 10;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.neiki-img-resize-handle.nw { top: -6px; left: -6px; cursor: nw-resize; }
+.neiki-img-resize-handle.ne { top: -6px; right: -6px; cursor: ne-resize; }
+.neiki-img-resize-handle.sw { bottom: -6px; left: -6px; cursor: sw-resize; }
+.neiki-img-resize-handle.se { bottom: -6px; right: -6px; cursor: se-resize; }
+
+.neiki-img-size-label {
+  position: absolute;
+  bottom: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--neiki-text-primary);
+  color: var(--neiki-bg-primary);
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.9;
+}
+
+/* Touch-friendly resize handles */
+@media (pointer: coarse) {
+  .neiki-img-resize-handle {
+    width: 20px;
+    height: 20px;
+  }
+  .neiki-img-resize-handle.nw { top: -10px; left: -10px; }
+  .neiki-img-resize-handle.ne { top: -10px; right: -10px; }
+  .neiki-img-resize-handle.sw { bottom: -10px; left: -10px; }
+  .neiki-img-resize-handle.se { bottom: -10px; right: -10px; }
+}
+
+/* ============================================
+   Table Column Resize Handle
+   ============================================ */
+.neiki-table-col-resize-handle {
+  position: absolute;
+  width: 6px;
+  cursor: col-resize;
+  z-index: 10;
+  background: transparent;
+  transition: background 0.1s;
+}
+
+.neiki-table-col-resize-handle:hover,
+.neiki-table-col-resize-handle:active {
+  background: var(--neiki-accent-color);
+  opacity: 0.6;
+  border-radius: 3px;
+}
+
+/* ============================================
+   Block Drag & Drop
+   ============================================ */
+.neiki-block-grip {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  color: var(--neiki-text-muted);
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+  border-radius: 4px;
+  z-index: 5;
+  user-select: none;
+}
+
+.neiki-content:hover .neiki-block-grip {
+  opacity: 0.5;
+}
+
+.neiki-block-grip:hover {
+  opacity: 1 !important;
+  color: var(--neiki-text-primary);
+  background: var(--neiki-bg-hover);
+}
+
+.neiki-block-grip:active {
+  cursor: grabbing;
+}
+
+.neiki-block-grip svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+  pointer-events: none;
+}
+
+.neiki-block-ghost {
+  position: fixed;
+  z-index: 100000;
+  pointer-events: none;
+  opacity: 0.7;
+  background: var(--neiki-bg-primary);
+  border: 2px solid var(--neiki-accent-color);
+  border-radius: 6px;
+  padding: 8px 12px;
+  box-shadow: var(--neiki-shadow-lg);
+  max-height: 120px;
+  overflow: hidden;
+}
+
+.neiki-block-placeholder {
+  border: 2px dashed var(--neiki-accent-color);
+  border-radius: 6px;
+  background: rgba(13, 110, 253, 0.05);
+  margin: 2px 0;
+  transition: height 0.15s ease;
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  .neiki-editor {
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .neiki-toolbar,
+  .neiki-statusbar,
+  .neiki-floating-toolbar,
+  .neiki-find-replace,
+  .neiki-code-view-header,
+  .neiki-block-grip,
+  .neiki-img-resize-handle,
+  .neiki-img-size-label,
+  .neiki-table-col-resize-handle {
+    display: none !important;
+  }
+
+  .neiki-content {
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .neiki-editor-wrapper {
+    overflow: visible !important;
+  }
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+@media (max-width: 768px) {
+  .neiki-toolbar {
+    padding: 4px;
+    gap: 1px;
+  }
+
+  .neiki-toolbar-group {
+    padding: 0 2px;
+  }
+
+  .neiki-toolbar-group:not(:last-child) {
+    padding-right: 4px;
+    margin-right: 2px;
+  }
+
+  .neiki-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .neiki-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .neiki-select {
+    height: 28px;
+    min-width: 80px;
+    font-size: 12px;
+    padding: 0 24px 0 8px;
+  }
+
+  .neiki-content {
+    padding: 12px 16px;
+  }
+
+  .neiki-statusbar {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  .neiki-modal {
+    width: 95%;
+    max-width: none;
+    margin: 10px;
+  }
+
+  .neiki-find-replace {
+    width: 100%;
+    border-radius: 0;
+  }
+
+  .neiki-checkbox-wrapper {
+    padding: 0 4px;
+    font-size: 11px;
+  }
+
+  .neiki-color-picker {
+    left: auto;
+    right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .neiki-toolbar-group:not(:last-child) {
+    border-right: none;
+    padding-right: 2px;
+    margin-right: 0;
+  }
+
+  .neiki-select {
+    min-width: 60px;
+  }
+
+  .neiki-statusbar-left,
+  .neiki-statusbar-right {
+    gap: 8px;
+  }
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+@keyframes neiki-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.neiki-dropdown.show,
+.neiki-color-picker.show,
+.neiki-table-picker.show,
+.neiki-emoji-picker.show,
+.neiki-special-chars.show {
+  animation: neiki-fade-in 0.15s ease;
+}
+
+@keyframes neiki-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.neiki-modal-overlay.show .neiki-modal {
+  animation: neiki-modal-in 0.2s ease;
+}
+
+/* ============================================
+   Font Size Widget
+   ============================================ */
+.neiki-fontsize-widget {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  height: 32px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 4px;
+  overflow: visible;
+  background: var(--neiki-bg-primary);
+}
+
+.neiki-fontsize-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--neiki-text-secondary);
+  transition: background 0.15s, color 0.15s;
+  padding: 0;
+}
+
+.neiki-fontsize-btn:hover {
+  background: var(--neiki-bg-hover);
+  color: var(--neiki-text-primary);
+}
+
+.neiki-fontsize-input {
+  width: 38px;
+  height: 30px;
+  text-align: center;
+  border: none;
+  border-left: 1px solid var(--neiki-border-color);
+  border-right: 1px solid var(--neiki-border-color);
+  background: var(--neiki-bg-primary);
+  color: var(--neiki-text-primary);
+  font-size: 13px;
+  outline: none;
+  -moz-appearance: textfield;
+  appearance: textfield;
+  padding: 0;
+}
+
+.neiki-fontsize-input::-webkit-outer-spin-button,
+.neiki-fontsize-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.neiki-fontsize-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  min-width: 70px;
+  max-height: 240px;
+  overflow-y: auto;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 6px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 4px;
+  margin-top: 4px;
+}
+
+.neiki-fontsize-dropdown.show {
+  display: block;
+}
+
+.neiki-fontsize-dropdown-item {
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 4px;
+  color: var(--neiki-text-primary);
+  text-align: center;
+  transition: background 0.1s;
+}
+
+.neiki-fontsize-dropdown-item:hover {
+  background: var(--neiki-bg-hover);
+}
+
+/* ============================================
+   Insert Dropdown Button
+   ============================================ */
+.neiki-insert-dropdown-btn {
+  width: auto !important;
+  padding: 0 8px !important;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.neiki-insert-label {
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.neiki-chevron {
+  display: inline-flex;
+  pointer-events: none;
+}
+
+.neiki-chevron svg {
+  width: 14px;
+  height: 14px;
+}
+
+.neiki-insert-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  min-width: 160px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 6px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 4px;
+  margin-top: 4px;
+}
+
+.neiki-insert-dropdown.show {
+  display: block;
+  animation: neiki-fade-in 0.15s ease;
+}
+
+/* ============================================
+   More Menu (⋯) Dropdown
+   ============================================ */
+.neiki-more-btn {
+  position: relative;
+}
+
+.neiki-more-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 1000;
+  min-width: 140px;
+  max-width: 170px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 6px;
+  box-shadow: var(--neiki-shadow-lg);
+  padding: 4px;
+  margin-top: 4px;
+}
+
+.neiki-more-dropdown.show {
+  display: block;
+  animation: neiki-fade-in 0.15s ease;
+}
+
+/* Czech language - wider dropdown for longer labels */
+.neiki-lang-cs .neiki-more-dropdown {
+  min-width: 165px;
+}
+
+/* Dropdown item with icon */
+.neiki-dropdown-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.neiki-dropdown-item-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.neiki-dropdown-item-danger {
+  color: var(--neiki-danger-color) !important;
+}
+
+.neiki-dropdown-item-danger:hover {
+  background: rgba(220, 53, 69, 0.1);
+}
+
+/* Autosave badge in More menu */
+.neiki-autosave-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--neiki-text-muted);
+  padding: 0 4px;
+}
+
+.neiki-autosave-badge.active {
+  color: var(--neiki-success-color);
+}
+
+/* ============================================
+   Preview Modal
+   ============================================ */
+.neiki-preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  animation: neiki-fade-in 0.2s ease;
+}
+
+.neiki-preview-modal {
+  background: var(--neiki-bg-primary);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+  animation: neiki-modal-in 0.2s ease;
+}
+
+.neiki-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: var(--neiki-bg-secondary);
+  border-bottom: 1px solid var(--neiki-border-color);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--neiki-text-primary);
+}
+
+.neiki-preview-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--neiki-text-muted);
+  transition: background 0.15s;
+}
+
+.neiki-preview-close:hover {
+  background: var(--neiki-bg-hover);
+  color: var(--neiki-text-primary);
+}
+
+.neiki-preview-close svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.neiki-preview-body {
+  flex: 1;
+  overflow: auto;
+  padding: 30px;
+  color: var(--neiki-text-primary);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.neiki-preview-body img {
+  max-width: 100%;
+}
+
+.neiki-preview-body table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.neiki-preview-body table td,
+.neiki-preview-body table th {
+  border: 1px solid var(--neiki-border-color);
+  padding: 8px 12px;
+}
+
+/* Autosave status in statusbar */
+.neiki-statusbar-autosave {
+  font-style: italic;
+  color: var(--neiki-success-color);
+  font-size: 11px;
+}
