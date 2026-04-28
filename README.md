@@ -26,12 +26,23 @@
   <img src="https://img.shields.io/badge/Size-Lightweight-f97316?style=flat&labelColor=383C43" />
 </p>
 
+<p align="center">
+  <a href="https://oosmetrics.com/repo/neikiri/neiki-editor"><img src="https://api.oosmetrics.com/api/v1/badge/achievement/875222f0-f55c-4209-b894-8bf60b75c590.svg" alt="oosmetrics"/></a>
+  <a href="https://oosmetrics.com/repo/neikiri/neiki-editor"><img src="https://api.oosmetrics.com/api/v1/badge/achievement/71eabb82-6f56-4dc3-bb41-e82a5f8cf939.svg" alt="oosmetrics"/></a>
+</p>
+
 ---
 <p align="center">
   <img src="preview.png" alt="neiki-editor" width="900">
 </p>
 
 **Live version:** [https://neiki.eu/editor](https://neiki.eu/editor)
+
+---
+
+## 💡 Why neiki-editor?
+
+Most WYSIWYG editors either pull in a tree of dependencies or force you into a heavyweight framework. Neiki Editor is a **single file with zero dependencies** — drop one `<script>` tag into any page and you get 30+ formatting tools, drag-and-drop blocks, image resizing, a plugin API, and full i18n out of the box. It stays tiny enough for a quick prototype yet powerful enough for a production CMS, so you spend time writing content instead of wrestling with your editor.
 
 ---
 ## 📦 Installation
