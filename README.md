@@ -1,8 +1,8 @@
-<h1 align="center">Neiki Editor</h1>
-
 <p align="center">
   <img src="logo.png" alt="neiki-editor" width="400">
 </p>
+
+<h1 align="center">Neiki Editor</h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E" alt="JavaScript">
