@@ -1,8 +1,8 @@
-<h1 align="center">Neiki Editor</h1>
-
 <p align="center">
-  <img src="logo.png" alt="neiki-editor" width="400">
+  <img src="logo.png" alt="Neiki's Editor" width="400">
 </p>
+
+<h1 align="center">Neiki's Editor</h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E" alt="JavaScript">
@@ -33,16 +33,18 @@
 
 ---
 <p align="center">
-  <img src="preview.png" alt="neiki-editor" width="900">
+  <img src="preview.png" alt="Neiki's Editor" width="900">
 </p>
+
+---
 
 **Live version:** [https://neiki.eu/editor](https://neiki.eu/editor)
 
 ---
 
-## 💡 Why neiki-editor?
+## 💡 Why Neiki's Editor?
 
-Most WYSIWYG editors either pull in a tree of dependencies or force you into a heavyweight framework. Neiki Editor is a **single file with zero dependencies** — drop one `<script>` tag into any page and you get 30+ formatting tools, drag-and-drop blocks, image resizing, a plugin API, and full i18n out of the box. It stays tiny enough for a quick prototype yet powerful enough for a production CMS, so you spend time writing content instead of wrestling with your editor.
+Most WYSIWYG editors either pull in a tree of dependencies or force you into a heavyweight framework. Neiki's Editor is a **single file with zero dependencies** — drop one `<script>` tag into any page and you get 30+ formatting tools, drag-and-drop blocks, image resizing, a plugin API, and full i18n out of the box. It stays tiny enough for a quick prototype yet powerful enough for a production CMS, so you spend time writing content instead of wrestling with your editor.
 
 ---
 ## 📦 Installation
@@ -276,7 +278,7 @@ The `moreMenu` toolbar item renders a **⋯** button (pushed to the right) that 
 
 ## 🎨 Themes
 
-Neiki Editor ships with **Light** and **Dark** themes.
+Neiki's Editor ships with **Light** and **Dark** themes.
 
 ### Set theme on init:
 
@@ -302,7 +304,7 @@ The selected theme persists across page reloads via `localStorage`.
 
 ## 🌍 Localization (i18n)
 
-Neiki Editor supports multiple UI languages. Built-in:
+Neiki's Editor supports multiple UI languages. Built-in:
 
 - **English** (`en`) — default
 - **Czech** (`cs`)
@@ -569,7 +571,7 @@ The editor includes a status bar at the bottom displaying:
 
 ### PHP Helper (Recommended)
 
-Neiki Editor includes a PHP integration helper (`php/neiki-editor.php`) that provides asset loading, editor rendering, and HTML sanitization:
+Neiki's Editor includes a PHP integration helper (`php/neiki-editor.php`) that provides asset loading, editor rendering, and HTML sanitization:
 
 ```php
 <?php require_once 'php/neiki-editor.php'; ?>

@@ -1938,7 +1938,7 @@
           <button class="neiki-modal-close" type="button">${Icons.close}</button>
         </div>
         <div class="neiki-modal-body" style="text-align: center; padding: 24px 20px;">
-          <img src="https://github.com/neikiri/neiki-editor/raw/main/logo.png" alt="Neiki Editor" style="width: 120px; height: auto; margin: 0 auto 16px; display: block;">
+          <img src="https://github.com/neikiri/neiki-editor/raw/main/logo.png" alt="Neiki's Editor" style="width: 120px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${t('help.author')}:</strong> neikiri (Jindřich Stoklasa)</div>
             <div><strong>${t('help.version')}:</strong> 2.8.0</div>

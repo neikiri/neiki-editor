@@ -1,10 +1,10 @@
 <?php
 /**
- * Neiki Editor - PHP Integration Helper
+ * Neiki's Editor - PHP Integration Helper
  * Version: 2.8.0
  *
  * A lightweight helper class for easy server-side integration
- * of Neiki Editor into PHP projects.
+ * of Neiki's Editor into PHP projects.
  *
  * Usage:
  *   require_once 'php/neiki-editor.php';

@@ -10,7 +10,7 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in neiki-editor, please report it responsibly.
+If you discover a security vulnerability in Neiki's Editor, please report it responsibly.
 
 **Do not open a public issue.**
 
@@ -24,7 +24,7 @@ You can expect an initial response within **48 hours**.
 
 ## Scope
 
-neiki-editor is a client-side rich text editor. Security considerations include:
+Neiki's Editor is a client-side rich text editor. Security considerations include:
 
 - Cross-site scripting (XSS) via user-generated content
 - Unsafe HTML injection or rendering
@@ -35,7 +35,7 @@ neiki-editor is a client-side rich text editor. Security considerations include:
 
 - Always sanitize user-generated content before rendering it
 - Do not trust HTML input from unverified sources
-- Keep neiki-editor updated to the latest version
+- Keep Neiki's Editor updated to the latest version
 - Avoid inserting raw HTML without validation
 
 ## Acknowledgements
