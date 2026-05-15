@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 2.8.0
+ * Version: 2.9.0
  */
 
 /* ============================================
@@ -1104,6 +1104,14 @@
 .neiki-form-input::placeholder,
 .neiki-input::placeholder {
   color: var(--neiki-text-muted);
+}
+
+.neiki-input[type="file"] {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  line-height: 40px;
+  cursor: pointer;
 }
 
 .neiki-form-row {

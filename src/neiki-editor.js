@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 2.8.0
+ * Version: 2.9.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -118,6 +118,9 @@
       'modal.insertImage': 'Insert Image',
       'modal.uploadImage': 'Upload Image',
       'modal.convertedToBase64': 'Will be converted to base64',
+      'modal.handledViaUploader': 'Will be uploaded via handler',
+      'modal.uploadingImage': 'Uploading...',
+      'modal.uploadError': 'Upload failed. Please try again.',
       'modal.or': 'OR',
       'modal.imageUrl': 'Image URL',
       'modal.altText': 'Alt Text',
@@ -264,6 +267,9 @@
       'modal.insertImage': 'Vložit obrázek',
       'modal.uploadImage': 'Nahrát obrázek',
       'modal.convertedToBase64': 'Bude převeden na base64',
+      'modal.handledViaUploader': 'Bude nahráno přes handler',
+      'modal.uploadingImage': 'Nahrávání...',
+      'modal.uploadError': 'Nahrávání selhalo. Zkuste to znovu.',
       'modal.or': 'NEBO',
       'modal.imageUrl': 'URL obrázku',
       'modal.altText': 'Alternativní text',
@@ -394,6 +400,9 @@
       'modal.insertImage': '插入图片',
       'modal.uploadImage': '上传图片',
       'modal.convertedToBase64': '将转换为base64',
+      'modal.handledViaUploader': '将通过上传处理器上传',
+      'modal.uploadingImage': '上传中...',
+      'modal.uploadError': '上传失败，请重试。',
       'modal.or': '或',
       'modal.imageUrl': '图片URL',
       'modal.altText': '替代文本',
@@ -511,6 +520,9 @@
       'modal.insertImage': 'Insertar imagen',
       'modal.uploadImage': 'Subir imagen',
       'modal.convertedToBase64': 'Se convertirá a base64',
+      'modal.handledViaUploader': 'Se subirá a través del handler',
+      'modal.uploadingImage': 'Subiendo...',
+      'modal.uploadError': 'Error al subir. Inténtelo de nuevo.',
       'modal.or': 'O',
       'modal.imageUrl': 'URL de imagen',
       'modal.altText': 'Texto alternativo',
@@ -628,6 +640,9 @@
       'modal.insertImage': 'Bild einfügen',
       'modal.uploadImage': 'Bild hochladen',
       'modal.convertedToBase64': 'Wird in Base64 konvertiert',
+      'modal.handledViaUploader': 'Wird über Handler hochgeladen',
+      'modal.uploadingImage': 'Hochladen...',
+      'modal.uploadError': 'Upload fehlgeschlagen. Bitte versuchen Sie es erneut.',
       'modal.or': 'ODER',
       'modal.imageUrl': 'Bild-URL',
       'modal.altText': 'Alternativtext',
@@ -745,6 +760,9 @@
       'modal.insertImage': 'Insérer une image',
       'modal.uploadImage': 'Téléverser une image',
       'modal.convertedToBase64': 'Sera converti en base64',
+      'modal.handledViaUploader': 'Sera téléversé via le handler',
+      'modal.uploadingImage': 'Téléversement...',
+      'modal.uploadError': 'Échec du téléversement. Veuillez réessayer.',
       'modal.or': 'OU',
       'modal.imageUrl': 'URL de l\'image',
       'modal.altText': 'Texte alternatif',
@@ -862,6 +880,9 @@
       'modal.insertImage': 'Inserir imagem',
       'modal.uploadImage': 'Enviar imagem',
       'modal.convertedToBase64': 'Será convertido para base64',
+      'modal.handledViaUploader': 'Será enviado via handler',
+      'modal.uploadingImage': 'Enviando...',
+      'modal.uploadError': 'Falha no envio. Tente novamente.',
       'modal.or': 'OU',
       'modal.imageUrl': 'URL da imagem',
       'modal.altText': 'Texto alternativo',
@@ -979,6 +1000,9 @@
       'modal.insertImage': '画像挿入',
       'modal.uploadImage': '画像アップロード',
       'modal.convertedToBase64': 'Base64に変換されます',
+      'modal.handledViaUploader': 'ハンドラー経由でアップロードされます',
+      'modal.uploadingImage': 'アップロード中...',
+      'modal.uploadError': 'アップロードに失敗しました。もう一度お試しください。',
       'modal.or': 'または',
       'modal.imageUrl': '画像URL',
       'modal.altText': '代替テキスト',
@@ -1069,7 +1093,8 @@
     onFocus: null,
     onBlur: null,
     onReady: null,
-    showHelp: true
+    showHelp: true,
+    imageUploadHandler: null
   };
 
   const TOOLBAR_ITEMS = {
@@ -1604,6 +1629,8 @@
 
     createImageModal(data) {
       const modal = Utils.createElement('div', { className: 'neiki-modal' });
+      const hasUploadHandler = typeof this.editor.config.imageUploadHandler === 'function';
+      const uploadHint = hasUploadHandler ? t('modal.handledViaUploader') : t('modal.convertedToBase64');
 
       modal.innerHTML = `
                 <div class="neiki-modal-header">
@@ -1613,8 +1640,8 @@
                 <div class="neiki-modal-body">
                     <div class="neiki-form-group">
                         <label>${t('modal.uploadImage')}</label>
-                        <input type="file" class="neiki-input" name="upload" accept="image/*">
-                        <small style="color: var(--neiki-text-muted); font-size: 11px;">${t('modal.convertedToBase64')}</small>
+                        <input type="file" class="neiki-input" name="upload" accept="image/*" multiple>
+                        <small class="neiki-upload-hint" style="color: var(--neiki-text-muted); font-size: 11px;">${uploadHint}</small>
                     </div>
                     <div class="neiki-form-divider">
                         <span>${t('modal.or')}</span>
@@ -1640,20 +1667,38 @@
 
       const uploadInput = modal.querySelector('[name="upload"]');
       const urlInput = modal.querySelector('[name="url"]');
+      const hintEl = modal.querySelector('.neiki-upload-hint');
+      const insertBtn = modal.querySelector('[data-action="insert"]');
+      let pendingFiles = [];
 
-      // Handle file upload
+      // Handle file upload (supports multiple files)
       uploadInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file && file.type.startsWith('image/')) {
+        const files = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
+        const invalid = Array.from(e.target.files).filter(f => !f.type.startsWith('image/'));
+
+        if (invalid.length > 0) {
+          alert(t('modal.invalidImageFile'));
+        }
+
+        if (files.length === 0) {
+          pendingFiles = [];
+          return;
+        }
+
+        pendingFiles = files;
+
+        if (files.length === 1 && !hasUploadHandler) {
+          // Single file without handler — preview as base64 in URL field
           const reader = new FileReader();
-          reader.onload = (e) => {
-            urlInput.value = e.target.result;
+          reader.onload = (ev) => {
+            urlInput.value = ev.target.result;
             urlInput.disabled = true;
           };
-          reader.readAsDataURL(file);
-        } else if (file) {
-          alert(t('modal.invalidImageFile'));
-          uploadInput.value = '';
+          reader.readAsDataURL(files[0]);
+        } else {
+          // Multiple files or handler present — disable URL field
+          urlInput.value = '';
+          urlInput.disabled = true;
         }
       });
 
@@ -1662,20 +1707,59 @@
         if (!urlInput.value) {
           urlInput.disabled = false;
           uploadInput.value = '';
+          pendingFiles = [];
         }
       });
 
       modal.querySelector('.neiki-modal-close').addEventListener('click', () => this.close());
       modal.querySelector('[data-action="cancel"]').addEventListener('click', () => this.close());
-      modal.querySelector('[data-action="insert"]').addEventListener('click', () => {
-        const url = modal.querySelector('[name="url"]').value;
+      modal.querySelector('[data-action="insert"]').addEventListener('click', async () => {
         const alt = modal.querySelector('[name="alt"]').value;
         const width = modal.querySelector('[name="width"]').value;
 
-        if (url) {
-          this.editor.commands.insertImage(url, alt, width);
+        if (pendingFiles.length > 0 && hasUploadHandler) {
+          // Use imageUploadHandler for all pending files
+          insertBtn.disabled = true;
+          insertBtn.textContent = t('modal.uploadingImage');
+
+          try {
+            for (const file of pendingFiles) {
+              const url = await this.editor.config.imageUploadHandler(file);
+              if (url) {
+                this.editor.commands.insertImage(url, alt || file.name, width);
+              }
+            }
+          } catch (err) {
+            alert(t('modal.uploadError'));
+          }
+
+          this.close();
+        } else if (pendingFiles.length > 1) {
+          // Multiple files without handler — insert each as base64
+          let loaded = 0;
+          insertBtn.disabled = true;
+          insertBtn.textContent = t('modal.uploadingImage');
+
+          for (const file of pendingFiles) {
+            await new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onload = (ev) => {
+                this.editor.commands.insertImage(ev.target.result, alt || file.name, width);
+                resolve();
+              };
+              reader.readAsDataURL(file);
+            });
+          }
+
+          this.close();
+        } else {
+          // Single file (already in URL field) or direct URL input
+          const url = modal.querySelector('[name="url"]').value;
+          if (url) {
+            this.editor.commands.insertImage(url, alt, width);
+          }
+          this.close();
         }
-        this.close();
       });
 
       return modal;
@@ -1941,7 +2025,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/logo.png" alt="Neiki's Editor" style="width: 120px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${t('help.author')}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${t('help.version')}:</strong> 2.8.0</div>
+            <div><strong>${t('help.version')}:</strong> 2.9.0</div>
             <div><strong>${t('help.github')}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${t('help.documentation')}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -3311,6 +3395,39 @@
     }
 
     handlePaste(e) {
+      // Check for pasted images first
+      if (e.clipboardData && e.clipboardData.files.length > 0) {
+        const imageFiles = Array.from(e.clipboardData.files).filter(f => f.type.startsWith('image/'));
+        if (imageFiles.length > 0) {
+          e.preventDefault();
+          const hasUploadHandler = typeof this.config.imageUploadHandler === 'function';
+
+          if (hasUploadHandler) {
+            (async () => {
+              for (const file of imageFiles) {
+                try {
+                  const url = await this.config.imageUploadHandler(file);
+                  if (url) {
+                    this.commands.insertImage(url, file.name, '');
+                  }
+                } catch (err) {
+                  console.error('NeikiEditor: Image upload failed', err);
+                }
+              }
+            })();
+          } else {
+            imageFiles.forEach(file => {
+              const reader = new FileReader();
+              reader.onload = (readerEvent) => {
+                this.commands.insertImage(readerEvent.target.result, file.name, '');
+              };
+              reader.readAsDataURL(file);
+            });
+          }
+          return;
+        }
+      }
+
       // Get plain text and sanitize
       e.preventDefault();
 
@@ -4053,21 +4170,41 @@
           const dropX = e.clientX;
           const dropY = e.clientY;
 
-          imageFiles.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (readerEvent) => {
-              // Set cursor position at drop location
-              const range = document.caretRangeFromPoint(dropX, dropY);
-              if (range) {
-                const sel = window.getSelection();
-                sel.removeAllRanges();
-                sel.addRange(range);
-              }
+          const setCursorAtDrop = () => {
+            const range = document.caretRangeFromPoint(dropX, dropY);
+            if (range) {
+              const sel = window.getSelection();
+              sel.removeAllRanges();
+              sel.addRange(range);
+            }
+          };
 
-              this.commands.insertImage(readerEvent.target.result, file.name, '');
-            };
-            reader.readAsDataURL(file);
-          });
+          const hasUploadHandler = typeof this.config.imageUploadHandler === 'function';
+
+          if (hasUploadHandler) {
+            (async () => {
+              for (const file of imageFiles) {
+                try {
+                  setCursorAtDrop();
+                  const url = await this.config.imageUploadHandler(file);
+                  if (url) {
+                    this.commands.insertImage(url, file.name, '');
+                  }
+                } catch (err) {
+                  console.error('NeikiEditor: Image upload failed', err);
+                }
+              }
+            })();
+          } else {
+            imageFiles.forEach(file => {
+              const reader = new FileReader();
+              reader.onload = (readerEvent) => {
+                setCursorAtDrop();
+                this.commands.insertImage(readerEvent.target.result, file.name, '');
+              };
+              reader.readAsDataURL(file);
+            });
+          }
         }
       });
     }

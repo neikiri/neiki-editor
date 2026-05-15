@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.9.0]
+- Added **Multiple Image Upload** — the image dialog now accepts multiple files at once; all selected images are inserted sequentially
+- Added **`imageUploadHandler`** config option — an async callback `(file) => Promise<url>` that uploads images to your server/CDN and returns a URL instead of embedding base64
+- When `imageUploadHandler` is provided, **drag & drop** and **clipboard paste** also use the handler to upload images as URLs
+- When no handler is set, multiple files are still supported and inserted as base64 (existing behavior preserved for single files)
+- Added **clipboard image paste** support — images copied to the clipboard are now detected and inserted automatically
+- Image dialog hint text dynamically reflects whether images will be converted to base64 or uploaded via handler
+- New translation keys (`modal.handledViaUploader`, `modal.uploadingImage`, `modal.uploadError`) added to all 8 built-in languages
+
 ## [2.8.0]
 - Added **Image Resize** — click any image to show resize handles on corners, drag to resize while maintaining aspect ratio; displays live size label (width × height)
 - Added **Table Column Resize** — hover near a column border to reveal a drag handle, drag to resize adjacent columns
