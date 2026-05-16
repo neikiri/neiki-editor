@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 2.9.1
+ * Version: 2.9.2
  */
 
 /* ============================================
@@ -116,6 +116,18 @@
   background: var(--neiki-toolbar-bg);
   border-bottom: 1px solid var(--neiki-border-color);
   min-height: 44px;
+}
+
+/* Sticky toolbar when editor has no max height (page-flow mode) */
+.neiki-editor.neiki-sticky-toolbar {
+  overflow: visible;
+}
+
+.neiki-editor.neiki-sticky-toolbar .neiki-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-radius: 8px 8px 0 0;
 }
 
 .neiki-toolbar-group {
@@ -1111,9 +1123,22 @@
 .neiki-input[type="file"] {
   display: flex;
   align-items: center;
-  padding: 0 12px;
-  line-height: 40px;
+  padding: 0;
   cursor: pointer;
+}
+
+.neiki-input[type="file"]::file-selector-button {
+  height: 100%;
+  padding: 0 14px;
+  margin-right: 12px;
+  border: none;
+  border-right: 1px solid var(--neiki-border-color);
+  background: var(--neiki-bg-tertiary, var(--neiki-bg-hover));
+  color: var(--neiki-text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 5px 0 0 5px;
 }
 
 .neiki-form-row {
@@ -1681,6 +1706,75 @@
 }
 
 /* ============================================
+   Image Toolbar (replace, delete, drag)
+   ============================================ */
+.neiki-img-toolbar {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  background: var(--neiki-bg-primary);
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 6px;
+  box-shadow: var(--neiki-shadow-md);
+  z-index: 20;
+  white-space: nowrap;
+}
+
+.neiki-img-toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--neiki-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.neiki-img-toolbar-btn:hover {
+  background: var(--neiki-bg-hover);
+  color: var(--neiki-accent-color);
+}
+
+.neiki-img-toolbar-btn-danger:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.neiki-editor.neiki-dark .neiki-img-toolbar-btn-danger:hover {
+  background: #451a1a;
+  color: #f87171;
+}
+
+.neiki-img-toolbar-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.neiki-img-toolbar-separator {
+  width: 1px;
+  height: 20px;
+  background: var(--neiki-border-color);
+  margin: 0 2px;
+}
+
+.neiki-img-drag-handle {
+  cursor: grab;
+}
+
+.neiki-img-drag-handle:active {
+  cursor: grabbing;
+}
+
+/* ============================================
    Table Column Resize Handle
    ============================================ */
 .neiki-table-col-resize-handle {
@@ -1778,6 +1872,7 @@
   .neiki-block-grip,
   .neiki-img-resize-handle,
   .neiki-img-size-label,
+  .neiki-img-toolbar,
   .neiki-table-col-resize-handle {
     display: none !important;
   }
@@ -1837,9 +1932,47 @@
   }
 
   .neiki-modal {
-    width: 95%;
+    width: calc(100% - 20px);
     max-width: none;
     margin: 10px;
+    max-height: calc(100vh - 40px);
+    border-radius: 10px;
+  }
+
+  .neiki-modal-overlay {
+    padding: 10px;
+  }
+
+  .neiki-modal-header {
+    padding: 12px 16px;
+  }
+
+  .neiki-modal-body {
+    padding: 16px;
+    max-height: calc(100vh - 160px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .neiki-modal-footer {
+    padding: 12px 16px;
+  }
+
+  .neiki-modal-footer .neiki-btn {
+    height: 36px;
+    padding: 0 14px;
+    font-size: 13px;
+  }
+
+  .neiki-form-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .neiki-form-input,
+  .neiki-input {
+    height: 38px;
+    font-size: 16px; /* Prevents iOS zoom on focus */
   }
 
   .neiki-find-replace {
@@ -1872,6 +2005,30 @@
   .neiki-statusbar-left,
   .neiki-statusbar-right {
     gap: 8px;
+  }
+
+  .neiki-img-toolbar {
+    padding: 3px;
+    gap: 1px;
+    border-radius: 5px;
+    left: 0;
+    transform: none;
+    max-width: calc(100vw - 20px);
+  }
+
+  .neiki-img-toolbar-btn {
+    width: 26px;
+    height: 26px;
+  }
+
+  .neiki-img-toolbar-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .neiki-img-toolbar-separator {
+    height: 16px;
+    margin: 0 1px;
   }
 }
 

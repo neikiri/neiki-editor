@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.9.2]
+- Added **Drag to Reposition Images** — click and hold an image (or use the grip handle) to drag and drop it to any position within the editor, including between words (inline placement via caret)
+- Added **Image-Specific Toolbar** — selecting an image now shows a contextual toolbar with Drag handle, Move Block Up/Down, Replace, and Delete actions instead of irrelevant text formatting buttons
+- Added **Replace Image** action — quickly swap a selected image via file picker (supports both base64 and `imageUploadHandler`)
+- Fixed **Image Toolbar Positioning** — the image toolbar now automatically shows below the image when near the top of the editor, preventing it from being hidden behind the main toolbar
+- Fixed **Blockquote Toggle** — the blockquote button now properly toggles on/off (clicking again removes the blockquote formatting)
+- Added **Sticky Toolbar** — when the editor has no `maxHeight` (page-flow mode), the toolbar uses `position: sticky` to remain visible while scrolling
+- Fixed **Font Size Selection Preservation** — selection is now tracked continuously via `selectionchange`; changing font size via +/− buttons or dropdown presets no longer jumps to unrelated text
+- Fixed **Image Resize Styles on Form Submission** — resized image dimensions (inline `width`/`height` styles) are now correctly synced to the original element and preserved after form submission
+- Floating selection toolbar is now automatically hidden when an image is selected (image toolbar takes over)
+- New translation keys for image toolbar (`imageToolbar.replaceImage`, `imageToolbar.deleteImage`, `imageToolbar.dragToMove`) added to all 8 built-in languages
+- Blockquote button now shows active state when cursor is inside a blockquote
+- Added **Touch/Mobile Image Drag & Drop** — images can be repositioned on touch devices using the grip handle in the image toolbar
+- Fixed **File Upload Button Alignment** — the native file upload button inside modals is now vertically centered within the input on all devices
+- Fixed **Image Toolbar Overflow on Mobile** — toolbar buttons now stay within the viewport on small screens with responsive sizing
+- Improved **Modal Responsiveness** — modals now have proper max-height, scrollable body, stacked form rows, and prevent iOS zoom on input focus for mobile devices
+
 ## [2.9.1]
 - Fixed image URL insertion so images are placed at the saved cursor position after the dialog opens
 - Fixed selected image deletion after undo by handling image Backspace/Delete explicitly

@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 2.9.1
+ * Version: 2.9.2
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -172,6 +172,11 @@
       'color.pick': 'Pick a color',
       'color.apply': 'Apply',
 
+      // Image toolbar
+      'imageToolbar.replaceImage': 'Replace Image',
+      'imageToolbar.deleteImage': 'Delete Image',
+      'imageToolbar.dragToMove': 'Drag to move',
+
       // Placeholder
       'placeholder': 'Start typing...'
     },
@@ -318,6 +323,11 @@
       'color.reset': 'Obnovit výchozí',
       'color.pick': 'Vybrat barvu',
       'color.apply': 'Použít',
+
+      'imageToolbar.replaceImage': 'Nahradit obrázek',
+      'imageToolbar.deleteImage': 'Smazat obrázek',
+      'imageToolbar.dragToMove': 'Přetáhněte pro přesun',
+
       'placeholder': 'Začněte psát...'
     },
     zh: {
@@ -439,6 +449,11 @@
       'color.reset': '重置为默认',
       'color.pick': '选择颜色',
       'color.apply': '应用',
+
+      'imageToolbar.replaceImage': '替换图片',
+      'imageToolbar.deleteImage': '删除图片',
+      'imageToolbar.dragToMove': '拖动移动',
+
       'placeholder': '开始输入...'
     },
     es: {
@@ -559,6 +574,11 @@
       'color.reset': 'Restablecer',
       'color.pick': 'Elegir color',
       'color.apply': 'Aplicar',
+
+      'imageToolbar.replaceImage': 'Reemplazar imagen',
+      'imageToolbar.deleteImage': 'Eliminar imagen',
+      'imageToolbar.dragToMove': 'Arrastrar para mover',
+
       'placeholder': 'Empiece a escribir...'
     },
     de: {
@@ -679,6 +699,11 @@
       'color.reset': 'Zurücksetzen',
       'color.pick': 'Farbe wählen',
       'color.apply': 'Anwenden',
+
+      'imageToolbar.replaceImage': 'Bild ersetzen',
+      'imageToolbar.deleteImage': 'Bild löschen',
+      'imageToolbar.dragToMove': 'Ziehen zum Verschieben',
+
       'placeholder': 'Hier schreiben...'
     },
     fr: {
@@ -799,6 +824,11 @@
       'color.reset': 'Réinitialiser',
       'color.pick': 'Choisir une couleur',
       'color.apply': 'Appliquer',
+
+      'imageToolbar.replaceImage': 'Remplacer l\'image',
+      'imageToolbar.deleteImage': 'Supprimer l\'image',
+      'imageToolbar.dragToMove': 'Glisser pour déplacer',
+
       'placeholder': 'Commencez à écrire...'
     },
     pt: {
@@ -919,6 +949,11 @@
       'color.reset': 'Redefinir',
       'color.pick': 'Escolher cor',
       'color.apply': 'Aplicar',
+
+      'imageToolbar.replaceImage': 'Substituir imagem',
+      'imageToolbar.deleteImage': 'Excluir imagem',
+      'imageToolbar.dragToMove': 'Arraste para mover',
+
       'placeholder': 'Comece a digitar...'
     },
     ja: {
@@ -1039,6 +1074,11 @@
       'color.reset': 'デフォルトに戻す',
       'color.pick': '色を選択',
       'color.apply': '適用',
+
+      'imageToolbar.replaceImage': '画像を置換',
+      'imageToolbar.deleteImage': '画像を削除',
+      'imageToolbar.dragToMove': 'ドラッグで移動',
+
       'placeholder': '入力してください...'
     }
   };
@@ -1425,7 +1465,8 @@
     help: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>',
     grip: '<svg viewBox="0 0 24 24"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg>',
     moveUp: '<svg viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>',
-    moveDown: '<svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>'
+    moveDown: '<svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>',
+    replaceImage: '<svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/><path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>'
   };
 
   // ============================================
@@ -2093,7 +2134,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/logo.png" alt="Neiki's Editor" style="width: 120px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${t('help.author')}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${t('help.version')}:</strong> 2.9.1</div>
+            <div><strong>${t('help.version')}:</strong> 2.9.2</div>
             <div><strong>${t('help.github')}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${t('help.documentation')}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -2568,6 +2609,19 @@
     insertHorizontalRule() { this.exec('insertHorizontalRule'); }
 
     formatBlock(tag) {
+      // Toggle blockquote: if already inside one, revert to paragraph
+      if (tag === 'blockquote') {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount) {
+          let node = sel.getRangeAt(0).startContainer;
+          if (node.nodeType === Node.TEXT_NODE) node = node.parentNode;
+          const bq = node.closest ? node.closest('blockquote') : null;
+          if (bq && this.editor.contentArea.contains(bq)) {
+            this.exec('formatBlock', '<p>');
+            return;
+          }
+        }
+      }
       this.exec('formatBlock', `<${tag}>`);
     }
 
@@ -2576,12 +2630,26 @@
       this._expandToWordIfCollapsed();
       document.execCommand('fontSize', false, '7');
       const marked = this.editor.contentArea.querySelectorAll('font[size="7"]');
+      const spans = [];
       marked.forEach(el => {
         const span = document.createElement('span');
         span.style.fontSize = sizeStr;
         while (el.firstChild) span.appendChild(el.firstChild);
         el.parentNode.replaceChild(span, el);
+        spans.push(span);
       });
+      // Restore selection across all replaced spans
+      if (spans.length > 0) {
+        try {
+          const sel = window.getSelection();
+          const range = document.createRange();
+          range.setStartBefore(spans[0].firstChild || spans[0]);
+          const lastSpan = spans[spans.length - 1];
+          range.setEndAfter(lastSpan.lastChild || lastSpan);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        } catch (e) { /* ignore */ }
+      }
       this.editor.history.record();
       this.editor.updateToolbar();
       this.editor.triggerChange();
@@ -2949,17 +3017,36 @@
           let _savedRange = null;
           const _saveSelection = () => {
             const sel = window.getSelection();
-            if (sel && sel.rangeCount > 0) {
+            if (sel && sel.rangeCount > 0 && this.contentArea && this.contentArea.contains(sel.anchorNode)) {
               _savedRange = sel.getRangeAt(0).cloneRange();
             }
           };
           const _restoreSelection = () => {
-            if (_savedRange) {
-              const sel = window.getSelection();
-              sel.removeAllRanges();
-              sel.addRange(_savedRange);
+            if (_savedRange && this.contentArea) {
+              try {
+                const sel = window.getSelection();
+                this.contentArea.focus();
+                sel.removeAllRanges();
+                sel.addRange(_savedRange);
+              } catch (e) { /* ignore */ }
             }
           };
+
+          // Continuously track selection from content area (deferred — contentArea created after toolbar)
+          const _bindSelectionTracking = () => {
+            if (this.contentArea) {
+              this.contentArea.addEventListener('mouseup', _saveSelection);
+              this.contentArea.addEventListener('keyup', _saveSelection);
+            }
+          };
+          // Bind after init completes
+          setTimeout(_bindSelectionTracking, 0);
+          document.addEventListener('selectionchange', () => {
+            const sel = window.getSelection();
+            if (sel && sel.rangeCount > 0 && !sel.isCollapsed && this.contentArea && this.contentArea.contains(sel.anchorNode)) {
+              _savedRange = sel.getRangeAt(0).cloneRange();
+            }
+          });
 
           // Dropdown for preset sizes
           const dropdown = Utils.createElement('div', { className: 'neiki-fontsize-dropdown' });
@@ -2979,6 +3066,7 @@
               input.value = size;
               _restoreSelection();
               this.commands.fontSize(size + 'px');
+              _saveSelection();
               dropdown.classList.remove('show');
             });
             dropdown.appendChild(item);
@@ -2989,13 +3077,13 @@
             if (val && val > 0) {
               _restoreSelection();
               this.commands.fontSize(val + 'px');
+              _saveSelection();
             }
           };
 
           minusBtn.addEventListener('mousedown', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            _saveSelection();
           });
           minusBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -3004,12 +3092,12 @@
             const newSize = Math.max(1, current - 1);
             input.value = newSize;
             this.commands.fontSize(newSize + 'px');
+            _saveSelection();
           });
 
           plusBtn.addEventListener('mousedown', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            _saveSelection();
           });
           plusBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -3018,10 +3106,11 @@
             const newSize = Math.min(999, current + 1);
             input.value = newSize;
             this.commands.fontSize(newSize + 'px');
+            _saveSelection();
           });
 
           input.addEventListener('mousedown', (e) => {
-            _saveSelection();
+            e.preventDefault();
           });
 
           input.addEventListener('focus', () => {
@@ -3257,6 +3346,9 @@
       if (this.config.maxHeight) {
         this.contentArea.style.maxHeight = this.config.maxHeight + 'px';
         this.contentArea.style.overflowY = 'auto';
+      } else {
+        // Enable sticky toolbar when editor has no internal scroll
+        this.container.classList.add('neiki-sticky-toolbar');
       }
 
       // Check if autosave is enabled AND has saved content
@@ -3601,6 +3693,16 @@
             case 'justifyFull':
               isActive = document.queryCommandState(config.command);
               break;
+            case 'formatBlock':
+              if (config.value === 'blockquote') {
+                const sel = window.getSelection();
+                if (sel && sel.rangeCount) {
+                  let node = sel.getRangeAt(0).startContainer;
+                  if (node.nodeType === Node.TEXT_NODE) node = node.parentNode;
+                  isActive = !!(node.closest && node.closest('blockquote') && this.contentArea.contains(node.closest('blockquote')));
+                }
+              }
+              break;
           }
         } catch (e) {
           // queryCommandState can throw in some browsers
@@ -3829,7 +3931,7 @@
         wrapper.remove();
       });
       // Remove grip handles, placeholders, resize handles
-      clone.querySelectorAll('.neiki-block-grip, .neiki-block-placeholder, .neiki-table-col-resize-handle, .neiki-img-resize-handle, .neiki-img-size-label').forEach(el => el.remove());
+      clone.querySelectorAll('.neiki-block-grip, .neiki-block-placeholder, .neiki-table-col-resize-handle, .neiki-img-resize-handle, .neiki-img-size-label, .neiki-img-toolbar').forEach(el => el.remove());
       return clone.innerHTML;
     }
 
@@ -4382,13 +4484,75 @@
     }
 
     bindEvents() {
+      this._dragTimeout = null;
+      this._dragStarted = false;
+
+      this.editor.contentArea.addEventListener('mousedown', (e) => {
+        const img = e.target.closest('img');
+        if (!img || !this.editor.contentArea.contains(img)) return;
+        if (e.target.closest('.neiki-img-resize-handle') || e.target.closest('.neiki-img-toolbar')) return;
+
+        e.preventDefault();
+        this._dragStarted = false;
+
+        // Select image immediately
+        if (!this.wrapper || this.currentImg !== img) {
+          this.selectImage(img);
+        }
+
+        // After a short hold, start drag
+        this._dragTimeout = setTimeout(() => {
+          if (this.wrapper && this.currentImg) {
+            this._dragStarted = true;
+            this.startImageDrag(e);
+          }
+        }, 200);
+
+        const cancelHold = () => {
+          clearTimeout(this._dragTimeout);
+          document.removeEventListener('mouseup', cancelHold);
+          document.removeEventListener('mousemove', onMoveCheck);
+        };
+
+        let startX = e.clientX, startY = e.clientY;
+        const onMoveCheck = (ev) => {
+          // If moved more than 5px, start drag immediately
+          if (Math.abs(ev.clientX - startX) > 5 || Math.abs(ev.clientY - startY) > 5) {
+            clearTimeout(this._dragTimeout);
+            if (!this._dragStarted && this.wrapper && this.currentImg) {
+              this._dragStarted = true;
+              this.startImageDrag(ev);
+            }
+            document.removeEventListener('mousemove', onMoveCheck);
+            document.removeEventListener('mouseup', cancelHold);
+          }
+        };
+
+        document.addEventListener('mouseup', cancelHold);
+        document.addEventListener('mousemove', onMoveCheck);
+      });
+
       this.editor.contentArea.addEventListener('click', (e) => {
+        if (this._dragStarted) return;
         const img = e.target.closest('img');
         if (img && this.editor.contentArea.contains(img)) {
           e.preventDefault();
-          this.selectImage(img);
-        } else if (!e.target.closest('.neiki-img-resize-handle')) {
+          if (!this.wrapper || this.currentImg !== img) {
+            this.selectImage(img);
+          }
+        } else if (!e.target.closest('.neiki-img-resize-handle') && !e.target.closest('.neiki-img-toolbar')) {
           this.deselect();
+        }
+      });
+
+      // Touch: tap image to select (drag only via grip handle in img toolbar)
+      this.editor.contentArea.addEventListener('touchend', (e) => {
+        const img = e.target.closest('img');
+        if (!img || !this.editor.contentArea.contains(img)) return;
+        if (e.target.closest('.neiki-img-resize-handle') || e.target.closest('.neiki-img-toolbar')) return;
+        e.preventDefault();
+        if (!this.wrapper || this.currentImg !== img) {
+          this.selectImage(img);
         }
       });
 
@@ -4445,7 +4609,301 @@
       this.sizeLabel.textContent = Math.round(img.offsetWidth) + ' × ' + Math.round(img.offsetHeight);
       this.wrapper.appendChild(this.sizeLabel);
 
+      // Add image-specific toolbar
+      this.imgToolbar = document.createElement('div');
+      this.imgToolbar.className = 'neiki-img-toolbar';
+      this.imgToolbar.contentEditable = 'false';
+
+      const dragHandle = document.createElement('button');
+      dragHandle.className = 'neiki-img-toolbar-btn neiki-img-drag-handle';
+      dragHandle.type = 'button';
+      dragHandle.title = t('imageToolbar.dragToMove');
+      dragHandle.innerHTML = Icons.grip;
+      dragHandle.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.startImageDrag(e);
+      });
+      dragHandle.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const touch = e.touches[0];
+        this.startImageDrag({ clientX: touch.clientX, clientY: touch.clientY }, true);
+      }, { passive: false });
+
+      const moveUpBtn = document.createElement('button');
+      moveUpBtn.className = 'neiki-img-toolbar-btn';
+      moveUpBtn.type = 'button';
+      moveUpBtn.innerHTML = Icons.moveUp;
+      moveUpBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const block = this.getImageBlock();
+        if (block && this.editor.blockDragDrop) {
+          this.editor.blockDragDrop.moveBlockUp(block);
+          this.positionImgToolbar();
+        }
+      });
+
+      const moveDownBtn = document.createElement('button');
+      moveDownBtn.className = 'neiki-img-toolbar-btn';
+      moveDownBtn.type = 'button';
+      moveDownBtn.innerHTML = Icons.moveDown;
+      moveDownBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const block = this.getImageBlock();
+        if (block && this.editor.blockDragDrop) {
+          this.editor.blockDragDrop.moveBlockDown(block);
+          this.positionImgToolbar();
+        }
+      });
+
+      const sep1 = document.createElement('span');
+      sep1.className = 'neiki-img-toolbar-separator';
+
+      const replaceBtn = document.createElement('button');
+      replaceBtn.className = 'neiki-img-toolbar-btn';
+      replaceBtn.type = 'button';
+      replaceBtn.title = t('imageToolbar.replaceImage');
+      replaceBtn.innerHTML = Icons.replaceImage;
+      replaceBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.replaceImage();
+      });
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'neiki-img-toolbar-btn neiki-img-toolbar-btn-danger';
+      deleteBtn.type = 'button';
+      deleteBtn.title = t('imageToolbar.deleteImage');
+      deleteBtn.innerHTML = Icons.trash;
+      deleteBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.deleteSelectedImage();
+      });
+
+      this.imgToolbar.appendChild(dragHandle);
+      this.imgToolbar.appendChild(moveUpBtn);
+      this.imgToolbar.appendChild(moveDownBtn);
+      this.imgToolbar.appendChild(sep1);
+      this.imgToolbar.appendChild(replaceBtn);
+      this.imgToolbar.appendChild(deleteBtn);
+      this.wrapper.appendChild(this.imgToolbar);
+
+      this.positionImgToolbar();
       this.selectWrapperRange();
+    }
+
+    getImageBlock() {
+      if (!this.wrapper) return null;
+      let node = this.wrapper;
+      while (node && node.parentNode !== this.editor.contentArea) {
+        node = node.parentNode;
+      }
+      return node;
+    }
+
+    positionImgToolbar() {
+      if (!this.imgToolbar || !this.wrapper) return;
+      // Reset styles for measurement
+      this.imgToolbar.style.top = '';
+      this.imgToolbar.style.bottom = '';
+      this.imgToolbar.style.left = '';
+      this.imgToolbar.style.transform = '';
+
+      const wrapperRect = this.wrapper.getBoundingClientRect();
+      const toolbarRect = this.editor.toolbar.getBoundingClientRect();
+      const spaceAbove = wrapperRect.top - toolbarRect.bottom;
+
+      if (spaceAbove < 50) {
+        // Not enough space above — show below the image
+        this.imgToolbar.style.top = 'auto';
+        this.imgToolbar.style.bottom = '-42px';
+      } else {
+        // Show above the image (default)
+        this.imgToolbar.style.top = '-42px';
+        this.imgToolbar.style.bottom = 'auto';
+      }
+
+      // Ensure toolbar doesn't overflow viewport horizontally
+      requestAnimationFrame(() => {
+        if (!this.imgToolbar) return;
+        const tbRect = this.imgToolbar.getBoundingClientRect();
+        if (tbRect.left < 4) {
+          this.imgToolbar.style.left = '0';
+          this.imgToolbar.style.transform = 'none';
+        } else if (tbRect.right > window.innerWidth - 4) {
+          this.imgToolbar.style.left = 'auto';
+          this.imgToolbar.style.right = '0';
+          this.imgToolbar.style.transform = 'none';
+        }
+      });
+    }
+
+    replaceImage() {
+      if (!this.currentImg) return;
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.addEventListener('change', async () => {
+        const file = input.files[0];
+        if (!file) return;
+        const hasUploadHandler = typeof this.editor.config.imageUploadHandler === 'function';
+        if (hasUploadHandler) {
+          try {
+            const url = await this.editor.config.imageUploadHandler(file);
+            if (url) this.currentImg.src = url;
+          } catch (err) {
+            console.error('NeikiEditor: Image upload failed', err);
+          }
+        } else {
+          const reader = new FileReader();
+          reader.onload = (ev) => { this.currentImg.src = ev.target.result; };
+          reader.readAsDataURL(file);
+        }
+        this.editor.history.record();
+        this.editor.syncToOriginal();
+        this.editor.triggerChange();
+      });
+      input.click();
+    }
+
+    startImageDrag(e, isTouch = false) {
+      if (!this.wrapper || !this.currentImg) return;
+
+      const img = this.currentImg;
+      const wrapper = this.wrapper;
+      const contentArea = this.editor.contentArea;
+
+      // Save image dimensions
+      const imgWidth = img.style.width;
+      const imgHeight = img.style.height;
+
+      // Create ghost element
+      const ghost = document.createElement('div');
+      ghost.className = 'neiki-block-ghost';
+      ghost.style.width = Math.min(img.offsetWidth, 200) + 'px';
+      ghost.style.opacity = '0.7';
+      ghost.style.pointerEvents = 'none';
+      const ghostImg = img.cloneNode(true);
+      ghostImg.style.width = '100%';
+      ghostImg.style.height = 'auto';
+      ghost.appendChild(ghostImg);
+      document.body.appendChild(ghost);
+
+      const offsetX = e.clientX - wrapper.getBoundingClientRect().left;
+      const offsetY = e.clientY - wrapper.getBoundingClientRect().top;
+      ghost.style.left = (e.clientX - offsetX) + 'px';
+      ghost.style.top = (e.clientY - offsetY) + 'px';
+
+      // Hide the original wrapper during drag
+      wrapper.style.opacity = '0.3';
+
+      // Caret marker for drop position
+      let dropRange = null;
+
+      const getCaretRange = (x, y) => {
+        if (document.caretRangeFromPoint) {
+          return document.caretRangeFromPoint(x, y);
+        }
+        if (document.caretPositionFromPoint) {
+          const pos = document.caretPositionFromPoint(x, y);
+          if (pos) {
+            const r = document.createRange();
+            r.setStart(pos.offsetNode, pos.offset);
+            r.collapse(true);
+            return r;
+          }
+        }
+        return null;
+      };
+
+      const onMove = (ev) => {
+        let cx, cy;
+        if (isTouch) {
+          if (ev.touches && ev.touches.length) {
+            cx = ev.touches[0].clientX;
+            cy = ev.touches[0].clientY;
+            ev.preventDefault();
+          } else return;
+        } else {
+          cx = ev.clientX;
+          cy = ev.clientY;
+        }
+        ghost.style.left = (cx - offsetX) + 'px';
+        ghost.style.top = (cy - offsetY) + 'px';
+        const range = getCaretRange(cx, cy);
+        if (range && contentArea.contains(range.startContainer)) {
+          // Avoid dropping inside the wrapper itself
+          let node = range.startContainer;
+          while (node && node !== contentArea) {
+            if (node === wrapper) return;
+            node = node.parentNode;
+          }
+          dropRange = range;
+          // Show caret position
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      };
+
+      const onUp = () => {
+        if (isTouch) {
+          document.removeEventListener('touchmove', onMove);
+          document.removeEventListener('touchend', onUp);
+        } else {
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        }
+
+        // Remove image from wrapper before deselect to keep DOM clean
+        const imgParent = img.parentNode;
+        if (imgParent) imgParent.removeChild(img);
+
+        // Restore saved dimensions
+        if (imgWidth) img.style.width = imgWidth;
+        if (imgHeight) img.style.height = imgHeight;
+
+        // Clean up wrapper
+        if (wrapper.parentNode) {
+          wrapper.parentNode.removeChild(wrapper);
+        }
+        this.wrapper = null;
+        this.currentImg = null;
+        this.sizeLabel = null;
+        this.imgToolbar = null;
+
+        if (dropRange && contentArea.contains(dropRange.startContainer)) {
+          // Insert image at the caret drop position
+          dropRange.insertNode(img);
+        } else {
+          // No valid drop — put image back in content area
+          contentArea.appendChild(img);
+        }
+
+        ghost.remove();
+
+        // Clean up empty parent blocks left behind
+        this.editor._ensureDefaultBlock();
+
+        // Re-select the image at its new position
+        this.selectImage(img);
+
+        this.editor.history.record();
+        this.editor.syncToOriginal();
+        this.editor.triggerChange();
+      };
+
+      if (isTouch) {
+        document.addEventListener('touchmove', onMove, { passive: false });
+        document.addEventListener('touchend', onUp);
+      } else {
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      }
     }
 
     selectWrapperRange() {
@@ -4519,6 +4977,7 @@
       this.wrapper = null;
       this.currentImg = null;
       this.sizeLabel = null;
+      this.imgToolbar = null;
     }
 
     startResize(e, pos, isTouch = false) {
@@ -4543,6 +5002,7 @@
           document.removeEventListener('touchmove', onTouchMove);
           document.removeEventListener('touchend', onTouchEnd);
           this.editor.history.record();
+          this.editor.syncToOriginal();
           this.editor.triggerChange();
         };
         document.addEventListener('touchmove', onTouchMove, { passive: false });
@@ -4554,6 +5014,7 @@
           document.removeEventListener('mousemove', onMove);
           document.removeEventListener('mouseup', onUp);
           this.editor.history.record();
+          this.editor.syncToOriginal();
           this.editor.triggerChange();
         };
         document.addEventListener('mousemove', onMove);
@@ -5036,6 +5497,12 @@
     }
 
     updatePosition() {
+      // Hide when an image is selected (image toolbar takes over)
+      if (this.editor.imageResizer && this.editor.imageResizer.currentImg) {
+        this.hide();
+        return;
+      }
+
       const sel = window.getSelection();
 
       if (!sel.rangeCount || sel.isCollapsed || !this.editor.contentArea.contains(sel.anchorNode)) {

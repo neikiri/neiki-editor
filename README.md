@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/css-%23663399.svg?style=for-the-badge&logo=css&logoColor=white" alt="CSS">
   <br>
   <img src="https://img.shields.io/badge/License-MIT-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-2.9.1-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-2.9.2-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -62,7 +62,7 @@ Add this single line — CSS is included automatically, always the **latest vers
 #### Pin a specific version
 
 ```html
-<script src="https://cdn.neiki.eu/neiki-editor/2.9.1/neiki-editor.min.js"></script>
+<script src="https://cdn.neiki.eu/neiki-editor/2.9.2/neiki-editor.min.js"></script>
 ```
 
 #### Load CSS and JS separately
@@ -73,8 +73,8 @@ Add this single line — CSS is included automatically, always the **latest vers
 <script src="https://cdn.neiki.eu/neiki-editor/neiki-editor.js"></script>
 
 <!-- Or pinned -->
-<link rel="stylesheet" href="https://cdn.neiki.eu/neiki-editor/2.9.1/neiki-editor.css">
-<script src="https://cdn.neiki.eu/neiki-editor/2.9.1/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.neiki.eu/neiki-editor/2.9.2/neiki-editor.css">
+<script src="https://cdn.neiki.eu/neiki-editor/2.9.2/neiki-editor.js"></script>
 ```
 
 #### Alternative CDN — jsDelivr
@@ -84,15 +84,15 @@ Add this single line — CSS is included automatically, always the **latest vers
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.min.js"></script>
 
 <!-- Pinned -->
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.1/dist/neiki-editor.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.2/dist/neiki-editor.min.js"></script>
 
 <!-- Separate files (latest) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.css">
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.js"></script>
 
 <!-- Separate files (pinned) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.1/dist/neiki-editor.css">
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.1/dist/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.2/dist/neiki-editor.css">
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.2/dist/neiki-editor.js"></script>
 ```
 
 #### Package Manager
@@ -175,7 +175,7 @@ const editor = new NeikiEditor('#editor', {
 |--------|------|---------|-------------|
 | `placeholder` | `string` | `'Start typing...'` | Placeholder text when editor is empty |
 | `minHeight` | `number` | `300` | Minimum height in pixels |
-| `maxHeight` | `number\|null` | `null` | Maximum height in pixels (enables scroll) |
+| `maxHeight` | `number\|null` | `null` | Maximum height in pixels (enables scroll). When `null`, the toolbar uses `position: sticky` to remain visible while scrolling. |
 | `autofocus` | `boolean` | `false` | Focus editor on initialization |
 | `spellcheck` | `boolean` | `true` | Enable browser spellcheck |
 | `readonly` | `boolean` | `false` | Make editor read-only |
@@ -272,7 +272,7 @@ The `moreMenu` toolbar item renders a **⋯** button (pushed to the right) that 
 | `redo` | Redo (**Ctrl+Y** / **Ctrl+Shift+Z**) |
 | `findReplace` | Find & Replace with regex support |
 | `viewCode` | Toggle HTML source editor |
-| `blockquote` | Block quote |
+| `blockquote` | Block quote (toggles on/off) |
 | `horizontalRule` | Horizontal line |
 
 ---
@@ -504,6 +504,16 @@ Drag image files directly into the editor content area. Images are automatically
 
 Click any image in the editor to select it — **resize handles** appear on all four corners. Drag any handle to resize while maintaining aspect ratio. A live **size label** (width × height) is displayed below the image during resizing.
 
+### Image Toolbar
+
+When an image is selected, a contextual toolbar appears above it with image-specific actions:
+
+- **Drag handle** (⠿) — click and drag to reposition the image within the editor
+- **Replace** — swap the image via a file picker (supports `imageUploadHandler` or base64)
+- **Delete** — remove the selected image
+
+The floating text-formatting toolbar is automatically hidden when an image is selected.
+
 ---
 
 ## 🔍 Find & Replace
@@ -527,7 +537,7 @@ When you select text in the editor, a floating toolbar appears above the selecti
 - **Bold, Italic, Underline, Strikethrough** — quick formatting
 - **Insert Link**
 
-The toolbar follows the selection and disappears when the selection is cleared.
+The toolbar follows the selection and disappears when the selection is cleared. When an image is selected, the floating toolbar is replaced by an **image-specific toolbar** with relevant actions.
 
 ---
 
