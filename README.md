@@ -189,6 +189,7 @@ const editor = new NeikiEditor('#editor', {
 | `onBlur` | `function\|null` | `null` | Callback when editor loses focus |
 | `onReady` | `function\|null` | `null` | Callback when editor is ready |
 | `showHelp` | `boolean` | `true` | Show Help button in More menu (⋯) |
+| `imageUploadHandler` | `function\|null` | `null` | Async callback `(file) => Promise<url>` for uploading images to a server/CDN instead of base64 |
 
 ---
 
