@@ -8,6 +8,9 @@
     "rich-text",
     "vanilla-js"
   ],
+  "scripts": {
+    "test": "node --check src/neiki-editor.js"
+  },
   "main": "dist/neiki-editor.js",
   "exports": {
     ".": "./dist/neiki-editor.js",
