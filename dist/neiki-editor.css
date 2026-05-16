@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 2.9.0
+ * Version: 2.9.1
  */
 
 /* ============================================
@@ -721,6 +721,7 @@
   left: 0;
   z-index: 1000;
   width: 280px;
+  max-width: calc(100vw - 16px);
   max-height: 250px;
   overflow-y: auto;
   background: var(--neiki-bg-primary);
@@ -758,6 +759,7 @@
   left: 0;
   z-index: 1000;
   width: 320px;
+  max-width: calc(100vw - 16px);
   max-height: 280px;
   overflow-y: auto;
   background: var(--neiki-bg-primary);
@@ -2033,6 +2035,7 @@
   left: 0;
   z-index: 1000;
   min-width: 160px;
+  max-width: calc(100vw - 16px);
   background: var(--neiki-bg-primary);
   border: 1px solid var(--neiki-border-color);
   border-radius: 6px;

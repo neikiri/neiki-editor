@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 2.9.0
+ * Version: 2.9.1
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -1301,6 +1301,19 @@
       return window.getSelection();
     },
 
+    isNodeInside(node, container) {
+      if (!node || !container) return false;
+      const target = node.nodeType === Node.TEXT_NODE ? node.parentNode : node;
+      return target === container || container.contains(target);
+    },
+
+    isRangeInside(range, container) {
+      if (!range || !container) return false;
+      return Utils.isNodeInside(range.commonAncestorContainer, container) ||
+        (Utils.isNodeInside(range.startContainer, container) &&
+          Utils.isNodeInside(range.endContainer, container));
+    },
+
     saveSelection() {
       const sel = window.getSelection();
       if (sel.rangeCount > 0) {
@@ -1315,6 +1328,48 @@
         sel.removeAllRanges();
         sel.addRange(range);
       }
+    },
+
+    positionPopup(anchor, popup, options = {}) {
+      if (!anchor || !popup) return;
+
+      const margin = options.margin || 8;
+      popup.style.position = 'fixed';
+      popup.style.left = '0';
+      popup.style.right = 'auto';
+      popup.style.top = '0';
+      popup.style.bottom = 'auto';
+
+      const adjust = () => {
+        const anchorRect = anchor.getBoundingClientRect();
+        const popupWidth = popup.offsetWidth || popup.getBoundingClientRect().width;
+        const popupHeight = popup.offsetHeight || popup.getBoundingClientRect().height;
+        const viewportWidth = document.documentElement.clientWidth;
+        const viewportHeight = document.documentElement.clientHeight;
+        let left = anchorRect.left;
+        let top = anchorRect.bottom + 4;
+
+        if (left + popupWidth > viewportWidth - margin) {
+          left = viewportWidth - margin - popupWidth;
+        }
+        if (left < margin) {
+          left = margin;
+        }
+
+        const bottomSpace = viewportHeight - anchorRect.bottom - margin;
+        const topSpace = anchorRect.top - margin;
+        if (popupHeight > bottomSpace && topSpace > bottomSpace) {
+          top = Math.max(margin, anchorRect.top - popupHeight - 4);
+        }
+
+        popup.style.left = left + 'px';
+        popup.style.top = top + 'px';
+      };
+
+      adjust();
+      requestAnimationFrame(adjust);
+      setTimeout(adjust, 0);
+      setTimeout(adjust, 50);
     }
   };
 
@@ -1540,6 +1595,10 @@
     }
 
     open(type, data = {}) {
+      if (this.editor.saveCurrentSelection) {
+        this.editor.saveCurrentSelection();
+      }
+
       this.close();
       this.createOverlay();
 
@@ -1619,6 +1678,7 @@
         const newTab = modal.querySelector('[name="newTab"]').checked;
 
         if (url) {
+          this.editor.restoreSavedSelection();
           this.editor.commands.insertLink(url, text, newTab);
         }
         this.close();
@@ -1723,12 +1783,17 @@
           insertBtn.textContent = t('modal.uploadingImage');
 
           try {
+            const uploadedImages = [];
             for (const file of pendingFiles) {
               const url = await this.editor.config.imageUploadHandler(file);
               if (url) {
-                this.editor.commands.insertImage(url, alt || file.name, width);
+                uploadedImages.push({ url, alt: alt || file.name });
               }
             }
+            this.editor.restoreSavedSelection();
+            uploadedImages.forEach(image => {
+              this.editor.commands.insertImage(image.url, image.alt, width);
+            });
           } catch (err) {
             alert(t('modal.uploadError'));
           }
@@ -1740,6 +1805,7 @@
           insertBtn.disabled = true;
           insertBtn.textContent = t('modal.uploadingImage');
 
+          this.editor.restoreSavedSelection();
           for (const file of pendingFiles) {
             await new Promise((resolve) => {
               const reader = new FileReader();
@@ -1756,6 +1822,7 @@
           // Single file (already in URL field) or direct URL input
           const url = modal.querySelector('[name="url"]').value;
           if (url) {
+            this.editor.restoreSavedSelection();
             this.editor.commands.insertImage(url, alt, width);
           }
           this.close();
@@ -1803,6 +1870,7 @@
         const cols = parseInt(modal.querySelector('[name="cols"]').value) || 3;
         const header = modal.querySelector('[name="header"]').checked;
 
+        this.editor.restoreSavedSelection();
         this.editor.commands.insertTable(rows, cols, header);
         this.close();
       });
@@ -2025,7 +2093,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/logo.png" alt="Neiki's Editor" style="width: 120px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${t('help.author')}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${t('help.version')}:</strong> 2.9.0</div>
+            <div><strong>${t('help.version')}:</strong> 2.9.1</div>
             <div><strong>${t('help.github')}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${t('help.documentation')}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -2351,7 +2419,7 @@
         item.addEventListener('mousedown', (e) => {
           e.preventDefault();
           e.stopPropagation();
-          this.editor.focus();
+          this.editor.restoreSavedSelection();
           document.execCommand('insertText', false, emoji);
           this.editor.history.record();
           this.editor.triggerChange();
@@ -2362,6 +2430,8 @@
 
       button.appendChild(this.picker);
       this.activeButton = button;
+      this.editor.saveCurrentSelection();
+      Utils.positionPopup(button, this.picker);
     }
 
     close() {
@@ -2410,7 +2480,7 @@
         item.addEventListener('mousedown', (e) => {
           e.preventDefault();
           e.stopPropagation();
-          this.editor.focus();
+          this.editor.restoreSavedSelection();
           document.execCommand('insertText', false, char);
           this.editor.history.record();
           this.editor.triggerChange();
@@ -2421,6 +2491,8 @@
 
       button.appendChild(this.picker);
       this.activeButton = button;
+      this.editor.saveCurrentSelection();
+      Utils.positionPopup(button, this.picker);
     }
 
     close() {
@@ -2704,6 +2776,7 @@
       this.isFullscreen = false;
       this.isAutosaveEnabled = false;
       this.autosaveInterval = null;
+      this.savedSelectionRange = null;
 
       this.init();
     }
@@ -2996,11 +3069,26 @@
           const dropdown = Utils.createElement('div', { className: 'neiki-insert-dropdown' });
 
           const insertItems = [
-            { key: 'link', icon: Icons.link, labelKey: 'insert.link', action: () => this.modal.open('link', { text: Utils.getSelection().toString() }) },
-            { key: 'image', icon: Icons.image, labelKey: 'insert.image', action: () => this.modal.open('image', {}) },
-            { key: 'table', icon: Icons.table, labelKey: 'insert.table', action: () => this.modal.open('table', {}) },
-            { key: 'emoji', icon: Icons.emoji, labelKey: 'insert.emoji', action: () => this.emojiPicker.toggle(btn) },
-            { key: 'specialChars', icon: Icons.specialChars, labelKey: 'insert.symbol', action: () => this.specialCharsPicker.toggle(btn) }
+            {
+              key: 'link', icon: Icons.link, labelKey: 'insert.link',
+              action: () => { this.saveCurrentSelection(); this.modal.open('link', { text: Utils.getSelection().toString() }); }
+            },
+            {
+              key: 'image', icon: Icons.image, labelKey: 'insert.image',
+              action: () => { this.saveCurrentSelection(); this.modal.open('image', {}); }
+            },
+            {
+              key: 'table', icon: Icons.table, labelKey: 'insert.table',
+              action: () => { this.saveCurrentSelection(); this.modal.open('table', {}); }
+            },
+            {
+              key: 'emoji', icon: Icons.emoji, labelKey: 'insert.emoji',
+              action: () => { this.saveCurrentSelection(); this.emojiPicker.toggle(btn); }
+            },
+            {
+              key: 'specialChars', icon: Icons.specialChars, labelKey: 'insert.symbol',
+              action: () => { this.saveCurrentSelection(); this.specialCharsPicker.toggle(btn); }
+            }
           ];
 
           insertItems.forEach(({ icon, labelKey, action }) => {
@@ -3027,6 +3115,9 @@
             this.emojiPicker.close();
             this.specialCharsPicker.close();
             dropdown.classList.toggle('show');
+            if (dropdown.classList.contains('show')) {
+              Utils.positionPopup(btn, dropdown);
+            }
           });
 
           document.addEventListener('mousedown', (e) => {
@@ -3229,7 +3320,16 @@
 
       // Selection changes
       document.addEventListener('selectionchange', () => {
-        if (this.contentArea.contains(document.activeElement) ||
+        const sel = window.getSelection();
+        const range = sel && sel.rangeCount ? sel.getRangeAt(0) : null;
+        const selectionInsideEditor = range && Utils.isRangeInside(range, this.contentArea);
+
+        if (selectionInsideEditor) {
+          this.saveCurrentSelection();
+        }
+
+        if (selectionInsideEditor ||
+          this.contentArea.contains(document.activeElement) ||
           document.activeElement === this.contentArea) {
           this.updateToolbar();
           this.updateStatusBar();
@@ -3248,8 +3348,26 @@
       // Keyboard shortcuts
       this.contentArea.addEventListener('keydown', (e) => this.handleKeydown(e));
 
+      this.contentArea.addEventListener('copy', (e) => this.handleCopyCut(e, false));
+      this.contentArea.addEventListener('cut', (e) => this.handleCopyCut(e, true));
+
       // Paste handling
       this.contentArea.addEventListener('paste', (e) => this.handlePaste(e));
+    }
+
+    handleCopyCut(e, isCut) {
+      if (!this.imageResizer) return;
+
+      const imageData = this.imageResizer.getSelectedImageClipboardData();
+      if (!imageData) return;
+
+      e.preventDefault();
+      e.clipboardData.setData('text/html', imageData.html);
+      e.clipboardData.setData('text/plain', imageData.text);
+
+      if (isCut) {
+        this.imageResizer.deleteSelectedImage();
+      }
     }
 
     handleToolbarClick(item, button) {
@@ -3267,19 +3385,21 @@
 
       // Handle emoji picker
       if (config.picker === 'emoji') {
+        this.saveCurrentSelection();
         this.emojiPicker.toggle(button);
         return;
       }
 
       // Handle special chars picker
       if (config.picker === 'specialChars') {
+        this.saveCurrentSelection();
         this.specialCharsPicker.toggle(button);
         return;
       }
 
       // Handle modals
       if (config.modal) {
-        const savedRange = Utils.saveSelection();
+        this.saveCurrentSelection();
         let data = {};
 
         if (item === 'link') {
@@ -3288,7 +3408,6 @@
         }
 
         this.modal.open(item, data);
-        Utils.restoreSelection(savedRange);
         return;
       }
 
@@ -3315,6 +3434,13 @@
     }
 
     handleKeydown(e) {
+      if ((e.key === 'Backspace' || e.key === 'Delete') &&
+        this.imageResizer &&
+        this.imageResizer.deleteSelectedImage()) {
+        e.preventDefault();
+        return;
+      }
+
       // Ctrl/Cmd shortcuts
       if (e.ctrlKey || e.metaKey) {
         switch (e.key.toLowerCase()) {
@@ -3332,6 +3458,7 @@
             break;
           case 'k':
             e.preventDefault();
+            this.saveCurrentSelection();
             this.modal.open('link', { text: Utils.getSelection().toString() });
             break;
           case 'z':
@@ -3707,6 +3834,8 @@
     }
 
     setContent(html) {
+      if (this.imageResizer) this.imageResizer.deselect();
+      this.savedSelectionRange = null;
       this.contentArea.innerHTML = Utils.sanitizeHTML(html);
       this._ensureDefaultBlock();
       this.syncToOriginal();
@@ -3723,6 +3852,28 @@
 
     focus() {
       this.contentArea.focus();
+    }
+
+    saveCurrentSelection() {
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount) return null;
+
+      const range = sel.getRangeAt(0);
+      if (!Utils.isRangeInside(range, this.contentArea)) return this.savedSelectionRange;
+
+      this.savedSelectionRange = range.cloneRange();
+      return this.savedSelectionRange;
+    }
+
+    restoreSavedSelection() {
+      if (!this.savedSelectionRange || !Utils.isRangeInside(this.savedSelectionRange, this.contentArea)) {
+        this.focus();
+        return false;
+      }
+
+      this.focus();
+      Utils.restoreSelection(this.savedSelectionRange);
+      return true;
     }
 
     blur() {
@@ -4293,6 +4444,67 @@
       this.sizeLabel.className = 'neiki-img-size-label';
       this.sizeLabel.textContent = Math.round(img.offsetWidth) + ' × ' + Math.round(img.offsetHeight);
       this.wrapper.appendChild(this.sizeLabel);
+
+      this.selectWrapperRange();
+    }
+
+    selectWrapperRange() {
+      if (!this.wrapper) return;
+      this.editor.focus();
+      const sel = window.getSelection();
+      const range = document.createRange();
+      range.selectNode(this.wrapper);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+
+    getSelectedImageClipboardData() {
+      if (!this.currentImg || !this.wrapper || !this.editor.contentArea.contains(this.wrapper)) {
+        return null;
+      }
+
+      const img = this.currentImg.cloneNode(true);
+      return {
+        html: img.outerHTML,
+        text: img.getAttribute('src') || ''
+      };
+    }
+
+    deleteSelectedImage() {
+      if (!this.currentImg || !this.wrapper || !this.editor.contentArea.contains(this.wrapper)) {
+        return false;
+      }
+
+      const parent = this.wrapper.parentNode;
+      const marker = document.createTextNode('');
+      parent.insertBefore(marker, this.wrapper);
+      this.wrapper.remove();
+
+      this.wrapper = null;
+      this.currentImg = null;
+      this.sizeLabel = null;
+
+      const range = document.createRange();
+      if (marker.parentNode) {
+        range.setStartAfter(marker);
+        marker.remove();
+      } else {
+        range.selectNodeContents(this.editor.contentArea);
+        range.collapse(false);
+      }
+      range.collapse(true);
+
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+
+      this.editor.savedSelectionRange = range.cloneRange();
+      this.editor._ensureDefaultBlock();
+      this.editor.history.record();
+      this.editor.syncToOriginal();
+      this.editor.triggerChange();
+      this.editor.updateStatusBar();
+      return true;
     }
 
     deselect() {

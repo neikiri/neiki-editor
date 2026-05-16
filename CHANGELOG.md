@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.9.1]
+- Fixed image URL insertion so images are placed at the saved cursor position after the dialog opens
+- Fixed selected image deletion after undo by handling image Backspace/Delete explicitly
+- Added copy and cut support for selected images, including HTML clipboard data
+- Fixed Emoji picker and Insert dropdown positioning so popups stay inside the viewport on narrow resolutions
+
 ## [2.9.0]
 - Added **Multiple Image Upload** — the image dialog now accepts multiple files at once; all selected images are inserted sequentially
 - Added **`imageUploadHandler`** config option — an async callback `(file) => Promise<url>` that uploads images to your server/CDN and returns a URL instead of embedding base64
