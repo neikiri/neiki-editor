@@ -13,7 +13,7 @@ If you discover a security vulnerability in Neiki's Editor, please report it res
 
 **Do not open a public issue.**
 
-Instead, send an email to **dev@neiki.eu** with:
+Instead, send an email to **neikiri@neikiri.dev** with:
 
 - A description of the vulnerability
 - Steps to reproduce the issue

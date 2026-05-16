@@ -44,7 +44,7 @@
 - Fixed: mobile language switcher not displaying on iOS Safari — replaced `<select>` with button grid
 
 ## [2.7.0]
-- Added custom CDN at `cdn.neiki.eu` — supports latest (`/neiki-editor/neiki-editor.min.js`) and versioned (`/neiki-editor/2.7.0/neiki-editor.min.js`) URLs
+- Added custom CDN at `cdn.neikiri.dev` — supports latest (`/neiki-editor/neiki-editor.min.js`) and versioned (`/neiki-editor/2.7.0/neiki-editor.min.js`) URLs
 - jsDelivr remains available as an alternative CDN
 - Added Help button to More menu (⋯) — shows logo, author, version, GitHub and documentation links
 - Help modal is fully translated in all 8 languages

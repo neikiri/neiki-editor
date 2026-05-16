@@ -38,7 +38,7 @@
 
 ---
 
-**Live version:** [https://neiki.eu/editor](https://neiki.eu/editor)
+**Live version:** [https://neikiri.dev/editor](https://neikiri.dev/editor)
 
 ---
 
@@ -52,7 +52,7 @@ Most WYSIWYG editors either pull in a tree of dependencies or force you into a h
 Add this single line — CSS is included automatically, always the **latest version**:
 
 ```html
-<script src="https://cdn.neiki.eu/neiki-editor/neiki-editor.min.js"></script>
+<script src="https://cdn.neikiri.dev/neiki-editor/neiki-editor.min.js"></script>
 ```
 
 <details>
@@ -62,19 +62,19 @@ Add this single line — CSS is included automatically, always the **latest vers
 #### Pin a specific version
 
 ```html
-<script src="https://cdn.neiki.eu/neiki-editor/2.9.2/neiki-editor.min.js"></script>
+<script src="https://cdn.neikiri.dev/neiki-editor/2.9.2/neiki-editor.min.js"></script>
 ```
 
 #### Load CSS and JS separately
 
 ```html
 <!-- Latest -->
-<link rel="stylesheet" href="https://cdn.neiki.eu/neiki-editor/neiki-editor.css">
-<script src="https://cdn.neiki.eu/neiki-editor/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/neiki-editor.css">
+<script src="https://cdn.neikiri.dev/neiki-editor/neiki-editor.js"></script>
 
 <!-- Or pinned -->
-<link rel="stylesheet" href="https://cdn.neiki.eu/neiki-editor/2.9.2/neiki-editor.css">
-<script src="https://cdn.neiki.eu/neiki-editor/2.9.2/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/2.9.2/neiki-editor.css">
+<script src="https://cdn.neikiri.dev/neiki-editor/2.9.2/neiki-editor.js"></script>
 ```
 
 #### Alternative CDN — jsDelivr

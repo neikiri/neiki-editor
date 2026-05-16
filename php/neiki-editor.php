@@ -15,7 +15,7 @@
 class NeikiEditor
 {
     /** @var string CDN base URL */
-    private static $cdnBase = 'https://cdn.neiki.eu/neiki-editor/2.9.2/';
+    private static $cdnBase = 'https://cdn.neikiri.dev/neiki-editor/2.9.2/';
 
     /** @var bool Whether assets have already been included */
     private static $assetsIncluded = false;
