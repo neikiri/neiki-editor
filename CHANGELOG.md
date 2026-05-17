@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.9.4]
+- Improved the image insert dialog with a prominent visual upload area, click-to-select behavior, drag-and-drop support, and selected-file feedback
+- Added responsive upload-zone styling so mobile keeps a compact tap-focused image selection UI
+- Reworked autosave storage key normalization to avoid a polynomial regular expression on uncontrolled input
+- Removed selector-string URL escaping when applying `target="_blank"` to selected links
+- Updated HTML sanitization parsing to avoid `DOMParser.parseFromString` while preserving the existing sanitization allowlist behavior
+- Fixed floating selection toolbar positioning offset when the page is scrolled and the editor toolbar is sticky
+- Changed license from MIT to GNU Affero General Public License v3
+
 ## [2.9.3]
 - Fixed autosave storage collisions by scoping `localStorage` keys per page URL and editor identity
 - Added `autosaveKey` config option and `data-neiki-autosave-key` attribute support for custom autosave draft scopes

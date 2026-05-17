@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 2.9.3
+ * Version: 2.9.4
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -1344,37 +1344,237 @@
     },
 
     sanitizeHTML(html) {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(String(html || ''), 'text/html');
+      const input = String(html || '');
+      const lowerInput = input.toLowerCase();
+      const root = document.createDocumentFragment();
+      const stack = [root];
       const blockedTags = new Set(['script', 'style', 'iframe', 'object', 'embed', 'link', 'meta', 'base']);
+      const allowedTags = new Set([
+        'a', 'b', 'blockquote', 'br', 'caption', 'code', 'col', 'colgroup', 'div', 'em',
+        'font', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'img', 'li', 'ol',
+        'p', 'pre', 's', 'span', 'strike', 'strong', 'sub', 'sup', 'table', 'tbody',
+        'td', 'tfoot', 'th', 'thead', 'tr', 'u', 'ul'
+      ]);
+      const voidTags = new Set(['br', 'col', 'hr', 'img']);
       const urlAttrs = new Set(['href', 'src', 'xlink:href', 'poster']);
+      let index = 0;
 
-      doc.body.querySelectorAll('*').forEach(el => {
-        if (blockedTags.has(el.tagName.toLowerCase())) {
-          el.remove();
+      const currentParent = () => stack[stack.length - 1];
+
+      while (index < input.length) {
+        const tagStart = input.indexOf('<', index);
+
+        if (tagStart === -1) {
+          currentParent().appendChild(document.createTextNode(input.slice(index)));
+          break;
+        }
+
+        if (tagStart > index) {
+          currentParent().appendChild(document.createTextNode(input.slice(index, tagStart)));
+        }
+
+        if (input.slice(tagStart, tagStart + 4) === '<!--') {
+          const commentEnd = input.indexOf('-->', tagStart + 4);
+          index = commentEnd === -1 ? input.length : commentEnd + 3;
+          continue;
+        }
+
+        const tagEnd = Utils.findTagEnd(input, tagStart + 1);
+        if (tagEnd === -1) {
+          currentParent().appendChild(document.createTextNode(input.slice(tagStart)));
+          break;
+        }
+
+        const rawTag = input.slice(tagStart + 1, tagEnd).trim();
+        if (!rawTag || rawTag[0] === '!' || rawTag[0] === '?') {
+          index = tagEnd + 1;
+          continue;
+        }
+
+        if (rawTag[0] === '/') {
+          const closingName = Utils.readHTMLName(rawTag, 1).name.toLowerCase();
+          for (let i = stack.length - 1; i > 0; i--) {
+            if (stack[i].nodeType === Node.ELEMENT_NODE && stack[i].tagName.toLowerCase() === closingName) {
+              stack.length = i;
+              break;
+            }
+          }
+          index = tagEnd + 1;
+          continue;
+        }
+
+        const tagInfo = Utils.readHTMLName(rawTag, 0);
+        const tagName = tagInfo.name.toLowerCase();
+        const selfClosing = Utils.isSelfClosingTag(rawTag);
+
+        if (blockedTags.has(tagName)) {
+          const closeTag = '</' + tagName;
+          const closeStart = lowerInput.indexOf(closeTag, tagEnd + 1);
+          const closeEnd = closeStart === -1 ? -1 : input.indexOf('>', closeStart + closeTag.length);
+          index = closeEnd === -1 ? tagEnd + 1 : closeEnd + 1;
+          continue;
+        }
+
+        if (!allowedTags.has(tagName)) {
+          index = tagEnd + 1;
+          continue;
+        }
+
+        const el = document.createElement(tagName);
+        Utils.parseHTMLAttributes(rawTag, tagInfo.end).forEach(attr => {
+          const attrName = attr.name.toLowerCase();
+          const attrValue = attr.value.trim();
+
+          if (!Utils.isSafeHTMLAttribute(attrName)) return;
+          if (urlAttrs.has(attrName) && !Utils.isSafeUrl(attrValue, tagName === 'img')) return;
+          if (attrName === 'style' && !Utils.isSafeStyleValue(attrValue)) return;
+
+          el.setAttribute(attr.name, attr.value);
+        });
+
+        if (tagName === 'a' && el.getAttribute('target') === '_blank') {
+          el.setAttribute('rel', 'noopener noreferrer');
+        }
+
+        currentParent().appendChild(el);
+        if (!selfClosing && !voidTags.has(tagName)) {
+          stack.push(el);
+        }
+
+        index = tagEnd + 1;
+      }
+
+      return Utils.serializeHTML(root);
+    },
+
+    findTagEnd(input, start) {
+      let quote = null;
+
+      for (let i = start; i < input.length; i++) {
+        const char = input[i];
+        if (quote) {
+          if (char === quote) quote = null;
+        } else if (char === '"' || char === "'") {
+          quote = char;
+        } else if (char === '>') {
+          return i;
+        }
+      }
+
+      return -1;
+    },
+
+    readHTMLName(input, start) {
+      let i = start;
+      let name = '';
+
+      while (i < input.length && Utils.isHTMLNameChar(input[i])) {
+        name += input[i];
+        i++;
+      }
+
+      return { name, end: i };
+    },
+
+    isHTMLNameChar(char) {
+      return (char >= 'a' && char <= 'z') ||
+        (char >= 'A' && char <= 'Z') ||
+        (char >= '0' && char <= '9') ||
+        char === '-' ||
+        char === '_' ||
+        char === ':';
+    },
+
+    isSelfClosingTag(rawTag) {
+      for (let i = rawTag.length - 1; i >= 0; i--) {
+        const char = rawTag[i];
+        if (char === ' ' || char === '\t' || char === '\n' || char === '\r') continue;
+        return char === '/';
+      }
+      return false;
+    },
+
+    parseHTMLAttributes(rawTag, start) {
+      const attrs = [];
+      let i = start;
+
+      while (i < rawTag.length) {
+        while (i < rawTag.length && /\s/.test(rawTag[i])) i++;
+        if (i >= rawTag.length || rawTag[i] === '/') break;
+
+        const attrInfo = Utils.readHTMLName(rawTag, i);
+        if (!attrInfo.name) {
+          i++;
+          continue;
+        }
+
+        i = attrInfo.end;
+        while (i < rawTag.length && /\s/.test(rawTag[i])) i++;
+
+        let value = '';
+        if (rawTag[i] === '=') {
+          i++;
+          while (i < rawTag.length && /\s/.test(rawTag[i])) i++;
+
+          if (rawTag[i] === '"' || rawTag[i] === "'") {
+            const quote = rawTag[i];
+            i++;
+            const valueStart = i;
+            while (i < rawTag.length && rawTag[i] !== quote) i++;
+            value = rawTag.slice(valueStart, i);
+            if (rawTag[i] === quote) i++;
+          } else {
+            const valueStart = i;
+            while (i < rawTag.length && !/\s/.test(rawTag[i]) && rawTag[i] !== '/') i++;
+            value = rawTag.slice(valueStart, i);
+          }
+        }
+
+        attrs.push({ name: attrInfo.name, value });
+      }
+
+      return attrs;
+    },
+
+    isSafeHTMLAttribute(name) {
+      if (!name || name.startsWith('on') || name === 'srcdoc') return false;
+      if (!Utils.isSafeObjectKey(name)) return false;
+      return /^[a-z0-9_:-]+$/.test(name);
+    },
+
+    isSafeStyleValue(value) {
+      const lower = String(value || '').toLowerCase();
+      return lower.indexOf('expression') === -1 &&
+        lower.indexOf('javascript:') === -1 &&
+        lower.indexOf('vbscript:') === -1 &&
+        lower.indexOf('data:') === -1;
+    },
+
+    serializeHTML(node) {
+      let html = '';
+
+      node.childNodes.forEach(child => {
+        if (child.nodeType === Node.TEXT_NODE) {
+          html += Utils.escapeHTML(child.textContent);
           return;
         }
 
-        Array.from(el.attributes).forEach(attr => {
-          const name = attr.name.toLowerCase();
-          const value = attr.value.trim();
+        if (child.nodeType !== Node.ELEMENT_NODE) return;
 
-          if (name.startsWith('on') || name === 'srcdoc') {
-            el.removeAttribute(attr.name);
-            return;
-          }
-
-          if (urlAttrs.has(name) && !Utils.isSafeUrl(value, el.tagName.toLowerCase() === 'img')) {
-            el.removeAttribute(attr.name);
-          }
+        const tagName = child.tagName.toLowerCase();
+        html += '<' + tagName;
+        Array.from(child.attributes).forEach(attr => {
+          html += ' ' + attr.name + '="' + Utils.escapeHTML(attr.value) + '"';
         });
 
-        if (el.tagName.toLowerCase() === 'a' && el.getAttribute('target') === '_blank') {
-          el.setAttribute('rel', 'noopener noreferrer');
+        if (new Set(['br', 'col', 'hr', 'img']).has(tagName)) {
+          html += '>';
+        } else {
+          html += '>' + Utils.serializeHTML(child) + '</' + tagName + '>';
         }
       });
 
-      return doc.body.innerHTML;
+      return html;
     },
 
     isSafeUrl(value, allowImageData = false) {
@@ -1744,7 +1944,7 @@
       this.overlay.appendChild(modal);
       this.overlay.classList.add('active');
 
-      const firstInput = modal.querySelector('input');
+      const firstInput = modal.querySelector('input:not([type="file"]), textarea, select, button');
       if (firstInput) firstInput.focus();
     }
 
@@ -1853,8 +2053,13 @@
                 <div class="neiki-modal-body">
                     <div class="neiki-form-group">
                         <label>${Utils.escapeHTML(t('modal.uploadImage'))}</label>
-                        <input type="file" class="neiki-input" name="upload" accept="image/*" multiple>
-                        <small class="neiki-upload-hint" style="color: var(--neiki-text-muted); font-size: 11px;">${Utils.escapeHTML(uploadHint)}</small>
+                        <div class="neiki-image-upload-zone" role="button" tabindex="0">
+                            <input type="file" class="neiki-image-upload-input" name="upload" accept="image/*" multiple>
+                            <div class="neiki-image-upload-icon">${Icons.image}</div>
+                            <div class="neiki-image-upload-title">${Utils.escapeHTML(t('modal.uploadImage'))}</div>
+                            <div class="neiki-image-upload-hint">${Utils.escapeHTML(uploadHint)}</div>
+                            <div class="neiki-image-upload-files" aria-live="polite"></div>
+                        </div>
                     </div>
                     <div class="neiki-form-divider">
                         <span>${Utils.escapeHTML(t('modal.or'))}</span>
@@ -1879,19 +2084,27 @@
             `;
 
       const uploadInput = modal.querySelector('[name="upload"]');
+      const uploadZone = modal.querySelector('.neiki-image-upload-zone');
+      const uploadFiles = modal.querySelector('.neiki-image-upload-files');
       const urlInput = modal.querySelector('[name="url"]');
       const insertBtn = modal.querySelector('[data-action="insert"]');
       let pendingFiles = [];
+      let uploadDragCounter = 0;
 
       urlInput.value = data.url || '';
       modal.querySelector('[name="alt"]').placeholder = t('modal.describeImage');
       modal.querySelector('[name="alt"]').value = data.alt || '';
       modal.querySelector('[name="width"]').value = data.width || '';
 
-      // Handle file upload (supports multiple files)
-      uploadInput.addEventListener('change', (e) => {
-        const files = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
-        const invalid = Array.from(e.target.files).filter(f => !f.type.startsWith('image/'));
+      const updateUploadFeedback = (files) => {
+        uploadZone.classList.toggle('has-files', files.length > 0);
+        uploadFiles.textContent = files.map(file => file.name).join(', ');
+      };
+
+      const handleSelectedFiles = (fileList) => {
+        const selectedFiles = Array.from(fileList || []);
+        const files = selectedFiles.filter(f => f.type.startsWith('image/'));
+        const invalid = selectedFiles.filter(f => !f.type.startsWith('image/'));
 
         if (invalid.length > 0) {
           alert(t('modal.invalidImageFile'));
@@ -1899,13 +2112,15 @@
 
         if (files.length === 0) {
           pendingFiles = [];
+          updateUploadFeedback([]);
+          urlInput.disabled = false;
           return;
         }
 
         pendingFiles = files;
+        updateUploadFeedback(files);
 
         if (files.length === 1 && !hasUploadHandler) {
-          // Single file without handler — preview as base64 in URL field
           const reader = new FileReader();
           reader.onload = (ev) => {
             urlInput.value = ev.target.result;
@@ -1913,10 +2128,51 @@
           };
           reader.readAsDataURL(files[0]);
         } else {
-          // Multiple files or handler present — disable URL field
           urlInput.value = '';
           urlInput.disabled = true;
         }
+      };
+
+      // Handle file upload (supports multiple files)
+      uploadInput.addEventListener('change', (e) => {
+        handleSelectedFiles(e.target.files);
+      });
+
+      uploadZone.addEventListener('click', (e) => {
+        if (e.target !== uploadInput) uploadInput.click();
+      });
+
+      uploadZone.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          uploadInput.click();
+        }
+      });
+
+      uploadZone.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        uploadDragCounter++;
+        uploadZone.classList.add('drag-over');
+      });
+
+      uploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+      });
+
+      uploadZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        uploadDragCounter--;
+        if (uploadDragCounter <= 0) {
+          uploadDragCounter = 0;
+          uploadZone.classList.remove('drag-over');
+        }
+      });
+
+      uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadDragCounter = 0;
+        uploadZone.classList.remove('drag-over');
+        handleSelectedFiles(e.dataTransfer.files);
       });
 
       // Clear URL when upload is cleared
@@ -1925,6 +2181,7 @@
           urlInput.disabled = false;
           uploadInput.value = '';
           pendingFiles = [];
+          updateUploadFeedback([]);
         }
       });
 
@@ -2254,7 +2511,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/logo.png" alt="Neiki's Editor" style="width: 120px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 2.9.3</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 2.9.4</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -2876,8 +3133,8 @@
       if (range && !range.collapsed) {
         this.exec('createLink', url);
         if (newTab) {
-          const selectorUrl = window.CSS && CSS.escape ? CSS.escape(url) : url.replace(/"/g, '\\"');
-          const links = this.editor.contentArea.querySelectorAll('a[href="' + selectorUrl + '"]');
+          const links = Array.from(this.editor.contentArea.querySelectorAll('a'))
+            .filter(link => link.getAttribute('href') === url);
           links.forEach(link => {
             link.setAttribute('target', '_blank');
             link.setAttribute('rel', 'noopener noreferrer');
@@ -3109,10 +3366,31 @@
     }
 
     normalizeStorageKey(value) {
-      return String(value)
-        .trim()
-        .replace(/[^a-zA-Z0-9_-]+/g, '_')
-        .replace(/^_+|_+$/g, '') || 'editor';
+      const input = String(value).trim();
+      let output = '';
+      let lastWasSeparator = false;
+
+      for (let i = 0; i < input.length; i++) {
+        const char = input[i];
+        const isSafe = (char >= 'a' && char <= 'z') ||
+          (char >= 'A' && char <= 'Z') ||
+          (char >= '0' && char <= '9') ||
+          char === '-' ||
+          char === '_';
+
+        if (isSafe) {
+          output += char;
+          lastWasSeparator = false;
+        } else if (!lastWasSeparator) {
+          output += '_';
+          lastWasSeparator = true;
+        }
+      }
+
+      while (output[0] === '_') output = output.slice(1);
+      while (output[output.length - 1] === '_') output = output.slice(0, -1);
+
+      return output || 'editor';
     }
 
     hashString(value) {
