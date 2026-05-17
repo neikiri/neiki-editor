@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/css-%23663399.svg?style=for-the-badge&logo=css&logoColor=white" alt="CSS">
   <br>
   <img src="https://img.shields.io/badge/License-MIT-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-2.9.2-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-2.9.3-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -62,7 +62,7 @@ Add this single line — CSS is included automatically, always the **latest vers
 #### Pin a specific version
 
 ```html
-<script src="https://cdn.neikiri.dev/neiki-editor/2.9.2/neiki-editor.min.js"></script>
+<script src="https://cdn.neikiri.dev/neiki-editor/2.9.3/neiki-editor.min.js"></script>
 ```
 
 #### Load CSS and JS separately
@@ -73,8 +73,8 @@ Add this single line — CSS is included automatically, always the **latest vers
 <script src="https://cdn.neikiri.dev/neiki-editor/neiki-editor.js"></script>
 
 <!-- Or pinned -->
-<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/2.9.2/neiki-editor.css">
-<script src="https://cdn.neikiri.dev/neiki-editor/2.9.2/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/2.9.3/neiki-editor.css">
+<script src="https://cdn.neikiri.dev/neiki-editor/2.9.3/neiki-editor.js"></script>
 ```
 
 #### Alternative CDN — jsDelivr
@@ -84,15 +84,15 @@ Add this single line — CSS is included automatically, always the **latest vers
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.min.js"></script>
 
 <!-- Pinned -->
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.2/dist/neiki-editor.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.3/dist/neiki-editor.min.js"></script>
 
 <!-- Separate files (latest) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.css">
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.js"></script>
 
 <!-- Separate files (pinned) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.2/dist/neiki-editor.css">
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.2/dist/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.3/dist/neiki-editor.css">
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.3/dist/neiki-editor.js"></script>
 ```
 
 #### Package Manager
@@ -146,6 +146,7 @@ const editor = new NeikiEditor('#editor', {
     theme: 'light',       // 'light' or 'dark'
     language: 'en',       // 'en', 'cs', or custom via addTranslation()
     translations: null,   // custom translation keys (merged with built-in)
+    autosaveKey: null,    // optional custom localStorage scope for autosave
     toolbar: [
         'viewCode', 'undo', 'redo', 'findReplace', '|',
         'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'removeFormat', '|',
@@ -182,6 +183,7 @@ const editor = new NeikiEditor('#editor', {
 | `theme` | `string` | `'light'` | `'light'` or `'dark'` |
 | `language` | `string` | `'en'` | UI language — `en`, `cs`, `zh`, `es`, `de`, `fr`, `pt`, `ja` |
 | `translations` | `object\|null` | `null` | Custom translation keys (merged with built-in) |
+| `autosaveKey` | `string\|null` | `null` | Custom `localStorage` scope for autosave content and enabled state |
 | `toolbar` | `array` | *(see above)* | Toolbar button configuration |
 | `onChange` | `function\|null` | `null` | Callback on content change |
 | `onSave` | `function\|null` | `null` | Callback on save (triggered by Ctrl+S or More menu → Save) |
@@ -365,6 +367,15 @@ Autosave is accessible from the **More menu** (⋯) in the default toolbar. When
 - Content is saved to `localStorage` on every content change (debounced)
 - The status bar shows "Autosaving..." / "Saved locally"
 - Content is restored on page reload **only when autosave was enabled**
+- Autosave keys are scoped by page URL and editor identity by default, so multiple editors do not overwrite each other
+
+For apps where the same URL can edit different records, pass a custom `autosaveKey`:
+
+```javascript
+new NeikiEditor('#editor', {
+    autosaveKey: 'article-42'
+});
+```
 
 > **Note:** For production use (CMS, blog, etc.), use the `onSave` callback or `onChange` callback to save content to your database instead.
 

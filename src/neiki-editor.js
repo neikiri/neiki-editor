@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 2.9.2
+ * Version: 2.9.3
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -18,6 +18,8 @@
   // ============================================
   // SECTION 1: CONFIGURATION & CONSTANTS
   // ============================================
+
+  let EDITOR_INSTANCE_COUNTER = 0;
 
   // ============================================
   // TRANSLATIONS / i18n
@@ -1089,8 +1091,9 @@
   // Register a custom translation (static method — available before init)
   function addTranslation(lang, keys) {
     if (!lang || typeof keys !== 'object') return;
+    if (!Utils.isSafeObjectKey(lang)) return;
     if (!TRANSLATIONS[lang]) TRANSLATIONS[lang] = {};
-    Object.assign(TRANSLATIONS[lang], keys);
+    Utils.safeAssign(TRANSLATIONS[lang], keys);
   }
 
   // Translation helper function
@@ -1127,6 +1130,7 @@
     theme: 'light',
     language: 'en',
     translations: null,
+    autosaveKey: null,
     plugins: [],
     onChange: null,
     onSave: null,
@@ -1284,8 +1288,12 @@
           el.textContent = value;
         } else if (key.startsWith('on') && typeof value === 'function') {
           el.addEventListener(key.slice(2).toLowerCase(), value);
-        } else if (key === 'style' && typeof value === 'object') {
-          Object.assign(el.style, value);
+        } else if (key === 'style' && value && typeof value === 'object') {
+          Object.keys(value).forEach(styleName => {
+            if (Utils.isSafeObjectKey(styleName)) {
+              el.style[styleName] = value[styleName];
+            }
+          });
         } else {
           el.setAttribute(key, value);
         }
@@ -1308,9 +1316,24 @@
       };
     },
 
+    isSafeObjectKey(key) {
+      return key !== '__proto__' && key !== 'prototype' && key !== 'constructor';
+    },
+
+    safeAssign(target, source) {
+      if (!source || typeof source !== 'object') return target;
+      Object.keys(source).forEach(key => {
+        if (!Object.prototype.hasOwnProperty.call(source, key) || !Utils.isSafeObjectKey(key)) return;
+        target[key] = source[key];
+      });
+      return target;
+    },
+
     deepMerge(target, source) {
       const result = { ...target };
+      if (!source || typeof source !== 'object') return result;
       Object.keys(source).forEach(key => {
+        if (!Object.prototype.hasOwnProperty.call(source, key) || !Utils.isSafeObjectKey(key)) return;
         if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
           result[key] = Utils.deepMerge(result[key] || {}, source[key]);
         } else {
@@ -1321,11 +1344,64 @@
     },
 
     sanitizeHTML(html) {
-      const temp = document.createElement('div');
-      temp.innerHTML = html;
-      const scripts = temp.querySelectorAll('script');
-      scripts.forEach(s => s.remove());
-      return temp.innerHTML;
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(String(html || ''), 'text/html');
+      const blockedTags = new Set(['script', 'style', 'iframe', 'object', 'embed', 'link', 'meta', 'base']);
+      const urlAttrs = new Set(['href', 'src', 'xlink:href', 'poster']);
+
+      doc.body.querySelectorAll('*').forEach(el => {
+        if (blockedTags.has(el.tagName.toLowerCase())) {
+          el.remove();
+          return;
+        }
+
+        Array.from(el.attributes).forEach(attr => {
+          const name = attr.name.toLowerCase();
+          const value = attr.value.trim();
+
+          if (name.startsWith('on') || name === 'srcdoc') {
+            el.removeAttribute(attr.name);
+            return;
+          }
+
+          if (urlAttrs.has(name) && !Utils.isSafeUrl(value, el.tagName.toLowerCase() === 'img')) {
+            el.removeAttribute(attr.name);
+          }
+        });
+
+        if (el.tagName.toLowerCase() === 'a' && el.getAttribute('target') === '_blank') {
+          el.setAttribute('rel', 'noopener noreferrer');
+        }
+      });
+
+      return doc.body.innerHTML;
+    },
+
+    isSafeUrl(value, allowImageData = false) {
+      if (!value) return true;
+      if (value.startsWith('#') || value.startsWith('/') || value.startsWith('./') || value.startsWith('../')) return true;
+
+      try {
+        const parsed = new URL(value, window.location.href);
+        const protocol = parsed.protocol.toLowerCase();
+        return protocol === 'http:' ||
+          protocol === 'https:' ||
+          protocol === 'mailto:' ||
+          protocol === 'tel:' ||
+          (allowImageData && protocol === 'data:' && /^data:image\//i.test(value));
+      } catch (e) {
+        return false;
+      }
+    },
+
+    escapeHTML(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      })[char]);
     },
 
     isValidUrl(string) {
@@ -1685,38 +1761,74 @@
     createLinkModal(data) {
       const modal = Utils.createElement('div', { className: 'neiki-modal' });
 
-      modal.innerHTML = `
-                <div class="neiki-modal-header">
-                    <h3>${t('modal.insertLink')}</h3>
-                    <button class="neiki-modal-close" type="button">${Icons.close}</button>
-                </div>
-                <div class="neiki-modal-body">
-                    <div class="neiki-form-group">
-                        <label>${t('modal.url')}</label>
-                        <input type="url" class="neiki-input" name="url" placeholder="https://example.com" value="${data.url || ''}">
-                    </div>
-                    <div class="neiki-form-group">
-                        <label>${t('modal.text')}</label>
-                        <input type="text" class="neiki-input" name="text" placeholder="${t('modal.linkText')}" value="${data.text || ''}">
-                    </div>
-                    <div class="neiki-form-group">
-                        <label>
-                            <input type="checkbox" name="newTab" ${data.newTab ? 'checked' : ''}> ${t('modal.openInNewTab')}
-                        </label>
-                    </div>
-                </div>
-                <div class="neiki-modal-footer">
-                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">${t('modal.cancel')}</button>
-                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">${t('modal.insert')}</button>
-                </div>
-            `;
+      const header = Utils.createElement('div', { className: 'neiki-modal-header' });
+      header.appendChild(Utils.createElement('h3', { textContent: t('modal.insertLink') }));
+      const closeBtn = Utils.createElement('button', {
+        className: 'neiki-modal-close',
+        type: 'button',
+        innerHTML: Icons.close
+      });
+      header.appendChild(closeBtn);
 
-      modal.querySelector('.neiki-modal-close').addEventListener('click', () => this.close());
-      modal.querySelector('[data-action="cancel"]').addEventListener('click', () => this.close());
-      modal.querySelector('[data-action="insert"]').addEventListener('click', () => {
-        const url = modal.querySelector('[name="url"]').value;
-        const text = modal.querySelector('[name="text"]').value || url;
-        const newTab = modal.querySelector('[name="newTab"]').checked;
+      const body = Utils.createElement('div', { className: 'neiki-modal-body' });
+      const urlGroup = Utils.createElement('div', { className: 'neiki-form-group' });
+      const urlInput = Utils.createElement('input', {
+        type: 'url',
+        className: 'neiki-input',
+        name: 'url',
+        placeholder: 'https://example.com'
+      });
+      urlInput.value = data.url || '';
+      urlGroup.appendChild(Utils.createElement('label', { textContent: t('modal.url') }));
+      urlGroup.appendChild(urlInput);
+
+      const textGroup = Utils.createElement('div', { className: 'neiki-form-group' });
+      const textInput = Utils.createElement('input', {
+        type: 'text',
+        className: 'neiki-input',
+        name: 'text',
+        placeholder: t('modal.linkText')
+      });
+      textInput.value = data.text || '';
+      textGroup.appendChild(Utils.createElement('label', { textContent: t('modal.text') }));
+      textGroup.appendChild(textInput);
+
+      const newTabGroup = Utils.createElement('div', { className: 'neiki-form-group' });
+      const newTabLabel = Utils.createElement('label');
+      const newTabInput = Utils.createElement('input', { type: 'checkbox', name: 'newTab' });
+      newTabInput.checked = !!data.newTab;
+      newTabLabel.appendChild(newTabInput);
+      newTabLabel.appendChild(document.createTextNode(' ' + t('modal.openInNewTab')));
+      newTabGroup.appendChild(newTabLabel);
+
+      body.appendChild(urlGroup);
+      body.appendChild(textGroup);
+      body.appendChild(newTabGroup);
+
+      const footer = Utils.createElement('div', { className: 'neiki-modal-footer' });
+      const cancelBtn = Utils.createElement('button', {
+        className: 'neiki-btn neiki-btn-secondary',
+        type: 'button',
+        textContent: t('modal.cancel')
+      });
+      const insertBtn = Utils.createElement('button', {
+        className: 'neiki-btn neiki-btn-primary',
+        type: 'button',
+        textContent: t('modal.insert')
+      });
+      footer.appendChild(cancelBtn);
+      footer.appendChild(insertBtn);
+
+      modal.appendChild(header);
+      modal.appendChild(body);
+      modal.appendChild(footer);
+
+      closeBtn.addEventListener('click', () => this.close());
+      cancelBtn.addEventListener('click', () => this.close());
+      insertBtn.addEventListener('click', () => {
+        const url = urlInput.value;
+        const text = textInput.value || url;
+        const newTab = newTabInput.checked;
 
         if (url) {
           this.editor.restoreSavedSelection();
@@ -1735,42 +1847,46 @@
 
       modal.innerHTML = `
                 <div class="neiki-modal-header">
-                    <h3>${t('modal.insertImage')}</h3>
+                    <h3>${Utils.escapeHTML(t('modal.insertImage'))}</h3>
                     <button class="neiki-modal-close" type="button">${Icons.close}</button>
                 </div>
                 <div class="neiki-modal-body">
                     <div class="neiki-form-group">
-                        <label>${t('modal.uploadImage')}</label>
+                        <label>${Utils.escapeHTML(t('modal.uploadImage'))}</label>
                         <input type="file" class="neiki-input" name="upload" accept="image/*" multiple>
-                        <small class="neiki-upload-hint" style="color: var(--neiki-text-muted); font-size: 11px;">${uploadHint}</small>
+                        <small class="neiki-upload-hint" style="color: var(--neiki-text-muted); font-size: 11px;">${Utils.escapeHTML(uploadHint)}</small>
                     </div>
                     <div class="neiki-form-divider">
-                        <span>${t('modal.or')}</span>
+                        <span>${Utils.escapeHTML(t('modal.or'))}</span>
                     </div>
                     <div class="neiki-form-group">
-                        <label>${t('modal.imageUrl')}</label>
-                        <input type="url" class="neiki-input" name="url" placeholder="https://example.com/image.jpg" value="${data.url || ''}">
+                        <label>${Utils.escapeHTML(t('modal.imageUrl'))}</label>
+                        <input type="url" class="neiki-input" name="url" placeholder="https://example.com/image.jpg">
                     </div>
                     <div class="neiki-form-group">
-                        <label>${t('modal.altText')}</label>
-                        <input type="text" class="neiki-input" name="alt" placeholder="${t('modal.describeImage')}" value="${data.alt || ''}">
+                        <label>${Utils.escapeHTML(t('modal.altText'))}</label>
+                        <input type="text" class="neiki-input" name="alt">
                     </div>
                     <div class="neiki-form-group">
-                        <label>${t('modal.widthOptional')}</label>
-                        <input type="text" class="neiki-input" name="width" placeholder="e.g. 300px or 50%" value="${data.width || ''}">
+                        <label>${Utils.escapeHTML(t('modal.widthOptional'))}</label>
+                        <input type="text" class="neiki-input" name="width" placeholder="e.g. 300px or 50%">
                     </div>
                 </div>
                 <div class="neiki-modal-footer">
-                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">${t('modal.cancel')}</button>
-                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">${t('modal.insert')}</button>
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">${Utils.escapeHTML(t('modal.cancel'))}</button>
+                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">${Utils.escapeHTML(t('modal.insert'))}</button>
                 </div>
             `;
 
       const uploadInput = modal.querySelector('[name="upload"]');
       const urlInput = modal.querySelector('[name="url"]');
-      const hintEl = modal.querySelector('.neiki-upload-hint');
       const insertBtn = modal.querySelector('[data-action="insert"]');
       let pendingFiles = [];
+
+      urlInput.value = data.url || '';
+      modal.querySelector('[name="alt"]').placeholder = t('modal.describeImage');
+      modal.querySelector('[name="alt"]').value = data.alt || '';
+      modal.querySelector('[name="width"]').value = data.width || '';
 
       // Handle file upload (supports multiple files)
       uploadInput.addEventListener('change', (e) => {
@@ -1842,7 +1958,6 @@
           this.close();
         } else if (pendingFiles.length > 1) {
           // Multiple files without handler — insert each as base64
-          let loaded = 0;
           insertBtn.disabled = true;
           insertBtn.textContent = t('modal.uploadingImage');
 
@@ -1878,32 +1993,35 @@
 
       modal.innerHTML = `
                 <div class="neiki-modal-header">
-                    <h3>${t('modal.insertTable')}</h3>
+                    <h3>${Utils.escapeHTML(t('modal.insertTable'))}</h3>
                     <button class="neiki-modal-close" type="button">${Icons.close}</button>
                 </div>
                 <div class="neiki-modal-body">
                     <div class="neiki-form-row">
                         <div class="neiki-form-group">
-                            <label>${t('modal.rows')}</label>
-                            <input type="number" class="neiki-input" name="rows" min="1" max="20" value="${data.rows || 3}">
+                            <label>${Utils.escapeHTML(t('modal.rows'))}</label>
+                            <input type="number" class="neiki-input" name="rows" min="1" max="20">
                         </div>
                         <div class="neiki-form-group">
-                            <label>${t('modal.columns')}</label>
-                            <input type="number" class="neiki-input" name="cols" min="1" max="10" value="${data.cols || 3}">
+                            <label>${Utils.escapeHTML(t('modal.columns'))}</label>
+                            <input type="number" class="neiki-input" name="cols" min="1" max="10">
                         </div>
                     </div>
                     <div class="neiki-form-group">
                         <label>
-                            <input type="checkbox" name="header" ${data.header !== false ? 'checked' : ''}> ${t('modal.includeHeaderRow')}
+                            <input type="checkbox" name="header"> ${Utils.escapeHTML(t('modal.includeHeaderRow'))}
                         </label>
                     </div>
                 </div>
                 <div class="neiki-modal-footer">
-                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">${t('modal.cancel')}</button>
-                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">${t('modal.insert')}</button>
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">${Utils.escapeHTML(t('modal.cancel'))}</button>
+                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">${Utils.escapeHTML(t('modal.insert'))}</button>
                 </div>
             `;
 
+      modal.querySelector('[name="rows"]').value = parseInt(data.rows, 10) || 3;
+      modal.querySelector('[name="cols"]').value = parseInt(data.cols, 10) || 3;
+      modal.querySelector('[name="header"]').checked = data.header !== false;
       modal.querySelector('.neiki-modal-close').addEventListener('click', () => this.close());
       modal.querySelector('[data-action="cancel"]').addEventListener('click', () => this.close());
       modal.querySelector('[data-action="insert"]').addEventListener('click', () => {
@@ -1924,28 +2042,28 @@
 
       modal.innerHTML = `
                 <div class="neiki-modal-header">
-                    <h3>${t('modal.findReplace')}</h3>
+                    <h3>${Utils.escapeHTML(t('modal.findReplace'))}</h3>
                     <button class="neiki-modal-close" type="button">${Icons.close}</button>
                 </div>
                 <div class="neiki-modal-body">
                     <div class="neiki-form-group">
-                        <label>${t('modal.find')}</label>
-                        <input type="text" class="neiki-input" name="find" placeholder="${t('modal.searchText')}">
+                        <label>${Utils.escapeHTML(t('modal.find'))}</label>
+                        <input type="text" class="neiki-input" name="find">
                     </div>
                     <div class="neiki-form-group">
-                        <label>${t('modal.replaceWith')}</label>
-                        <input type="text" class="neiki-input" name="replace" placeholder="${t('modal.replacementText')}">
+                        <label>${Utils.escapeHTML(t('modal.replaceWith'))}</label>
+                        <input type="text" class="neiki-input" name="replace">
                     </div>
                     <div class="neiki-form-group neiki-form-row">
-                        <label><input type="checkbox" name="regex"> ${t('modal.useRegex')}</label>
-                        <label><input type="checkbox" name="caseSensitive"> ${t('modal.caseSensitive')}</label>
+                        <label><input type="checkbox" name="regex"> ${Utils.escapeHTML(t('modal.useRegex'))}</label>
+                        <label><input type="checkbox" name="caseSensitive"> ${Utils.escapeHTML(t('modal.caseSensitive'))}</label>
                     </div>
                     <div class="neiki-find-results" style="margin-top:10px;font-size:13px;color:var(--neiki-text-muted);"></div>
                 </div>
                 <div class="neiki-modal-footer">
-                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="findNext">${t('modal.findNext')}</button>
-                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="replaceOne">${t('modal.replace')}</button>
-                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="replaceAll">${t('modal.replaceAll')}</button>
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="findNext">${Utils.escapeHTML(t('modal.findNext'))}</button>
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="replaceOne">${Utils.escapeHTML(t('modal.replace'))}</button>
+                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="replaceAll">${Utils.escapeHTML(t('modal.replaceAll'))}</button>
                 </div>
             `;
 
@@ -1957,6 +2075,9 @@
 
       let currentMatches = [];
       let currentIndex = -1;
+
+      findInput.placeholder = t('modal.searchText');
+      replaceInput.placeholder = t('modal.replacementText');
 
       const clearHighlights = () => {
         const highlights = this.editor.contentArea.querySelectorAll('.neiki-highlight-find');
@@ -1978,7 +2099,6 @@
           return;
         }
 
-        const content = this.editor.contentArea.innerHTML;
         let flags = 'g';
         if (!caseCheck.checked) flags += 'i';
 
@@ -2127,16 +2247,16 @@
 
       modal.innerHTML = `
         <div class="neiki-modal-header">
-          <h3>${t('menu.help')}</h3>
+          <h3>${Utils.escapeHTML(t('menu.help'))}</h3>
           <button class="neiki-modal-close" type="button">${Icons.close}</button>
         </div>
         <div class="neiki-modal-body" style="text-align: center; padding: 24px 20px;">
           <img src="https://github.com/neikiri/neiki-editor/raw/main/logo.png" alt="Neiki's Editor" style="width: 120px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
-            <div><strong>${t('help.author')}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${t('help.version')}:</strong> 2.9.2</div>
-            <div><strong>${t('help.github')}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
-            <div><strong>${t('help.documentation')}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" style="color: var(--neiki-accent);">Wiki</a></div>
+            <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 2.9.3</div>
+            <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
+            <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
         </div>
       `;
@@ -2743,26 +2863,34 @@
 
     insertHTML(html) {
       this.editor.focus();
-      document.execCommand('insertHTML', false, html);
+      document.execCommand('insertHTML', false, Utils.sanitizeHTML(html));
       this.editor.history.record();
       this.editor.triggerChange();
     }
 
     insertLink(url, text, newTab = false) {
+      if (!Utils.isSafeUrl(url)) return;
       const selection = Utils.getSelection();
       const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
 
       if (range && !range.collapsed) {
         this.exec('createLink', url);
         if (newTab) {
-          const links = this.editor.contentArea.querySelectorAll('a[href="' + url + '"]');
-          links.forEach(link => link.setAttribute('target', '_blank'));
+          const selectorUrl = window.CSS && CSS.escape ? CSS.escape(url) : url.replace(/"/g, '\\"');
+          const links = this.editor.contentArea.querySelectorAll('a[href="' + selectorUrl + '"]');
+          links.forEach(link => {
+            link.setAttribute('target', '_blank');
+            link.setAttribute('rel', 'noopener noreferrer');
+          });
         }
       } else {
         const link = document.createElement('a');
         link.href = url;
         link.textContent = text || url;
-        if (newTab) link.target = '_blank';
+        if (newTab) {
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+        }
 
         this.editor.focus();
         document.execCommand('insertHTML', false, link.outerHTML);
@@ -2772,9 +2900,10 @@
     }
 
     insertImage(url, alt = '', width = '') {
-      let html = `<img src="${url}"`;
-      if (alt) html += ` alt="${alt}"`;
-      if (width) html += ` width="${width}"`;
+      if (!Utils.isSafeUrl(url, true)) return;
+      let html = `<img src="${Utils.escapeHTML(url)}"`;
+      if (alt) html += ` alt="${Utils.escapeHTML(alt)}"`;
+      if (width) html += ` width="${Utils.escapeHTML(width)}"`;
       html += '>';
 
       this.editor.focus();
@@ -2841,6 +2970,8 @@
         'neiki_' + (typeof element === 'string' ? element.replace(/[^a-zA-Z0-9]/g, '_') : 'editor');
 
       this.config = Utils.deepMerge(DEFAULT_CONFIG, options);
+      this.instanceIndex = ++EDITOR_INSTANCE_COUNTER;
+      this.storageId = this.createAutosaveStorageId(element);
       this.isFullscreen = false;
       this.isAutosaveEnabled = false;
       this.autosaveInterval = null;
@@ -2851,7 +2982,7 @@
 
     init() {
       // Initialize storage first
-      this.storage = new StorageManager(this.id);
+      this.storage = new StorageManager(this.storageId);
 
       // Set language for translations
       _currentLanguage = this.config.language || 'en';
@@ -2922,6 +3053,78 @@
 
       this.originalElement.style.display = 'none';
       this.originalElement.parentNode.insertBefore(this.container, this.originalElement);
+    }
+
+    createAutosaveStorageId(element) {
+      const customKey = this.config.autosaveKey ||
+        this.originalElement.getAttribute('data-neiki-autosave-key');
+
+      if (customKey) {
+        return 'autosave_' + this.normalizeStorageKey(customKey);
+      }
+
+      const pageScope = this.hashString(this.getPageStorageScope());
+      const elementScope = this.normalizeStorageKey(this.getElementStorageScope(element));
+      return 'autosave_' + pageScope + '_' + elementScope;
+    }
+
+    getPageStorageScope() {
+      try {
+        return window.location.href || window.location.pathname || 'page';
+      } catch (e) {
+        return 'page';
+      }
+    }
+
+    getElementStorageScope(element) {
+      if (this.originalElement.id) return this.originalElement.id;
+      if (this.originalElement.name) return this.originalElement.name;
+      if (this.originalElement.getAttribute('data-neiki-id')) {
+        return this.originalElement.getAttribute('data-neiki-id');
+      }
+      if (typeof element === 'string') return element;
+      return this.getElementPath(this.originalElement);
+    }
+
+    getElementPath(element) {
+      const parts = [];
+      let node = element;
+
+      while (node && node.nodeType === Node.ELEMENT_NODE && node !== document.body) {
+        let part = node.tagName.toLowerCase();
+        const parent = node.parentNode;
+
+        if (parent && parent.children) {
+          const siblings = Array.prototype.filter.call(parent.children, child => child.tagName === node.tagName);
+          if (siblings.length > 1) {
+            part += ':nth-of-type(' + (siblings.indexOf(node) + 1) + ')';
+          }
+        }
+
+        parts.unshift(part);
+        node = parent;
+      }
+
+      return parts.length ? parts.join('>') : 'editor_' + this.instanceIndex;
+    }
+
+    normalizeStorageKey(value) {
+      return String(value)
+        .trim()
+        .replace(/[^a-zA-Z0-9_-]+/g, '_')
+        .replace(/^_+|_+$/g, '') || 'editor';
+    }
+
+    hashString(value) {
+      let hash = 0;
+      const input = String(value);
+
+      for (let i = 0; i < input.length; i++) {
+        hash = ((hash << 5) - hash) + input.charCodeAt(i);
+        hash |= 0;
+      }
+
+      return Math.abs(hash).toString(36);
     }
 
     createToolbar() {
@@ -3357,14 +3560,14 @@
 
       if (autosaveEnabled && autosavedContent) {
         // Restore autosaved content only if autosave was enabled
-        this.contentArea.innerHTML = autosavedContent;
+        this.contentArea.innerHTML = Utils.sanitizeHTML(autosavedContent);
       } else {
         // Always use original element content (textarea value or innerHTML)
         // This ensures the page's actual content is shown, not old localStorage data
         if (this.originalElement.value) {
-          this.contentArea.innerHTML = this.originalElement.value;
+          this.contentArea.innerHTML = Utils.sanitizeHTML(this.originalElement.value);
         } else if (this.originalElement.innerHTML.trim()) {
-          this.contentArea.innerHTML = this.originalElement.innerHTML;
+          this.contentArea.innerHTML = Utils.sanitizeHTML(this.originalElement.innerHTML);
         }
       }
 
@@ -5026,7 +5229,6 @@
       if (!this.isResizing || !this.currentImg) return;
 
       const dx = e.clientX - this.startX;
-      const dy = e.clientY - this.startY;
 
       let newWidth, newHeight;
 

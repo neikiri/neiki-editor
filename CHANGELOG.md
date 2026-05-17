@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.9.3]
+- Fixed autosave storage collisions by scoping `localStorage` keys per page URL and editor identity
+- Added `autosaveKey` config option and `data-neiki-autosave-key` attribute support for custom autosave draft scopes
+- Updated autosave documentation with guidance for multiple editors and same-URL edit screens
+- Hardened HTML sanitization when restoring editor content from autosave, textarea/source HTML, and public HTML insertion
+- Fixed unsafe modal value interpolation for link/image dialogs and escaped inserted image attributes
+- Guarded translation/config merging against prototype-polluting keys such as `__proto__`, `prototype`, and `constructor`
+- Removed unused internal variables reported by static analysis in image upload, find/replace, and image resize code
+
 ## [2.9.2]
 - Added **Drag to Reposition Images** — click and hold an image (or use the grip handle) to drag and drop it to any position within the editor, including between words (inline placement via caret)
 - Added **Image-Specific Toolbar** — selecting an image now shows a contextual toolbar with Drag handle, Move Block Up/Down, Replace, and Delete actions instead of irrelevant text formatting buttons
