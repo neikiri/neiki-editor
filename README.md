@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/css-%23663399.svg?style=for-the-badge&logo=css&logoColor=white" alt="CSS">
   <br>
   <img src="https://img.shields.io/badge/License-AGPL--3.0-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-2.9.4-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-2.9.5-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -62,7 +62,7 @@ Add this single line — CSS is included automatically, always the **latest vers
 #### Pin a specific version
 
 ```html
-<script src="https://cdn.neikiri.dev/neiki-editor/2.9.4/neiki-editor.min.js"></script>
+<script src="https://cdn.neikiri.dev/neiki-editor/2.9.5/neiki-editor.min.js"></script>
 ```
 
 #### Load CSS and JS separately
@@ -73,8 +73,8 @@ Add this single line — CSS is included automatically, always the **latest vers
 <script src="https://cdn.neikiri.dev/neiki-editor/neiki-editor.js"></script>
 
 <!-- Or pinned -->
-<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/2.9.4/neiki-editor.css">
-<script src="https://cdn.neikiri.dev/neiki-editor/2.9.4/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/2.9.5/neiki-editor.css">
+<script src="https://cdn.neikiri.dev/neiki-editor/2.9.5/neiki-editor.js"></script>
 ```
 
 #### Alternative CDN — jsDelivr
@@ -84,15 +84,15 @@ Add this single line — CSS is included automatically, always the **latest vers
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.min.js"></script>
 
 <!-- Pinned -->
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.4/dist/neiki-editor.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.5/dist/neiki-editor.min.js"></script>
 
 <!-- Separate files (latest) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.css">
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.js"></script>
 
 <!-- Separate files (pinned) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.4/dist/neiki-editor.css">
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.4/dist/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.5/dist/neiki-editor.css">
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.9.5/dist/neiki-editor.js"></script>
 ```
 
 #### Package Manager
@@ -147,6 +147,7 @@ const editor = new NeikiEditor('#editor', {
     language: 'en',       // 'en', 'cs', or custom via addTranslation()
     translations: null,   // custom translation keys (merged with built-in)
     autosaveKey: null,    // optional custom localStorage scope for autosave
+    custom_class: null,   // optional custom CSS class for the content area
     toolbar: [
         'viewCode', 'undo', 'redo', 'findReplace', '|',
         'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'removeFormat', '|',
@@ -192,6 +193,7 @@ const editor = new NeikiEditor('#editor', {
 | `onReady` | `function\|null` | `null` | Callback when editor is ready |
 | `showHelp` | `boolean` | `true` | Show Help button in More menu (⋯) |
 | `imageUploadHandler` | `function\|null` | `null` | Async callback `(file) => Promise<url>` for uploading images to a server/CDN instead of base64 |
+| `custom_class` | `string\|null` | `null` | Custom CSS class appended to the editor content area (`neiki-content`) |
 
 ---
 

@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 2.9.4
+ * Version: 2.9.5
  */
 
 /* ============================================
@@ -433,6 +433,7 @@
 }
 
 .neiki-content img {
+  display: inline-block;
   max-width: 100%;
   height: auto;
   border-radius: 4px;

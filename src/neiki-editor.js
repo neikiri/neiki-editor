@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 2.9.4
+ * Version: 2.9.5
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -1138,7 +1138,8 @@
     onBlur: null,
     onReady: null,
     showHelp: true,
-    imageUploadHandler: null
+    imageUploadHandler: null,
+    custom_class: null
   };
 
   const TOOLBAR_ITEMS = {
@@ -2511,7 +2512,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/logo.png" alt="Neiki's Editor" style="width: 120px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 2.9.4</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 2.9.5</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -3814,8 +3815,12 @@
     createContentArea() {
       this.contentWrapper = Utils.createElement('div', { className: 'neiki-content-wrapper' });
 
+      const contentClasses = this.config.custom_class
+        ? `neiki-content ${this.config.custom_class}`
+        : 'neiki-content';
+
       this.contentArea = Utils.createElement('div', {
-        className: 'neiki-content',
+        className: contentClasses,
         contentEditable: !this.config.readonly,
         spellcheck: this.config.spellcheck,
         'data-placeholder': t('placeholder')

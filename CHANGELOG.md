@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.9.5]
+- Added `custom_class` config option — appends a custom CSS class to the editor content area alongside the default `neiki-content` class
+- Set `display: inline-block` on `.neiki-content img` to avoid layout conflicts with CSS resets that set images to `display: block`
+
 ## [2.9.4]
 - Improved the image insert dialog with a prominent visual upload area, click-to-select behavior, drag-and-drop support, and selected-file feedback
 - Added responsive upload-zone styling so mobile keeps a compact tap-focused image selection UI
