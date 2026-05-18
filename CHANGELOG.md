@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.10.0]
+- Added `code` toolbar button with smart behavior: single-line selection wraps text in inline `<code>`, multi-line selection creates a `<pre><code>` code block. Works as a toggle — clicking again unwraps. Included in the default toolbar between `subscript` and `removeFormat`.
+- Fixed text not being wrapped in `<p>` after toggling off Bullet List or Numbered List — consecutive inline/text nodes are now grouped into a single `<p>` instead of each being wrapped separately
+- Fixed HTML entities (e.g. `&amp;`) being displayed as literal text instead of being decoded — the sanitizer now properly decodes entities in text nodes
+- Renamed `custom_class` config option to `customClass` for consistency with the camelCase API style. The old `custom_class` name still works for backward compatibility.
+- Added `toolbar.code` translation key to all 8 built-in languages (en, cs, zh, es, de, fr, pt, ja)
+
 ## [2.9.5]
 - Added `custom_class` config option — appends a custom CSS class to the editor content area alongside the default `neiki-content` class
 - Set `display: inline-block` on `.neiki-content img` to avoid layout conflicts with CSS resets that set images to `display: block`

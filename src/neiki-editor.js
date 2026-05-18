@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 2.9.5
+ * Version: 2.10.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -63,6 +63,7 @@
       'toolbar.autosave': 'Toggle Autosave',
       'toolbar.themeToggle': 'Toggle Theme',
       'toolbar.print': 'Print',
+      'toolbar.code': 'Code',
       'toolbar.insert': 'Insert',
       'toolbar.moreOptions': 'More options',
       'toolbar.decreaseFontSize': 'Decrease font size',
@@ -219,6 +220,7 @@
       'toolbar.autosave': 'Auto. ukládání',
       'toolbar.themeToggle': 'Přepnout motiv',
       'toolbar.print': 'Tisk',
+      'toolbar.code': 'Kód',
       'toolbar.insert': 'Vložit',
       'toolbar.moreOptions': 'Další možnosti',
       'toolbar.decreaseFontSize': 'Zmenšit písmo',
@@ -369,6 +371,7 @@
       'toolbar.autosave': '自动保存',
       'toolbar.themeToggle': '切换主题',
       'toolbar.print': '打印',
+      'toolbar.code': '代码',
       'toolbar.insert': '插入',
       'toolbar.moreOptions': '更多选项',
       'toolbar.decreaseFontSize': '缩小字体',
@@ -494,6 +497,7 @@
       'toolbar.autosave': 'Guardado automático',
       'toolbar.themeToggle': 'Cambiar tema',
       'toolbar.print': 'Imprimir',
+      'toolbar.code': 'Código',
       'toolbar.insert': 'Insertar',
       'toolbar.moreOptions': 'Más opciones',
       'toolbar.decreaseFontSize': 'Reducir tamaño de fuente',
@@ -619,6 +623,7 @@
       'toolbar.autosave': 'Automatisch speichern',
       'toolbar.themeToggle': 'Design wechseln',
       'toolbar.print': 'Drucken',
+      'toolbar.code': 'Code',
       'toolbar.insert': 'Einfügen',
       'toolbar.moreOptions': 'Weitere Optionen',
       'toolbar.decreaseFontSize': 'Schrift verkleinern',
@@ -744,6 +749,7 @@
       'toolbar.autosave': 'Sauvegarde automatique',
       'toolbar.themeToggle': 'Changer de thème',
       'toolbar.print': 'Imprimer',
+      'toolbar.code': 'Code',
       'toolbar.insert': 'Insérer',
       'toolbar.moreOptions': 'Plus d\'options',
       'toolbar.decreaseFontSize': 'Réduire la taille de police',
@@ -869,6 +875,7 @@
       'toolbar.autosave': 'Salvamento automático',
       'toolbar.themeToggle': 'Alternar tema',
       'toolbar.print': 'Imprimir',
+      'toolbar.code': 'Código',
       'toolbar.insert': 'Inserir',
       'toolbar.moreOptions': 'Mais opções',
       'toolbar.decreaseFontSize': 'Diminuir fonte',
@@ -994,6 +1001,7 @@
       'toolbar.autosave': '自動保存',
       'toolbar.themeToggle': 'テーマ切替',
       'toolbar.print': '印刷',
+      'toolbar.code': 'コード',
       'toolbar.insert': '挿入',
       'toolbar.moreOptions': 'その他',
       'toolbar.decreaseFontSize': 'フォント縮小',
@@ -1112,7 +1120,7 @@
   const DEFAULT_CONFIG = {
     toolbar: [
       'viewCode', 'undo', 'redo', 'findReplace', '|',
-      'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'removeFormat', '|',
+      'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'code', 'removeFormat', '|',
       'heading', 'fontFamily', 'fontSize', '|',
       'foreColor', 'backColor', '|',
       'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', '|',
@@ -1139,7 +1147,7 @@
     onReady: null,
     showHelp: true,
     imageUploadHandler: null,
-    custom_class: null
+    customClass: null
   };
 
   const TOOLBAR_ITEMS = {
@@ -1170,6 +1178,7 @@
     horizontalRule: { icon: 'minus', titleKey: 'toolbar.horizontalRule', command: 'insertHorizontalRule' },
     subscript: { icon: 'subscript', titleKey: 'toolbar.subscript', command: 'subscript' },
     superscript: { icon: 'superscript', titleKey: 'toolbar.superscript', command: 'superscript' },
+    code: { icon: 'code-inline', titleKey: 'toolbar.code', command: 'toggleCode' },
     removeFormat: { icon: 'eraser', titleKey: 'toolbar.removeFormat', command: 'removeFormat' },
     findReplace: { icon: 'search', titleKey: 'toolbar.findReplace', command: 'findReplace', modal: true },
     emoji: { icon: 'emoji', titleKey: 'toolbar.emoji', command: 'emoji', picker: 'emoji' },
@@ -1362,16 +1371,22 @@
 
       const currentParent = () => stack[stack.length - 1];
 
+      const decodeEntities = (text) => {
+        const el = document.createElement('span');
+        el.innerHTML = text;
+        return el.textContent;
+      };
+
       while (index < input.length) {
         const tagStart = input.indexOf('<', index);
 
         if (tagStart === -1) {
-          currentParent().appendChild(document.createTextNode(input.slice(index)));
+          currentParent().appendChild(document.createTextNode(decodeEntities(input.slice(index))));
           break;
         }
 
         if (tagStart > index) {
-          currentParent().appendChild(document.createTextNode(input.slice(index, tagStart)));
+          currentParent().appendChild(document.createTextNode(decodeEntities(input.slice(index, tagStart))));
         }
 
         if (input.slice(tagStart, tagStart + 4) === '<!--') {
@@ -1719,6 +1734,7 @@
     table: '<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"/></svg>',
     quote: '<svg viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>',
     code: '<svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>',
+    'code-inline': '<svg viewBox="0 0 256 256"><path d="M0 0h256v256H0z" fill="none"/><path fill="currentColor" d="M71.68 97.22L34.74 128l36.94 30.78a12 12 0 1 1-15.36 18.44l-48-40a12 12 0 0 1 0-18.44l48-40a12 12 0 0 1 15.36 18.44m176 21.56l-48-40a12 12 0 1 0-15.36 18.44L221.26 128l-36.94 30.78a12 12 0 1 0 15.36 18.44l48-40a12 12 0 0 0 0-18.44M164.1 28.72a12 12 0 0 0-15.38 7.18l-64 176a12 12 0 0 0 7.18 15.37a11.8 11.8 0 0 0 4.1.73a12 12 0 0 0 11.28-7.9l64-176a12 12 0 0 0-7.18-15.38"/></svg>',
     minus: '<svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>',
     eraser: '<svg viewBox="0 0 24 24"><path d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 01-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.6-10.6c.79-.78 2.05-.78 2.83 0zm-1.41 1.42L6.93 12.9l4.24 4.24 7.9-7.9-4.24-4.26z"/></svg>',
     fullscreen: '<svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>',
@@ -2512,7 +2528,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/logo.png" alt="Neiki's Editor" style="width: 120px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 2.9.5</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 2.10.0</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -2971,6 +2987,112 @@
     subscript() { this.exec('subscript'); }
     superscript() { this.exec('superscript'); }
 
+    toggleCode() {
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount) return;
+
+      const range = sel.getRangeAt(0);
+
+      // Detect if selection is inside or contains <pre> or <code>
+      const findCodeAncestor = (n) => {
+        if (n.nodeType === Node.TEXT_NODE) n = n.parentNode;
+        if (!n || !n.closest) return null;
+        const pre = n.closest('pre');
+        if (pre && this.editor.contentArea.contains(pre)) return { type: 'pre', el: pre };
+        const code = n.closest('code');
+        if (code && this.editor.contentArea.contains(code)) return { type: 'code', el: code };
+        return null;
+      };
+
+      // Check start, end, and common ancestor
+      const fromStart = findCodeAncestor(range.startContainer);
+      const fromEnd = findCodeAncestor(range.endContainer);
+      const fromCommon = findCodeAncestor(range.commonAncestorContainer);
+      const existing = fromStart || fromEnd || fromCommon;
+
+      // Also check if selection contains <code> elements inside it
+      let containedCode = null;
+      if (!existing && !range.collapsed) {
+        const container = range.commonAncestorContainer;
+        const el = container.nodeType === Node.TEXT_NODE ? container.parentNode : container;
+        if (el) containedCode = el.querySelector ? el.querySelector('code') : null;
+      }
+
+      if (existing && existing.type === 'pre') {
+        // Unwrap <pre><code> block: convert back to <p> paragraphs
+        const pre = existing.el;
+        const lines = pre.textContent.split('\n');
+        const fragment = document.createDocumentFragment();
+        lines.forEach(line => {
+          const p = document.createElement('p');
+          p.textContent = line || '\u00A0';
+          fragment.appendChild(p);
+        });
+        pre.parentNode.replaceChild(fragment, pre);
+      } else if (existing && existing.type === 'code') {
+        // Unwrap inline <code>
+        const codeEl = existing.el;
+        const parent = codeEl.parentNode;
+        while (codeEl.firstChild) {
+          parent.insertBefore(codeEl.firstChild, codeEl);
+        }
+        parent.removeChild(codeEl);
+      } else if (containedCode) {
+        // Selection contains <code> elements — unwrap them all
+        const container = range.commonAncestorContainer;
+        const el = container.nodeType === Node.TEXT_NODE ? container.parentNode : container;
+        const codes = el.querySelectorAll('code');
+        codes.forEach(codeEl => {
+          if (this.editor.contentArea.contains(codeEl)) {
+            const p = codeEl.parentNode;
+            while (codeEl.firstChild) p.insertBefore(codeEl.firstChild, codeEl);
+            p.removeChild(codeEl);
+          }
+        });
+      } else {
+        // Apply code formatting
+        if (sel.isCollapsed) this._expandToWordIfCollapsed();
+
+        const startBlock = this._getBlockParent(range.startContainer);
+        const endBlock = this._getBlockParent(range.endContainer);
+
+        if (startBlock && endBlock && startBlock !== endBlock) {
+          // Multi-block selection: create a <pre><code> block
+          const blocks = [];
+          let cur = startBlock;
+          while (cur) {
+            blocks.push(cur);
+            if (cur === endBlock) break;
+            cur = cur.nextElementSibling;
+          }
+
+          const textLines = blocks.map(block => block.textContent);
+          const pre = document.createElement('pre');
+          const code = document.createElement('code');
+          code.textContent = textLines.join('\n');
+          pre.appendChild(code);
+
+          startBlock.parentNode.insertBefore(pre, startBlock);
+          blocks.forEach(block => block.parentNode.removeChild(block));
+        } else {
+          // Single block: inline <code> wrap
+          this.editor.wrapSelection('code');
+        }
+      }
+      this.editor.history.record();
+      this.editor.updateToolbar();
+      this.editor.triggerChange();
+    }
+
+    _getBlockParent(node) {
+      if (node.nodeType === Node.TEXT_NODE) node = node.parentNode;
+      while (node && node !== this.editor.contentArea) {
+        if (node.parentNode === this.editor.contentArea) return node;
+        node = node.parentNode;
+      }
+      return null;
+    }
+
     justifyLeft() { this.exec('justifyLeft'); }
     justifyCenter() { this.exec('justifyCenter'); }
     justifyRight() { this.exec('justifyRight'); }
@@ -3228,6 +3350,11 @@
         'neiki_' + (typeof element === 'string' ? element.replace(/[^a-zA-Z0-9]/g, '_') : 'editor');
 
       this.config = Utils.deepMerge(DEFAULT_CONFIG, options);
+
+      // Backward compatibility: support old custom_class option
+      if (this.config.custom_class && !this.config.customClass) {
+        this.config.customClass = this.config.custom_class;
+      }
       this.instanceIndex = ++EDITOR_INSTANCE_COUNTER;
       this.storageId = this.createAutosaveStorageId(element);
       this.isFullscreen = false;
@@ -3815,8 +3942,8 @@
     createContentArea() {
       this.contentWrapper = Utils.createElement('div', { className: 'neiki-content-wrapper' });
 
-      const contentClasses = this.config.custom_class
-        ? `neiki-content ${this.config.custom_class}`
+      const contentClasses = this.config.customClass
+        ? `neiki-content ${this.config.customClass}`
         : 'neiki-content';
 
       this.contentArea = Utils.createElement('div', {
@@ -4179,6 +4306,17 @@
             case 'justifyFull':
               isActive = document.queryCommandState(config.command);
               break;
+            case 'toggleCode': {
+              const sel = window.getSelection();
+              if (sel && sel.rangeCount) {
+                let node = sel.getRangeAt(0).startContainer;
+                if (node.nodeType === Node.TEXT_NODE) node = node.parentNode;
+                const inCode = node.closest && node.closest('code') && this.contentArea.contains(node.closest('code'));
+                const inPre = node.closest && node.closest('pre') && this.contentArea.contains(node.closest('pre'));
+                isActive = !!(inCode || inPre);
+              }
+              break;
+            }
             case 'formatBlock':
               if (config.value === 'blockquote') {
                 const sel = window.getSelection();
@@ -4372,15 +4510,48 @@
         } catch (e) {}
         return;
       }
-      // Wrap bare text nodes in <p>
+      // Wrap bare text nodes and normalize non-block elements into <p>
+      const BLOCK_TAGS = new Set(['P','H1','H2','H3','H4','H5','H6','UL','OL','BLOCKQUOTE','TABLE','HR','PRE','FIGURE','SECTION','ARTICLE']);
       const childNodes = Array.from(this.contentArea.childNodes);
+
+      // First pass: convert stray <div> to <p>
       childNodes.forEach(node => {
-        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+        if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'DIV') {
           const p = document.createElement('p');
-          node.parentNode.insertBefore(p, node);
-          p.appendChild(node);
+          while (node.firstChild) p.appendChild(node.firstChild);
+          node.parentNode.replaceChild(p, node);
         }
       });
+
+      // Second pass: group consecutive inline/text nodes into <p>
+      const updatedNodes = Array.from(this.contentArea.childNodes);
+      let inlineGroup = [];
+
+      const flushGroup = () => {
+        if (inlineGroup.length === 0) return;
+        const p = document.createElement('p');
+        const firstNode = inlineGroup[0];
+        this.contentArea.insertBefore(p, firstNode);
+        inlineGroup.forEach(n => p.appendChild(n));
+        inlineGroup = [];
+      };
+
+      updatedNodes.forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          if (node.textContent.trim()) {
+            inlineGroup.push(node);
+          } else if (inlineGroup.length > 0) {
+            inlineGroup.push(node);
+          }
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          if (BLOCK_TAGS.has(node.tagName)) {
+            flushGroup();
+          } else {
+            inlineGroup.push(node);
+          }
+        }
+      });
+      flushGroup();
     }
 
     syncToOriginal() {
