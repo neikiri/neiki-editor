@@ -1,7 +1,7 @@
 <?php
 /**
  * Neiki's Editor - PHP Integration Helper
- * Version: 2.10.1
+ * Version: 3.0.0
  *
  * A lightweight helper class for easy server-side integration
  * of Neiki's Editor into PHP projects.
@@ -15,7 +15,7 @@
 class NeikiEditor
 {
     /** @var string CDN base URL */
-    private static $cdnBase = 'https://cdn.neikiri.dev/neiki-editor/2.10.1/';
+    private static $cdnBase = 'https://cdn.neikiri.dev/neiki-editor/3.0.0/';
 
     /** @var bool Whether assets have already been included */
     private static $assetsIncluded = false;
@@ -80,7 +80,7 @@ class NeikiEditor
         $allowed = '<p><br><b><strong><i><em><u><s><strike><del>'
                  . '<h1><h2><h3><h4><h5><h6>'
                  . '<ul><ol><li><blockquote><pre><code>'
-                 . '<a><img><table><thead><tbody><tr><th><td>'
+                 . '<a><img><video><source><table><thead><tbody><tr><th><td>'
                  . '<span><div><hr><sub><sup><mark>';
 
         $html = strip_tags($html, $allowed);
@@ -90,8 +90,8 @@ class NeikiEditor
         $html = preg_replace('/\s+on\w+\s*=\s*\'[^\']*\'/i', '', $html);
         $html = preg_replace('/\s+on\w+\s*=\s*[^\s>]+/i', '', $html);
 
-        // Remove javascript: protocol from href/src attributes
-        $html = preg_replace('/\b(href|src)\s*=\s*["\']?\s*javascript\s*:/i', '$1="', $html);
+        // Remove javascript: protocol from href/src/poster attributes
+        $html = preg_replace('/\b(href|src|poster)\s*=\s*["\']?\s*javascript\s*:/i', '$1="', $html);
 
         return $html;
     }

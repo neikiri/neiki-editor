@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.0.0]
+- Added two new built-in themes: `blue` and `dark-blue`
+- Added Insert > Video with a URL/file-upload modal, base64 embedding, and optional `videoUploadHandler`
+- Added sanitizer support for editor-generated `<video>` and `<source>` content
+- Added video resizing, repositioning, replacement, delete toolbar actions, and drag-and-drop video file insertion
+- Added drag-and-drop moving for selected text inside the editor
+- Added a shared caret-style drop indicator for dragged text, images, and videos
+- Updated the drag handle icon and prevented native blue selection highlights on selected images/videos and their media toolbar
+- Replaced the old Toggle Theme action with a translated Change theme select for choosing a specific built-in theme
+- Fixed editor grip SVGs occasionally being inserted into the document by moving block grips outside editable content and stripping editor UI from dragged fragments
+- Improved HTML code view with formatted multi-line HTML and syntax highlighting
+- Updated README and wiki documentation for themes, video insertion, and upload configuration
+
 ## [2.10.1]
 - Fixed a cross-site scripting (XSS) vulnerability in the HTML sanitizer's entity decoding — replaced `innerHTML`-based decoding with a safe regex-based approach that only resolves named (`&amp;`, `&lt;`, `&gt;`, `&quot;`, `&apos;`, `&nbsp;`) and numeric (`&#123;`, `&#x1F4A9;`) entities without ever parsing HTML
 

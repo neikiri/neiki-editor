@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 2.10.1
+ * Version: 3.0.0
  */
 
 /* ============================================
@@ -38,7 +38,8 @@
 }
 
 /* Dark Theme */
-.neiki-editor.neiki-dark {
+.neiki-editor.neiki-dark,
+.neiki-modal-overlay.neiki-dark {
   --neiki-bg-primary: #1e1e1e;
   --neiki-bg-secondary: #252526;
   --neiki-bg-tertiary: #2d2d30;
@@ -65,6 +66,68 @@
   --neiki-selection-bg: #264f78;
   --neiki-highlight-color: #5c4d00;
   --neiki-table-border: #3e3e42;
+}
+
+/* Blue Theme */
+.neiki-editor.neiki-theme-blue,
+.neiki-modal-overlay.neiki-theme-blue {
+  --neiki-bg-primary: #f8fbff;
+  --neiki-bg-secondary: #eef6ff;
+  --neiki-bg-tertiary: #dbeafe;
+  --neiki-bg-hover: #bfdbfe;
+  --neiki-bg-active: #93c5fd;
+  --neiki-border-color: #bfdbfe;
+  --neiki-border-color-dark: #60a5fa;
+  --neiki-text-primary: #0f172a;
+  --neiki-text-secondary: #1e3a8a;
+  --neiki-text-muted: #64748b;
+  --neiki-accent-color: #2563eb;
+  --neiki-accent-hover: #1d4ed8;
+  --neiki-danger-color: #dc3545;
+  --neiki-success-color: #16803d;
+  --neiki-shadow-sm: 0 1px 2px rgba(37, 99, 235, 0.08);
+  --neiki-shadow-md: 0 4px 10px rgba(37, 99, 235, 0.12);
+  --neiki-shadow-lg: 0 14px 28px rgba(37, 99, 235, 0.16);
+  --neiki-editor-bg: #ffffff;
+  --neiki-toolbar-bg: #eaf4ff;
+  --neiki-statusbar-bg: #eef6ff;
+  --neiki-modal-overlay: rgba(15, 23, 42, 0.45);
+  --neiki-scrollbar-thumb: #93c5fd;
+  --neiki-scrollbar-track: #eff6ff;
+  --neiki-selection-bg: #bfdbfe;
+  --neiki-highlight-color: #fef08a;
+  --neiki-table-border: #bfdbfe;
+}
+
+/* Dark Blue Theme */
+.neiki-editor.neiki-theme-dark-blue,
+.neiki-modal-overlay.neiki-theme-dark-blue {
+  --neiki-bg-primary: #07111f;
+  --neiki-bg-secondary: #0b1d33;
+  --neiki-bg-tertiary: #102a46;
+  --neiki-bg-hover: #173b61;
+  --neiki-bg-active: #1d4f82;
+  --neiki-border-color: #1f3f63;
+  --neiki-border-color-dark: #2f6da5;
+  --neiki-text-primary: #e6f1ff;
+  --neiki-text-secondary: #b9d7f8;
+  --neiki-text-muted: #7ea6cc;
+  --neiki-accent-color: #38bdf8;
+  --neiki-accent-hover: #0ea5e9;
+  --neiki-danger-color: #fb7185;
+  --neiki-success-color: #34d399;
+  --neiki-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.24);
+  --neiki-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.34);
+  --neiki-shadow-lg: 0 18px 36px rgba(0, 0, 0, 0.46);
+  --neiki-editor-bg: #081827;
+  --neiki-toolbar-bg: #0b1d33;
+  --neiki-statusbar-bg: #0b1d33;
+  --neiki-modal-overlay: rgba(0, 0, 0, 0.72);
+  --neiki-scrollbar-thumb: #1d4f82;
+  --neiki-scrollbar-track: #07111f;
+  --neiki-selection-bg: #164e63;
+  --neiki-highlight-color: #854d0e;
+  --neiki-table-border: #1f3f63;
 }
 
 /* ============================================
@@ -229,6 +292,34 @@
   box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15);
 }
 
+.neiki-theme-select-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+}
+
+.neiki-theme-select-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--neiki-text-secondary);
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.neiki-theme-select-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.neiki-theme-select {
+  min-width: 116px;
+  max-width: 150px;
+}
+
 /* Color Picker Button */
 .neiki-color-btn {
   position: relative;
@@ -307,7 +398,7 @@
 }
 
 .neiki-content.neiki-drag-over::after {
-  content: 'Drop images here';
+  content: 'Drop media here';
   position: absolute;
   top: 50%;
   left: 50%;
@@ -317,6 +408,44 @@
   font-size: 16px;
   pointer-events: none;
   z-index: 10;
+}
+
+.neiki-drop-indicator {
+  position: absolute;
+  width: 3px;
+  min-height: 22px;
+  background: var(--neiki-accent-color);
+  border-radius: 999px;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.18);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-1px);
+  transition: opacity 0.08s ease;
+  z-index: 80;
+}
+
+.neiki-drop-indicator::before,
+.neiki-drop-indicator::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  background: var(--neiki-accent-color);
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+.neiki-drop-indicator::before {
+  top: -4px;
+}
+
+.neiki-drop-indicator::after {
+  bottom: -4px;
+}
+
+.neiki-drop-indicator.show {
+  opacity: 1;
 }
 
 /* Focus state for editor container - disabled */
@@ -443,6 +572,15 @@
 .neiki-content img.neiki-selected {
   outline: 2px solid var(--neiki-accent-color);
   outline-offset: 2px;
+}
+
+.neiki-content video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 0 1em 0;
+  border-radius: 6px;
+  background: #000;
 }
 
 /* Search Highlight */
@@ -1492,21 +1630,87 @@
   color: var(--neiki-text-primary);
 }
 
-.neiki-code-view-textarea {
+.neiki-code-view-editor {
+  position: relative;
   flex: 1;
   width: 100%;
+  min-height: 0;
+  background: var(--neiki-bg-primary);
+}
+
+.neiki-code-view-highlight,
+.neiki-code-view-textarea {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   padding: 16px;
   border: none;
-  background: var(--neiki-bg-primary);
-  color: var(--neiki-text-primary);
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 13px;
   line-height: 1.5;
+  tab-size: 2;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: auto;
+}
+
+.neiki-code-view-highlight {
+  margin: 0;
+  color: var(--neiki-text-primary);
+  pointer-events: none;
+  user-select: none;
+}
+
+.neiki-code-view-textarea {
+  background: transparent;
+  color: transparent;
+  caret-color: var(--neiki-text-primary);
   resize: none;
+  z-index: 1;
 }
 
 .neiki-code-view-textarea:focus {
   outline: none;
+}
+
+.neiki-code-view-textarea::selection {
+  background: var(--neiki-selection-bg);
+  color: transparent;
+}
+
+.neiki-html-punct {
+  color: var(--neiki-text-muted);
+}
+
+.neiki-html-tag {
+  color: #0f74d8;
+  font-weight: 600;
+}
+
+.neiki-html-attr {
+  color: #9a5b00;
+}
+
+.neiki-html-string {
+  color: #16803d;
+}
+
+.neiki-html-comment {
+  color: var(--neiki-text-muted);
+  font-style: italic;
+}
+
+.neiki-dark .neiki-html-tag {
+  color: #7dd3fc;
+}
+
+.neiki-dark .neiki-html-attr {
+  color: #fbbf24;
+}
+
+.neiki-dark .neiki-html-string {
+  color: #86efac;
 }
 
 .neiki-code-view-apply {
@@ -1722,7 +1926,7 @@
 }
 
 /* ============================================
-   Image Resize Handles
+   Media Resize Handles
    ============================================ */
 .neiki-img-resizable {
   display: inline-block;
@@ -1731,11 +1935,16 @@
   outline-offset: 2px;
   border-radius: 4px;
   line-height: 0;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.neiki-img-resizable img {
+.neiki-img-resizable img,
+.neiki-img-resizable video {
   display: block;
   max-width: 100%;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .neiki-img-resize-handle {
@@ -1785,7 +1994,7 @@
 }
 
 /* ============================================
-   Image Toolbar (replace, delete, drag)
+   Media Toolbar (replace, delete, drag)
    ============================================ */
 .neiki-img-toolbar {
   position: absolute;
@@ -1801,6 +2010,8 @@
   box-shadow: var(--neiki-shadow-md);
   z-index: 20;
   white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .neiki-img-toolbar-btn {
@@ -1891,7 +2102,7 @@
   user-select: none;
 }
 
-.neiki-content:hover .neiki-block-grip {
+.neiki-content-wrapper:hover .neiki-block-grip {
   opacity: 0.5;
 }
 
@@ -2321,8 +2532,6 @@
   top: 100%;
   right: 0;
   z-index: 1000;
-  min-width: 140px;
-  max-width: 170px;
   background: var(--neiki-bg-primary);
   border: 1px solid var(--neiki-border-color);
   border-radius: 6px;
@@ -2363,6 +2572,28 @@
 
 .neiki-dropdown-item-danger:hover {
   background: rgba(220, 53, 69, 0.1);
+}
+
+.neiki-theme-menu-item {
+  cursor: default;
+}
+
+.neiki-theme-menu-select {
+  min-width: 105px;
+  height: 28px;
+  padding: 0 24px 0 8px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 4px;
+  background: var(--neiki-bg-primary);
+  color: var(--neiki-text-primary);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.neiki-theme-menu-select:focus {
+  outline: none;
+  border-color: var(--neiki-accent-color);
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15);
 }
 
 /* Autosave badge in More menu */

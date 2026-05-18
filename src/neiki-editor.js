@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 2.10.1
+ * Version: 3.0.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -49,6 +49,7 @@
       'toolbar.outdent': 'Decrease Indent',
       'toolbar.link': 'Insert Link (Ctrl+K)',
       'toolbar.image': 'Insert Image',
+      'toolbar.video': 'Insert Video',
       'toolbar.table': 'Insert Table',
       'toolbar.blockquote': 'Blockquote',
       'toolbar.viewCode': 'View Code (Toggle HTML)',
@@ -61,7 +62,7 @@
       'toolbar.specialChars': 'Special Characters',
       'toolbar.fullscreen': 'Fullscreen',
       'toolbar.autosave': 'Toggle Autosave',
-      'toolbar.themeToggle': 'Toggle Theme',
+      'toolbar.themeToggle': 'Change theme',
       'toolbar.print': 'Print',
       'toolbar.code': 'Code',
       'toolbar.insert': 'Insert',
@@ -87,6 +88,7 @@
       // Insert dropdown
       'insert.link': 'Link',
       'insert.image': 'Image',
+      'insert.video': 'Video',
       'insert.table': 'Table',
       'insert.emoji': 'Emoji',
       'insert.symbol': 'Symbol',
@@ -98,9 +100,13 @@
       'menu.print': 'Print',
       'menu.autosave': 'Autosave',
       'menu.clearAll': 'Clear all',
-      'menu.toggleTheme': 'Toggle Theme',
+      'menu.toggleTheme': 'Change theme',
       'menu.fullscreen': 'Fullscreen',
       'menu.help': 'Help',
+      'theme.light': 'Light',
+      'theme.dark': 'Dark',
+      'theme.blue': 'Blue',
+      'theme.darkBlue': 'Dark Blue',
 
       // Help modal
       'help.author': 'Author',
@@ -130,6 +136,15 @@
       'modal.describeImage': 'Describe the image',
       'modal.widthOptional': 'Width (optional)',
       'modal.invalidImageFile': 'Please select a valid image file.',
+      'modal.insertVideo': 'Insert Video',
+      'modal.uploadVideo': 'Upload Video',
+      'modal.convertedVideoToBase64': 'Will be converted to base64',
+      'modal.videoUrl': 'Video URL',
+      'modal.videoTitle': 'Video title',
+      'modal.describeVideo': 'Describe the video',
+      'modal.invalidVideoFile': 'Please select a valid video file.',
+      'modal.uploadingVideo': 'Uploading...',
+      'modal.videoUploadError': 'Video upload failed. Please try again.',
 
       // Table modal
       'modal.insertTable': 'Insert Table',
@@ -179,6 +194,8 @@
       'imageToolbar.replaceImage': 'Replace Image',
       'imageToolbar.deleteImage': 'Delete Image',
       'imageToolbar.dragToMove': 'Drag to move',
+      'videoToolbar.replaceVideo': 'Replace Video',
+      'videoToolbar.deleteVideo': 'Delete Video',
 
       // Placeholder
       'placeholder': 'Start typing...'
@@ -206,6 +223,7 @@
       'toolbar.outdent': 'Zmenšit odsazení',
       'toolbar.link': 'Vložit odkaz (Ctrl+K)',
       'toolbar.image': 'Vložit obrázek',
+      'toolbar.video': 'Vložit video',
       'toolbar.table': 'Vložit tabulku',
       'toolbar.blockquote': 'Citace',
       'toolbar.viewCode': 'Zobrazit kód (HTML)',
@@ -218,7 +236,7 @@
       'toolbar.specialChars': 'Speciální znaky',
       'toolbar.fullscreen': 'Celá obrazovka',
       'toolbar.autosave': 'Auto. ukládání',
-      'toolbar.themeToggle': 'Přepnout motiv',
+      'toolbar.themeToggle': 'Změnit motiv',
       'toolbar.print': 'Tisk',
       'toolbar.code': 'Kód',
       'toolbar.insert': 'Vložit',
@@ -244,6 +262,7 @@
       // Insert dropdown
       'insert.link': 'Odkaz',
       'insert.image': 'Obrázek',
+      'insert.video': 'Video',
       'insert.table': 'Tabulka',
       'insert.emoji': 'Emoji',
       'insert.symbol': 'Symbol',
@@ -255,9 +274,13 @@
       'menu.print': 'Tisk',
       'menu.autosave': 'Auto. ukládání',
       'menu.clearAll': 'Vymazat vše',
-      'menu.toggleTheme': 'Přepnout motiv',
+      'menu.toggleTheme': 'Změnit motiv',
       'menu.fullscreen': 'Celá obrazovka',
       'menu.help': 'Nápověda',
+      'theme.light': 'Světlý',
+      'theme.dark': 'Tmavý',
+      'theme.blue': 'Modrý',
+      'theme.darkBlue': 'Tmavě modrý',
       'help.author': 'Autor',
       'help.version': 'Verze',
       'help.github': 'GitHub',
@@ -285,6 +308,15 @@
       'modal.describeImage': 'Popis obrázku',
       'modal.widthOptional': 'Šířka (volitelné)',
       'modal.invalidImageFile': 'Vyberte prosím platný soubor obrázku.',
+      'modal.insertVideo': 'Vložit video',
+      'modal.uploadVideo': 'Nahrát video',
+      'modal.convertedVideoToBase64': 'Bude převedeno na base64',
+      'modal.videoUrl': 'URL videa',
+      'modal.videoTitle': 'Název videa',
+      'modal.describeVideo': 'Popis videa',
+      'modal.invalidVideoFile': 'Vyberte prosím platný soubor videa.',
+      'modal.uploadingVideo': 'Nahrávání...',
+      'modal.videoUploadError': 'Nahrávání videa selhalo. Zkuste to znovu.',
 
       // Table modal
       'modal.insertTable': 'Vložit tabulku',
@@ -331,6 +363,8 @@
       'imageToolbar.replaceImage': 'Nahradit obrázek',
       'imageToolbar.deleteImage': 'Smazat obrázek',
       'imageToolbar.dragToMove': 'Přetáhněte pro přesun',
+      'videoToolbar.replaceVideo': 'Nahradit video',
+      'videoToolbar.deleteVideo': 'Smazat video',
 
       'placeholder': 'Začněte psát...'
     },
@@ -369,7 +403,7 @@
       'toolbar.specialChars': '特殊字符',
       'toolbar.fullscreen': '全屏',
       'toolbar.autosave': '自动保存',
-      'toolbar.themeToggle': '切换主题',
+      'toolbar.themeToggle': '更改主题',
       'toolbar.print': '打印',
       'toolbar.code': '代码',
       'toolbar.insert': '插入',
@@ -398,9 +432,13 @@
       'menu.print': '打印',
       'menu.autosave': '自动保存',
       'menu.clearAll': '清除全部',
-      'menu.toggleTheme': '切换主题',
+      'menu.toggleTheme': '更改主题',
       'menu.fullscreen': '全屏',
       'menu.help': '帮助',
+      'theme.light': '浅色',
+      'theme.dark': '深色',
+      'theme.blue': '蓝色',
+      'theme.darkBlue': '深蓝色',
       'help.author': '作者',
       'help.version': '版本',
       'help.github': 'GitHub',
@@ -458,6 +496,8 @@
       'imageToolbar.replaceImage': '替换图片',
       'imageToolbar.deleteImage': '删除图片',
       'imageToolbar.dragToMove': '拖动移动',
+      'videoToolbar.replaceVideo': '替换视频',
+      'videoToolbar.deleteVideo': '删除视频',
 
       'placeholder': '开始输入...'
     },
@@ -527,6 +567,10 @@
       'menu.toggleTheme': 'Cambiar tema',
       'menu.fullscreen': 'Pantalla completa',
       'menu.help': 'Ayuda',
+      'theme.light': 'Claro',
+      'theme.dark': 'Oscuro',
+      'theme.blue': 'Azul',
+      'theme.darkBlue': 'Azul oscuro',
       'help.author': 'Autor',
       'help.version': 'Versión',
       'help.github': 'GitHub',
@@ -584,6 +628,8 @@
       'imageToolbar.replaceImage': 'Reemplazar imagen',
       'imageToolbar.deleteImage': 'Eliminar imagen',
       'imageToolbar.dragToMove': 'Arrastrar para mover',
+      'videoToolbar.replaceVideo': 'Reemplazar video',
+      'videoToolbar.deleteVideo': 'Eliminar video',
 
       'placeholder': 'Empiece a escribir...'
     },
@@ -621,7 +667,7 @@
       'toolbar.specialChars': 'Sonderzeichen',
       'toolbar.fullscreen': 'Vollbild',
       'toolbar.autosave': 'Automatisch speichern',
-      'toolbar.themeToggle': 'Design wechseln',
+      'toolbar.themeToggle': 'Design ändern',
       'toolbar.print': 'Drucken',
       'toolbar.code': 'Code',
       'toolbar.insert': 'Einfügen',
@@ -650,9 +696,13 @@
       'menu.print': 'Drucken',
       'menu.autosave': 'Automatisch speichern',
       'menu.clearAll': 'Alles löschen',
-      'menu.toggleTheme': 'Design wechseln',
+      'menu.toggleTheme': 'Design ändern',
       'menu.fullscreen': 'Vollbild',
       'menu.help': 'Hilfe',
+      'theme.light': 'Hell',
+      'theme.dark': 'Dunkel',
+      'theme.blue': 'Blau',
+      'theme.darkBlue': 'Dunkelblau',
       'help.author': 'Autor',
       'help.version': 'Version',
       'help.github': 'GitHub',
@@ -710,6 +760,8 @@
       'imageToolbar.replaceImage': 'Bild ersetzen',
       'imageToolbar.deleteImage': 'Bild löschen',
       'imageToolbar.dragToMove': 'Ziehen zum Verschieben',
+      'videoToolbar.replaceVideo': 'Video ersetzen',
+      'videoToolbar.deleteVideo': 'Video löschen',
 
       'placeholder': 'Hier schreiben...'
     },
@@ -779,6 +831,10 @@
       'menu.toggleTheme': 'Changer de thème',
       'menu.fullscreen': 'Plein écran',
       'menu.help': 'Aide',
+      'theme.light': 'Clair',
+      'theme.dark': 'Sombre',
+      'theme.blue': 'Bleu',
+      'theme.darkBlue': 'Bleu foncé',
       'help.author': 'Auteur',
       'help.version': 'Version',
       'help.github': 'GitHub',
@@ -836,6 +892,8 @@
       'imageToolbar.replaceImage': 'Remplacer l\'image',
       'imageToolbar.deleteImage': 'Supprimer l\'image',
       'imageToolbar.dragToMove': 'Glisser pour déplacer',
+      'videoToolbar.replaceVideo': 'Remplacer la vidéo',
+      'videoToolbar.deleteVideo': 'Supprimer la vidéo',
 
       'placeholder': 'Commencez à écrire...'
     },
@@ -873,7 +931,7 @@
       'toolbar.specialChars': 'Caracteres especiais',
       'toolbar.fullscreen': 'Tela cheia',
       'toolbar.autosave': 'Salvamento automático',
-      'toolbar.themeToggle': 'Alternar tema',
+      'toolbar.themeToggle': 'Alterar tema',
       'toolbar.print': 'Imprimir',
       'toolbar.code': 'Código',
       'toolbar.insert': 'Inserir',
@@ -902,9 +960,13 @@
       'menu.print': 'Imprimir',
       'menu.autosave': 'Salvamento automático',
       'menu.clearAll': 'Limpar tudo',
-      'menu.toggleTheme': 'Alternar tema',
+      'menu.toggleTheme': 'Alterar tema',
       'menu.fullscreen': 'Tela cheia',
       'menu.help': 'Ajuda',
+      'theme.light': 'Claro',
+      'theme.dark': 'Escuro',
+      'theme.blue': 'Azul',
+      'theme.darkBlue': 'Azul escuro',
       'help.author': 'Autor',
       'help.version': 'Versão',
       'help.github': 'GitHub',
@@ -962,6 +1024,8 @@
       'imageToolbar.replaceImage': 'Substituir imagem',
       'imageToolbar.deleteImage': 'Excluir imagem',
       'imageToolbar.dragToMove': 'Arraste para mover',
+      'videoToolbar.replaceVideo': 'Substituir vídeo',
+      'videoToolbar.deleteVideo': 'Excluir vídeo',
 
       'placeholder': 'Comece a digitar...'
     },
@@ -999,7 +1063,7 @@
       'toolbar.specialChars': '特殊文字',
       'toolbar.fullscreen': '全画面',
       'toolbar.autosave': '自動保存',
-      'toolbar.themeToggle': 'テーマ切替',
+      'toolbar.themeToggle': 'テーマを変更',
       'toolbar.print': '印刷',
       'toolbar.code': 'コード',
       'toolbar.insert': '挿入',
@@ -1028,9 +1092,13 @@
       'menu.print': '印刷',
       'menu.autosave': '自動保存',
       'menu.clearAll': 'すべて消去',
-      'menu.toggleTheme': 'テーマ切替',
+      'menu.toggleTheme': 'テーマを変更',
       'menu.fullscreen': '全画面',
       'menu.help': 'ヘルプ',
+      'theme.light': 'ライト',
+      'theme.dark': 'ダーク',
+      'theme.blue': 'ブルー',
+      'theme.darkBlue': 'ダークブルー',
       'help.author': '作成者',
       'help.version': 'バージョン',
       'help.github': 'GitHub',
@@ -1088,6 +1156,8 @@
       'imageToolbar.replaceImage': '画像を置換',
       'imageToolbar.deleteImage': '画像を削除',
       'imageToolbar.dragToMove': 'ドラッグで移動',
+      'videoToolbar.replaceVideo': '動画を置換',
+      'videoToolbar.deleteVideo': '動画を削除',
 
       'placeholder': '入力してください...'
     }
@@ -1116,6 +1186,14 @@
     
     return text;
   }
+
+  const THEMES = ['light', 'dark', 'blue', 'dark-blue'];
+  const THEME_OPTIONS = [
+    { value: 'light', labelKey: 'theme.light' },
+    { value: 'dark', labelKey: 'theme.dark' },
+    { value: 'blue', labelKey: 'theme.blue' },
+    { value: 'dark-blue', labelKey: 'theme.darkBlue' }
+  ];
 
   const DEFAULT_CONFIG = {
     toolbar: [
@@ -1147,6 +1225,7 @@
     onReady: null,
     showHelp: true,
     imageUploadHandler: null,
+    videoUploadHandler: null,
     customClass: null
   };
 
@@ -1172,6 +1251,7 @@
     outdent: { icon: 'outdent', titleKey: 'toolbar.outdent', command: 'outdent' },
     link: { icon: 'link', titleKey: 'toolbar.link', command: 'createLink', modal: true },
     image: { icon: 'image', titleKey: 'toolbar.image', command: 'insertImage', modal: true },
+    video: { icon: 'video', titleKey: 'toolbar.video', command: 'insertVideo', modal: true },
     table: { icon: 'table', titleKey: 'toolbar.table', command: 'insertTable', modal: true },
     blockquote: { icon: 'quote', titleKey: 'toolbar.blockquote', command: 'formatBlock', value: 'blockquote' },
     viewCode: { icon: 'code', titleKey: 'toolbar.viewCode', command: 'viewCode' },
@@ -1185,7 +1265,7 @@
     specialChars: { icon: 'specialChars', titleKey: 'toolbar.specialChars', command: 'specialChars', picker: 'specialChars' },
     fullscreen: { icon: 'fullscreen', titleKey: 'toolbar.fullscreen', command: 'fullscreen' },
     autosave: { icon: 'save', titleKey: 'toolbar.autosave', command: 'autosave', toggle: true },
-    themeToggle: { icon: 'sun', titleKey: 'toolbar.themeToggle', command: 'themeToggle', toggle: true },
+    themeToggle: { titleKey: 'toolbar.themeToggle', command: 'themeToggle', type: 'themeSelect' },
     print: { icon: 'print', titleKey: 'toolbar.print', command: 'print' },
     insertDropdown: { icon: 'plus', titleKey: 'toolbar.insert', type: 'insertDropdown' },
     moreMenu: { icon: 'more', titleKey: 'toolbar.moreOptions', type: 'moreMenu' }
@@ -1363,9 +1443,9 @@
         'a', 'b', 'blockquote', 'br', 'caption', 'code', 'col', 'colgroup', 'div', 'em',
         'font', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'img', 'li', 'ol',
         'p', 'pre', 's', 'span', 'strike', 'strong', 'sub', 'sup', 'table', 'tbody',
-        'td', 'tfoot', 'th', 'thead', 'tr', 'u', 'ul'
+        'source', 'td', 'tfoot', 'th', 'thead', 'tr', 'u', 'ul', 'video'
       ]);
-      const voidTags = new Set(['br', 'col', 'hr', 'img']);
+      const voidTags = new Set(['br', 'col', 'hr', 'img', 'source']);
       const urlAttrs = new Set(['href', 'src', 'xlink:href', 'poster']);
       let index = 0;
 
@@ -1443,7 +1523,8 @@
           const attrValue = attr.value.trim();
 
           if (!Utils.isSafeHTMLAttribute(attrName)) return;
-          if (urlAttrs.has(attrName) && !Utils.isSafeUrl(attrValue, tagName === 'img')) return;
+          const dataMediaType = tagName === 'img' ? 'image' : (tagName === 'video' || tagName === 'source' ? 'video' : null);
+          if (urlAttrs.has(attrName) && !Utils.isSafeUrl(attrValue, dataMediaType)) return;
           if (attrName === 'style' && !Utils.isSafeStyleValue(attrValue)) return;
 
           el.setAttribute(attr.name, attr.value);
@@ -1584,7 +1665,7 @@
           html += ' ' + attr.name + '="' + Utils.escapeHTML(attr.value) + '"';
         });
 
-        if (new Set(['br', 'col', 'hr', 'img']).has(tagName)) {
+        if (new Set(['br', 'col', 'hr', 'img', 'source']).has(tagName)) {
           html += '>';
         } else {
           html += '>' + Utils.serializeHTML(child) + '</' + tagName + '>';
@@ -1594,9 +1675,10 @@
       return html;
     },
 
-    isSafeUrl(value, allowImageData = false) {
+    isSafeUrl(value, dataMediaType = null) {
       if (!value) return true;
       if (value.startsWith('#') || value.startsWith('/') || value.startsWith('./') || value.startsWith('../')) return true;
+      const mediaType = dataMediaType === true ? 'image' : dataMediaType;
 
       try {
         const parsed = new URL(value, window.location.href);
@@ -1605,7 +1687,8 @@
           protocol === 'https:' ||
           protocol === 'mailto:' ||
           protocol === 'tel:' ||
-          (allowImageData && protocol === 'data:' && /^data:image\//i.test(value));
+          (mediaType === 'image' && protocol === 'data:' && /^data:image\//i.test(value)) ||
+          (mediaType === 'video' && protocol === 'data:' && /^data:video\//i.test(value));
       } catch (e) {
         return false;
       }
@@ -1732,6 +1815,7 @@
     outdent: '<svg viewBox="0 0 24 24"><path d="M11 17h10v-2H11v2zm-8-5l4 4V8l-4 4zm0 9h18v-2H3v2zM3 3v2h18V3H3zm8 6h10V7H11v2zm0 4h10v-2H11v2z"/></svg>',
     link: '<svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>',
     image: '<svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>',
+    video: '<svg viewBox="0 0 24 24"><path d="M17 10.5V6c0-1.1-.9-2-2-2H4C2.9 4 2 4.9 2 6v12c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2v-4.5l5 5v-13l-5 5zM9 16V8l5 4-5 4z"/></svg>',
     table: '<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"/></svg>',
     quote: '<svg viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>',
     code: '<svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>',
@@ -1757,7 +1841,7 @@
     trash: '<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>',
     'chevron-down': '<svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>',
     help: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>',
-    grip: '<svg viewBox="0 0 24 24"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg>',
+    grip: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path fill="none" stroke="currentColor" stroke-linecap="square" stroke-width="2" d="m15 5l-3-3l-3 3m0 14l3 3l3-3m4-4l3-3l-3-3M5 9l-3 3l3 3m7-12v9m0 0v9m0-9h9m-9 0H3"/></svg>',
     moveUp: '<svg viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>',
     moveDown: '<svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>',
     replaceImage: '<svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/><path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>'
@@ -1914,7 +1998,10 @@
     }
 
     createOverlay() {
-      if (this.overlay) return this.overlay;
+      if (this.overlay) {
+        this.syncThemeClasses();
+        return this.overlay;
+      }
 
       this.overlay = Utils.createElement('div', {
         className: 'neiki-modal-overlay',
@@ -1926,7 +2013,16 @@
       });
 
       document.body.appendChild(this.overlay);
+      this.syncThemeClasses();
       return this.overlay;
+    }
+
+    syncThemeClasses() {
+      if (!this.overlay || !this.editor.getThemeClasses) return;
+      this.overlay.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue');
+      this.editor.getThemeClasses(this.editor.config.theme).split(' ').filter(Boolean).forEach(className => {
+        this.overlay.classList.add(className);
+      });
     }
 
     open(type, data = {}) {
@@ -1944,6 +2040,9 @@
           break;
         case 'image':
           modal = this.createImageModal(data);
+          break;
+        case 'video':
+          modal = this.createVideoModal(data);
           break;
         case 'table':
           modal = this.createTableModal(data);
@@ -2263,6 +2362,179 @@
       return modal;
     }
 
+    createVideoModal(data) {
+      const modal = Utils.createElement('div', { className: 'neiki-modal' });
+      const hasUploadHandler = typeof this.editor.config.videoUploadHandler === 'function';
+      const uploadHint = hasUploadHandler ? t('modal.handledViaUploader') : t('modal.convertedVideoToBase64');
+
+      modal.innerHTML = `
+                <div class="neiki-modal-header">
+                    <h3>${Utils.escapeHTML(t('modal.insertVideo'))}</h3>
+                    <button class="neiki-modal-close" type="button">${Icons.close}</button>
+                </div>
+                <div class="neiki-modal-body">
+                    <div class="neiki-form-group">
+                        <label>${Utils.escapeHTML(t('modal.uploadVideo'))}</label>
+                        <div class="neiki-image-upload-zone" role="button" tabindex="0">
+                            <input type="file" class="neiki-image-upload-input" name="upload" accept="video/*">
+                            <div class="neiki-image-upload-icon">${Icons.video}</div>
+                            <div class="neiki-image-upload-title">${Utils.escapeHTML(t('modal.uploadVideo'))}</div>
+                            <div class="neiki-image-upload-hint">${Utils.escapeHTML(uploadHint)}</div>
+                            <div class="neiki-image-upload-files" aria-live="polite"></div>
+                        </div>
+                    </div>
+                    <div class="neiki-form-divider">
+                        <span>${Utils.escapeHTML(t('modal.or'))}</span>
+                    </div>
+                    <div class="neiki-form-group">
+                        <label>${Utils.escapeHTML(t('modal.videoUrl'))}</label>
+                        <input type="url" class="neiki-input" name="url" placeholder="https://example.com/video.mp4">
+                    </div>
+                    <div class="neiki-form-group">
+                        <label>${Utils.escapeHTML(t('modal.videoTitle'))}</label>
+                        <input type="text" class="neiki-input" name="title">
+                    </div>
+                    <div class="neiki-form-group">
+                        <label>${Utils.escapeHTML(t('modal.widthOptional'))}</label>
+                        <input type="text" class="neiki-input" name="width" placeholder="e.g. 640px or 100%">
+                    </div>
+                </div>
+                <div class="neiki-modal-footer">
+                    <button class="neiki-btn neiki-btn-secondary" type="button" data-action="cancel">${Utils.escapeHTML(t('modal.cancel'))}</button>
+                    <button class="neiki-btn neiki-btn-primary" type="button" data-action="insert">${Utils.escapeHTML(t('modal.insert'))}</button>
+                </div>
+            `;
+
+      const uploadInput = modal.querySelector('[name="upload"]');
+      const uploadZone = modal.querySelector('.neiki-image-upload-zone');
+      const uploadFiles = modal.querySelector('.neiki-image-upload-files');
+      const urlInput = modal.querySelector('[name="url"]');
+      const insertBtn = modal.querySelector('[data-action="insert"]');
+      let pendingFile = null;
+      let uploadDragCounter = 0;
+
+      urlInput.value = data.url || '';
+      modal.querySelector('[name="title"]').placeholder = t('modal.describeVideo');
+      modal.querySelector('[name="title"]').value = data.title || '';
+      modal.querySelector('[name="width"]').value = data.width || '';
+
+      const updateUploadFeedback = (file) => {
+        uploadZone.classList.toggle('has-files', !!file);
+        uploadFiles.textContent = file ? file.name : '';
+      };
+
+      const handleSelectedFiles = (fileList) => {
+        const file = Array.from(fileList || []).find(f => f.type.startsWith('video/'));
+
+        if (!file) {
+          if (fileList && fileList.length > 0) alert(t('modal.invalidVideoFile'));
+          pendingFile = null;
+          updateUploadFeedback(null);
+          urlInput.disabled = false;
+          return;
+        }
+
+        pendingFile = file;
+        updateUploadFeedback(file);
+
+        if (!hasUploadHandler) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            urlInput.value = ev.target.result;
+            urlInput.disabled = true;
+          };
+          reader.readAsDataURL(file);
+        } else {
+          urlInput.value = '';
+          urlInput.disabled = true;
+        }
+      };
+
+      uploadInput.addEventListener('change', (e) => {
+        handleSelectedFiles(e.target.files);
+      });
+
+      uploadZone.addEventListener('click', (e) => {
+        if (e.target !== uploadInput) uploadInput.click();
+      });
+
+      uploadZone.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          uploadInput.click();
+        }
+      });
+
+      uploadZone.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        uploadDragCounter++;
+        uploadZone.classList.add('drag-over');
+      });
+
+      uploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+      });
+
+      uploadZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        uploadDragCounter--;
+        if (uploadDragCounter <= 0) {
+          uploadDragCounter = 0;
+          uploadZone.classList.remove('drag-over');
+        }
+      });
+
+      uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadDragCounter = 0;
+        uploadZone.classList.remove('drag-over');
+        handleSelectedFiles(e.dataTransfer.files);
+      });
+
+      urlInput.addEventListener('input', () => {
+        if (!urlInput.value) {
+          urlInput.disabled = false;
+          uploadInput.value = '';
+          pendingFile = null;
+          updateUploadFeedback(null);
+        }
+      });
+
+      modal.querySelector('.neiki-modal-close').addEventListener('click', () => this.close());
+      modal.querySelector('[data-action="cancel"]').addEventListener('click', () => this.close());
+      modal.querySelector('[data-action="insert"]').addEventListener('click', async () => {
+        const title = modal.querySelector('[name="title"]').value;
+        const width = modal.querySelector('[name="width"]').value;
+
+        if (pendingFile && hasUploadHandler) {
+          insertBtn.disabled = true;
+          insertBtn.textContent = t('modal.uploadingVideo');
+
+          try {
+            const url = await this.editor.config.videoUploadHandler(pendingFile);
+            if (url) {
+              this.editor.restoreSavedSelection();
+              this.editor.commands.insertVideo(url, title || pendingFile.name, width);
+            }
+          } catch (err) {
+            alert(t('modal.videoUploadError'));
+          }
+
+          this.close();
+          return;
+        }
+
+        const url = modal.querySelector('[name="url"]').value;
+        if (url) {
+          this.editor.restoreSavedSelection();
+          this.editor.commands.insertVideo(url, title, width);
+        }
+        this.close();
+      });
+
+      return modal;
+    }
+
     createTableModal(data) {
       const modal = Utils.createElement('div', { className: 'neiki-modal' });
 
@@ -2529,7 +2801,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/logo.png" alt="Neiki's Editor" style="width: 120px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 2.10.1</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.0.0</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -3293,6 +3565,19 @@
       this.editor.triggerChange();
     }
 
+    insertVideo(url, title = '', width = '') {
+      if (!Utils.isSafeUrl(url, 'video')) return;
+      let html = `<video controls src="${Utils.escapeHTML(url)}"`;
+      if (title) html += ` title="${Utils.escapeHTML(title)}"`;
+      if (width) html += ` width="${Utils.escapeHTML(width)}"`;
+      html += '></video><p><br></p>';
+
+      this.editor.focus();
+      document.execCommand('insertHTML', false, html);
+      this.editor.history.record();
+      this.editor.triggerChange();
+    }
+
     insertTable(rows, cols, hasHeader = true) {
       let html = '<table class="neiki-table">';
 
@@ -3382,10 +3667,11 @@
 
       // Load theme preference
       const savedTheme = StorageManager.getGlobal('theme', this.config.theme);
-      this.config.theme = savedTheme;
+      this.config.theme = THEMES.includes(savedTheme) ? savedTheme : 'light';
 
       this.createStructure();
       this.createToolbar();
+      this.applyTheme(this.config.theme);
       this.createContentArea();
       this.createStatusBar();
 
@@ -3404,6 +3690,7 @@
 
       this.bindEvents();
       this.initDragDrop();
+      this.initSelectionDragDrop();
       this.initPlugins();
 
       // Sync restored content to original element
@@ -3433,12 +3720,43 @@
     createStructure() {
       const langClass = _currentLanguage !== 'en' ? `neiki-lang-${_currentLanguage}` : '';
       this.container = Utils.createElement('div', {
-        className: `neiki-editor ${this.config.theme === 'dark' ? 'neiki-dark' : ''} ${langClass}`.trim(),
+        className: `neiki-editor ${this.getThemeClasses(this.config.theme)} ${langClass}`.trim(),
         id: this.id
       });
 
       this.originalElement.style.display = 'none';
       this.originalElement.parentNode.insertBefore(this.container, this.originalElement);
+    }
+
+    getThemeClasses(theme) {
+      const normalizedTheme = THEMES.includes(theme) ? theme : 'light';
+      const classes = [];
+
+      if (normalizedTheme === 'dark' || normalizedTheme === 'dark-blue') {
+        classes.push('neiki-dark');
+      }
+
+      if (normalizedTheme !== 'light' && normalizedTheme !== 'dark') {
+        classes.push('neiki-theme-' + normalizedTheme);
+      }
+
+      return classes.join(' ');
+    }
+
+    applyTheme(theme) {
+      const normalizedTheme = THEMES.includes(theme) ? theme : 'light';
+      this.config.theme = normalizedTheme;
+      this.container.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue');
+      this.getThemeClasses(normalizedTheme).split(' ').filter(Boolean).forEach(className => {
+        this.container.classList.add(className);
+      });
+      StorageManager.setGlobal('theme', normalizedTheme);
+
+      if (this._themeSelect) {
+        this._themeSelect.value = normalizedTheme;
+      }
+      if (this.modal) this.modal.syncThemeClasses();
+      this._updateThemeMenuItem();
     }
 
     createAutosaveStorageId(element) {
@@ -3756,6 +4074,39 @@
           return;
         }
 
+        // Handle theme select
+        if (config.type === 'themeSelect') {
+          const wrapper = Utils.createElement('label', {
+            className: 'neiki-theme-select-wrapper',
+            title: t(config.titleKey)
+          });
+          wrapper.appendChild(Utils.createElement('span', {
+            className: 'neiki-theme-select-icon',
+            innerHTML: Icons.sun
+          }));
+
+          const select = Utils.createElement('select', {
+            className: 'neiki-select neiki-theme-select',
+            'aria-label': t(config.titleKey)
+          });
+
+          THEME_OPTIONS.forEach(option => {
+            select.appendChild(Utils.createElement('option', {
+              value: option.value,
+              textContent: t(option.labelKey)
+            }));
+          });
+
+          select.value = this.config.theme;
+          select.addEventListener('change', () => this.setTheme(select.value));
+          wrapper.appendChild(select);
+
+          this.toolbarButtons[item] = select;
+          this._themeSelect = select;
+          appendToGroup(wrapper);
+          return;
+        }
+
         // Handle Insert dropdown
         if (config.type === 'insertDropdown') {
           const btn = Utils.createElement('button', {
@@ -3775,6 +4126,10 @@
             {
               key: 'image', icon: Icons.image, labelKey: 'insert.image',
               action: () => { this.saveCurrentSelection(); this.modal.open('image', {}); }
+            },
+            {
+              key: 'video', icon: Icons.video, labelKey: 'insert.video',
+              action: () => { this.saveCurrentSelection(); this.modal.open('video', {}); }
             },
             {
               key: 'table', icon: Icons.table, labelKey: 'insert.table',
@@ -3852,7 +4207,7 @@
             { key: 'autosave', icon: Icons.save, labelKey: 'menu.autosave', action: () => this.toggleAutosave(), toggle: true },
             { key: 'divider' },
             { key: 'clearAll', icon: Icons.trash, labelKey: 'menu.clearAll', action: () => this.clearAll(), danger: true },
-            { key: 'themeToggle', icon: Icons.sun, labelKey: 'menu.toggleTheme', action: () => { this.toggleTheme(); this._updateThemeMenuItem(); } },
+            { key: 'themeSelect', icon: Icons.sun, labelKey: 'menu.toggleTheme' },
             { key: 'fullscreen', icon: Icons.fullscreen, labelKey: 'menu.fullscreen', action: () => this.toggleFullscreen() }
           ];
 
@@ -3866,6 +4221,35 @@
               dropdown.appendChild(Utils.createElement('div', { className: 'neiki-dropdown-divider' }));
               return;
             }
+
+            if (key === 'themeSelect') {
+              const menuItem = Utils.createElement('label', {
+                className: 'neiki-dropdown-item neiki-theme-menu-item'
+              });
+              menuItem.innerHTML = '<span class="neiki-dropdown-item-icon">' + icon + '</span>';
+
+              const select = Utils.createElement('select', {
+                className: 'neiki-theme-menu-select',
+                'aria-label': t(labelKey)
+              });
+              THEME_OPTIONS.forEach(option => {
+                select.appendChild(Utils.createElement('option', {
+                  value: option.value,
+                  textContent: t(option.labelKey)
+                }));
+              });
+              select.value = this.config.theme;
+              select.addEventListener('click', (e) => e.stopPropagation());
+              select.addEventListener('change', () => {
+                this.setTheme(select.value);
+              });
+              menuItem.appendChild(select);
+              this._themeMenuItem = menuItem;
+              this._themeMenuSelect = select;
+              dropdown.appendChild(menuItem);
+              return;
+            }
+
             const menuItem = Utils.createElement('div', {
               className: 'neiki-dropdown-item' + (danger ? ' neiki-dropdown-item-danger' : '')
             });
@@ -3877,11 +4261,6 @@
               menuItem.appendChild(badge);
               this._autosaveMenuItem = menuItem;
               this._autosaveBadge = badge;
-            }
-
-            if (key === 'themeToggle') {
-              this._themeMenuItem = menuItem;
-              this._themeMenuIcon = menuItem.querySelector('.neiki-dropdown-item-icon');
             }
 
             menuItem.addEventListener('click', (e) => {
@@ -4007,8 +4386,20 @@
         className: 'neiki-code-view-textarea',
         spellcheck: 'false'
       });
+      this.codeViewHighlight = Utils.createElement('pre', {
+        className: 'neiki-code-view-highlight',
+        'aria-hidden': 'true'
+      });
+      this.codeViewEditor = Utils.createElement('div', { className: 'neiki-code-view-editor' });
+      this.codeViewEditor.appendChild(this.codeViewHighlight);
+      this.codeViewEditor.appendChild(this.codeViewTextarea);
+      this.codeViewTextarea.addEventListener('input', () => this.renderCodeViewHighlight());
+      this.codeViewTextarea.addEventListener('scroll', () => {
+        this.codeViewHighlight.scrollTop = this.codeViewTextarea.scrollTop;
+        this.codeViewHighlight.scrollLeft = this.codeViewTextarea.scrollLeft;
+      });
       this.codeView.appendChild(codeViewHeader);
-      this.codeView.appendChild(this.codeViewTextarea);
+      this.codeView.appendChild(this.codeViewEditor);
       this.contentWrapper.appendChild(this.codeView);
 
       this.container.appendChild(this.contentWrapper);
@@ -4017,6 +4408,7 @@
     bindEvents() {
       // Content changes
       this.contentArea.addEventListener('input', Utils.debounce(() => {
+        this.removeStrayGripSvgs();
         this._ensureDefaultBlock();
         this.history.record();
         this.syncToOriginal();
@@ -4328,6 +4720,9 @@
                 }
               }
               break;
+            case 'themeToggle':
+              isActive = this.config.theme === 'dark' || this.config.theme === 'dark-blue';
+              break;
           }
         } catch (e) {
           // queryCommandState can throw in some browsers
@@ -4398,28 +4793,14 @@
     }
 
     toggleTheme() {
-      const isDark = this.container.classList.contains('neiki-dark');
-      const newTheme = isDark ? 'light' : 'dark';
-
-      this.container.classList.toggle('neiki-dark', !isDark);
-      this.config.theme = newTheme;
-
-      // Persist theme choice
-      StorageManager.setGlobal('theme', newTheme);
-
-      // Update button icon and active state
-      if (this.toolbarButtons.themeToggle) {
-        this.toolbarButtons.themeToggle.innerHTML = isDark ? Icons.sun : Icons.moon;
-        this.toolbarButtons.themeToggle.classList.toggle('active', !isDark);
-        this.toolbarButtons.themeToggle.title = isDark ? 'Switch to Dark Mode' : 'Switch to Light Mode';
-      }
-      this._updateThemeMenuItem();
+      const currentIndex = THEMES.indexOf(this.config.theme);
+      const nextTheme = THEMES[(currentIndex + 1) % THEMES.length];
+      this.applyTheme(nextTheme);
     }
 
     _updateThemeMenuItem() {
-      if (this._themeMenuIcon) {
-        const isDark = this.container.classList.contains('neiki-dark');
-        this._themeMenuIcon.innerHTML = isDark ? Icons.moon : Icons.sun;
+      if (this._themeMenuSelect) {
+        this._themeMenuSelect.value = this.config.theme;
       }
     }
 
@@ -4584,13 +4965,28 @@
       const clone = this.contentArea.cloneNode(true);
       // Unwrap image resizer wrappers
       clone.querySelectorAll('.neiki-img-resizable').forEach(wrapper => {
-        const img = wrapper.querySelector('img');
-        if (img) wrapper.parentNode.insertBefore(img, wrapper);
+        const media = wrapper.querySelector('img, video');
+        if (media) wrapper.parentNode.insertBefore(media, wrapper);
         wrapper.remove();
       });
       // Remove grip handles, placeholders, resize handles
       clone.querySelectorAll('.neiki-block-grip, .neiki-block-placeholder, .neiki-table-col-resize-handle, .neiki-img-resize-handle, .neiki-img-size-label, .neiki-img-toolbar').forEach(el => el.remove());
+      this.removeStrayGripSvgs(clone);
       return clone.innerHTML;
+    }
+
+    removeStrayGripSvgs(root = this.contentArea) {
+      root.querySelectorAll('svg[viewBox="0 0 24 24"]').forEach(svg => {
+        if (svg.closest('.neiki-toolbar, .neiki-floating-toolbar, .neiki-img-toolbar, .neiki-block-grip, button')) return;
+        const circles = Array.from(svg.children);
+        const isGrip = circles.length === 8 && circles.every(child =>
+          child.tagName && child.tagName.toLowerCase() === 'circle' &&
+          child.getAttribute('r') === '1.5' &&
+          ['9', '15'].includes(child.getAttribute('cx')) &&
+          ['5', '10', '15', '20'].includes(child.getAttribute('cy'))
+        );
+        if (isGrip) svg.remove();
+      });
     }
 
     setContent(html) {
@@ -4668,9 +5064,7 @@
     }
 
     setTheme(theme) {
-      this.config.theme = theme;
-      this.container.classList.toggle('neiki-dark', theme === 'dark');
-      StorageManager.setGlobal('theme', theme);
+      this.applyTheme(theme);
     }
 
     createStatusBar() {
@@ -4727,9 +5121,85 @@
       return 'p';
     }
 
+    formatHTMLSource(html) {
+      const input = String(html || '').trim();
+      if (!input) return '';
+
+      const voidTags = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr']);
+      const blockTags = new Set(['article', 'aside', 'blockquote', 'caption', 'colgroup', 'div', 'figure', 'figcaption', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'li', 'main', 'ol', 'p', 'pre', 'section', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'ul', 'video']);
+      const tokens = input.match(/<!--[\s\S]*?-->|<\/?[^>]+>|[^<]+/g) || [];
+      const lines = [];
+      let indent = 0;
+      let inlineDepth = 0;
+      let hasInlineContent = false;
+
+      tokens.forEach(token => {
+        const trimmed = token.trim();
+        if (!trimmed) return;
+        const textPrefix = !/^</.test(trimmed) && /^\s/.test(token) ? ' ' : '';
+
+        const tagMatch = trimmed.match(/^<\/?\s*([a-zA-Z0-9:-]+)/);
+        const tagName = tagMatch ? tagMatch[1].toLowerCase() : '';
+        const isClosing = /^<\//.test(trimmed);
+        const isTag = /^</.test(trimmed);
+        const isSelfClosing = /\/>$/.test(trimmed) || voidTags.has(tagName);
+        const isBlock = blockTags.has(tagName);
+
+        if (isTag && isClosing) {
+          if (!isBlock && lines.length > 0) {
+            lines[lines.length - 1] += trimmed;
+            inlineDepth = Math.max(inlineDepth - 1, 0);
+            return;
+          }
+          indent = Math.max(indent - 1, 0);
+        }
+
+        const prefix = '  '.repeat(indent);
+        if (!isTag && (inlineDepth > 0 || hasInlineContent) && lines.length > 0) {
+          lines[lines.length - 1] += (textPrefix || (lines[lines.length - 1].endsWith('>') ? '' : ' ')) + trimmed;
+        } else if (!isTag || isBlock || lines.length === 0 || isClosing) {
+          lines.push(prefix + trimmed);
+        } else {
+          lines[lines.length - 1] += trimmed;
+        }
+
+        if (isTag && !isClosing && !isSelfClosing && isBlock) {
+          indent++;
+          hasInlineContent = false;
+        } else if (isTag && !isClosing && !isSelfClosing && !isBlock) {
+          inlineDepth++;
+          hasInlineContent = true;
+        } else if (!isTag) {
+          hasInlineContent = true;
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    renderCodeViewHighlight() {
+      if (!this.codeViewHighlight || !this.codeViewTextarea) return;
+      const source = this.codeViewTextarea.value;
+      const html = Utils.escapeHTML(source).replace(/(&lt;!--[\s\S]*?--&gt;)|(&lt;\/?[\s\S]*?&gt;)/g, (match, comment) => {
+        if (comment) return `<span class="neiki-html-comment">${match}</span>`;
+
+        const tagParts = match.match(/^(&lt;\/?)([a-zA-Z0-9:-]+)([\s\S]*?)(\/?&gt;)$/);
+        if (!tagParts) return match;
+
+        const attrs = tagParts[3].replace(/(\s+)([a-zA-Z_:][-a-zA-Z0-9_:.]*)(=)(&quot;.*?&quot;|&#039;.*?&#039;|[^\s&]+)?/g, (attrMatch, space, name, eq, value) => {
+          return `${space}<span class="neiki-html-attr">${name}</span>${eq}<span class="neiki-html-string">${value || ''}</span>`;
+        });
+
+        return `<span class="neiki-html-punct">${tagParts[1]}</span><span class="neiki-html-tag">${tagParts[2]}</span>${attrs}<span class="neiki-html-punct">${tagParts[4]}</span>`;
+      });
+
+      this.codeViewHighlight.innerHTML = html + (source.endsWith('\n') ? ' ' : '');
+    }
+
     toggleCodeView() {
       if (!this.isCodeViewOpen) {
-        this.codeViewTextarea.value = this.contentArea.innerHTML;
+        this.codeViewTextarea.value = this.formatHTMLSource(this.contentArea.innerHTML);
+        this.renderCodeViewHighlight();
         this.codeView.classList.add('show');
         this.isCodeViewOpen = true;
         this.codeViewTextarea.focus();
@@ -5045,6 +5515,131 @@
     // DRAG & DROP
     // ============================================
 
+    getCaretRangeFromPoint(x, y) {
+      if (document.caretRangeFromPoint) {
+        return document.caretRangeFromPoint(x, y);
+      }
+      if (document.caretPositionFromPoint) {
+        const pos = document.caretPositionFromPoint(x, y);
+        if (pos) {
+          const range = document.createRange();
+          range.setStart(pos.offsetNode, pos.offset);
+          range.collapse(true);
+          return range;
+        }
+      }
+      return null;
+    }
+
+    showDropIndicator(range, x, y) {
+      if (!this.dropIndicator) {
+        this.dropIndicator = document.createElement('div');
+        this.dropIndicator.className = 'neiki-drop-indicator';
+        this.dropIndicator.setAttribute('aria-hidden', 'true');
+        this.contentWrapper.appendChild(this.dropIndicator);
+      }
+
+      const wrapperRect = this.contentWrapper.getBoundingClientRect();
+      let rect = null;
+
+      if (range) {
+        const rects = range.getClientRects();
+        rect = rects.length ? rects[0] : range.getBoundingClientRect();
+      }
+
+      const left = rect && rect.left ? rect.left - wrapperRect.left : x - wrapperRect.left;
+      const top = rect && rect.top ? rect.top - wrapperRect.top : y - wrapperRect.top;
+      const height = rect && rect.height ? Math.max(rect.height, 18) : 22;
+
+      this.dropIndicator.style.left = Math.max(6, Math.min(left, wrapperRect.width - 6)) + 'px';
+      this.dropIndicator.style.top = Math.max(6, Math.min(top, wrapperRect.height - 6)) + 'px';
+      this.dropIndicator.style.height = height + 'px';
+      this.dropIndicator.classList.add('show');
+    }
+
+    hideDropIndicator() {
+      if (this.dropIndicator) {
+        this.dropIndicator.classList.remove('show');
+      }
+    }
+
+    initSelectionDragDrop() {
+      this.draggedSelectionRange = null;
+
+      this.contentArea.addEventListener('dragstart', (e) => {
+        const sel = window.getSelection();
+        if (!sel || !sel.rangeCount || sel.isCollapsed) return;
+        if (!this.contentArea.contains(sel.anchorNode) || !this.contentArea.contains(sel.focusNode)) return;
+
+        const range = sel.getRangeAt(0);
+        const targetNode = e.target.nodeType === Node.TEXT_NODE ? e.target.parentNode : e.target;
+        try {
+          if (targetNode && !range.intersectsNode(targetNode)) return;
+        } catch (err) {
+          return;
+        }
+
+        const container = this.cleanDraggedFragment(range.cloneContents());
+
+        this.draggedSelectionRange = range.cloneRange();
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('application/x-neiki-selection', '1');
+        e.dataTransfer.setData('text/html', container.innerHTML);
+        e.dataTransfer.setData('text/plain', sel.toString());
+      });
+
+      this.contentArea.addEventListener('dragend', () => {
+        this.draggedSelectionRange = null;
+        this.hideDropIndicator();
+      });
+    }
+
+    cleanDraggedFragment(fragment) {
+      const container = document.createElement('div');
+      container.appendChild(fragment);
+      container.querySelectorAll('.neiki-block-grip, .neiki-block-placeholder, .neiki-table-col-resize-handle, .neiki-img-resize-handle, .neiki-img-size-label, .neiki-img-toolbar').forEach(el => el.remove());
+      this.removeStrayGripSvgs(container);
+      return container;
+    }
+
+    handleSelectionDrop(e) {
+      if (!this.draggedSelectionRange || !e.dataTransfer.types.includes('application/x-neiki-selection')) {
+        return false;
+      }
+
+      const dropRange = this.getCaretRangeFromPoint(e.clientX, e.clientY);
+      if (!dropRange || !this.contentArea.contains(dropRange.startContainer)) return false;
+      this.hideDropIndicator();
+
+      const sourceRange = this.draggedSelectionRange;
+      const container = this.cleanDraggedFragment(sourceRange.cloneContents());
+      const fragment = document.createDocumentFragment();
+      while (container.firstChild) fragment.appendChild(container.firstChild);
+      const marker = document.createTextNode('');
+      dropRange.insertNode(marker);
+
+      try {
+        if (sourceRange.intersectsNode(marker)) {
+          marker.remove();
+          this.draggedSelectionRange = null;
+          this.hideDropIndicator();
+          return true;
+        }
+      } catch (err) {}
+
+      sourceRange.deleteContents();
+      marker.parentNode.insertBefore(fragment, marker);
+      marker.remove();
+
+      this.draggedSelectionRange = null;
+      this._ensureDefaultBlock();
+      this.history.record();
+      this.syncToOriginal();
+      this.triggerChange();
+      this.updateStatusBar();
+      return true;
+    }
+
     initDragDrop() {
       let dragCounter = 0;
 
@@ -5061,28 +5656,39 @@
         dragCounter--;
         if (dragCounter === 0) {
           this.contentArea.classList.remove('neiki-drag-over');
+          this.hideDropIndicator();
         }
       });
 
       this.contentArea.addEventListener('dragover', (e) => {
         e.preventDefault();
+        if (e.dataTransfer.types.includes('Files') || e.dataTransfer.types.includes('application/x-neiki-selection')) {
+          const range = this.getCaretRangeFromPoint(e.clientX, e.clientY);
+          if (range && this.contentArea.contains(range.startContainer)) {
+            this.showDropIndicator(range, e.clientX, e.clientY);
+          }
+        }
       });
 
       this.contentArea.addEventListener('drop', (e) => {
         e.preventDefault();
         dragCounter = 0;
         this.contentArea.classList.remove('neiki-drag-over');
+        this.hideDropIndicator();
+
+        if (this.handleSelectionDrop(e)) return;
 
         const files = Array.from(e.dataTransfer.files);
         const imageFiles = files.filter(file => file.type.startsWith('image/'));
+        const videoFiles = files.filter(file => file.type.startsWith('video/'));
 
-        if (imageFiles.length > 0) {
+        if (imageFiles.length > 0 || videoFiles.length > 0) {
           // Get cursor position from drop event
           const dropX = e.clientX;
           const dropY = e.clientY;
 
           const setCursorAtDrop = () => {
-            const range = document.caretRangeFromPoint(dropX, dropY);
+            const range = this.getCaretRangeFromPoint(dropX, dropY);
             if (range) {
               const sel = window.getSelection();
               sel.removeAllRanges();
@@ -5090,30 +5696,53 @@
             }
           };
 
-          const hasUploadHandler = typeof this.config.imageUploadHandler === 'function';
+          const insertFile = async (file, type) => {
+            setCursorAtDrop();
+            const isImage = type === 'image';
+            const handler = isImage ? this.config.imageUploadHandler : this.config.videoUploadHandler;
+            const hasUploadHandler = typeof handler === 'function';
 
-          if (hasUploadHandler) {
+            if (hasUploadHandler) {
+              const url = await handler(file);
+              if (url) {
+                if (isImage) this.commands.insertImage(url, file.name, '');
+                else this.commands.insertVideo(url, file.name, '');
+              }
+              return;
+            }
+
+            await new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onload = (readerEvent) => {
+                setCursorAtDrop();
+                if (isImage) this.commands.insertImage(readerEvent.target.result, file.name, '');
+                else this.commands.insertVideo(readerEvent.target.result, file.name, '');
+                resolve();
+              };
+              reader.readAsDataURL(file);
+            });
+          };
+
+          if (typeof this.config.imageUploadHandler === 'function' || typeof this.config.videoUploadHandler === 'function') {
             (async () => {
               for (const file of imageFiles) {
                 try {
-                  setCursorAtDrop();
-                  const url = await this.config.imageUploadHandler(file);
-                  if (url) {
-                    this.commands.insertImage(url, file.name, '');
-                  }
+                  await insertFile(file, 'image');
                 } catch (err) {
                   console.error('NeikiEditor: Image upload failed', err);
                 }
               }
+              for (const file of videoFiles) {
+                try {
+                  await insertFile(file, 'video');
+                } catch (err) {
+                  console.error('NeikiEditor: Video upload failed', err);
+                }
+              }
             })();
           } else {
-            imageFiles.forEach(file => {
-              const reader = new FileReader();
-              reader.onload = (readerEvent) => {
-                setCursorAtDrop();
-                this.commands.insertImage(readerEvent.target.result, file.name, '');
-              };
-              reader.readAsDataURL(file);
+            [...imageFiles.map(file => [file, 'image']), ...videoFiles.map(file => [file, 'video'])].forEach(([file, type]) => {
+              insertFile(file, type);
             });
           }
         }
@@ -5146,8 +5775,8 @@
       this._dragStarted = false;
 
       this.editor.contentArea.addEventListener('mousedown', (e) => {
-        const img = e.target.closest('img');
-        if (!img || !this.editor.contentArea.contains(img)) return;
+        const img = e.target.closest('img, video');
+        if (!img || !this.editor.contentArea.contains(img) || this.isEditorUiElement(img)) return;
         if (e.target.closest('.neiki-img-resize-handle') || e.target.closest('.neiki-img-toolbar')) return;
 
         e.preventDefault();
@@ -5192,8 +5821,8 @@
 
       this.editor.contentArea.addEventListener('click', (e) => {
         if (this._dragStarted) return;
-        const img = e.target.closest('img');
-        if (img && this.editor.contentArea.contains(img)) {
+        const img = e.target.closest('img, video');
+        if (img && this.editor.contentArea.contains(img) && !this.isEditorUiElement(img)) {
           e.preventDefault();
           if (!this.wrapper || this.currentImg !== img) {
             this.selectImage(img);
@@ -5205,8 +5834,8 @@
 
       // Touch: tap image to select (drag only via grip handle in img toolbar)
       this.editor.contentArea.addEventListener('touchend', (e) => {
-        const img = e.target.closest('img');
-        if (!img || !this.editor.contentArea.contains(img)) return;
+        const img = e.target.closest('img, video');
+        if (!img || !this.editor.contentArea.contains(img) || this.isEditorUiElement(img)) return;
         if (e.target.closest('.neiki-img-resize-handle') || e.target.closest('.neiki-img-toolbar')) return;
         e.preventDefault();
         if (!this.wrapper || this.currentImg !== img) {
@@ -5216,7 +5845,7 @@
 
       // Prevent native image drag inside editor (causes duplicate on drop)
       this.editor.contentArea.addEventListener('dragstart', (e) => {
-        if (e.target.tagName === 'IMG') {
+        if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO') {
           e.preventDefault();
         }
       });
@@ -5234,9 +5863,14 @@
       });
     }
 
+    isEditorUiElement(node) {
+      return !!(node && node.closest && node.closest('.neiki-block-grip, .neiki-img-toolbar, .neiki-img-resize-handle, .neiki-img-size-label, .neiki-table-col-resize-handle'));
+    }
+
     selectImage(img) {
       this.deselect();
       this.currentImg = img;
+      const isVideo = img.tagName === 'VIDEO';
 
       // Create wrapper around image
       this.wrapper = document.createElement('span');
@@ -5323,7 +5957,7 @@
       const replaceBtn = document.createElement('button');
       replaceBtn.className = 'neiki-img-toolbar-btn';
       replaceBtn.type = 'button';
-      replaceBtn.title = t('imageToolbar.replaceImage');
+      replaceBtn.title = isVideo ? t('videoToolbar.replaceVideo') : t('imageToolbar.replaceImage');
       replaceBtn.innerHTML = Icons.replaceImage;
       replaceBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -5334,7 +5968,7 @@
       const deleteBtn = document.createElement('button');
       deleteBtn.className = 'neiki-img-toolbar-btn neiki-img-toolbar-btn-danger';
       deleteBtn.type = 'button';
-      deleteBtn.title = t('imageToolbar.deleteImage');
+      deleteBtn.title = isVideo ? t('videoToolbar.deleteVideo') : t('imageToolbar.deleteImage');
       deleteBtn.innerHTML = Icons.trash;
       deleteBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -5351,7 +5985,7 @@
       this.wrapper.appendChild(this.imgToolbar);
 
       this.positionImgToolbar();
-      this.selectWrapperRange();
+      this.clearNativeSelection();
     }
 
     getImageBlock() {
@@ -5402,19 +6036,24 @@
 
     replaceImage() {
       if (!this.currentImg) return;
+      const isVideo = this.currentImg.tagName === 'VIDEO';
       const input = document.createElement('input');
       input.type = 'file';
-      input.accept = 'image/*';
+      input.accept = isVideo ? 'video/*' : 'image/*';
       input.addEventListener('change', async () => {
         const file = input.files[0];
         if (!file) return;
-        const hasUploadHandler = typeof this.editor.config.imageUploadHandler === 'function';
+        const hasUploadHandler = isVideo
+          ? typeof this.editor.config.videoUploadHandler === 'function'
+          : typeof this.editor.config.imageUploadHandler === 'function';
         if (hasUploadHandler) {
           try {
-            const url = await this.editor.config.imageUploadHandler(file);
+            const url = isVideo
+              ? await this.editor.config.videoUploadHandler(file)
+              : await this.editor.config.imageUploadHandler(file);
             if (url) this.currentImg.src = url;
           } catch (err) {
-            console.error('NeikiEditor: Image upload failed', err);
+            console.error(`NeikiEditor: ${isVideo ? 'Video' : 'Image'} upload failed`, err);
           }
         } else {
           const reader = new FileReader();
@@ -5434,6 +6073,7 @@
       const img = this.currentImg;
       const wrapper = this.wrapper;
       const contentArea = this.editor.contentArea;
+      if (this.editor.blockDragDrop) this.editor.blockDragDrop.hideGrip();
 
       // Save image dimensions
       const imgWidth = img.style.width;
@@ -5448,6 +6088,7 @@
       const ghostImg = img.cloneNode(true);
       ghostImg.style.width = '100%';
       ghostImg.style.height = 'auto';
+      ghostImg.removeAttribute('controls');
       ghost.appendChild(ghostImg);
       document.body.appendChild(ghost);
 
@@ -5461,22 +6102,6 @@
 
       // Caret marker for drop position
       let dropRange = null;
-
-      const getCaretRange = (x, y) => {
-        if (document.caretRangeFromPoint) {
-          return document.caretRangeFromPoint(x, y);
-        }
-        if (document.caretPositionFromPoint) {
-          const pos = document.caretPositionFromPoint(x, y);
-          if (pos) {
-            const r = document.createRange();
-            r.setStart(pos.offsetNode, pos.offset);
-            r.collapse(true);
-            return r;
-          }
-        }
-        return null;
-      };
 
       const onMove = (ev) => {
         let cx, cy;
@@ -5492,19 +6117,10 @@
         }
         ghost.style.left = (cx - offsetX) + 'px';
         ghost.style.top = (cy - offsetY) + 'px';
-        const range = getCaretRange(cx, cy);
-        if (range && contentArea.contains(range.startContainer)) {
-          // Avoid dropping inside the wrapper itself
-          let node = range.startContainer;
-          while (node && node !== contentArea) {
-            if (node === wrapper) return;
-            node = node.parentNode;
-          }
+        const range = this.editor.getCaretRangeFromPoint(cx, cy);
+        if (this.isSafeDropRange(range, wrapper)) {
           dropRange = range;
-          // Show caret position
-          const sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(range);
+          this.editor.showDropIndicator(range, cx, cy);
         }
       };
 
@@ -5534,7 +6150,7 @@
         this.sizeLabel = null;
         this.imgToolbar = null;
 
-        if (dropRange && contentArea.contains(dropRange.startContainer)) {
+        if (this.isSafeDropRange(dropRange, wrapper)) {
           // Insert image at the caret drop position
           dropRange.insertNode(img);
         } else {
@@ -5546,6 +6162,7 @@
 
         // Clean up empty parent blocks left behind
         this.editor._ensureDefaultBlock();
+        this.editor.removeStrayGripSvgs();
 
         // Re-select the image at its new position
         this.selectImage(img);
@@ -5564,14 +6181,23 @@
       }
     }
 
-    selectWrapperRange() {
-      if (!this.wrapper) return;
-      this.editor.focus();
+    isSafeDropRange(range, wrapper) {
+      if (!range || !this.editor.contentArea.contains(range.startContainer)) return false;
+      let node = range.startContainer;
+      while (node && node !== this.editor.contentArea) {
+        if (node === wrapper) return false;
+        if (node.nodeType === Node.ELEMENT_NODE && node.closest && node.closest('.neiki-block-grip, .neiki-img-toolbar, .neiki-img-resize-handle, .neiki-img-size-label, .neiki-table-col-resize-handle')) {
+          return false;
+        }
+        this.editor.hideDropIndicator();
+        node = node.parentNode;
+      }
+      return true;
+    }
+
+    clearNativeSelection() {
       const sel = window.getSelection();
-      const range = document.createRange();
-      range.selectNode(this.wrapper);
-      sel.removeAllRanges();
-      sel.addRange(range);
+      if (sel) sel.removeAllRanges();
     }
 
     getSelectedImageClipboardData() {
@@ -5906,7 +6532,8 @@
         }
       });
 
-      this.editor.contentArea.addEventListener('mouseleave', () => {
+      this.editor.contentArea.addEventListener('mouseleave', (e) => {
+        if (this.gripEl && e.relatedTarget && this.gripEl.contains(e.relatedTarget)) return;
         if (!this.isDragging) this.hideGrip();
       });
     }
@@ -5935,10 +6562,10 @@
       grip._block = block;
 
       // Position grip
-      const contentRect = this.editor.contentArea.getBoundingClientRect();
+      const wrapperRect = this.editor.contentWrapper.getBoundingClientRect();
       const blockRect = block.getBoundingClientRect();
-      grip.style.top = (blockRect.top - contentRect.top + this.editor.contentArea.scrollTop) + 'px';
-      grip.style.left = '-28px';
+      grip.style.top = (blockRect.top - wrapperRect.top) + 'px';
+      grip.style.left = Math.max(2, blockRect.left - wrapperRect.left - 28) + 'px';
 
       grip.addEventListener('mousedown', (e) => {
         e.preventDefault();
@@ -5946,7 +6573,7 @@
         this.startDrag(e, block);
       });
 
-      this.editor.contentArea.appendChild(grip);
+      this.editor.contentWrapper.appendChild(grip);
       this.gripEl = grip;
     }
 
@@ -5964,6 +6591,8 @@
 
       // Create ghost
       this.ghostEl = block.cloneNode(true);
+      this.editor.removeStrayGripSvgs(this.ghostEl);
+      this.ghostEl.querySelectorAll('.neiki-block-grip, .neiki-img-toolbar, .neiki-img-resize-handle, .neiki-img-size-label').forEach(el => el.remove());
       this.ghostEl.className = (this.ghostEl.className || '') + ' neiki-block-ghost';
       this.ghostEl.style.width = block.offsetWidth + 'px';
       document.body.appendChild(this.ghostEl);
@@ -6013,7 +6642,9 @@
         this.placeholder = null;
         this.ghostEl = null;
 
+        this.editor.removeStrayGripSvgs();
         this.editor.history.record();
+        this.editor.syncToOriginal();
         this.editor.triggerChange();
       };
 

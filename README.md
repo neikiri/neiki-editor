@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/css-%23663399.svg?style=for-the-badge&logo=css&logoColor=white" alt="CSS">
   <br>
   <img src="https://img.shields.io/badge/License-AGPL--3.0-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-2.10.1-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-3.0.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -62,7 +62,7 @@ Add this single line — CSS is included automatically, always the **latest vers
 #### Pin a specific version
 
 ```html
-<script src="https://cdn.neikiri.dev/neiki-editor/2.10.1/neiki-editor.min.js"></script>
+<script src="https://cdn.neikiri.dev/neiki-editor/3.0.0/neiki-editor.min.js"></script>
 ```
 
 #### Load CSS and JS separately
@@ -73,8 +73,8 @@ Add this single line — CSS is included automatically, always the **latest vers
 <script src="https://cdn.neikiri.dev/neiki-editor/neiki-editor.js"></script>
 
 <!-- Or pinned -->
-<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/2.10.1/neiki-editor.css">
-<script src="https://cdn.neikiri.dev/neiki-editor/2.10.1/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/3.0.0/neiki-editor.css">
+<script src="https://cdn.neikiri.dev/neiki-editor/3.0.0/neiki-editor.js"></script>
 ```
 
 #### Alternative CDN — jsDelivr
@@ -84,15 +84,15 @@ Add this single line — CSS is included automatically, always the **latest vers
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.min.js"></script>
 
 <!-- Pinned -->
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.10.1/dist/neiki-editor.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.0.0/dist/neiki-editor.min.js"></script>
 
 <!-- Separate files (latest) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.css">
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.js"></script>
 
 <!-- Separate files (pinned) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.10.1/dist/neiki-editor.css">
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@2.10.1/dist/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.0.0/dist/neiki-editor.css">
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.0.0/dist/neiki-editor.js"></script>
 ```
 
 #### Package Manager
@@ -143,7 +143,7 @@ const editor = new NeikiEditor('#editor', {
     autofocus: false,
     spellcheck: true,
     readonly: false,
-    theme: 'light',       // 'light' or 'dark'
+    theme: 'light',       // 'light', 'dark', 'blue', or 'dark-blue'
     language: 'en',       // 'en', 'cs', or custom via addTranslation()
     translations: null,   // custom translation keys (merged with built-in)
     autosaveKey: null,    // optional custom localStorage scope for autosave
@@ -181,7 +181,7 @@ const editor = new NeikiEditor('#editor', {
 | `autofocus` | `boolean` | `false` | Focus editor on initialization |
 | `spellcheck` | `boolean` | `true` | Enable browser spellcheck |
 | `readonly` | `boolean` | `false` | Make editor read-only |
-| `theme` | `string` | `'light'` | `'light'` or `'dark'` |
+| `theme` | `string` | `'light'` | `'light'`, `'dark'`, `'blue'`, or `'dark-blue'` |
 | `language` | `string` | `'en'` | UI language — `en`, `cs`, `zh`, `es`, `de`, `fr`, `pt`, `ja` |
 | `translations` | `object\|null` | `null` | Custom translation keys (merged with built-in) |
 | `autosaveKey` | `string\|null` | `null` | Custom `localStorage` scope for autosave content and enabled state |
@@ -193,6 +193,7 @@ const editor = new NeikiEditor('#editor', {
 | `onReady` | `function\|null` | `null` | Callback when editor is ready |
 | `showHelp` | `boolean` | `true` | Show Help button in More menu (⋯) |
 | `imageUploadHandler` | `function\|null` | `null` | Async callback `(file) => Promise<url>` for uploading images to a server/CDN instead of base64 |
+| `videoUploadHandler` | `function\|null` | `null` | Async callback `(file) => Promise<url>` for uploading videos to a server/CDN instead of base64 |
 | `customClass` | `string\|null` | `null` | Custom CSS class appended to the editor content area (`neiki-content`) |
 
 ---
@@ -247,11 +248,12 @@ The `insertDropdown` toolbar item renders a single **Insert** button that opens 
 |------|-------------|
 | **Link** | Insert/edit hyperlink (**Ctrl+K**) |
 | **Image** | Insert image (URL or file upload → base64) |
+| **Video** | Insert video (URL or file upload → base64, or via `videoUploadHandler`) |
 | **Table** | Insert table with custom rows/columns |
 | **Emoji** | Emoji picker (100+ emojis) |
 | **Symbol** | Special characters (©, ®, €, π, Ω, arrows, etc.) |
 
-You can still use `link`, `image`, `table`, `emoji`, `specialChars` as standalone toolbar buttons if preferred.
+You can still use `link`, `image`, `video`, `table`, `emoji`, `specialChars` as standalone toolbar buttons if preferred.
 
 ### More Menu
 
@@ -265,7 +267,7 @@ The `moreMenu` toolbar item renders a **⋯** button (pushed to the right) that 
 | **Print** | Print editor content |
 | **Autosave** | Toggle autosave to localStorage |
 | **Clear all** | Clear all editor content |
-| **Toggle Theme** | Switch between light/dark theme |
+| **Change theme** | Choose light, dark, blue, or dark-blue from a select |
 | **Fullscreen** | Toggle fullscreen mode |
 | **Help** | Show help modal with author, version, and links (configurable via `showHelp`) |
 
@@ -276,7 +278,7 @@ The `moreMenu` toolbar item renders a **⋯** button (pushed to the right) that 
 | `undo` | Undo (**Ctrl+Z**) |
 | `redo` | Redo (**Ctrl+Y** / **Ctrl+Shift+Z**) |
 | `findReplace` | Find & Replace with regex support |
-| `viewCode` | Toggle HTML source editor |
+| `viewCode` | Toggle formatted HTML source editor with syntax highlighting |
 | `blockquote` | Block quote (toggles on/off) |
 | `horizontalRule` | Horizontal line |
 
@@ -284,7 +286,7 @@ The `moreMenu` toolbar item renders a **⋯** button (pushed to the right) that 
 
 ## 🎨 Themes
 
-Neiki's Editor ships with **Light** and **Dark** themes.
+Neiki's Editor ships with **Light**, **Dark**, **Blue**, and **Dark Blue** themes.
 
 ### Set theme on init:
 
@@ -294,14 +296,16 @@ const editor = new NeikiEditor('#editor', {
 });
 ```
 
-### Toggle theme at runtime:
+### Change theme at runtime:
 
-Use the **Toggle Theme** item in the More menu (⋯), or toggle programmatically:
+Use the **Change theme** select in the More menu (⋯), or change themes programmatically:
 
 ```javascript
 editor.toggleTheme();
 // or set a specific theme:
 editor.setTheme('dark');
+editor.setTheme('blue');
+editor.setTheme('dark-blue');
 ```
 
 The selected theme persists across page reloads via `localStorage`.
@@ -410,8 +414,8 @@ editor.enable();              // Enable editing
 editor.disable();             // Disable editing (read-only)
 editor.destroy();             // Remove editor, restore original element
 editor.toggleFullscreen();    // Toggle fullscreen mode
-editor.toggleTheme();         // Toggle light/dark theme
-editor.setTheme('dark');      // Set a specific theme
+editor.toggleTheme();         // Cycle through built-in themes
+editor.setTheme('dark');      // Set a specific theme ('light', 'dark', 'blue', 'dark-blue')
 editor.triggerSave();         // Trigger onSave callback
 editor.previewContent();      // Open preview modal
 editor.downloadContent();     // Download content as HTML file
@@ -514,6 +518,8 @@ The Image dialog includes a file upload input. Selected images are converted to 
 
 Drag image files directly into the editor content area. Images are automatically converted to base64 and inserted at the drop position.
 
+Selected text can also be dragged to a new position inside the editor. Text, image, and video drags show the same insertion indicator so the drop position is visible before release.
+
 ### Resize Images
 
 Click any image in the editor to select it — **resize handles** appear on all four corners. Drag any handle to resize while maintaining aspect ratio. A live **size label** (width × height) is displayed below the image during resizing.
@@ -527,6 +533,26 @@ When an image is selected, a contextual toolbar appears above it with image-spec
 - **Delete** — remove the selected image
 
 The floating text-formatting toolbar is automatically hidden when an image is selected.
+
+---
+
+## 🎬 Video Support
+
+Use **Insert → Video** to add a video by URL, by selecting a local video file, or by dragging a video file into the editor. Without `videoUploadHandler`, selected videos are embedded as base64 data URIs. With `videoUploadHandler`, the editor uploads the file through your callback and inserts the returned URL.
+
+```javascript
+const editor = new NeikiEditor('#editor', {
+    videoUploadHandler: async (file) => {
+        const formData = new FormData();
+        formData.append('video', file);
+        const response = await fetch('/upload-video', { method: 'POST', body: formData });
+        const data = await response.json();
+        return data.url;
+    }
+});
+```
+
+Inserted videos render as `<video controls>`, are preserved by the built-in sanitizer, and can be resized or repositioned like images.
 
 ---
 
