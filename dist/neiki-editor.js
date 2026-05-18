@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 2.10.0
+ * Version: 2.10.1
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -1371,11 +1371,12 @@
 
       const currentParent = () => stack[stack.length - 1];
 
-      const decodeEntities = (text) => {
-        const el = document.createElement('span');
-        el.innerHTML = text;
-        return el.textContent;
-      };
+      const ENTITY_MAP = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: '\u00A0' };
+      const decodeEntities = (text) => text.replace(/&(?:#x([0-9a-fA-F]+)|#([0-9]+)|([a-zA-Z]+));/g, (m, hex, dec, named) => {
+        if (hex) return String.fromCodePoint(parseInt(hex, 16));
+        if (dec) return String.fromCodePoint(parseInt(dec, 10));
+        return ENTITY_MAP[named] || m;
+      });
 
       while (index < input.length) {
         const tagStart = input.indexOf('<', index);
@@ -2528,7 +2529,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/logo.png" alt="Neiki's Editor" style="width: 120px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 2.10.0</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 2.10.1</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>

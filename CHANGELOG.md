@@ -1,5 +1,8 @@
 # Changelog
 
+## [2.10.1]
+- Fixed a cross-site scripting (XSS) vulnerability in the HTML sanitizer's entity decoding — replaced `innerHTML`-based decoding with a safe regex-based approach that only resolves named (`&amp;`, `&lt;`, `&gt;`, `&quot;`, `&apos;`, `&nbsp;`) and numeric (`&#123;`, `&#x1F4A9;`) entities without ever parsing HTML
+
 ## [2.10.0]
 - Added `code` toolbar button with smart behavior: single-line selection wraps text in inline `<code>`, multi-line selection creates a `<pre><code>` code block. Works as a toggle — clicking again unwraps. Included in the default toolbar between `subscript` and `removeFormat`.
 - Fixed text not being wrapped in `<p>` after toggling off Bullet List or Numbered List — consecutive inline/text nodes are now grouped into a single `<p>` instead of each being wrapped separately
