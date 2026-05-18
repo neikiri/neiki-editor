@@ -1,5 +1,8 @@
 # Changelog
 
+## [3.0.1]
+- Fixed a polynomial regular expression risk in HTML code view formatting by replacing the regex tokenizer with a deterministic linear scan
+
 ## [3.0.0]
 - Added two new built-in themes: `blue` and `dark-blue`
 - Added Insert > Video with a URL/file-upload modal, base64 embedding, and optional `videoUploadHandler`

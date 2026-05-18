@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 3.0.0
+ * Version: 3.0.1
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -2801,7 +2801,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/logo.png" alt="Neiki's Editor" style="width: 120px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.0.0</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.0.1</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -5127,7 +5127,39 @@
 
       const voidTags = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr']);
       const blockTags = new Set(['article', 'aside', 'blockquote', 'caption', 'colgroup', 'div', 'figure', 'figcaption', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'li', 'main', 'ol', 'p', 'pre', 'section', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'ul', 'video']);
-      const tokens = input.match(/<!--[\s\S]*?-->|<\/?[^>]+>|[^<]+/g) || [];
+      const tokens = [];
+      let index = 0;
+
+      while (index < input.length) {
+        const tagStart = input.indexOf('<', index);
+
+        if (tagStart === -1) {
+          tokens.push(input.slice(index));
+          break;
+        }
+
+        if (tagStart > index) {
+          tokens.push(input.slice(index, tagStart));
+        }
+
+        if (input.slice(tagStart, tagStart + 4) === '<!--') {
+          const commentEnd = input.indexOf('-->', tagStart + 4);
+          const end = commentEnd === -1 ? input.length : commentEnd + 3;
+          tokens.push(input.slice(tagStart, end));
+          index = end;
+          continue;
+        }
+
+        const tagEnd = Utils.findTagEnd(input, tagStart + 1);
+        if (tagEnd === -1) {
+          tokens.push(input.slice(tagStart));
+          break;
+        }
+
+        tokens.push(input.slice(tagStart, tagEnd + 1));
+        index = tagEnd + 1;
+      }
+
       const lines = [];
       let indent = 0;
       let inlineDepth = 0;
