@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.png" alt="Neiki's Editor" width="400">
+  <img src="assets/logo.png" alt="Neiki's Editor" width="400">
 </p>
 
 <h1 align="center">Neiki's Editor</h1>
@@ -33,12 +33,12 @@
 
 ---
 <p align="center">
-  <img src="preview.png" alt="Neiki's Editor" width="900">
+  <img src="assets/preview.png" alt="Neiki's Editor" width="900">
 </p>
 
 ---
 
-**Live version:** [https://neikiri.dev/editor](https://neikiri.dev/editor)
+**Live version:** [https://neikiri.dev/editor](https://neikiri.dev/editor) · **Documentation:** [Wiki](https://github.com/neikiri/neiki-editor/wiki)
 
 ---
 
@@ -747,24 +747,37 @@ function NeikiEditorComponent({ value, onChange }) {
 
 ```
 neiki-editor/
-├── dist/
-│   ├── neiki-editor.min.js   # Minified editor + embedded CSS (recommended)
-│   ├── neiki-editor.min.css  # Minified styles
-│   ├── neiki-editor.js       # Editor core (unminified)
-│   └── neiki-editor.css      # Editor styles (unminified)
+├── .github/
+│   └── workflows/
+│       ├── ci.yml                # Continuous integration workflow
+│       ├── codeql.yml            # CodeQL security analysis
+│       └── publish.yml           # NPM/CDN publish workflow
+├── assets/
+│   ├── logo.png                  # Project logo
+│   └── preview.png               # Editor preview screenshot
 ├── demo/
-│   └── index.html            # Interactive demo page
-│   └── logo.png              # Demo logo
+│   ├── index.html                # Interactive demo page
+│   └── logo.png                  # Demo page logo
+├── dist/
+│   ├── neiki-editor.css          # Editor styles (unminified)
+│   ├── neiki-editor.js           # Editor core (unminified)
+│   ├── neiki-editor.min.css      # Minified styles
+│   └── neiki-editor.min.js       # Minified editor + embedded CSS (recommended)
 ├── php/
-│   └── neiki-editor.php      # PHP integration helper
-├── logo.png
-├── package.json
-├── README.md
-├── LICENSE
-├── CHANGELOG.md
-├── CONTRIBUTING.md
-├── CODE_OF_CONDUCT.md
-└── SECURITY.md
+│   └── neiki-editor.php          # PHP integration helper
+├── src/
+│   ├── neiki-editor.css          # Source CSS styles
+│   └── neiki-editor.js           # Source JavaScript
+├── .gitattributes                # Git attributes configuration
+├── .gitignore                    # Git ignore rules
+├── CHANGELOG.md                  # Project changelog
+├── CODE_OF_CONDUCT.md            # Community code of conduct
+├── CONTRIBUTING.md               # Contribution guidelines
+├── LICENSE                       # AGPL-3.0 license
+├── README.md                     # Project documentation
+├── SECURITY.md                   # Security policy
+├── package-lock.json             # NPM lock file
+└── package.json                  # NPM package configuration
 ```
 
 ---
