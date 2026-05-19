@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 3.0.1
+ * Version: 3.0.2
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -196,6 +196,9 @@
       'imageToolbar.dragToMove': 'Drag to move',
       'videoToolbar.replaceVideo': 'Replace Video',
       'videoToolbar.deleteVideo': 'Delete Video',
+      'blockToolbar.moveUp': 'Move block up',
+      'blockToolbar.moveDown': 'Move block down',
+      'blockToolbar.dragToReorder': 'Drag to reorder',
 
       // Placeholder
       'placeholder': 'Start typing...'
@@ -365,6 +368,9 @@
       'imageToolbar.dragToMove': 'Přetáhněte pro přesun',
       'videoToolbar.replaceVideo': 'Nahradit video',
       'videoToolbar.deleteVideo': 'Smazat video',
+      'blockToolbar.moveUp': 'Přesunout blok nahoru',
+      'blockToolbar.moveDown': 'Přesunout blok dolů',
+      'blockToolbar.dragToReorder': 'Přetažením změnit pořadí',
 
       'placeholder': 'Začněte psát...'
     },
@@ -391,6 +397,7 @@
       'toolbar.outdent': '减少缩进',
       'toolbar.link': '插入链接 (Ctrl+K)',
       'toolbar.image': '插入图片',
+      'toolbar.video': '插入视频',
       'toolbar.table': '插入表格',
       'toolbar.blockquote': '引用',
       'toolbar.viewCode': '查看代码 (HTML)',
@@ -423,6 +430,7 @@
       'font.cursive': '手写',
       'insert.link': '链接',
       'insert.image': '图片',
+      'insert.video': '视频',
       'insert.table': '表格',
       'insert.emoji': '表情',
       'insert.symbol': '符号',
@@ -462,6 +470,15 @@
       'modal.describeImage': '描述图片',
       'modal.widthOptional': '宽度（可选）',
       'modal.invalidImageFile': '请选择有效的图片文件。',
+      'modal.insertVideo': '插入视频',
+      'modal.uploadVideo': '上传视频',
+      'modal.convertedVideoToBase64': '将转换为base64',
+      'modal.videoUrl': '视频URL',
+      'modal.videoTitle': '视频标题',
+      'modal.describeVideo': '描述视频',
+      'modal.invalidVideoFile': '请选择有效的视频文件。',
+      'modal.uploadingVideo': '上传中...',
+      'modal.videoUploadError': '视频上传失败，请重试。',
       'modal.insertTable': '插入表格',
       'modal.rows': '行',
       'modal.columns': '列',
@@ -498,6 +515,9 @@
       'imageToolbar.dragToMove': '拖动移动',
       'videoToolbar.replaceVideo': '替换视频',
       'videoToolbar.deleteVideo': '删除视频',
+      'blockToolbar.moveUp': '向上移动块',
+      'blockToolbar.moveDown': '向下移动块',
+      'blockToolbar.dragToReorder': '拖动以重新排序',
 
       'placeholder': '开始输入...'
     },
@@ -523,6 +543,7 @@
       'toolbar.outdent': 'Disminuir sangría',
       'toolbar.link': 'Insertar enlace (Ctrl+K)',
       'toolbar.image': 'Insertar imagen',
+      'toolbar.video': 'Insertar video',
       'toolbar.table': 'Insertar tabla',
       'toolbar.blockquote': 'Cita',
       'toolbar.viewCode': 'Ver código (HTML)',
@@ -555,6 +576,7 @@
       'font.cursive': 'Cursiva',
       'insert.link': 'Enlace',
       'insert.image': 'Imagen',
+      'insert.video': 'Video',
       'insert.table': 'Tabla',
       'insert.emoji': 'Emoji',
       'insert.symbol': 'Símbolo',
@@ -594,6 +616,15 @@
       'modal.describeImage': 'Describir la imagen',
       'modal.widthOptional': 'Ancho (opcional)',
       'modal.invalidImageFile': 'Por favor, seleccione un archivo de imagen válido.',
+      'modal.insertVideo': 'Insertar video',
+      'modal.uploadVideo': 'Subir video',
+      'modal.convertedVideoToBase64': 'Se convertirá a base64',
+      'modal.videoUrl': 'URL de video',
+      'modal.videoTitle': 'Título del video',
+      'modal.describeVideo': 'Describir el video',
+      'modal.invalidVideoFile': 'Por favor, seleccione un archivo de video válido.',
+      'modal.uploadingVideo': 'Subiendo...',
+      'modal.videoUploadError': 'Error al subir el video. Inténtelo de nuevo.',
       'modal.insertTable': 'Insertar tabla',
       'modal.rows': 'Filas',
       'modal.columns': 'Columnas',
@@ -630,6 +661,9 @@
       'imageToolbar.dragToMove': 'Arrastrar para mover',
       'videoToolbar.replaceVideo': 'Reemplazar video',
       'videoToolbar.deleteVideo': 'Eliminar video',
+      'blockToolbar.moveUp': 'Mover bloque arriba',
+      'blockToolbar.moveDown': 'Mover bloque abajo',
+      'blockToolbar.dragToReorder': 'Arrastrar para reordenar',
 
       'placeholder': 'Empiece a escribir...'
     },
@@ -655,6 +689,7 @@
       'toolbar.outdent': 'Einzug verkleinern',
       'toolbar.link': 'Link einfügen (Strg+K)',
       'toolbar.image': 'Bild einfügen',
+      'toolbar.video': 'Video einfügen',
       'toolbar.table': 'Tabelle einfügen',
       'toolbar.blockquote': 'Zitat',
       'toolbar.viewCode': 'Code anzeigen (HTML)',
@@ -687,6 +722,7 @@
       'font.cursive': 'Schreibschrift',
       'insert.link': 'Link',
       'insert.image': 'Bild',
+      'insert.video': 'Video',
       'insert.table': 'Tabelle',
       'insert.emoji': 'Emoji',
       'insert.symbol': 'Symbol',
@@ -726,6 +762,15 @@
       'modal.describeImage': 'Bild beschreiben',
       'modal.widthOptional': 'Breite (optional)',
       'modal.invalidImageFile': 'Bitte wählen Sie eine gültige Bilddatei.',
+      'modal.insertVideo': 'Video einfügen',
+      'modal.uploadVideo': 'Video hochladen',
+      'modal.convertedVideoToBase64': 'Wird in Base64 konvertiert',
+      'modal.videoUrl': 'Video-URL',
+      'modal.videoTitle': 'Videotitel',
+      'modal.describeVideo': 'Video beschreiben',
+      'modal.invalidVideoFile': 'Bitte wählen Sie eine gültige Videodatei.',
+      'modal.uploadingVideo': 'Hochladen...',
+      'modal.videoUploadError': 'Video-Upload fehlgeschlagen. Bitte versuchen Sie es erneut.',
       'modal.insertTable': 'Tabelle einfügen',
       'modal.rows': 'Zeilen',
       'modal.columns': 'Spalten',
@@ -762,6 +807,9 @@
       'imageToolbar.dragToMove': 'Ziehen zum Verschieben',
       'videoToolbar.replaceVideo': 'Video ersetzen',
       'videoToolbar.deleteVideo': 'Video löschen',
+      'blockToolbar.moveUp': 'Block nach oben verschieben',
+      'blockToolbar.moveDown': 'Block nach unten verschieben',
+      'blockToolbar.dragToReorder': 'Zum Neuordnen ziehen',
 
       'placeholder': 'Hier schreiben...'
     },
@@ -787,6 +835,7 @@
       'toolbar.outdent': 'Diminuer le retrait',
       'toolbar.link': 'Insérer un lien (Ctrl+K)',
       'toolbar.image': 'Insérer une image',
+      'toolbar.video': 'Insérer une vidéo',
       'toolbar.table': 'Insérer un tableau',
       'toolbar.blockquote': 'Citation',
       'toolbar.viewCode': 'Voir le code (HTML)',
@@ -819,6 +868,7 @@
       'font.cursive': 'Cursive',
       'insert.link': 'Lien',
       'insert.image': 'Image',
+      'insert.video': 'Vidéo',
       'insert.table': 'Tableau',
       'insert.emoji': 'Emoji',
       'insert.symbol': 'Symbole',
@@ -858,6 +908,15 @@
       'modal.describeImage': 'Décrire l\'image',
       'modal.widthOptional': 'Largeur (optionnel)',
       'modal.invalidImageFile': 'Veuillez sélectionner un fichier image valide.',
+      'modal.insertVideo': 'Insérer une vidéo',
+      'modal.uploadVideo': 'Téléverser une vidéo',
+      'modal.convertedVideoToBase64': 'Sera converti en base64',
+      'modal.videoUrl': 'URL de la vidéo',
+      'modal.videoTitle': 'Titre de la vidéo',
+      'modal.describeVideo': 'Décrire la vidéo',
+      'modal.invalidVideoFile': 'Veuillez sélectionner un fichier vidéo valide.',
+      'modal.uploadingVideo': 'Téléversement...',
+      'modal.videoUploadError': 'Échec du téléversement de la vidéo. Veuillez réessayer.',
       'modal.insertTable': 'Insérer un tableau',
       'modal.rows': 'Lignes',
       'modal.columns': 'Colonnes',
@@ -894,6 +953,9 @@
       'imageToolbar.dragToMove': 'Glisser pour déplacer',
       'videoToolbar.replaceVideo': 'Remplacer la vidéo',
       'videoToolbar.deleteVideo': 'Supprimer la vidéo',
+      'blockToolbar.moveUp': 'Déplacer le bloc vers le haut',
+      'blockToolbar.moveDown': 'Déplacer le bloc vers le bas',
+      'blockToolbar.dragToReorder': 'Glisser pour réorganiser',
 
       'placeholder': 'Commencez à écrire...'
     },
@@ -919,6 +981,7 @@
       'toolbar.outdent': 'Diminuir recuo',
       'toolbar.link': 'Inserir link (Ctrl+K)',
       'toolbar.image': 'Inserir imagem',
+      'toolbar.video': 'Inserir vídeo',
       'toolbar.table': 'Inserir tabela',
       'toolbar.blockquote': 'Citação',
       'toolbar.viewCode': 'Ver código (HTML)',
@@ -951,6 +1014,7 @@
       'font.cursive': 'Cursiva',
       'insert.link': 'Link',
       'insert.image': 'Imagem',
+      'insert.video': 'Vídeo',
       'insert.table': 'Tabela',
       'insert.emoji': 'Emoji',
       'insert.symbol': 'Símbolo',
@@ -990,6 +1054,15 @@
       'modal.describeImage': 'Descrever a imagem',
       'modal.widthOptional': 'Largura (opcional)',
       'modal.invalidImageFile': 'Por favor, selecione um arquivo de imagem válido.',
+      'modal.insertVideo': 'Inserir vídeo',
+      'modal.uploadVideo': 'Enviar vídeo',
+      'modal.convertedVideoToBase64': 'Será convertido para base64',
+      'modal.videoUrl': 'URL do vídeo',
+      'modal.videoTitle': 'Título do vídeo',
+      'modal.describeVideo': 'Descrever o vídeo',
+      'modal.invalidVideoFile': 'Por favor, selecione um arquivo de vídeo válido.',
+      'modal.uploadingVideo': 'Enviando...',
+      'modal.videoUploadError': 'Falha no envio do vídeo. Tente novamente.',
       'modal.insertTable': 'Inserir tabela',
       'modal.rows': 'Linhas',
       'modal.columns': 'Colunas',
@@ -1026,6 +1099,9 @@
       'imageToolbar.dragToMove': 'Arraste para mover',
       'videoToolbar.replaceVideo': 'Substituir vídeo',
       'videoToolbar.deleteVideo': 'Excluir vídeo',
+      'blockToolbar.moveUp': 'Mover bloco para cima',
+      'blockToolbar.moveDown': 'Mover bloco para baixo',
+      'blockToolbar.dragToReorder': 'Arraste para reordenar',
 
       'placeholder': 'Comece a digitar...'
     },
@@ -1051,6 +1127,7 @@
       'toolbar.outdent': 'インデント減',
       'toolbar.link': 'リンク挿入 (Ctrl+K)',
       'toolbar.image': '画像挿入',
+      'toolbar.video': '動画挿入',
       'toolbar.table': '表挿入',
       'toolbar.blockquote': '引用',
       'toolbar.viewCode': 'コード表示 (HTML)',
@@ -1083,6 +1160,7 @@
       'font.cursive': '手書き',
       'insert.link': 'リンク',
       'insert.image': '画像',
+      'insert.video': '動画',
       'insert.table': '表',
       'insert.emoji': '絵文字',
       'insert.symbol': '記号',
@@ -1122,6 +1200,15 @@
       'modal.describeImage': '画像の説明',
       'modal.widthOptional': '幅（任意）',
       'modal.invalidImageFile': '有効な画像ファイルを選択してください。',
+      'modal.insertVideo': '動画挿入',
+      'modal.uploadVideo': '動画アップロード',
+      'modal.convertedVideoToBase64': 'Base64に変換されます',
+      'modal.videoUrl': '動画URL',
+      'modal.videoTitle': '動画タイトル',
+      'modal.describeVideo': '動画の説明',
+      'modal.invalidVideoFile': '有効な動画ファイルを選択してください。',
+      'modal.uploadingVideo': 'アップロード中...',
+      'modal.videoUploadError': '動画のアップロードに失敗しました。もう一度お試しください。',
       'modal.insertTable': '表挿入',
       'modal.rows': '行',
       'modal.columns': '列',
@@ -1158,6 +1245,9 @@
       'imageToolbar.dragToMove': 'ドラッグで移動',
       'videoToolbar.replaceVideo': '動画を置換',
       'videoToolbar.deleteVideo': '動画を削除',
+      'blockToolbar.moveUp': 'ブロックを上へ移動',
+      'blockToolbar.moveDown': 'ブロックを下へ移動',
+      'blockToolbar.dragToReorder': 'ドラッグして並べ替え',
 
       'placeholder': '入力してください...'
     }
@@ -2801,7 +2891,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.png" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.0.1</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.0.2</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -3382,20 +3472,82 @@
     insertHorizontalRule() { this.exec('insertHorizontalRule'); }
 
     formatBlock(tag) {
-      // Toggle blockquote: if already inside one, revert to paragraph
       if (tag === 'blockquote') {
         const sel = window.getSelection();
         if (sel && sel.rangeCount) {
-          let node = sel.getRangeAt(0).startContainer;
+          const range = sel.getRangeAt(0);
+          let node = range.startContainer;
           if (node.nodeType === Node.TEXT_NODE) node = node.parentNode;
           const bq = node.closest ? node.closest('blockquote') : null;
           if (bq && this.editor.contentArea.contains(bq)) {
-            this.exec('formatBlock', '<p>');
+            this._unwrapBlockquote(bq, range);
+            this.editor.history.record();
+            this.editor.updateToolbar();
+            this.editor.triggerChange();
             return;
           }
         }
       }
       this.exec('formatBlock', `<${tag}>`);
+    }
+
+    _unwrapBlockquote(blockquote, range) {
+      const parent = blockquote.parentNode;
+      const marker = document.createElement('span');
+      marker.setAttribute('data-neiki-selection-marker', 'true');
+      marker.style.display = 'none';
+
+      if (range && range.collapsed) {
+        const markerRange = range.cloneRange();
+        markerRange.insertNode(marker);
+      }
+
+      let inlineParagraph = null;
+      const insertedNodes = [];
+      const flushInlineParagraph = () => {
+        if (inlineParagraph) {
+          parent.insertBefore(inlineParagraph, blockquote);
+          insertedNodes.push(inlineParagraph);
+          inlineParagraph = null;
+        }
+      };
+
+      while (blockquote.firstChild) {
+        const child = blockquote.firstChild;
+        if (this._isTopLevelBlock(child)) {
+          flushInlineParagraph();
+          parent.insertBefore(child, blockquote);
+          insertedNodes.push(child);
+        } else {
+          if (!inlineParagraph) inlineParagraph = document.createElement('p');
+          inlineParagraph.appendChild(child);
+        }
+      }
+
+      flushInlineParagraph();
+      parent.removeChild(blockquote);
+
+      const sel = window.getSelection();
+      const restoredMarker = parent.querySelector('[data-neiki-selection-marker="true"]');
+      if (sel && restoredMarker) {
+        const restoredRange = document.createRange();
+        restoredRange.setStartBefore(restoredMarker);
+        restoredRange.collapse(true);
+        restoredMarker.remove();
+        sel.removeAllRanges();
+        sel.addRange(restoredRange);
+      } else if (sel && insertedNodes.length > 0) {
+        const fallbackRange = document.createRange();
+        fallbackRange.setStart(insertedNodes[0], 0);
+        fallbackRange.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(fallbackRange);
+      }
+    }
+
+    _isTopLevelBlock(node) {
+      if (!node || node.nodeType !== Node.ELEMENT_NODE) return false;
+      return ['ADDRESS', 'ARTICLE', 'ASIDE', 'BLOCKQUOTE', 'DIV', 'DL', 'FIGURE', 'FOOTER', 'FORM', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'HEADER', 'HR', 'MAIN', 'OL', 'P', 'PRE', 'SECTION', 'TABLE', 'UL'].includes(node.tagName);
     }
 
     fontSize(sizeStr) {
@@ -5958,6 +6110,8 @@
       const moveUpBtn = document.createElement('button');
       moveUpBtn.className = 'neiki-img-toolbar-btn';
       moveUpBtn.type = 'button';
+      moveUpBtn.title = t('blockToolbar.moveUp');
+      moveUpBtn.setAttribute('aria-label', t('blockToolbar.moveUp'));
       moveUpBtn.innerHTML = Icons.moveUp;
       moveUpBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -5972,6 +6126,8 @@
       const moveDownBtn = document.createElement('button');
       moveDownBtn.className = 'neiki-img-toolbar-btn';
       moveDownBtn.type = 'button';
+      moveDownBtn.title = t('blockToolbar.moveDown');
+      moveDownBtn.setAttribute('aria-label', t('blockToolbar.moveDown'));
       moveDownBtn.innerHTML = Icons.moveDown;
       moveDownBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -6589,7 +6745,7 @@
       const grip = document.createElement('div');
       grip.className = 'neiki-block-grip';
       grip.innerHTML = Icons.grip;
-      grip.title = 'Drag to reorder';
+      grip.title = t('blockToolbar.dragToReorder');
       grip.contentEditable = 'false';
       grip._block = block;
 
@@ -6745,8 +6901,8 @@
 
       // Move block buttons (left side)
       const moveButtons = [
-        { item: 'moveUp', icon: Icons.moveUp, title: 'Move block up' },
-        { item: 'moveDown', icon: Icons.moveDown, title: 'Move block down' }
+        { item: 'moveUp', icon: Icons.moveUp, title: t('blockToolbar.moveUp') },
+        { item: 'moveDown', icon: Icons.moveDown, title: t('blockToolbar.moveDown') }
       ];
 
       moveButtons.forEach(({ item, icon, title }) => {

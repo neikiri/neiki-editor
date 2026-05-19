@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.0.2]
+- Hid the left-side block drag grip on touch and coarse-pointer devices, relying on the existing move up/down toolbar buttons for precise block repositioning
+- Fixed blockquote toggling when the quote contains a nested `<p>` by unwrapping the active `<blockquote>` instead of formatting the inner paragraph
+- Added missing i18n keys for the Insert Video toolbar item, dropdown item, modal labels, upload states, and validation messages across all built-in languages
+
 ## [3.0.1]
 - Fixed a polynomial regular expression risk in HTML code view formatting by replacing the regex tokenizer with a deterministic linear scan
 

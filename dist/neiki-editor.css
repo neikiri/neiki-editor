@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 3.0.1
+ * Version: 3.0.2
  */
 
 /* ============================================
@@ -2121,6 +2121,12 @@
   height: 14px;
   fill: currentColor;
   pointer-events: none;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .neiki-block-grip {
+    display: none !important;
+  }
 }
 
 .neiki-block-ghost {
