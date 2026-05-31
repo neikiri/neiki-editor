@@ -1,5 +1,8 @@
 # Changelog
 
+## [3.0.3]
+- Fixed empty editor submitting `<p><br></p>` instead of a blank value — `getContent()` now returns an empty string when the editor contains only the default empty block inserted by the browser
+
 ## [3.0.2]
 - Hid the left-side block drag grip on touch and coarse-pointer devices, relying on the existing move up/down toolbar buttons for precise block repositioning
 - Fixed blockquote toggling when the quote contains a nested `<p>` by unwrapping the active `<blockquote>` instead of formatting the inner paragraph

@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 3.0.2
+ * Version: 3.0.3
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -2891,7 +2891,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.png" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.0.2</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.0.3</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -5124,7 +5124,14 @@
       // Remove grip handles, placeholders, resize handles
       clone.querySelectorAll('.neiki-block-grip, .neiki-block-placeholder, .neiki-table-col-resize-handle, .neiki-img-resize-handle, .neiki-img-size-label, .neiki-img-toolbar').forEach(el => el.remove());
       this.removeStrayGripSvgs(clone);
-      return clone.innerHTML;
+      const html = clone.innerHTML;
+      // Return empty string when the editor contains only the default empty
+      // block that browsers insert automatically (e.g. <p><br></p>).
+      // This prevents a blank-looking editor from submitting a non-empty value.
+      if (/^(\s|<p>(\s|&nbsp;|<br\s*\/?>)*<\/p>|<br\s*\/?>)*$/i.test(html)) {
+        return '';
+      }
+      return html;
     }
 
     removeStrayGripSvgs(root = this.contentArea) {
