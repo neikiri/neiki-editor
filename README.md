@@ -42,30 +42,97 @@
 
 ---
 
-## 💡 Why Neiki's Editor?
+## Overview
 
-Most WYSIWYG editors either pull in a tree of dependencies or force you into a heavyweight framework. Neiki's Editor is a **single file with zero dependencies** — drop one `<script>` tag into any page and you get 30+ formatting tools, drag-and-drop blocks, image resizing, a plugin API, and full i18n out of the box. It stays tiny enough for a quick prototype yet powerful enough for a production CMS, so you spend time writing content instead of wrestling with your editor.
+Neiki's Editor is a WYSIWYG rich text editor written in plain JavaScript with **zero dependencies**. You attach it to an existing `<textarea>` (or any element), and it becomes a full editing surface — toolbar, formatting tools, tables, images, video, and a status bar — without pulling in a framework or a build step.
+
+```html
+<textarea id="editor"></textarea>
+<script src="https://cdn.neikiri.dev/neiki-editor/neiki-editor.min.js"></script>
+<script>
+  const editor = new NeikiEditor('#editor');
+</script>
+```
+
+That snippet is a complete, working editor. The minified build bundles its own CSS, so a single `<script>` tag is enough to get started. From there you can configure the toolbar, switch themes, wire up callbacks, and extend behaviour through the plugin API.
 
 ---
-## 📦 Installation
 
-Add this single line — CSS is included automatically, always the **latest version**:
+## Why Neiki's Editor?
+
+Most rich text editors ask you to make a trade-off: either pull in a dependency tree and a bundler, or commit to a specific framework. Neiki's Editor avoids that trade-off.
+
+- **One file, no dependencies.** The editor ships as a single script. The minified build embeds its CSS, so there is nothing else to install, import, or bundle. Drop it into a static page, a PHP template, or a SPA component — it behaves the same way.
+- **Zero-config by default, configurable when you need it.** `new NeikiEditor('#editor')` gives you the full toolbar immediately. Every option is optional, so you only reach for configuration when you actually want to change something.
+- **Real editing features, not just bold and italic.** Tables with a context menu and column resizing, image resize handles, drag-and-drop block reordering, a floating selection toolbar, find & replace with regex, an HTML source view, autosave, fullscreen, and print are all built in.
+- **Built-in sanitization.** All HTML entering the editor is sanitized client-side, and the bundled PHP helper exposes a server-side `sanitize()` method. Security is treated as part of the editor, not an afterthought (see [Security](#security-notes)).
+- **Framework-friendly without being framework-bound.** It works with plain HTML, and the docs include patterns for React, Vue 2/3, Laravel Blade, and AJAX workflows. A `destroy()` method makes clean teardown in SPA components straightforward.
+- **Localized out of the box.** Eight UI languages are bundled, and you can override or add translations with your own keys.
+
+If you want a content editor that you can read, host, and reason about as a single file — while still getting the features a production CMS needs — that is the gap this project fills.
+
+---
+
+## Features
+
+### Text formatting
+
+- Bold, italic, underline, strikethrough, subscript, superscript
+- Inline `<code>` and `<pre><code>` code blocks
+- Remove formatting
+- Headings (Paragraph, H1–H6), font family, and a font-size widget with `−` / `+` controls and presets
+- Text color and background color pickers (preset palette, native color input, hex input)
+
+> When no text is selected, formatting commands automatically apply to the word at the cursor.
+
+### Structure and content blocks
+
+- Bulleted and numbered lists, indent / outdent
+- Left, center, right, and justify alignment
+- Blockquotes and horizontal rules
+- **Tables** — configurable rows/columns and optional header row, a right-click context menu (insert/delete rows and columns, delete table, merge and split cells), and drag-to-resize columns
+- **Images** — insert by URL, file upload, drag & drop, or clipboard paste; resize via corner handles with a live size label; replace or delete from a contextual image toolbar
+- **Video** — insert by URL, file upload, or drag & drop; rendered as `<video controls>` and resizable like images
+
+### Editing experience
+
+- **Floating toolbar** that appears on text selection (move block up/down, bold, italic, underline, strikethrough, insert link)
+- **Block drag & drop** reordering using a grip handle, with ghost preview and drop placeholder
+- **Find & Replace** with case-sensitive and regular-expression modes
+- **HTML source view** with syntax highlighting
+- Undo / redo, autosave to `localStorage`, fullscreen mode, content preview, download as HTML, and print
+- Status bar showing word count, character count, and the current block type
+
+### Developer features
+
+- Zero dependencies, single-file drop-in
+- Plugin API for custom toolbar buttons and init hooks
+- PHP integration helper with asset loading, rendering, and HTML sanitization
+- Eight built-in UI languages: `en`, `cs`, `zh`, `es`, `de`, `fr`, `pt`, `ja`
+- Four built-in themes: Light, Dark, Blue, Dark Blue
+- Lifecycle callbacks: `onReady`, `onChange`, `onSave`, `onFocus`, `onBlur`
+
+---
+
+## Getting started
+
+The recommended install is the single bundled script from the CDN. CSS is included automatically.
 
 ```html
 <script src="https://cdn.neikiri.dev/neiki-editor/neiki-editor.min.js"></script>
 ```
 
 <details>
-<summary><b>📋 More installation options</b> (pinned version, separate CSS/JS, jsDelivr, npm, self-hosted)</summary>
+<summary><b>Other installation options</b> (pinned version, separate CSS/JS, jsDelivr, npm, self-hosted)</summary>
 <br>
 
-#### Pin a specific version
+**Pin a specific version**
 
 ```html
 <script src="https://cdn.neikiri.dev/neiki-editor/3.0.3/neiki-editor.min.js"></script>
 ```
 
-#### Load CSS and JS separately
+**Load CSS and JS separately**
 
 ```html
 <!-- Latest -->
@@ -77,25 +144,15 @@ Add this single line — CSS is included automatically, always the **latest vers
 <script src="https://cdn.neikiri.dev/neiki-editor/3.0.3/neiki-editor.js"></script>
 ```
 
-#### Alternative CDN — jsDelivr
+**Alternative CDN — jsDelivr**
 
 ```html
-<!-- Latest -->
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.min.js"></script>
-
 <!-- Pinned -->
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.0.3/dist/neiki-editor.min.js"></script>
-
-<!-- Separate files (latest) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.css">
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.js"></script>
-
-<!-- Separate files (pinned) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.0.3/dist/neiki-editor.css">
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.0.3/dist/neiki-editor.js"></script>
 ```
 
-#### Package Manager
+**Package manager**
 
 ```bash
 npm install neiki-editor
@@ -105,7 +162,7 @@ yarn add neiki-editor
 pnpm add neiki-editor
 ```
 
-#### Self-hosted
+**Self-hosted**
 
 ```html
 <script src="path/to/neiki-editor.min.js"></script>
@@ -117,549 +174,311 @@ pnpm add neiki-editor
 
 </details>
 
+> **Note:** When using separate CSS and JS files, load the CSS **before** the JS so the editor renders correctly during initialization.
+
 ---
 
-## 🚀 Quick Start
+## Basic usage
+
+Attach the editor to a `<textarea>`. Any HTML already inside the element is loaded automatically.
 
 ```html
-<textarea id="editor"></textarea>
+<textarea id="editor"><p>Hello, world!</p></textarea>
 
 <script>
   const editor = new NeikiEditor('#editor');
 </script>
 ```
 
-That's it — zero config required. The editor replaces the `<textarea>` with a full-featured WYSIWYG editor.
-
----
-
-## ⚙️ Configuration
+The editor can also be attached to a `<div>` with existing content, or to a DOM element reference, and multiple editors can coexist on the same page:
 
 ```javascript
-const editor = new NeikiEditor('#editor', {
-    placeholder: 'Start typing...',
-    minHeight: 300,
-    maxHeight: 600,
-    autofocus: false,
-    spellcheck: true,
-    readonly: false,
-    theme: 'light',       // 'light', 'dark', 'blue', or 'dark-blue'
-    language: 'en',       // 'en', 'cs', or custom via addTranslation()
-    translations: null,   // custom translation keys (merged with built-in)
-    autosaveKey: null,    // optional custom localStorage scope for autosave
-    customClass: null,    // optional custom CSS class for the content area
-    toolbar: [
-        'viewCode', 'undo', 'redo', 'findReplace', '|',
-        'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'code', 'removeFormat', '|',
-        'heading', 'fontFamily', 'fontSize', '|',
-        'foreColor', 'backColor', '|',
-        'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', '|',
-        'indent', 'outdent', '|',
-        'bulletList', 'numberedList', 'blockquote', 'horizontalRule', '|',
-        'insertDropdown', '|',
-        'moreMenu'
-    ],
-    onChange: function(content, editor) {
-        console.log('Content changed:', content);
-    },
-    onSave: function(content, editor) {
-        console.log('Save triggered:', content);
-    },
-    onReady: function(editor) {
-        console.log('Editor is ready!');
-    }
+const editor1 = new NeikiEditor('#editor-1', { theme: 'light' });
+const editor2 = new NeikiEditor('#editor-2', { theme: 'dark', minHeight: 200 });
+```
+
+### Getting content back
+
+```javascript
+const html = editor.getContent();   // HTML string
+const text = editor.getText();      // plain text, tags stripped
+const empty = editor.isEmpty();     // boolean
+const json = editor.getJSON();      // structured JSON
+```
+
+### Saving on form submit
+
+```javascript
+const editor = new NeikiEditor('#editor');
+
+document.getElementById('my-form').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const content = editor.getContent();
+  // send `content` to your backend...
 });
 ```
 
-### Configuration Options
+---
+
+## Configuration
+
+All options are optional. Pass them as the second argument to the constructor.
+
+```javascript
+const editor = new NeikiEditor('#editor', {
+  placeholder: 'Start typing...',
+  minHeight: 300,
+  maxHeight: 600,
+  theme: 'light',     // 'light' | 'dark' | 'blue' | 'dark-blue'
+  language: 'en',     // 'en' | 'cs' | 'zh' | 'es' | 'de' | 'fr' | 'pt' | 'ja'
+  onChange: function (content, editor) {
+    console.log('Content changed:', content);
+  }
+});
+```
+
+### Options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `placeholder` | `string` | `'Start typing...'` | Placeholder text when editor is empty |
+| `placeholder` | `string` | `'Start typing...'` | Ghost text shown when the editor is empty |
 | `minHeight` | `number` | `300` | Minimum height in pixels |
-| `maxHeight` | `number\|null` | `null` | Maximum height in pixels (enables scroll). When `null`, the toolbar uses `position: sticky` to remain visible while scrolling. |
-| `autofocus` | `boolean` | `false` | Focus editor on initialization |
+| `maxHeight` | `number \| null` | `null` | Maximum height in pixels (enables scroll). When `null`, the toolbar uses `position: sticky` while scrolling |
+| `autofocus` | `boolean` | `false` | Focus the editor on initialization |
 | `spellcheck` | `boolean` | `true` | Enable browser spellcheck |
-| `readonly` | `boolean` | `false` | Make editor read-only |
+| `readonly` | `boolean` | `false` | Make the editor read-only |
 | `theme` | `string` | `'light'` | `'light'`, `'dark'`, `'blue'`, or `'dark-blue'` |
-| `language` | `string` | `'en'` | UI language — `en`, `cs`, `zh`, `es`, `de`, `fr`, `pt`, `ja` |
-| `translations` | `object\|null` | `null` | Custom translation keys (merged with built-in) |
-| `autosaveKey` | `string\|null` | `null` | Custom `localStorage` scope for autosave content and enabled state |
-| `toolbar` | `array` | *(see above)* | Toolbar button configuration |
-| `onChange` | `function\|null` | `null` | Callback on content change |
-| `onSave` | `function\|null` | `null` | Callback on save (triggered by Ctrl+S or More menu → Save) |
-| `onFocus` | `function\|null` | `null` | Callback when editor gains focus |
-| `onBlur` | `function\|null` | `null` | Callback when editor loses focus |
-| `onReady` | `function\|null` | `null` | Callback when editor is ready |
-| `showHelp` | `boolean` | `true` | Show Help button in More menu (⋯) |
-| `imageUploadHandler` | `function\|null` | `null` | Async callback `(file) => Promise<url>` for uploading images to a server/CDN instead of base64 |
-| `videoUploadHandler` | `function\|null` | `null` | Async callback `(file) => Promise<url>` for uploading videos to a server/CDN instead of base64 |
-| `customClass` | `string\|null` | `null` | Custom CSS class appended to the editor content area (`neiki-content`) |
+| `language` | `string` | `'en'` | UI language (see list above) |
+| `translations` | `object \| null` | `null` | Custom translation keys, merged with built-ins |
+| `autosaveKey` | `string \| null` | `null` | Custom `localStorage` scope for autosave |
+| `customClass` | `string \| null` | `null` | Extra CSS class appended to the content area (`neiki-content`) |
+| `toolbar` | `array` | *(full set)* | Toolbar button configuration |
+| `showHelp` | `boolean` | `true` | Show the Help item in the More menu (⋯) |
+| `imageUploadHandler` | `function \| null` | `null` | Async `(file) => Promise<url>` for server/CDN image uploads instead of base64 |
+| `videoUploadHandler` | `function \| null` | `null` | Async `(file) => Promise<url>` for server/CDN video uploads instead of base64 |
+| `onChange` | `function \| null` | `null` | Fired on every content change |
+| `onSave` | `function \| null` | `null` | Fired on save (Ctrl+S or More → Save) |
+| `onFocus` | `function \| null` | `null` | Fired when the editor gains focus |
+| `onBlur` | `function \| null` | `null` | Fired when the editor loses focus |
+| `onReady` | `function \| null` | `null` | Fired once the editor is fully initialized |
 
----
+> The `language` option is read at initialization. Changing the UI language at runtime requires re-initializing the editor.
 
-## 🔧 Toolbar Buttons
+### Customizing the toolbar
 
-Use the `toolbar` array to customize which buttons appear and in what order. Use `'|'` for a visual separator between groups. Groups of buttons between separators wrap as whole units on smaller screens.
-
-### Text Formatting
-
-| Button | Description |
-|--------|-------------|
-| `bold` | Bold text (**Ctrl+B**) |
-| `italic` | Italic text (**Ctrl+I**) |
-| `underline` | Underline text (**Ctrl+U**) |
-| `strikethrough` | Strikethrough text |
-| `subscript` | Subscript text |
-| `superscript` | Superscript text |
-| `code` | Toggle code formatting — inline `<code>` or `<pre><code>` block |
-| `removeFormat` | Remove all formatting |
-
-> **Note:** When no text is selected, formatting commands (including Remove Formatting) automatically expand to the word at the cursor position.
-
-### Text Style
-
-| Button | Type | Description |
-|--------|------|-------------|
-| `heading` | Select | Paragraph, H1, H2, H3, H4, H5, H6. Defaults to Paragraph. |
-| `fontSize` | Widget | Font size widget with **[−]** / **[+]** buttons, text input, and dropdown presets: 8, 9, 10, 11, 12, 14, 18, 24, 30, 36, 48, 60, 72, 96 |
-| `fontFamily` | Select | Sans Serif (Arial), Serif (Georgia), Monospace (Consolas), Cursive (Comic Sans MS) |
-| `foreColor` | Color Picker | Text color — palette, native color input, hex code input |
-| `backColor` | Color Picker | Background color — palette, native color input, hex code input |
-
-### Alignment & Lists
-
-| Button | Description |
-|--------|-------------|
-| `alignLeft` | Align text left |
-| `alignCenter` | Center text |
-| `alignRight` | Align text right |
-| `alignJustify` | Justify text |
-| `bulletList` | Unordered list |
-| `numberedList` | Ordered list |
-| `indent` | Increase indent |
-| `outdent` | Decrease indent |
-
-### Insert Dropdown
-
-The `insertDropdown` toolbar item renders a single **Insert** button that opens a dropdown containing:
-
-| Item | Description |
-|------|-------------|
-| **Link** | Insert/edit hyperlink (**Ctrl+K**) |
-| **Image** | Insert image (URL or file upload → base64) |
-| **Video** | Insert video (URL or file upload → base64, or via `videoUploadHandler`) |
-| **Table** | Insert table with custom rows/columns |
-| **Emoji** | Emoji picker (100+ emojis) |
-| **Symbol** | Special characters (©, ®, €, π, Ω, arrows, etc.) |
-
-You can still use `link`, `image`, `video`, `table`, `emoji`, `specialChars` as standalone toolbar buttons if preferred.
-
-### More Menu
-
-The `moreMenu` toolbar item renders a **⋯** button (pushed to the right) that opens a dropdown containing:
-
-| Item | Description |
-|------|-------------|
-| **Save** | Trigger the `onSave` callback |
-| **Preview** | Open a document preview modal |
-| **Download** | Download content as an HTML file |
-| **Print** | Print editor content |
-| **Autosave** | Toggle autosave to localStorage |
-| **Clear all** | Clear all editor content |
-| **Change theme** | Choose light, dark, blue, or dark-blue from a select |
-| **Fullscreen** | Toggle fullscreen mode |
-| **Help** | Show help modal with author, version, and links (configurable via `showHelp`) |
-
-### Standalone Tools
-
-| Button | Description |
-|--------|-------------|
-| `undo` | Undo (**Ctrl+Z**) |
-| `redo` | Redo (**Ctrl+Y** / **Ctrl+Shift+Z**) |
-| `findReplace` | Find & Replace with regex support |
-| `viewCode` | Toggle formatted HTML source editor with syntax highlighting |
-| `blockquote` | Block quote (toggles on/off) |
-| `horizontalRule` | Horizontal line |
-
----
-
-## 🎨 Themes
-
-Neiki's Editor ships with **Light**, **Dark**, **Blue**, and **Dark Blue** themes.
-
-### Set theme on init:
-
-```javascript
-const editor = new NeikiEditor('#editor', {
-    theme: 'dark'
-});
-```
-
-### Change theme at runtime:
-
-Use the **Change theme** select in the More menu (⋯), or change themes programmatically:
-
-```javascript
-editor.toggleTheme();
-// or set a specific theme:
-editor.setTheme('dark');
-editor.setTheme('blue');
-editor.setTheme('dark-blue');
-```
-
-The selected theme persists across page reloads via `localStorage`.
-
----
-
-## 🌍 Localization (i18n)
-
-Neiki's Editor supports multiple UI languages. Built-in:
-
-- **English** (`en`) — default
-- **Czech** (`cs`)
-- **Chinese** (`zh`)
-- **Spanish** (`es`)
-- **German** (`de`)
-- **French** (`fr`)
-- **Portuguese** (`pt`)
-- **Japanese** (`ja`)
-
-### Set language on init:
-
-```javascript
-const editor = new NeikiEditor('#editor', {
-    language: 'cs'  // Czech UI
-});
-```
-
-### Custom translations
-
-Add your own language or override existing translations using the static method:
-
-```javascript
-NeikiEditor.addTranslation('de', {
-    'toolbar.bold': 'Fett (Strg+B)',
-    'toolbar.italic': 'Kursiv (Strg+I)',
-    'toolbar.undo': 'Rückgängig (Strg+Z)',
-    // only override what you need — English is the fallback
-});
-
-const editor = new NeikiEditor('#editor', { language: 'de' });
-```
-
-Or pass translations directly in config:
-
-```javascript
-const editor = new NeikiEditor('#editor', {
-    language: 'de',
-    translations: {
-        de: {
-            'toolbar.bold': 'Fett (Strg+B)',
-            'toolbar.italic': 'Kursiv (Strg+I)',
-            // ...
-        }
-    }
-});
-```
-
-All toolbar tooltips, modal dialogs, status bar texts, and system messages are translatable.
-
----
-
-## 💾 Autosave
-
-Autosave is accessible from the **More menu** (⋯) in the default toolbar. When activated:
-
-- Content is saved to `localStorage` on every content change (debounced)
-- The status bar shows "Autosaving..." / "Saved locally"
-- Content is restored on page reload **only when autosave was enabled**
-- Autosave keys are scoped by page URL and editor identity by default, so multiple editors do not overwrite each other
-
-For apps where the same URL can edit different records, pass a custom `autosaveKey`:
+The `toolbar` option takes an array of button identifiers. Use `'|'` to add a visual separator; groups between separators wrap together as units on narrow screens.
 
 ```javascript
 new NeikiEditor('#editor', {
-    autosaveKey: 'article-42'
+  toolbar: [
+    'bold', 'italic', 'underline', '|',
+    'heading', 'fontSize', '|',
+    'bulletList', 'numberedList', '|',
+    'insertDropdown', '|',
+    'moreMenu'
+  ]
 });
 ```
 
-> **Note:** For production use (CMS, blog, etc.), use the `onSave` callback or `onChange` callback to save content to your database instead.
+Available identifiers include text formatting (`bold`, `italic`, `underline`, `strikethrough`, `subscript`, `superscript`, `code`, `removeFormat`), style (`heading`, `fontFamily`, `fontSize`, `foreColor`, `backColor`), alignment and lists (`alignLeft`, `alignCenter`, `alignRight`, `alignJustify`, `bulletList`, `numberedList`, `indent`, `outdent`), structure (`blockquote`, `horizontalRule`), tools (`undo`, `redo`, `findReplace`, `viewCode`), the grouped `insertDropdown`, the right-aligned `moreMenu`, and a standalone `themeToggle`. See the [Toolbar Reference](https://github.com/neikiri/neiki-editor/wiki/Toolbar-Reference) for the full list.
 
----
+### Themes
 
-## 📋 API Methods
-
-### Content
+Four themes ship by default: `light`, `dark`, `blue`, and `dark-blue`. Set one at init or change it at runtime:
 
 ```javascript
-editor.getContent();          // Get HTML content
-editor.setContent('<p>Hello</p>');  // Set HTML content
-editor.getText();             // Get plain text content
-editor.isEmpty();             // Check if editor is empty
+const editor = new NeikiEditor('#editor', { theme: 'dark' });
 
-editor.getHTML();             // Alias for getContent()
-editor.setHTML(html);         // Alias for setContent()
-
-editor.getJSON();             // Get structured JSON representation
-editor.setJSON(json);         // Set content from JSON
+editor.setTheme('blue');   // set a specific theme
+editor.toggleTheme();      // cycle: light → dark → blue → dark-blue → light
 ```
 
-### Editor Control
+> The selected theme is persisted to `localStorage` as a **global** setting. It applies to all editor instances on the page and persists across reloads. If a user has already chosen a theme, that saved preference takes priority over the `theme` config value — call `setTheme()` after init if you need to override it.
+
+### Custom content styling
+
+Use `customClass` to add your own class to the content area without overriding the defaults:
 
 ```javascript
-editor.focus();               // Focus the editor
-editor.blur();                // Blur the editor
-editor.enable();              // Enable editing
-editor.disable();             // Disable editing (read-only)
-editor.destroy();             // Remove editor, restore original element
-editor.toggleFullscreen();    // Toggle fullscreen mode
-editor.toggleTheme();         // Cycle through built-in themes
-editor.setTheme('dark');      // Set a specific theme ('light', 'dark', 'blue', 'dark-blue')
-editor.triggerSave();         // Trigger onSave callback
-editor.previewContent();      // Open preview modal
-editor.downloadContent();     // Download content as HTML file
-editor.clearAll();            // Clear all content
+new NeikiEditor('#editor', { customClass: 'article-content' });
+```
+
+```css
+.article-content {
+  font-family: Georgia, serif;
+  font-size: 18px;
+  line-height: 1.8;
+}
 ```
 
 ### Localization
 
-```javascript
-NeikiEditor.addTranslation('de', { ... });  // Add/override translations (static)
-```
-
-### Command Execution
+Eight languages are bundled: English (`en`, default), Czech (`cs`), Chinese (`zh`), Spanish (`es`), German (`de`), French (`fr`), Portuguese (`pt`), and Japanese (`ja`). Override or extend any string via `translations`, or register a language globally:
 
 ```javascript
-editor.execCommand('bold');                  // Execute a command
-editor.insertHTML('<span>Hello</span>');     // Insert HTML at cursor
-editor.wrapSelection('mark', { class: 'highlight' }); // Wrap selection
-editor.unwrapSelection('mark');              // Unwrap selection
+// Inline overrides (merged with built-ins)
+new NeikiEditor('#editor', {
+  language: 'en',
+  translations: {
+    'toolbar.bold': 'Make it bold',
+    'placeholder': 'Start your story...'
+  }
+});
+
+// Or register globally
+NeikiEditor.addTranslation('de', {
+  'toolbar.bold': 'Fett (Strg+B)'
+});
 ```
 
-### Selection
+### Autosave
+
+Autosave is toggled from the More menu (⋯). When enabled, content is written to `localStorage` on change and restored on the next page load (only while autosave is still enabled). Keys are scoped by page URL and editor identity; use `autosaveKey` to isolate drafts when the same URL edits different records:
 
 ```javascript
-editor.getSelection();        // Get current Selection object
+new NeikiEditor('#editor', { autosaveKey: 'article-42' });
 ```
+
+> Autosave is intended for drafts and recovery. For production persistence, use the `onSave` or `onChange` callbacks to save to your backend.
 
 ---
 
-## 🔌 Plugin API
+## API
 
-Extend the editor with custom plugins:
+Methods are called on the editor instance unless noted as static.
+
+```javascript
+// Content
+editor.getContent();                 // HTML string  (alias: getHTML)
+editor.setContent('<p>Hello</p>');   //              (alias: setHTML)
+editor.getText();                    // plain text
+editor.isEmpty();                    // boolean
+editor.getJSON();                    // structured JSON
+editor.setJSON(json);
+editor.insertHTML('<mark>hi</mark>');// insert at cursor
+editor.clearAll();
+
+// Selection
+editor.getSelection();
+editor.wrapSelection('mark', { class: 'highlight' });
+editor.unwrapSelection('mark');
+
+// Control
+editor.focus();
+editor.blur();
+editor.enable();
+editor.disable();
+editor.destroy();                    // remove editor, restore original element
+editor.toggleFullscreen();
+editor.triggerSave();                // trigger onSave
+editor.previewContent();             // open preview modal
+editor.downloadContent();            // download as .html
+
+// Theme
+editor.setTheme('dark');
+editor.toggleTheme();
+
+// Commands
+editor.execCommand('bold');
+editor.execCommand('foreColor', '#ff0000');
+
+// Static (plugins)
+NeikiEditor.registerPlugin({ /* ... */ });
+NeikiEditor.getPlugins();            // array of registered plugins
+NeikiEditor.addTranslation('de', { /* ... */ });
+```
+
+> In SPA frameworks, always call `editor.destroy()` when the component unmounts to clean up listeners and avoid memory leaks.
+
+Useful instance properties include `editor.contentArea` (the `contenteditable` element) and `editor.toolbar` (the toolbar element), which are handy inside plugin `init` hooks. See the full [API Reference](https://github.com/neikiri/neiki-editor/wiki/API-Reference).
+
+### Plugin API
+
+Register a plugin globally to add a custom toolbar button and/or run code when the editor initializes. Reference the plugin by its `name` in the `toolbar` array.
 
 ```javascript
 NeikiEditor.registerPlugin({
-    name: 'word-counter-alert',
-    icon: '<svg viewBox="0 0 24 24">...</svg>',   // optional toolbar button
-    tooltip: 'Show Word Count',
-    action: function(editor) {
-        const text = editor.getContent().replace(/<[^>]*>/g, '');
-        const words = text.trim().split(/\s+/).filter(Boolean).length;
-        alert('Word count: ' + words);
-    },
-    init: function(editor) {
-        // Called once when editor initializes (optional)
-        console.log('Plugin initialized!');
-    }
+  name: 'word-counter',                                   // required, unique
+  icon: '<svg viewBox="0 0 24 24">...</svg>',             // optional toolbar icon
+  tooltip: 'Show Word Count',                             // optional
+  action: function (editor) {                             // optional, on click
+    const words = editor.getText().trim().split(/\s+/).filter(Boolean).length;
+    alert('Word count: ' + words);
+  },
+  init: function (editor) {                               // optional, runs once
+    console.log('Plugin initialized!');
+  }
+});
+
+new NeikiEditor('#editor', {
+  toolbar: ['bold', 'italic', '|', 'word-counter', '|', 'moreMenu']
 });
 ```
-
-### Plugin Properties
 
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
-| `name` | `string` | ✅ | Unique plugin identifier |
-| `icon` | `string` | ❌ | SVG icon for toolbar button |
-| `tooltip` | `string` | ❌ | Button tooltip text |
-| `action` | `function` | ❌ | Called when toolbar button is clicked |
-| `init` | `function` | ❌ | Called once during editor initialization |
-
-### List Registered Plugins
-
-```javascript
-NeikiEditor.getPlugins(); // Returns array of registered plugins
-```
+| `name` | `string` | Yes | Unique identifier, referenced in the toolbar array |
+| `icon` | `string` | No | SVG markup for the toolbar button |
+| `tooltip` | `string` | No | Hover tooltip text |
+| `action` | `function(editor)` | No | Called when the button is clicked |
+| `init` | `function(editor)` | No | Called once when the editor initializes |
 
 ---
 
-## 📊 Table Features
-
-Insert tables via the toolbar button with configurable rows, columns, and optional header row.
-
-### Table Context Menu
-
-Right-click on any table cell to access:
-
-- **Insert Row Above / Below**
-- **Insert Column Left / Right**
-- **Delete Row / Column / Table**
-- **Merge Cells** — merge selected cells horizontally
-- **Split Cell** — split a previously merged cell
-
-### Column Resize
-
-Hover near any column border to reveal a **drag handle**. Drag to resize adjacent column widths. The table uses fixed layout during resize for precise control.
-
----
-
-## 🖼️ Image Support
-
-### Insert via URL
-
-Click the **Image** toolbar button and paste a URL.
-
-### Upload from File
-
-The Image dialog includes a file upload input. Selected images are converted to **base64** and embedded directly in the content.
-
-### Drag & Drop
-
-Drag image files directly into the editor content area. Images are automatically converted to base64 and inserted at the drop position.
-
-Selected text can also be dragged to a new position inside the editor. Text, image, and video drags show the same insertion indicator so the drop position is visible before release.
-
-### Resize Images
-
-Click any image in the editor to select it — **resize handles** appear on all four corners. Drag any handle to resize while maintaining aspect ratio. A live **size label** (width × height) is displayed below the image during resizing.
-
-### Image Toolbar
-
-When an image is selected, a contextual toolbar appears above it with image-specific actions:
-
-- **Drag handle** (⠿) — click and drag to reposition the image within the editor
-- **Replace** — swap the image via a file picker (supports `imageUploadHandler` or base64)
-- **Delete** — remove the selected image
-
-The floating text-formatting toolbar is automatically hidden when an image is selected.
-
----
-
-## 🎬 Video Support
-
-Use **Insert → Video** to add a video by URL, by selecting a local video file, or by dragging a video file into the editor. Without `videoUploadHandler`, selected videos are embedded as base64 data URIs. With `videoUploadHandler`, the editor uploads the file through your callback and inserts the returned URL.
-
-```javascript
-const editor = new NeikiEditor('#editor', {
-    videoUploadHandler: async (file) => {
-        const formData = new FormData();
-        formData.append('video', file);
-        const response = await fetch('/upload-video', { method: 'POST', body: formData });
-        const data = await response.json();
-        return data.url;
-    }
-});
-```
-
-Inserted videos render as `<video controls>`, are preserved by the built-in sanitizer, and can be resized or repositioned like images.
-
----
-
-## 🔍 Find & Replace
-
-Open with the toolbar button or implement via the modal API.
-
-Features:
-- **Case-sensitive** search toggle
-- **Regular expression** support
-- **Find Next** — navigate through matches with highlighting
-- **Replace** — replace current match
-- **Replace All** — replace all matches at once
-
----
-
-## ✏️ Floating Toolbar
-
-When you select text in the editor, a floating toolbar appears above the selection with quick access to:
-
-- **Move Block Up / Down** — reorder the current content block (left side)
-- **Bold, Italic, Underline, Strikethrough** — quick formatting
-- **Insert Link**
-
-The toolbar follows the selection and disappears when the selection is cleared. When an image is selected, the floating toolbar is replaced by an **image-specific toolbar** with relevant actions.
-
----
-
-## 🔀 Block Drag & Drop
-
-Hover over any content block (paragraph, heading, table, image, list, etc.) to reveal a **grip handle** (⠿) on the left side. Drag to reorder blocks within the editor. A ghost preview and drop placeholder guide the drop position.
-
----
-
-## 🖨️ Print
-
-Click the **Print** button to open the browser print dialog with the editor content formatted for printing.
-
----
-
-## ⌨️ Keyboard Shortcuts
+## Keyboard shortcuts
 
 | Shortcut | Action |
 |----------|--------|
-| **Ctrl+B** | Bold |
-| **Ctrl+I** | Italic |
-| **Ctrl+U** | Underline |
-| **Ctrl+K** | Insert Link |
-| **Ctrl+S** | Save (triggers `onSave` callback) |
-| **Ctrl+Z** | Undo |
-| **Ctrl+Y** / **Ctrl+Shift+Z** | Redo |
-| **Tab** | Indent |
-| **Shift+Tab** | Outdent |
+| Ctrl+B | Bold |
+| Ctrl+I | Italic |
+| Ctrl+U | Underline |
+| Ctrl+K | Insert link |
+| Ctrl+S | Save (triggers `onSave`) |
+| Ctrl+Z | Undo |
+| Ctrl+Y / Ctrl+Shift+Z | Redo |
+| Tab / Shift+Tab | Indent / Outdent |
 
 ---
 
-## 📐 Status Bar
+## Integration notes
 
-The editor includes a status bar at the bottom displaying:
+### PHP helper (recommended for PHP apps)
 
-- **Left side:** Word count and character count
-- **Right side:** Autosave status (when enabled) and current block type (p, h1, h2, etc.)
-
----
-
-## 🔗 Integration Examples
-
-### PHP Helper (Recommended)
-
-Neiki's Editor includes a PHP integration helper (`php/neiki-editor.php`) that provides asset loading, editor rendering, and HTML sanitization:
+The repository includes `php/neiki-editor.php`, a helper for asset loading, rendering, and sanitization.
 
 ```php
 <?php require_once 'php/neiki-editor.php'; ?>
-<!DOCTYPE html>
-<html>
 <head>
     <?= NeikiEditor::assets() ?>
 </head>
 <body>
     <form method="POST" action="save.php">
-        <?= NeikiEditor::render('content', $article->content, [
-            'minHeight' => 400,
+        <?= NeikiEditor::render('content', $article->body, [
+            'minHeight'   => 400,
             'placeholder' => 'Write your article...'
         ]) ?>
         <button type="submit">Save</button>
     </form>
 </body>
-</html>
 ```
 
 ```php
-// save.php — sanitize before saving to database
+// save.php — sanitize before saving to the database
 require_once 'php/neiki-editor.php';
 $clean = NeikiEditor::sanitize($_POST['content']);
 $db->save($clean);
 ```
 
-#### PHP Helper Methods
-
 | Method | Description |
 |--------|-------------|
-| `NeikiEditor::assets()` | Output CSS & JS tags (CDN). Call once per page. |
-| `NeikiEditor::assets(true, '/path/to/dist')` | Use local files instead of CDN. |
-| `NeikiEditor::render($id, $content, $options)` | Render textarea + init script. |
-| `NeikiEditor::sanitize($html)` | Strip dangerous tags/attributes before DB save. |
+| `NeikiEditor::assets()` | Output CDN CSS & JS tags. Call once per page. |
+| `NeikiEditor::assets(true, '/path/to/dist')` | Use local files instead of the CDN. |
+| `NeikiEditor::render($id, $content, $options)` | Render the textarea plus initialization script. |
+| `NeikiEditor::sanitize($html)` | Strip dangerous tags/attributes before saving. |
 
-### PHP Form (Manual)
+### PHP form (manual)
+
+If you prefer not to use the helper, render a plain `<textarea>` and initialize the editor yourself:
 
 ```php
 <form method="POST" action="save.php">
@@ -672,78 +491,122 @@ $db->save($clean);
 </script>
 ```
 
-### AJAX Save
-
-```javascript
-const editor = new NeikiEditor('#editor', {
-    onChange: debounce(function(content) {
-        fetch('/api/save', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ content })
-        });
-    }, 2000)
-});
-```
-
-### Vue.js
-
-```vue
-<template>
-  <textarea ref="editor"></textarea>
-</template>
-
-<script>
-export default {
-    mounted() {
-        this.editor = new NeikiEditor(this.$refs.editor, {
-            onChange: (content) => {
-                this.$emit('update:modelValue', content);
-            }
-        });
-    },
-    beforeUnmount() {
-        this.editor.destroy();
-    }
-}
-</script>
-```
-
 ### React
 
 ```jsx
 import { useEffect, useRef } from 'react';
 
 function NeikiEditorComponent({ value, onChange }) {
-    const ref = useRef(null);
-    const editorRef = useRef(null);
+  const ref = useRef(null);
+  const editorRef = useRef(null);
 
-    useEffect(() => {
-        editorRef.current = new NeikiEditor(ref.current, {
-            onChange: (content) => onChange?.(content)
-        });
-        return () => editorRef.current?.destroy();
-    }, []);
+  useEffect(() => {
+    editorRef.current = new NeikiEditor(ref.current, {
+      onChange: (content) => onChange?.(content)
+    });
+    if (value) editorRef.current.setContent(value);
+    return () => editorRef.current?.destroy();
+  }, []); // initialize once
 
-    return <textarea ref={ref} defaultValue={value} />;
+  return <textarea ref={ref} defaultValue={value} />;
 }
 ```
 
+> Do not include `value` in the effect dependency array — that would recreate the editor on every keystroke. Update content imperatively with `setContent()` instead.
+
+### Vue 3 (Composition API)
+
+```vue
+<template>
+  <textarea ref="editorEl"></textarea>
+</template>
+
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+
+const props = defineProps({ modelValue: { type: String, default: '' } });
+const emit = defineEmits(['update:modelValue']);
+const editorEl = ref(null);
+let editor = null;
+
+onMounted(() => {
+  editor = new NeikiEditor(editorEl.value, {
+    onChange: (content) => emit('update:modelValue', content)
+  });
+  if (props.modelValue) editor.setContent(props.modelValue);
+});
+
+onBeforeUnmount(() => editor?.destroy());
+</script>
+```
+
+### AJAX auto-save
+
+```javascript
+const editor = new NeikiEditor('#editor', {
+  onChange: debounce(function (content) {
+    fetch('/api/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content })
+    });
+  }, 2000)
+});
+```
+
+The wiki also includes a [Laravel Blade](https://github.com/neikiri/neiki-editor/wiki/Integration-Guide) example and a full integration checklist.
+
 ---
 
-## 🌐 Browser Support
+## Security notes
+
+Neiki's Editor sanitizes all HTML that enters the editor (textarea content, `setContent()`, `insertHTML()`, and autosave restoration). The client-side sanitizer strips dangerous tags such as `<script>` and `<iframe>`, removes event-handler attributes like `onclick` and `onerror`, and blocks `javascript:` protocol URLs.
+
+> Client-side sanitization is defense-in-depth — it does **not** replace server-side sanitization. Always validate and sanitize submitted HTML on the server before storing it or showing it to other users. The bundled PHP helper provides `NeikiEditor::sanitize()` for this purpose.
+
+A few additional considerations:
+
+- **Autosave is not encrypted.** Content saved to `localStorage` is readable by any JavaScript on the same origin. Disable autosave for sensitive content and save to your backend instead.
+- **Content Security Policy.** The editor applies inline styles for font sizes, colors, and image dimensions, so a strict CSP will need to allow `'unsafe-inline'` for `style-src` for those features to work. See the [Security](https://github.com/neikiri/neiki-editor/wiki/Security) page for example CSP directives.
+
+---
+
+## Documentation
+
+Full documentation lives in the project wiki:
+
+- [Home](https://github.com/neikiri/neiki-editor/wiki/Home)
+- [Getting Started](https://github.com/neikiri/neiki-editor/wiki/Getting-Started)
+- [Configuration](https://github.com/neikiri/neiki-editor/wiki/Configuration)
+- [Toolbar Reference](https://github.com/neikiri/neiki-editor/wiki/Toolbar-Reference)
+- [API Reference](https://github.com/neikiri/neiki-editor/wiki/API-Reference)
+- [Plugin API](https://github.com/neikiri/neiki-editor/wiki/Plugin-API)
+- [Integration Guide](https://github.com/neikiri/neiki-editor/wiki/Integration-Guide)
+- [Advanced Features](https://github.com/neikiri/neiki-editor/wiki/Advanced-Features)
+- [Themes & Styling](https://github.com/neikiri/neiki-editor/wiki/Themes-and-Styling)
+- [Security](https://github.com/neikiri/neiki-editor/wiki/Security)
+
+**Live demo:** [https://neikiri.dev/editor](https://neikiri.dev/editor)
+
+---
+
+## Browser support
+
+Neiki's Editor uses `contentEditable` and standard DOM APIs and targets current versions of modern browsers.
 
 | Browser | Support |
 |---------|---------|
-| Chrome | ✅ Latest |
-| Firefox | ✅ Latest |
-| Safari | ✅ Latest |
-| Edge | ✅ Latest |
-| Opera | ✅ Latest |
+| Chrome | Latest |
+| Firefox | Latest |
+| Safari | Latest |
+| Edge | Latest |
+| Opera | Latest |
+
+> Internet Explorer is not supported.
 
 ---
 
-## 📁 File Structure
+## File structure
 
 ```
 neiki-editor/
@@ -768,23 +631,31 @@ neiki-editor/
 ├── src/
 │   ├── neiki-editor.css          # Source CSS styles
 │   └── neiki-editor.js           # Source JavaScript
-├── .gitattributes                # Git attributes configuration
-├── .gitignore                    # Git ignore rules
-├── CHANGELOG.md                  # Project changelog
-├── CODE_OF_CONDUCT.md            # Community code of conduct
-├── CONTRIBUTING.md               # Contribution guidelines
-├── LICENSE                       # AGPL-3.0 license
-├── README.md                     # Project documentation
-├── SECURITY.md                   # Security policy
-├── package-lock.json             # NPM lock file
-└── package.json                  # NPM package configuration
+├── .gitattributes
+├── .gitignore
+├── CHANGELOG.md
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── LICENSE
+├── README.md
+├── SECURITY.md
+├── package-lock.json
+└── package.json
 ```
 
 ---
 
-## 📄 License
+## Contributing
 
-This project is licensed under the GNU Affero General Public License v3 — see the [LICENSE](LICENSE) file for details.
+Contributions are welcome. Please review [CONTRIBUTING.md](CONTRIBUTING.md) and the [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before opening an issue or pull request. Security-related reports should follow [SECURITY.md](SECURITY.md).
+
+The editor source lives in `src/` (`neiki-editor.js`, `neiki-editor.css`); the distributable builds are in `dist/`.
+
+---
+
+## License
+
+Released under the **GNU Affero General Public License v3.0** (`AGPL-3.0-or-later`). See the [LICENSE](LICENSE) file for details.
 
 ---
 
