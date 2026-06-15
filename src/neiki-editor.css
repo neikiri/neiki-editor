@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 3.0.3
+ * Version: 3.1.0
  */
 
 /* ============================================
@@ -99,6 +99,37 @@
   --neiki-table-border: #bfdbfe;
 }
 
+/* Midnight Theme */
+.neiki-editor.neiki-theme-midnight,
+.neiki-modal-overlay.neiki-theme-midnight {
+  --neiki-bg-primary: #0d0d12;
+  --neiki-bg-secondary: #13131a;
+  --neiki-bg-tertiary: #1a1a24;
+  --neiki-bg-hover: #22223a;
+  --neiki-bg-active: #2c2c4a;
+  --neiki-border-color: #2a2a3d;
+  --neiki-border-color-dark: #3d3d5c;
+  --neiki-text-primary: #e8e8f0;
+  --neiki-text-secondary: #c084fc;
+  --neiki-text-muted: #7070a0;
+  --neiki-accent-color: #c084fc;
+  --neiki-accent-hover: #a855f7;
+  --neiki-danger-color: #f87171;
+  --neiki-success-color: #4ade80;
+  --neiki-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --neiki-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --neiki-shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.6);
+  --neiki-editor-bg: #0a0a10;
+  --neiki-toolbar-bg: #111118;
+  --neiki-statusbar-bg: #111118;
+  --neiki-modal-overlay: rgba(0, 0, 0, 0.8);
+  --neiki-scrollbar-thumb: #2c2c4a;
+  --neiki-scrollbar-track: #0d0d12;
+  --neiki-selection-bg: #3b1f5e;
+  --neiki-highlight-color: #3b1f5e;
+  --neiki-table-border: #2a2a3d;
+}
+
 /* Dark Blue Theme */
 .neiki-editor.neiki-theme-dark-blue,
 .neiki-modal-overlay.neiki-theme-dark-blue {
@@ -128,6 +159,12 @@
   --neiki-selection-bg: #164e63;
   --neiki-highlight-color: #854d0e;
   --neiki-table-border: #1f3f63;
+}
+
+/* Midnight — toolbar selects and fontsize input text color */
+.neiki-editor.neiki-theme-midnight .neiki-select,
+.neiki-editor.neiki-theme-midnight .neiki-fontsize-input {
+  color: var(--neiki-text-secondary);
 }
 
 /* ============================================

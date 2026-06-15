@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.1.0]
+- Added new built-in theme: `midnight` — deep black editor background (`#0a0a10`), slightly lighter toolbar (`#111118`), and purple-pink accent color (`#c084fc`)
+- Added `theme.midnight` translation key to all 8 built-in languages (en, cs, zh, es, de, fr, pt, ja)
+
 ## [3.0.3]
 - Fixed empty editor submitting `<p><br></p>` instead of a blank value — `getContent()` now returns an empty string when the editor contains only the default empty block inserted by the browser
 

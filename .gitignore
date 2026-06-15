@@ -16,8 +16,6 @@ desktop.ini
 # Wiki Folder
 wiki/
 
-# Minifier
-MINIFIER.txt
-minify.py
-
 *.psd
+
+MINIFIER.txt

@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 3.0.3
+ * Version: 3.1.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -20,6 +20,10 @@
   // ============================================
 
   let EDITOR_INSTANCE_COUNTER = 0;
+
+  // ============================================
+  // CSS_INJECT_POINT
+  // ============================================
 
   // ============================================
   // TRANSLATIONS / i18n
@@ -107,6 +111,7 @@
       'theme.dark': 'Dark',
       'theme.blue': 'Blue',
       'theme.darkBlue': 'Dark Blue',
+      'theme.midnight': 'Midnight',
 
       // Help modal
       'help.author': 'Author',
@@ -284,6 +289,7 @@
       'theme.dark': 'Tmavý',
       'theme.blue': 'Modrý',
       'theme.darkBlue': 'Tmavě modrý',
+      'theme.midnight': 'Půlnoc',
       'help.author': 'Autor',
       'help.version': 'Verze',
       'help.github': 'GitHub',
@@ -447,6 +453,7 @@
       'theme.dark': '深色',
       'theme.blue': '蓝色',
       'theme.darkBlue': '深蓝色',
+      'theme.midnight': '午夜',
       'help.author': '作者',
       'help.version': '版本',
       'help.github': 'GitHub',
@@ -593,6 +600,7 @@
       'theme.dark': 'Oscuro',
       'theme.blue': 'Azul',
       'theme.darkBlue': 'Azul oscuro',
+      'theme.midnight': 'Medianoche',
       'help.author': 'Autor',
       'help.version': 'Versión',
       'help.github': 'GitHub',
@@ -739,6 +747,7 @@
       'theme.dark': 'Dunkel',
       'theme.blue': 'Blau',
       'theme.darkBlue': 'Dunkelblau',
+      'theme.midnight': 'Mitternacht',
       'help.author': 'Autor',
       'help.version': 'Version',
       'help.github': 'GitHub',
@@ -885,6 +894,7 @@
       'theme.dark': 'Sombre',
       'theme.blue': 'Bleu',
       'theme.darkBlue': 'Bleu foncé',
+      'theme.midnight': 'Minuit',
       'help.author': 'Auteur',
       'help.version': 'Version',
       'help.github': 'GitHub',
@@ -1031,6 +1041,7 @@
       'theme.dark': 'Escuro',
       'theme.blue': 'Azul',
       'theme.darkBlue': 'Azul escuro',
+      'theme.midnight': 'Meia-noite',
       'help.author': 'Autor',
       'help.version': 'Versão',
       'help.github': 'GitHub',
@@ -1177,6 +1188,7 @@
       'theme.dark': 'ダーク',
       'theme.blue': 'ブルー',
       'theme.darkBlue': 'ダークブルー',
+      'theme.midnight': 'ミッドナイト',
       'help.author': '作成者',
       'help.version': 'バージョン',
       'help.github': 'GitHub',
@@ -1277,12 +1289,13 @@
     return text;
   }
 
-  const THEMES = ['light', 'dark', 'blue', 'dark-blue'];
+  const THEMES = ['light', 'dark', 'blue', 'dark-blue', 'midnight'];
   const THEME_OPTIONS = [
     { value: 'light', labelKey: 'theme.light' },
     { value: 'dark', labelKey: 'theme.dark' },
     { value: 'blue', labelKey: 'theme.blue' },
-    { value: 'dark-blue', labelKey: 'theme.darkBlue' }
+    { value: 'dark-blue', labelKey: 'theme.darkBlue' },
+    { value: 'midnight', labelKey: 'theme.midnight' }
   ];
 
   const DEFAULT_CONFIG = {
@@ -2109,7 +2122,7 @@
 
     syncThemeClasses() {
       if (!this.overlay || !this.editor.getThemeClasses) return;
-      this.overlay.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue');
+      this.overlay.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight');
       this.editor.getThemeClasses(this.editor.config.theme).split(' ').filter(Boolean).forEach(className => {
         this.overlay.classList.add(className);
       });
@@ -2891,7 +2904,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.png" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.0.3</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.1.0</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -3884,7 +3897,7 @@
       const normalizedTheme = THEMES.includes(theme) ? theme : 'light';
       const classes = [];
 
-      if (normalizedTheme === 'dark' || normalizedTheme === 'dark-blue') {
+      if (normalizedTheme === 'dark' || normalizedTheme === 'dark-blue' || normalizedTheme === 'midnight') {
         classes.push('neiki-dark');
       }
 
@@ -3898,7 +3911,7 @@
     applyTheme(theme) {
       const normalizedTheme = THEMES.includes(theme) ? theme : 'light';
       this.config.theme = normalizedTheme;
-      this.container.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue');
+      this.container.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight');
       this.getThemeClasses(normalizedTheme).split(' ').filter(Boolean).forEach(className => {
         this.container.classList.add(className);
       });
@@ -4873,7 +4886,7 @@
               }
               break;
             case 'themeToggle':
-              isActive = this.config.theme === 'dark' || this.config.theme === 'dark-blue';
+              isActive = this.config.theme === 'dark' || this.config.theme === 'dark-blue' || this.config.theme === 'midnight';
               break;
           }
         } catch (e) {
