@@ -27,11 +27,6 @@
 </p>
 
 <p align="center">
-  <a href="https://oosmetrics.com/repo/neikiri/neiki-editor"><img src="https://api.oosmetrics.com/api/v1/badge/achievement/875222f0-f55c-4209-b894-8bf60b75c590.svg" alt="oosmetrics"/></a>
-  <a href="https://oosmetrics.com/repo/neikiri/neiki-editor"><img src="https://api.oosmetrics.com/api/v1/badge/achievement/71eabb82-6f56-4dc3-bb41-e82a5f8cf939.svg" alt="oosmetrics"/></a>
-</p>
-
-<p align="center">
   <a href="https://sourceforge.net/projects/neiki-editor/files/latest/download"><img alt="Download Neiki&#39;s Editor" src="https://a.fsdn.com/con/app/sf-download-button" width=276 height=48 srcset="https://a.fsdn.com/con/app/sf-download-button?button_size=2x 2x"></a>
 </p>
 
