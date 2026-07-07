@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0]
+- Added a general right-click context menu in the content area with Undo, Redo, Cut, Copy, Paste, **Paste as Plain Text**, Select All, and Remove Formatting — themed to match the active editor theme
+- Added a `contextMenu: false` init option to disable the custom context menu (falls back to the browser's native menu)
+- The existing table context menu is now theme-aware and fully translated (previously English-only and unthemed)
+- Added new built-in theme: `void` — a dark purple cyberpunk theme with neon-purple accents and glow effects (`#b026ff`)
+- Added `contextMenu.*`, `tableContextMenu.*`, and `theme.void` translation keys to all 8 built-in languages (en, cs, zh, es, de, fr, pt, ja)
+
 ## [3.1.0]
 - Added new built-in theme: `midnight` — deep black editor background (`#0a0a10`), slightly lighter toolbar (`#111118`), and purple-pink accent color (`#c084fc`)
 - Added `theme.midnight` translation key to all 8 built-in languages (en, cs, zh, es, de, fr, pt, ja)

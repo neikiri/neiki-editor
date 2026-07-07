@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 3.1.0
+ * Version: 3.2.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -112,6 +112,7 @@
       'theme.blue': 'Blue',
       'theme.darkBlue': 'Dark Blue',
       'theme.midnight': 'Midnight',
+      'theme.void': 'Void',
 
       // Help modal
       'help.author': 'Author',
@@ -205,6 +206,25 @@
       'blockToolbar.moveDown': 'Move block down',
       'blockToolbar.dragToReorder': 'Drag to reorder',
 
+      // Context menu
+      'contextMenu.undo': 'Undo',
+      'contextMenu.redo': 'Redo',
+      'contextMenu.cut': 'Cut',
+      'contextMenu.copy': 'Copy',
+      'contextMenu.paste': 'Paste',
+      'contextMenu.pasteAsPlainText': 'Paste as Plain Text',
+      'contextMenu.selectAll': 'Select All',
+      'contextMenu.removeFormat': 'Remove Formatting',
+      'tableContextMenu.insertRowAbove': 'Insert Row Above',
+      'tableContextMenu.insertRowBelow': 'Insert Row Below',
+      'tableContextMenu.insertColLeft': 'Insert Column Left',
+      'tableContextMenu.insertColRight': 'Insert Column Right',
+      'tableContextMenu.deleteRow': 'Delete Row',
+      'tableContextMenu.deleteCol': 'Delete Column',
+      'tableContextMenu.deleteTable': 'Delete Table',
+      'tableContextMenu.mergeCells': 'Merge Cells',
+      'tableContextMenu.splitCell': 'Split Cell',
+
       // Placeholder
       'placeholder': 'Start typing...'
     },
@@ -290,6 +310,7 @@
       'theme.blue': 'Modrý',
       'theme.darkBlue': 'Tmavě modrý',
       'theme.midnight': 'Půlnoc',
+      'theme.void': 'Prázdnota',
       'help.author': 'Autor',
       'help.version': 'Verze',
       'help.github': 'GitHub',
@@ -378,6 +399,24 @@
       'blockToolbar.moveDown': 'Přesunout blok dolů',
       'blockToolbar.dragToReorder': 'Přetažením změnit pořadí',
 
+      'contextMenu.undo': 'Zpět',
+      'contextMenu.redo': 'Znovu',
+      'contextMenu.cut': 'Vyjmout',
+      'contextMenu.copy': 'Kopírovat',
+      'contextMenu.paste': 'Vložit',
+      'contextMenu.pasteAsPlainText': 'Vložit jako čistý text',
+      'contextMenu.selectAll': 'Vybrat vše',
+      'contextMenu.removeFormat': 'Odstranit formátování',
+      'tableContextMenu.insertRowAbove': 'Vložit řádek nad',
+      'tableContextMenu.insertRowBelow': 'Vložit řádek pod',
+      'tableContextMenu.insertColLeft': 'Vložit sloupec vlevo',
+      'tableContextMenu.insertColRight': 'Vložit sloupec vpravo',
+      'tableContextMenu.deleteRow': 'Smazat řádek',
+      'tableContextMenu.deleteCol': 'Smazat sloupec',
+      'tableContextMenu.deleteTable': 'Smazat tabulku',
+      'tableContextMenu.mergeCells': 'Sloučit buňky',
+      'tableContextMenu.splitCell': 'Rozdělit buňku',
+
       'placeholder': 'Začněte psát...'
     },
     zh: {
@@ -454,6 +493,7 @@
       'theme.blue': '蓝色',
       'theme.darkBlue': '深蓝色',
       'theme.midnight': '午夜',
+      'theme.void': '虚空',
       'help.author': '作者',
       'help.version': '版本',
       'help.github': 'GitHub',
@@ -525,6 +565,24 @@
       'blockToolbar.moveUp': '向上移动块',
       'blockToolbar.moveDown': '向下移动块',
       'blockToolbar.dragToReorder': '拖动以重新排序',
+
+      'contextMenu.undo': '撤销',
+      'contextMenu.redo': '重做',
+      'contextMenu.cut': '剪切',
+      'contextMenu.copy': '复制',
+      'contextMenu.paste': '粘贴',
+      'contextMenu.pasteAsPlainText': '粘贴为纯文本',
+      'contextMenu.selectAll': '全选',
+      'contextMenu.removeFormat': '清除格式',
+      'tableContextMenu.insertRowAbove': '在上方插入行',
+      'tableContextMenu.insertRowBelow': '在下方插入行',
+      'tableContextMenu.insertColLeft': '在左侧插入列',
+      'tableContextMenu.insertColRight': '在右侧插入列',
+      'tableContextMenu.deleteRow': '删除行',
+      'tableContextMenu.deleteCol': '删除列',
+      'tableContextMenu.deleteTable': '删除表格',
+      'tableContextMenu.mergeCells': '合并单元格',
+      'tableContextMenu.splitCell': '拆分单元格',
 
       'placeholder': '开始输入...'
     },
@@ -601,6 +659,7 @@
       'theme.blue': 'Azul',
       'theme.darkBlue': 'Azul oscuro',
       'theme.midnight': 'Medianoche',
+      'theme.void': 'Vacío',
       'help.author': 'Autor',
       'help.version': 'Versión',
       'help.github': 'GitHub',
@@ -672,6 +731,24 @@
       'blockToolbar.moveUp': 'Mover bloque arriba',
       'blockToolbar.moveDown': 'Mover bloque abajo',
       'blockToolbar.dragToReorder': 'Arrastrar para reordenar',
+
+      'contextMenu.undo': 'Deshacer',
+      'contextMenu.redo': 'Rehacer',
+      'contextMenu.cut': 'Cortar',
+      'contextMenu.copy': 'Copiar',
+      'contextMenu.paste': 'Pegar',
+      'contextMenu.pasteAsPlainText': 'Pegar como texto sin formato',
+      'contextMenu.selectAll': 'Seleccionar todo',
+      'contextMenu.removeFormat': 'Quitar formato',
+      'tableContextMenu.insertRowAbove': 'Insertar fila arriba',
+      'tableContextMenu.insertRowBelow': 'Insertar fila abajo',
+      'tableContextMenu.insertColLeft': 'Insertar columna a la izquierda',
+      'tableContextMenu.insertColRight': 'Insertar columna a la derecha',
+      'tableContextMenu.deleteRow': 'Eliminar fila',
+      'tableContextMenu.deleteCol': 'Eliminar columna',
+      'tableContextMenu.deleteTable': 'Eliminar tabla',
+      'tableContextMenu.mergeCells': 'Combinar celdas',
+      'tableContextMenu.splitCell': 'Dividir celda',
 
       'placeholder': 'Empiece a escribir...'
     },
@@ -748,6 +825,7 @@
       'theme.blue': 'Blau',
       'theme.darkBlue': 'Dunkelblau',
       'theme.midnight': 'Mitternacht',
+      'theme.void': 'Leere',
       'help.author': 'Autor',
       'help.version': 'Version',
       'help.github': 'GitHub',
@@ -819,6 +897,24 @@
       'blockToolbar.moveUp': 'Block nach oben verschieben',
       'blockToolbar.moveDown': 'Block nach unten verschieben',
       'blockToolbar.dragToReorder': 'Zum Neuordnen ziehen',
+
+      'contextMenu.undo': 'Rückgängig',
+      'contextMenu.redo': 'Wiederholen',
+      'contextMenu.cut': 'Ausschneiden',
+      'contextMenu.copy': 'Kopieren',
+      'contextMenu.paste': 'Einfügen',
+      'contextMenu.pasteAsPlainText': 'Als reinen Text einfügen',
+      'contextMenu.selectAll': 'Alles auswählen',
+      'contextMenu.removeFormat': 'Formatierung entfernen',
+      'tableContextMenu.insertRowAbove': 'Zeile oberhalb einfügen',
+      'tableContextMenu.insertRowBelow': 'Zeile unterhalb einfügen',
+      'tableContextMenu.insertColLeft': 'Spalte links einfügen',
+      'tableContextMenu.insertColRight': 'Spalte rechts einfügen',
+      'tableContextMenu.deleteRow': 'Zeile löschen',
+      'tableContextMenu.deleteCol': 'Spalte löschen',
+      'tableContextMenu.deleteTable': 'Tabelle löschen',
+      'tableContextMenu.mergeCells': 'Zellen verbinden',
+      'tableContextMenu.splitCell': 'Zelle teilen',
 
       'placeholder': 'Hier schreiben...'
     },
@@ -895,6 +991,7 @@
       'theme.blue': 'Bleu',
       'theme.darkBlue': 'Bleu foncé',
       'theme.midnight': 'Minuit',
+      'theme.void': 'Néant',
       'help.author': 'Auteur',
       'help.version': 'Version',
       'help.github': 'GitHub',
@@ -966,6 +1063,24 @@
       'blockToolbar.moveUp': 'Déplacer le bloc vers le haut',
       'blockToolbar.moveDown': 'Déplacer le bloc vers le bas',
       'blockToolbar.dragToReorder': 'Glisser pour réorganiser',
+
+      'contextMenu.undo': 'Annuler',
+      'contextMenu.redo': 'Rétablir',
+      'contextMenu.cut': 'Couper',
+      'contextMenu.copy': 'Copier',
+      'contextMenu.paste': 'Coller',
+      'contextMenu.pasteAsPlainText': 'Coller comme texte brut',
+      'contextMenu.selectAll': 'Tout sélectionner',
+      'contextMenu.removeFormat': 'Effacer la mise en forme',
+      'tableContextMenu.insertRowAbove': 'Insérer une ligne au-dessus',
+      'tableContextMenu.insertRowBelow': 'Insérer une ligne en dessous',
+      'tableContextMenu.insertColLeft': 'Insérer une colonne à gauche',
+      'tableContextMenu.insertColRight': 'Insérer une colonne à droite',
+      'tableContextMenu.deleteRow': 'Supprimer la ligne',
+      'tableContextMenu.deleteCol': 'Supprimer la colonne',
+      'tableContextMenu.deleteTable': 'Supprimer le tableau',
+      'tableContextMenu.mergeCells': 'Fusionner les cellules',
+      'tableContextMenu.splitCell': 'Diviser la cellule',
 
       'placeholder': 'Commencez à écrire...'
     },
@@ -1042,6 +1157,7 @@
       'theme.blue': 'Azul',
       'theme.darkBlue': 'Azul escuro',
       'theme.midnight': 'Meia-noite',
+      'theme.void': 'Vazio',
       'help.author': 'Autor',
       'help.version': 'Versão',
       'help.github': 'GitHub',
@@ -1113,6 +1229,24 @@
       'blockToolbar.moveUp': 'Mover bloco para cima',
       'blockToolbar.moveDown': 'Mover bloco para baixo',
       'blockToolbar.dragToReorder': 'Arraste para reordenar',
+
+      'contextMenu.undo': 'Desfazer',
+      'contextMenu.redo': 'Refazer',
+      'contextMenu.cut': 'Recortar',
+      'contextMenu.copy': 'Copiar',
+      'contextMenu.paste': 'Colar',
+      'contextMenu.pasteAsPlainText': 'Colar como texto simples',
+      'contextMenu.selectAll': 'Selecionar tudo',
+      'contextMenu.removeFormat': 'Remover formatação',
+      'tableContextMenu.insertRowAbove': 'Inserir linha acima',
+      'tableContextMenu.insertRowBelow': 'Inserir linha abaixo',
+      'tableContextMenu.insertColLeft': 'Inserir coluna à esquerda',
+      'tableContextMenu.insertColRight': 'Inserir coluna à direita',
+      'tableContextMenu.deleteRow': 'Excluir linha',
+      'tableContextMenu.deleteCol': 'Excluir coluna',
+      'tableContextMenu.deleteTable': 'Excluir tabela',
+      'tableContextMenu.mergeCells': 'Mesclar células',
+      'tableContextMenu.splitCell': 'Dividir célula',
 
       'placeholder': 'Comece a digitar...'
     },
@@ -1189,6 +1323,7 @@
       'theme.blue': 'ブルー',
       'theme.darkBlue': 'ダークブルー',
       'theme.midnight': 'ミッドナイト',
+      'theme.void': 'ヴォイド',
       'help.author': '作成者',
       'help.version': 'バージョン',
       'help.github': 'GitHub',
@@ -1261,6 +1396,24 @@
       'blockToolbar.moveDown': 'ブロックを下へ移動',
       'blockToolbar.dragToReorder': 'ドラッグして並べ替え',
 
+      'contextMenu.undo': '元に戻す',
+      'contextMenu.redo': 'やり直す',
+      'contextMenu.cut': '切り取り',
+      'contextMenu.copy': 'コピー',
+      'contextMenu.paste': '貼り付け',
+      'contextMenu.pasteAsPlainText': 'プレーンテキストとして貼り付け',
+      'contextMenu.selectAll': 'すべて選択',
+      'contextMenu.removeFormat': '書式をクリア',
+      'tableContextMenu.insertRowAbove': '上に行を挿入',
+      'tableContextMenu.insertRowBelow': '下に行を挿入',
+      'tableContextMenu.insertColLeft': '左に列を挿入',
+      'tableContextMenu.insertColRight': '右に列を挿入',
+      'tableContextMenu.deleteRow': '行を削除',
+      'tableContextMenu.deleteCol': '列を削除',
+      'tableContextMenu.deleteTable': 'テーブルを削除',
+      'tableContextMenu.mergeCells': 'セルを結合',
+      'tableContextMenu.splitCell': 'セルを分割',
+
       'placeholder': '入力してください...'
     }
   };
@@ -1289,13 +1442,14 @@
     return text;
   }
 
-  const THEMES = ['light', 'dark', 'blue', 'dark-blue', 'midnight'];
+  const THEMES = ['light', 'dark', 'blue', 'dark-blue', 'midnight', 'void'];
   const THEME_OPTIONS = [
     { value: 'light', labelKey: 'theme.light' },
     { value: 'dark', labelKey: 'theme.dark' },
     { value: 'blue', labelKey: 'theme.blue' },
     { value: 'dark-blue', labelKey: 'theme.darkBlue' },
-    { value: 'midnight', labelKey: 'theme.midnight' }
+    { value: 'midnight', labelKey: 'theme.midnight' },
+    { value: 'void', labelKey: 'theme.void' }
   ];
 
   const DEFAULT_CONFIG = {
@@ -1319,6 +1473,7 @@
     theme: 'light',
     language: 'en',
     translations: null,
+    contextMenu: true,
     autosaveKey: null,
     plugins: [],
     onChange: null,
@@ -1947,7 +2102,12 @@
     grip: '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path fill="none" stroke="currentColor" stroke-linecap="square" stroke-width="2" d="m15 5l-3-3l-3 3m0 14l3 3l3-3m4-4l3-3l-3-3M5 9l-3 3l3 3m7-12v9m0 0v9m0-9h9m-9 0H3"/></svg>',
     moveUp: '<svg viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>',
     moveDown: '<svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>',
-    replaceImage: '<svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/><path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>'
+    replaceImage: '<svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/><path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>',
+    cut: '<svg viewBox="0 0 24 24"><path d="M9.64 7.64c.23-.5.36-1.05.36-1.64 0-2.21-1.79-4-4-4S2 3.79 2 6s1.79 4 4 4c.59 0 1.14-.13 1.64-.36L10 12l-2.36 2.36C7.14 14.13 6.59 14 6 14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4c0-.59-.13-1.14-.36-1.64L12 14l7 7h3v-1L9.64 7.64zM6 8c-1.1 0-2-.89-2-2s.9-2 2-2 2 .89 2 2-.9 2-2 2zm0 12c-1.1 0-2-.89-2-2s.9-2 2-2 2 .89 2 2-.9 2-2 2zm6-7.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zM19 3l-6 6 2 2 7-7V3z"/></svg>',
+    copy: '<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>',
+    paste: '<svg viewBox="0 0 24 24"><path d="M19 2h-4.18C14.4.84 13.3 0 12 0S9.6.84 9.18 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/></svg>',
+    pasteText: '<svg viewBox="0 0 24 24"><path d="M19 2h-4.18C14.4.84 13.3 0 12 0S9.6.84 9.18 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm5 16H7v-2h10v2zm0-4H7v-2h10v2zm-3-4H7V8h7v2z"/></svg>',
+    selectAll: '<svg viewBox="0 0 24 24"><path d="M3 3v6h2V5h4V3H3zm16 0h-4v2h4v4h2V3h-2zM5 15H3v6h6v-2H5v-4zm14 4h-4v2h6v-6h-2v4zM9 9h6v6H9V9z"/></svg>'
   };
 
   // ============================================
@@ -2122,7 +2282,7 @@
 
     syncThemeClasses() {
       if (!this.overlay || !this.editor.getThemeClasses) return;
-      this.overlay.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight');
+      this.overlay.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void');
       this.editor.getThemeClasses(this.editor.config.theme).split(' ').filter(Boolean).forEach(className => {
         this.overlay.classList.add(className);
       });
@@ -2904,7 +3064,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.png" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.1.0</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.2.0</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -3847,7 +4007,10 @@
       this.emojiPicker = new EmojiPicker(this);
       this.specialCharsPicker = new SpecialCharsPicker(this);
       this.commands = new Commands(this);
-      this.tableContextMenu = new TableContextMenu(this);
+      if (this.config.contextMenu !== false) {
+        this.tableContextMenu = new TableContextMenu(this);
+        this.editorContextMenu = new EditorContextMenu(this);
+      }
       this.floatingToolbar = new FloatingToolbar(this);
       this.imageResizer = new ImageResizer(this);
       this.tableColumnResizer = new TableColumnResizer(this);
@@ -3897,7 +4060,7 @@
       const normalizedTheme = THEMES.includes(theme) ? theme : 'light';
       const classes = [];
 
-      if (normalizedTheme === 'dark' || normalizedTheme === 'dark-blue' || normalizedTheme === 'midnight') {
+      if (normalizedTheme === 'dark' || normalizedTheme === 'dark-blue' || normalizedTheme === 'midnight' || normalizedTheme === 'void') {
         classes.push('neiki-dark');
       }
 
@@ -3911,7 +4074,7 @@
     applyTheme(theme) {
       const normalizedTheme = THEMES.includes(theme) ? theme : 'light';
       this.config.theme = normalizedTheme;
-      this.container.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight');
+      this.container.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void');
       this.getThemeClasses(normalizedTheme).split(' ').filter(Boolean).forEach(className => {
         this.container.classList.add(className);
       });
@@ -4886,7 +5049,7 @@
               }
               break;
             case 'themeToggle':
-              isActive = this.config.theme === 'dark' || this.config.theme === 'dark-blue' || this.config.theme === 'midnight';
+              isActive = this.config.theme === 'dark' || this.config.theme === 'dark-blue' || this.config.theme === 'midnight' || this.config.theme === 'void';
               break;
           }
         } catch (e) {
@@ -7092,17 +7255,17 @@
     createMenu() {
       this.menu = Utils.createElement('div', { className: 'neiki-context-menu' });
       this.menu.innerHTML = `
-                <div class="neiki-context-item" data-action="insertRowAbove">${Icons.table} Insert Row Above</div>
-                <div class="neiki-context-item" data-action="insertRowBelow">${Icons.table} Insert Row Below</div>
-                <div class="neiki-context-item" data-action="insertColLeft">${Icons.table} Insert Column Left</div>
-                <div class="neiki-context-item" data-action="insertColRight">${Icons.table} Insert Column Right</div>
+                <div class="neiki-context-item" data-action="insertRowAbove">${Icons.table} ${Utils.escapeHTML(t('tableContextMenu.insertRowAbove'))}</div>
+                <div class="neiki-context-item" data-action="insertRowBelow">${Icons.table} ${Utils.escapeHTML(t('tableContextMenu.insertRowBelow'))}</div>
+                <div class="neiki-context-item" data-action="insertColLeft">${Icons.table} ${Utils.escapeHTML(t('tableContextMenu.insertColLeft'))}</div>
+                <div class="neiki-context-item" data-action="insertColRight">${Icons.table} ${Utils.escapeHTML(t('tableContextMenu.insertColRight'))}</div>
                 <div class="neiki-context-divider"></div>
-                <div class="neiki-context-item" data-action="deleteRow">${Icons.eraser} Delete Row</div>
-                <div class="neiki-context-item" data-action="deleteCol">${Icons.eraser} Delete Column</div>
-                <div class="neiki-context-item neiki-context-danger" data-action="deleteTable">${Icons.eraser} Delete Table</div>
+                <div class="neiki-context-item" data-action="deleteRow">${Icons.eraser} ${Utils.escapeHTML(t('tableContextMenu.deleteRow'))}</div>
+                <div class="neiki-context-item" data-action="deleteCol">${Icons.eraser} ${Utils.escapeHTML(t('tableContextMenu.deleteCol'))}</div>
+                <div class="neiki-context-item neiki-context-danger" data-action="deleteTable">${Icons.eraser} ${Utils.escapeHTML(t('tableContextMenu.deleteTable'))}</div>
                 <div class="neiki-context-divider"></div>
-                <div class="neiki-context-item" data-action="mergeCells">${Icons.table} Merge Cells</div>
-                <div class="neiki-context-item" data-action="splitCell">${Icons.table} Split Cell</div>
+                <div class="neiki-context-item" data-action="mergeCells">${Icons.table} ${Utils.escapeHTML(t('tableContextMenu.mergeCells'))}</div>
+                <div class="neiki-context-item" data-action="splitCell">${Icons.table} ${Utils.escapeHTML(t('tableContextMenu.splitCell'))}</div>
             `;
       document.body.appendChild(this.menu);
 
@@ -7136,7 +7299,16 @@
       });
     }
 
+    syncThemeClasses() {
+      if (!this.editor.getThemeClasses) return;
+      this.menu.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void');
+      this.editor.getThemeClasses(this.editor.config.theme).split(' ').filter(Boolean).forEach(className => {
+        this.menu.classList.add(className);
+      });
+    }
+
     show(x, y) {
+      this.syncThemeClasses();
       this.menu.style.display = 'block';
 
       // Adjust position to stay within viewport
@@ -7271,6 +7443,195 @@
         const newCell = document.createElement(cell.tagName);
         newCell.innerHTML = '&nbsp;';
         cell.after(newCell);
+      }
+    }
+  }
+
+  // ============================================
+  // EDITOR CONTEXT MENU (general right-click menu)
+  // ============================================
+
+  class EditorContextMenu {
+    constructor(editor) {
+      this.editor = editor;
+      this.menu = null;
+
+      this.createMenu();
+      this.bindEvents();
+    }
+
+    createMenu() {
+      this.menu = Utils.createElement('div', { className: 'neiki-context-menu' });
+      this.menu.innerHTML = `
+                <div class="neiki-context-item" data-action="undo">${Icons.undo} <span data-label="contextMenu.undo"></span></div>
+                <div class="neiki-context-item" data-action="redo">${Icons.redo} <span data-label="contextMenu.redo"></span></div>
+                <div class="neiki-context-divider"></div>
+                <div class="neiki-context-item" data-action="cut">${Icons.cut} <span data-label="contextMenu.cut"></span></div>
+                <div class="neiki-context-item" data-action="copy">${Icons.copy} <span data-label="contextMenu.copy"></span></div>
+                <div class="neiki-context-item" data-action="paste">${Icons.paste} <span data-label="contextMenu.paste"></span></div>
+                <div class="neiki-context-item" data-action="pasteAsPlainText">${Icons.pasteText} <span data-label="contextMenu.pasteAsPlainText"></span></div>
+                <div class="neiki-context-divider"></div>
+                <div class="neiki-context-item" data-action="selectAll">${Icons.selectAll} <span data-label="contextMenu.selectAll"></span></div>
+                <div class="neiki-context-divider"></div>
+                <div class="neiki-context-item" data-action="removeFormat">${Icons.eraser} <span data-label="contextMenu.removeFormat"></span></div>
+            `;
+      document.body.appendChild(this.menu);
+      this.updateLabels();
+
+      this.menu.querySelectorAll('.neiki-context-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+          if (item.classList.contains('neiki-context-disabled')) return;
+          const action = item.dataset.action;
+          this.executeAction(action);
+          this.hide();
+        });
+      });
+    }
+
+    updateLabels() {
+      this.menu.querySelectorAll('[data-label]').forEach(span => {
+        span.textContent = t(span.dataset.label);
+      });
+    }
+
+    syncThemeClasses() {
+      if (!this.editor.getThemeClasses) return;
+      this.menu.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void');
+      this.editor.getThemeClasses(this.editor.config.theme).split(' ').filter(Boolean).forEach(className => {
+        this.menu.classList.add(className);
+      });
+    }
+
+    updateItemStates() {
+      const sel = window.getSelection();
+      const hasSelection = !!(sel && sel.rangeCount && !sel.isCollapsed && this.editor.contentArea.contains(sel.anchorNode));
+
+      ['cut', 'copy'].forEach(action => {
+        const item = this.menu.querySelector(`[data-action="${action}"]`);
+        if (item) item.classList.toggle('neiki-context-disabled', !hasSelection);
+      });
+    }
+
+    bindEvents() {
+      this.editor.contentArea.addEventListener('contextmenu', (e) => {
+        if (e.target.closest('td, th')) return; // handled by TableContextMenu
+
+        e.preventDefault();
+        this.editor.saveCurrentSelection();
+        this.updateLabels();
+        this.updateItemStates();
+        this.show(e.clientX, e.clientY);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!this.menu.contains(e.target)) {
+          this.hide();
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') this.hide();
+      });
+    }
+
+    show(x, y) {
+      this.syncThemeClasses();
+      this.menu.style.display = 'block';
+
+      const rect = this.menu.getBoundingClientRect();
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      if (x + rect.width > viewportWidth) {
+        x = viewportWidth - rect.width - 10;
+      }
+      if (y + rect.height > viewportHeight) {
+        y = viewportHeight - rect.height - 10;
+      }
+
+      this.menu.style.left = x + 'px';
+      this.menu.style.top = y + 'px';
+    }
+
+    hide() {
+      this.menu.style.display = 'none';
+    }
+
+    async executeAction(action) {
+      this.editor.restoreSavedSelection();
+
+      switch (action) {
+        case 'undo':
+          this.editor.commands.undo();
+          break;
+        case 'redo':
+          this.editor.commands.redo();
+          break;
+        case 'cut':
+          document.execCommand('cut');
+          this.editor.history.record();
+          this.editor.triggerChange();
+          break;
+        case 'copy':
+          document.execCommand('copy');
+          break;
+        case 'paste':
+          await this.pasteWithFormatting();
+          break;
+        case 'pasteAsPlainText':
+          await this.pasteAsPlainText();
+          break;
+        case 'selectAll':
+          document.execCommand('selectAll');
+          break;
+        case 'removeFormat':
+          this.editor.commands.removeFormat();
+          break;
+      }
+    }
+
+    async pasteWithFormatting() {
+      try {
+        if (navigator.clipboard && navigator.clipboard.read) {
+          const items = await navigator.clipboard.read();
+          for (const item of items) {
+            if (item.types.includes('text/html')) {
+              const blob = await item.getType('text/html');
+              const html = await blob.text();
+              document.execCommand('insertHTML', false, Utils.sanitizeHTML(html));
+              this.editor.history.record();
+              this.editor.triggerChange();
+              return;
+            }
+          }
+          for (const item of items) {
+            if (item.types.includes('text/plain')) {
+              const blob = await item.getType('text/plain');
+              const text = await blob.text();
+              document.execCommand('insertHTML', false, Utils.escapeHTML(text).replace(/\n/g, '<br>'));
+              this.editor.history.record();
+              this.editor.triggerChange();
+              return;
+            }
+          }
+        } else if (document.execCommand('paste')) {
+          this.editor.history.record();
+          this.editor.triggerChange();
+        }
+      } catch (err) {
+        console.error('NeikiEditor: Paste failed', err);
+      }
+    }
+
+    async pasteAsPlainText() {
+      try {
+        if (!navigator.clipboard || !navigator.clipboard.readText) return;
+        const text = await navigator.clipboard.readText();
+        document.execCommand('insertHTML', false, Utils.escapeHTML(text).replace(/\n/g, '<br>'));
+        this.editor.history.record();
+        this.editor.triggerChange();
+      } catch (err) {
+        console.error('NeikiEditor: Paste as plain text failed', err);
       }
     }
   }

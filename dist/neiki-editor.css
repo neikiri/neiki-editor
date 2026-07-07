@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 3.1.0
+ * Version: 3.2.0
  */
 
 /* ============================================
@@ -39,7 +39,8 @@
 
 /* Dark Theme */
 .neiki-editor.neiki-dark,
-.neiki-modal-overlay.neiki-dark {
+.neiki-modal-overlay.neiki-dark,
+.neiki-context-menu.neiki-dark {
   --neiki-bg-primary: #1e1e1e;
   --neiki-bg-secondary: #252526;
   --neiki-bg-tertiary: #2d2d30;
@@ -70,7 +71,8 @@
 
 /* Blue Theme */
 .neiki-editor.neiki-theme-blue,
-.neiki-modal-overlay.neiki-theme-blue {
+.neiki-modal-overlay.neiki-theme-blue,
+.neiki-context-menu.neiki-theme-blue {
   --neiki-bg-primary: #f8fbff;
   --neiki-bg-secondary: #eef6ff;
   --neiki-bg-tertiary: #dbeafe;
@@ -101,7 +103,8 @@
 
 /* Midnight Theme */
 .neiki-editor.neiki-theme-midnight,
-.neiki-modal-overlay.neiki-theme-midnight {
+.neiki-modal-overlay.neiki-theme-midnight,
+.neiki-context-menu.neiki-theme-midnight {
   --neiki-bg-primary: #0d0d12;
   --neiki-bg-secondary: #13131a;
   --neiki-bg-tertiary: #1a1a24;
@@ -132,7 +135,8 @@
 
 /* Dark Blue Theme */
 .neiki-editor.neiki-theme-dark-blue,
-.neiki-modal-overlay.neiki-theme-dark-blue {
+.neiki-modal-overlay.neiki-theme-dark-blue,
+.neiki-context-menu.neiki-theme-dark-blue {
   --neiki-bg-primary: #07111f;
   --neiki-bg-secondary: #0b1d33;
   --neiki-bg-tertiary: #102a46;
@@ -165,6 +169,65 @@
 .neiki-editor.neiki-theme-midnight .neiki-select,
 .neiki-editor.neiki-theme-midnight .neiki-fontsize-input {
   color: var(--neiki-text-secondary);
+}
+
+/* Void Theme — dark purple cyberpunk */
+.neiki-editor.neiki-theme-void,
+.neiki-modal-overlay.neiki-theme-void,
+.neiki-context-menu.neiki-theme-void {
+  --neiki-bg-primary: #0f0a1e;
+  --neiki-bg-secondary: #150f2b;
+  --neiki-bg-tertiary: #1e1640;
+  --neiki-bg-hover: #2a1f52;
+  --neiki-bg-active: #362a66;
+  --neiki-border-color: #3d2e6b;
+  --neiki-border-color-dark: #55408f;
+  --neiki-text-primary: #ece6ff;
+  --neiki-text-secondary: #d68bff;
+  --neiki-text-muted: #8a7ab0;
+  --neiki-accent-color: #b026ff;
+  --neiki-accent-hover: #e040fb;
+  --neiki-danger-color: #ff4d6d;
+  --neiki-success-color: #39ff9d;
+  --neiki-shadow-sm: 0 1px 2px rgba(124, 58, 237, 0.25);
+  --neiki-shadow-md: 0 4px 16px rgba(124, 58, 237, 0.4);
+  --neiki-shadow-lg: 0 16px 40px rgba(176, 38, 255, 0.35);
+  --neiki-editor-bg: #0a0614;
+  --neiki-toolbar-bg: #130c26;
+  --neiki-statusbar-bg: #130c26;
+  --neiki-modal-overlay: rgba(5, 2, 15, 0.85);
+  --neiki-scrollbar-thumb: #4c3684;
+  --neiki-scrollbar-track: #130c26;
+  --neiki-selection-bg: #4c1d95;
+  --neiki-highlight-color: #3c1361;
+  --neiki-table-border: #3d2e6b;
+}
+
+/* Void — toolbar selects and fontsize input text color */
+.neiki-editor.neiki-theme-void .neiki-select,
+.neiki-editor.neiki-theme-void .neiki-fontsize-input {
+  color: var(--neiki-text-secondary);
+}
+
+/* Void — neon glow accents for a cyberpunk feel */
+.neiki-editor.neiki-theme-void .neiki-toolbar {
+  border-bottom: 1px solid var(--neiki-border-color);
+  box-shadow: 0 1px 12px rgba(176, 38, 255, 0.15);
+}
+
+.neiki-editor.neiki-theme-void .neiki-toolbar-btn:hover,
+.neiki-context-menu.neiki-theme-void .neiki-context-item:hover {
+  box-shadow: 0 0 10px rgba(176, 38, 255, 0.5);
+}
+
+.neiki-editor.neiki-theme-void .neiki-toolbar-btn.active {
+  box-shadow: 0 0 8px rgba(176, 38, 255, 0.65);
+}
+
+.neiki-editor.neiki-theme-void .neiki-content::selection,
+.neiki-editor.neiki-theme-void .neiki-content ::selection {
+  background: var(--neiki-selection-bg);
+  text-shadow: 0 0 6px rgba(176, 38, 255, 0.6);
 }
 
 /* ============================================
@@ -1827,6 +1890,12 @@
   height: 1px;
   background: var(--neiki-border-color);
   margin: 4px 0;
+}
+
+.neiki-context-item.neiki-context-disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
 }
 
 /* ============================================
