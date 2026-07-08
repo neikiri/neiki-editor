@@ -3070,7 +3070,7 @@
           <button class="neiki-modal-close" type="button">${Icons.close}</button>
         </div>
         <div class="neiki-modal-body" style="text-align: center; padding: 24px 20px;">
-          <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.png" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
+          <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.svg" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
             <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.3.0</div>
