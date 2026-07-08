@@ -32,8 +32,18 @@
 </p>
 
 ---
+
 <p align="center">
-  <img src="assets/preview.png" alt="Neiki's Editor" width="900">
+  <img src="assets/neiki-editor-light.png" alt="Neiki's Editor" width="900">
+</p>
+
+<p align="center">
+  <img src="assets/neiki-editor-blue.png" alt="Blue Theme" width="280">
+  <img src="assets/neiki-editor-dark.png" alt="Dark Theme" width="280">
+  <img src="assets/neiki-editor-dark-blue.png" alt="Dark Blue Theme" width="280">
+  <img src="assets/neiki-editor-midnight.png" alt="Midnight Theme" width="280">
+  <img src="assets/neiki-editor-void.png" alt="Void Theme" width="280">
+  <img src="assets/neiki-editor-autumn.png" alt="Autumn Theme" width="280">
 </p>
 
 ---
@@ -605,45 +615,6 @@ Neiki's Editor uses `contentEditable` and standard DOM APIs and targets current 
 | Opera | Latest |
 
 > Internet Explorer is not supported.
-
----
-
-## File structure
-
-```
-neiki-editor/
-├── .github/
-│   └── workflows/
-│       ├── ci.yml                # Continuous integration workflow
-│       ├── codeql.yml            # CodeQL security analysis
-│       └── publish.yml           # NPM/CDN publish workflow
-├── assets/
-│   ├── logo.png                  # Project logo
-│   └── preview.png               # Editor preview screenshot
-├── demo/
-│   ├── index.html                # Interactive demo page
-│   └── logo.png                  # Demo page logo
-├── dist/
-│   ├── neiki-editor.css          # Editor styles (unminified)
-│   ├── neiki-editor.js           # Editor core (unminified)
-│   ├── neiki-editor.min.css      # Minified styles
-│   └── neiki-editor.min.js       # Minified editor + embedded CSS (recommended)
-├── php/
-│   └── neiki-editor.php          # PHP integration helper
-├── src/
-│   ├── neiki-editor.css          # Source CSS styles
-│   └── neiki-editor.js           # Source JavaScript
-├── .gitattributes
-├── .gitignore
-├── CHANGELOG.md
-├── CODE_OF_CONDUCT.md
-├── CONTRIBUTING.md
-├── LICENSE
-├── README.md
-├── SECURITY.md
-├── package-lock.json
-└── package.json
-```
 
 ---
 
