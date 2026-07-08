@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 3.3.0
+ * Version: 3.4.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -114,6 +114,7 @@
       'theme.midnight': 'Midnight',
       'theme.void': 'Void',
       'theme.autumn': 'Autumn',
+      'theme.dracula': 'Dracula',
 
       // Help modal
       'help.author': 'Author',
@@ -313,6 +314,7 @@
       'theme.midnight': 'Půlnoc',
       'theme.void': 'Prázdnota',
       'theme.autumn': 'Podzim',
+      'theme.dracula': 'Dracula',
       'help.author': 'Autor',
       'help.version': 'Verze',
       'help.github': 'GitHub',
@@ -497,6 +499,7 @@
       'theme.midnight': '午夜',
       'theme.void': '虚空',
       'theme.autumn': '秋天',
+      'theme.dracula': 'Dracula',
       'help.author': '作者',
       'help.version': '版本',
       'help.github': 'GitHub',
@@ -664,6 +667,7 @@
       'theme.midnight': 'Medianoche',
       'theme.void': 'Vacío',
       'theme.autumn': 'Otoño',
+      'theme.dracula': 'Dracula',
       'help.author': 'Autor',
       'help.version': 'Versión',
       'help.github': 'GitHub',
@@ -831,6 +835,7 @@
       'theme.midnight': 'Mitternacht',
       'theme.void': 'Leere',
       'theme.autumn': 'Herbst',
+      'theme.dracula': 'Dracula',
       'help.author': 'Autor',
       'help.version': 'Version',
       'help.github': 'GitHub',
@@ -998,6 +1003,7 @@
       'theme.midnight': 'Minuit',
       'theme.void': 'Néant',
       'theme.autumn': 'Automne',
+      'theme.dracula': 'Dracula',
       'help.author': 'Auteur',
       'help.version': 'Version',
       'help.github': 'GitHub',
@@ -1165,6 +1171,7 @@
       'theme.midnight': 'Meia-noite',
       'theme.void': 'Vazio',
       'theme.autumn': 'Outono',
+      'theme.dracula': 'Dracula',
       'help.author': 'Autor',
       'help.version': 'Versão',
       'help.github': 'GitHub',
@@ -1332,6 +1339,7 @@
       'theme.midnight': 'ミッドナイト',
       'theme.void': 'ヴォイド',
       'theme.autumn': 'オータム',
+      'theme.dracula': 'Dracula',
       'help.author': '作成者',
       'help.version': 'バージョン',
       'help.github': 'GitHub',
@@ -1450,7 +1458,7 @@
     return text;
   }
 
-  const THEMES = ['light', 'dark', 'blue', 'dark-blue', 'midnight', 'void', 'autumn'];
+  const THEMES = ['light', 'dark', 'blue', 'dark-blue', 'midnight', 'void', 'autumn', 'dracula'];
   const THEME_OPTIONS = [
     { value: 'light', labelKey: 'theme.light' },
     { value: 'dark', labelKey: 'theme.dark' },
@@ -1458,7 +1466,8 @@
     { value: 'dark-blue', labelKey: 'theme.darkBlue' },
     { value: 'midnight', labelKey: 'theme.midnight' },
     { value: 'void', labelKey: 'theme.void' },
-    { value: 'autumn', labelKey: 'theme.autumn' }
+    { value: 'autumn', labelKey: 'theme.autumn' },
+    { value: 'dracula', labelKey: 'theme.dracula' }
   ];
 
   const DEFAULT_CONFIG = {
@@ -2291,7 +2300,7 @@
 
     syncThemeClasses() {
       if (!this.overlay || !this.editor.getThemeClasses) return;
-      this.overlay.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn');
+      this.overlay.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn', 'neiki-theme-dracula');
       this.editor.getThemeClasses(this.editor.config.theme).split(' ').filter(Boolean).forEach(className => {
         this.overlay.classList.add(className);
       });
@@ -3073,7 +3082,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.svg" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.3.0</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.4.0</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -4069,7 +4078,7 @@
       const normalizedTheme = THEMES.includes(theme) ? theme : 'light';
       const classes = [];
 
-      if (normalizedTheme === 'dark' || normalizedTheme === 'dark-blue' || normalizedTheme === 'midnight' || normalizedTheme === 'void' || normalizedTheme === 'autumn') {
+      if (normalizedTheme === 'dark' || normalizedTheme === 'dark-blue' || normalizedTheme === 'midnight' || normalizedTheme === 'void' || normalizedTheme === 'autumn' || normalizedTheme === 'dracula') {
         classes.push('neiki-dark');
       }
 
@@ -4083,7 +4092,7 @@
     applyTheme(theme) {
       const normalizedTheme = THEMES.includes(theme) ? theme : 'light';
       this.config.theme = normalizedTheme;
-      this.container.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn');
+      this.container.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn', 'neiki-theme-dracula');
       this.getThemeClasses(normalizedTheme).split(' ').filter(Boolean).forEach(className => {
         this.container.classList.add(className);
       });
@@ -5058,7 +5067,7 @@
               }
               break;
             case 'themeToggle':
-              isActive = this.config.theme === 'dark' || this.config.theme === 'dark-blue' || this.config.theme === 'midnight' || this.config.theme === 'void' || this.config.theme === 'autumn';
+              isActive = this.config.theme === 'dark' || this.config.theme === 'dark-blue' || this.config.theme === 'midnight' || this.config.theme === 'void' || this.config.theme === 'autumn' || this.config.theme === 'dracula';
               break;
           }
         } catch (e) {
@@ -7310,7 +7319,7 @@
 
     syncThemeClasses() {
       if (!this.editor.getThemeClasses) return;
-      this.menu.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn');
+      this.menu.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn', 'neiki-theme-dracula');
       this.editor.getThemeClasses(this.editor.config.theme).split(' ').filter(Boolean).forEach(className => {
         this.menu.classList.add(className);
       });
@@ -7505,7 +7514,7 @@
 
     syncThemeClasses() {
       if (!this.editor.getThemeClasses) return;
-      this.menu.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn');
+      this.menu.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn', 'neiki-theme-dracula');
       this.editor.getThemeClasses(this.editor.config.theme).split(' ').filter(Boolean).forEach(className => {
         this.menu.classList.add(className);
       });

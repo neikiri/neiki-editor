@@ -19,3 +19,6 @@ wiki/
 *.psd
 
 MINIFIER.txt
+
+# Screenshot folder
+screenshot/

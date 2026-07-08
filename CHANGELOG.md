@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.4.0]
+- Added new built-in theme: `dracula` — the official [Dracula theme](https://draculatheme.com) palette, with a dark purple-blue background (`#282a36`) and pink/purple/green/yellow accents
+- Added Dracula-specific HTML code view syntax highlighting for tags, attributes, and strings
+- Added `theme.dracula` translation key to all 8 built-in languages (en, cs, zh, es, de, fr, pt, ja)
+- Updated README documentation to reflect all eight built-in themes
+
 ## [3.3.0]
 - Added new built-in theme: `autumn` — a warm retro theme inspired by the Gruvbox palette, with a brown background and orange accents (`#fe8019`)
 - Added `theme.autumn` translation key to all 8 built-in languages (en, cs, zh, es, de, fr, pt, ja)

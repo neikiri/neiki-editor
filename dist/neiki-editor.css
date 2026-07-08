@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 3.3.0
+ * Version: 3.4.0
  */
 
 /* ============================================
@@ -266,6 +266,61 @@
 .neiki-editor.neiki-theme-autumn .neiki-select,
 .neiki-editor.neiki-theme-autumn .neiki-fontsize-input {
   color: var(--neiki-text-secondary);
+}
+
+/* Dracula Theme — https://draculatheme.com */
+.neiki-editor.neiki-theme-dracula,
+.neiki-modal-overlay.neiki-theme-dracula,
+.neiki-context-menu.neiki-theme-dracula {
+  --neiki-bg-primary: #282a36;
+  --neiki-bg-secondary: #21222c;
+  --neiki-bg-tertiary: #343746;
+  --neiki-bg-hover: #44475a;
+  --neiki-bg-active: #6272a4;
+  --neiki-border-color: #44475a;
+  --neiki-border-color-dark: #6272a4;
+  --neiki-text-primary: #f8f8f2;
+  --neiki-text-secondary: #bd93f9;
+  --neiki-text-muted: #6272a4;
+  --neiki-accent-color: #bd93f9;
+  --neiki-accent-hover: #ff79c6;
+  --neiki-danger-color: #ff5555;
+  --neiki-success-color: #50fa7b;
+  --neiki-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --neiki-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --neiki-shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.45);
+  --neiki-editor-bg: #282a36;
+  --neiki-toolbar-bg: #21222c;
+  --neiki-statusbar-bg: #21222c;
+  --neiki-modal-overlay: rgba(0, 0, 0, 0.75);
+  --neiki-scrollbar-thumb: #6272a4;
+  --neiki-scrollbar-track: #343746;
+  --neiki-selection-bg: #44475a;
+  --neiki-highlight-color: #6b6423;
+  --neiki-table-border: #44475a;
+}
+
+/* Dracula — toolbar selects and fontsize input text color */
+.neiki-editor.neiki-theme-dracula .neiki-select,
+.neiki-editor.neiki-theme-dracula .neiki-fontsize-input {
+  color: var(--neiki-text-secondary);
+}
+
+/* Dracula — code view syntax highlighting */
+.neiki-editor.neiki-theme-dracula .neiki-html-tag {
+  color: #ff79c6;
+}
+
+.neiki-editor.neiki-theme-dracula .neiki-html-attr {
+  color: #50fa7b;
+}
+
+.neiki-editor.neiki-theme-dracula .neiki-html-string {
+  color: #f1fa8c;
+}
+
+.neiki-editor.neiki-theme-dracula .neiki-html-comment {
+  color: #6272a4;
 }
 
 /* ============================================
