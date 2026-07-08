@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.3.0]
+- Added new built-in theme: `autumn` — a warm retro theme inspired by the Gruvbox palette, with a brown background and orange accents (`#fe8019`)
+- Added `theme.autumn` translation key to all 8 built-in languages (en, cs, zh, es, de, fr, pt, ja)
+- Updated README and wiki documentation to reflect all seven built-in themes (previously several pages only listed the original four)
+
 ## [3.2.0]
 - Added a general right-click context menu in the content area with Undo, Redo, Cut, Copy, Paste, **Paste as Plain Text**, Select All, and Remove Formatting — themed to match the active editor theme
 - Added a `contextMenu: false` init option to disable the custom context menu (falls back to the browser's native menu)

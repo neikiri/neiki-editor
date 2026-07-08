@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 3.2.0
+ * Version: 3.3.0
  */
 
 /* ============================================
@@ -228,6 +228,44 @@
 .neiki-editor.neiki-theme-void .neiki-content ::selection {
   background: var(--neiki-selection-bg);
   text-shadow: 0 0 6px rgba(176, 38, 255, 0.6);
+}
+
+/* Autumn Theme — warm retro palette */
+.neiki-editor.neiki-theme-autumn,
+.neiki-modal-overlay.neiki-theme-autumn,
+.neiki-context-menu.neiki-theme-autumn {
+  --neiki-bg-primary: #282828;
+  --neiki-bg-secondary: #32302f;
+  --neiki-bg-tertiary: #3c3836;
+  --neiki-bg-hover: #504945;
+  --neiki-bg-active: #665c54;
+  --neiki-border-color: #3c3836;
+  --neiki-border-color-dark: #665c54;
+  --neiki-text-primary: #ebdbb2;
+  --neiki-text-secondary: #d5c4a1;
+  --neiki-text-muted: #a89984;
+  --neiki-accent-color: #fe8019;
+  --neiki-accent-hover: #d65d0e;
+  --neiki-danger-color: #fb4934;
+  --neiki-success-color: #b8bb26;
+  --neiki-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --neiki-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --neiki-shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.45);
+  --neiki-editor-bg: #282828;
+  --neiki-toolbar-bg: #32302f;
+  --neiki-statusbar-bg: #32302f;
+  --neiki-modal-overlay: rgba(0, 0, 0, 0.7);
+  --neiki-scrollbar-thumb: #665c54;
+  --neiki-scrollbar-track: #3c3836;
+  --neiki-selection-bg: #504945;
+  --neiki-highlight-color: #d79921;
+  --neiki-table-border: #3c3836;
+}
+
+/* Autumn — toolbar selects and fontsize input text color */
+.neiki-editor.neiki-theme-autumn .neiki-select,
+.neiki-editor.neiki-theme-autumn .neiki-fontsize-input {
+  color: var(--neiki-text-secondary);
 }
 
 /* ============================================

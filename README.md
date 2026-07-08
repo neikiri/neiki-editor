@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/css-%23663399.svg?style=for-the-badge&logo=css&logoColor=white" alt="CSS">
   <br>
   <img src="https://img.shields.io/badge/License-AGPL--3.0-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-3.2.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-3.3.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -109,7 +109,7 @@ If you want a content editor that you can read, host, and reason about as a sing
 - Plugin API for custom toolbar buttons and init hooks
 - PHP integration helper with asset loading, rendering, and HTML sanitization
 - Eight built-in UI languages: `en`, `cs`, `zh`, `es`, `de`, `fr`, `pt`, `ja`
-- Six built-in themes: Light, Dark, Blue, Dark Blue, Midnight, Void
+- Seven built-in themes: Light, Dark, Blue, Dark Blue, Midnight, Void, Autumn
 - Lifecycle callbacks: `onReady`, `onChange`, `onSave`, `onFocus`, `onBlur`
 
 ---
@@ -129,7 +129,7 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 **Pin a specific version**
 
 ```html
-<script src="https://cdn.neikiri.dev/neiki-editor/3.2.0/neiki-editor.min.js"></script>
+<script src="https://cdn.neikiri.dev/neiki-editor/3.3.0/neiki-editor.min.js"></script>
 ```
 
 **Load CSS and JS separately**
@@ -140,8 +140,8 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 <script src="https://cdn.neikiri.dev/neiki-editor/neiki-editor.js"></script>
 
 <!-- Or pinned -->
-<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/3.2.0/neiki-editor.css">
-<script src="https://cdn.neikiri.dev/neiki-editor/3.2.0/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/3.3.0/neiki-editor.css">
+<script src="https://cdn.neikiri.dev/neiki-editor/3.3.0/neiki-editor.js"></script>
 ```
 
 **Alternative CDN — jsDelivr**
@@ -149,7 +149,7 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 ```html
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.min.js"></script>
 <!-- Pinned -->
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.2.0/dist/neiki-editor.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.3.0/dist/neiki-editor.min.js"></script>
 ```
 
 **Package manager**
@@ -229,7 +229,7 @@ const editor = new NeikiEditor('#editor', {
   placeholder: 'Start typing...',
   minHeight: 300,
   maxHeight: 600,
-  theme: 'light',     // 'light' | 'dark' | 'blue' | 'dark-blue'
+  theme: 'light',     // 'light' | 'dark' | 'blue' | 'dark-blue' | 'midnight' | 'void' | 'autumn'
   language: 'en',     // 'en' | 'cs' | 'zh' | 'es' | 'de' | 'fr' | 'pt' | 'ja'
   onChange: function (content, editor) {
     console.log('Content changed:', content);
@@ -247,7 +247,7 @@ const editor = new NeikiEditor('#editor', {
 | `autofocus` | `boolean` | `false` | Focus the editor on initialization |
 | `spellcheck` | `boolean` | `true` | Enable browser spellcheck |
 | `readonly` | `boolean` | `false` | Make the editor read-only |
-| `theme` | `string` | `'light'` | `'light'`, `'dark'`, `'blue'`, `'dark-blue'`, `'midnight'`, or `'void'` |
+| `theme` | `string` | `'light'` | `'light'`, `'dark'`, `'blue'`, `'dark-blue'`, `'midnight'`, `'void'`, or `'autumn'` |
 | `language` | `string` | `'en'` | UI language (see list above) |
 | `translations` | `object \| null` | `null` | Custom translation keys, merged with built-ins |
 | `contextMenu` | `boolean` | `true` | Enable the custom right-click context menu. Set to `false` to fall back to the browser's native menu |
@@ -285,13 +285,13 @@ Available identifiers include text formatting (`bold`, `italic`, `underline`, `s
 
 ### Themes
 
-Six themes ship by default: `light`, `dark`, `blue`, `dark-blue`, `midnight`, and `void` (a dark purple cyberpunk theme with neon-purple glow accents). Set one at init or change it at runtime:
+Seven themes ship by default: `light`, `dark`, `blue`, `dark-blue`, `midnight`, `void` (a dark purple cyberpunk theme with neon-purple glow accents), and `autumn` (a warm retro theme with a brown background and orange accents). Set one at init or change it at runtime:
 
 ```javascript
 const editor = new NeikiEditor('#editor', { theme: 'dark' });
 
 editor.setTheme('void');     // set a specific theme
-editor.toggleTheme();        // cycle: light → dark → blue → dark-blue → midnight → void → light
+editor.toggleTheme();        // cycle: light → dark → blue → dark-blue → midnight → void → autumn → light
 ```
 
 > The selected theme is persisted to `localStorage` as a **global** setting. It applies to all editor instances on the page and persists across reloads. If a user has already chosen a theme, that saved preference takes priority over the `theme` config value — call `setTheme()` after init if you need to override it.

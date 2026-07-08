@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 3.2.0
+ * Version: 3.3.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -113,6 +113,7 @@
       'theme.darkBlue': 'Dark Blue',
       'theme.midnight': 'Midnight',
       'theme.void': 'Void',
+      'theme.autumn': 'Autumn',
 
       // Help modal
       'help.author': 'Author',
@@ -311,6 +312,7 @@
       'theme.darkBlue': 'Tmavě modrý',
       'theme.midnight': 'Půlnoc',
       'theme.void': 'Prázdnota',
+      'theme.autumn': 'Podzim',
       'help.author': 'Autor',
       'help.version': 'Verze',
       'help.github': 'GitHub',
@@ -494,6 +496,7 @@
       'theme.darkBlue': '深蓝色',
       'theme.midnight': '午夜',
       'theme.void': '虚空',
+      'theme.autumn': '秋天',
       'help.author': '作者',
       'help.version': '版本',
       'help.github': 'GitHub',
@@ -660,6 +663,7 @@
       'theme.darkBlue': 'Azul oscuro',
       'theme.midnight': 'Medianoche',
       'theme.void': 'Vacío',
+      'theme.autumn': 'Otoño',
       'help.author': 'Autor',
       'help.version': 'Versión',
       'help.github': 'GitHub',
@@ -826,6 +830,7 @@
       'theme.darkBlue': 'Dunkelblau',
       'theme.midnight': 'Mitternacht',
       'theme.void': 'Leere',
+      'theme.autumn': 'Herbst',
       'help.author': 'Autor',
       'help.version': 'Version',
       'help.github': 'GitHub',
@@ -992,6 +997,7 @@
       'theme.darkBlue': 'Bleu foncé',
       'theme.midnight': 'Minuit',
       'theme.void': 'Néant',
+      'theme.autumn': 'Automne',
       'help.author': 'Auteur',
       'help.version': 'Version',
       'help.github': 'GitHub',
@@ -1158,6 +1164,7 @@
       'theme.darkBlue': 'Azul escuro',
       'theme.midnight': 'Meia-noite',
       'theme.void': 'Vazio',
+      'theme.autumn': 'Outono',
       'help.author': 'Autor',
       'help.version': 'Versão',
       'help.github': 'GitHub',
@@ -1324,6 +1331,7 @@
       'theme.darkBlue': 'ダークブルー',
       'theme.midnight': 'ミッドナイト',
       'theme.void': 'ヴォイド',
+      'theme.autumn': 'オータム',
       'help.author': '作成者',
       'help.version': 'バージョン',
       'help.github': 'GitHub',
@@ -1442,14 +1450,15 @@
     return text;
   }
 
-  const THEMES = ['light', 'dark', 'blue', 'dark-blue', 'midnight', 'void'];
+  const THEMES = ['light', 'dark', 'blue', 'dark-blue', 'midnight', 'void', 'autumn'];
   const THEME_OPTIONS = [
     { value: 'light', labelKey: 'theme.light' },
     { value: 'dark', labelKey: 'theme.dark' },
     { value: 'blue', labelKey: 'theme.blue' },
     { value: 'dark-blue', labelKey: 'theme.darkBlue' },
     { value: 'midnight', labelKey: 'theme.midnight' },
-    { value: 'void', labelKey: 'theme.void' }
+    { value: 'void', labelKey: 'theme.void' },
+    { value: 'autumn', labelKey: 'theme.autumn' }
   ];
 
   const DEFAULT_CONFIG = {
@@ -2282,7 +2291,7 @@
 
     syncThemeClasses() {
       if (!this.overlay || !this.editor.getThemeClasses) return;
-      this.overlay.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void');
+      this.overlay.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn');
       this.editor.getThemeClasses(this.editor.config.theme).split(' ').filter(Boolean).forEach(className => {
         this.overlay.classList.add(className);
       });
@@ -3064,7 +3073,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.png" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.2.0</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.3.0</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -4060,7 +4069,7 @@
       const normalizedTheme = THEMES.includes(theme) ? theme : 'light';
       const classes = [];
 
-      if (normalizedTheme === 'dark' || normalizedTheme === 'dark-blue' || normalizedTheme === 'midnight' || normalizedTheme === 'void') {
+      if (normalizedTheme === 'dark' || normalizedTheme === 'dark-blue' || normalizedTheme === 'midnight' || normalizedTheme === 'void' || normalizedTheme === 'autumn') {
         classes.push('neiki-dark');
       }
 
@@ -4074,7 +4083,7 @@
     applyTheme(theme) {
       const normalizedTheme = THEMES.includes(theme) ? theme : 'light';
       this.config.theme = normalizedTheme;
-      this.container.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void');
+      this.container.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn');
       this.getThemeClasses(normalizedTheme).split(' ').filter(Boolean).forEach(className => {
         this.container.classList.add(className);
       });
@@ -5049,7 +5058,7 @@
               }
               break;
             case 'themeToggle':
-              isActive = this.config.theme === 'dark' || this.config.theme === 'dark-blue' || this.config.theme === 'midnight' || this.config.theme === 'void';
+              isActive = this.config.theme === 'dark' || this.config.theme === 'dark-blue' || this.config.theme === 'midnight' || this.config.theme === 'void' || this.config.theme === 'autumn';
               break;
           }
         } catch (e) {
@@ -7301,7 +7310,7 @@
 
     syncThemeClasses() {
       if (!this.editor.getThemeClasses) return;
-      this.menu.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void');
+      this.menu.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn');
       this.editor.getThemeClasses(this.editor.config.theme).split(' ').filter(Boolean).forEach(className => {
         this.menu.classList.add(className);
       });
@@ -7496,7 +7505,7 @@
 
     syncThemeClasses() {
       if (!this.editor.getThemeClasses) return;
-      this.menu.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void');
+      this.menu.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn');
       this.editor.getThemeClasses(this.editor.config.theme).split(' ').filter(Boolean).forEach(className => {
         this.menu.classList.add(className);
       });
