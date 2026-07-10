@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 3.4.0
+ * Version: 3.5.0
  */
 
 /* ============================================
@@ -668,58 +668,58 @@
   background: var(--neiki-border-color-dark);
 }
 
-/* Content Typography */
-.neiki-content p {
+/* Default Content Typography */
+.neiki-content-default-style p {
   margin: 0 0 1em 0;
 }
 
-.neiki-content h1 {
+.neiki-content-default-style h1 {
   font-size: 2em;
   font-weight: 700;
   margin: 0 0 0.5em 0;
 }
 
-.neiki-content h2 {
+.neiki-content-default-style h2 {
   font-size: 1.5em;
   font-weight: 600;
   margin: 0 0 0.5em 0;
 }
 
-.neiki-content h3 {
+.neiki-content-default-style h3 {
   font-size: 1.25em;
   font-weight: 600;
   margin: 0 0 0.5em 0;
 }
 
-.neiki-content h4 {
+.neiki-content-default-style h4 {
   font-size: 1.1em;
   font-weight: 600;
   margin: 0 0 0.5em 0;
 }
 
-.neiki-content h5 {
+.neiki-content-default-style h5 {
   font-size: 1em;
   font-weight: 600;
   margin: 0 0 0.5em 0;
 }
 
-.neiki-content h6 {
+.neiki-content-default-style h6 {
   font-size: 0.9em;
   font-weight: 600;
   margin: 0 0 0.5em 0;
 }
 
-.neiki-content ul,
-.neiki-content ol {
+.neiki-content-default-style ul,
+.neiki-content-default-style ol {
   margin: 0 0 1em 0;
   padding-left: 2em;
 }
 
-.neiki-content li {
+.neiki-content-default-style li {
   margin-bottom: 0.25em;
 }
 
-.neiki-content blockquote {
+.neiki-content-default-style blockquote {
   margin: 0 0 1em 0;
   padding: 10px 20px;
   border-left: 4px solid var(--neiki-accent-color);
@@ -727,7 +727,7 @@
   font-style: italic;
 }
 
-.neiki-content pre {
+.neiki-content-default-style pre {
   margin: 0 0 1em 0;
   padding: 16px;
   background: var(--neiki-bg-tertiary);
@@ -737,7 +737,7 @@
   font-size: 13px;
 }
 
-.neiki-content code {
+.neiki-content-default-style code {
   padding: 2px 6px;
   background: var(--neiki-bg-tertiary);
   border-radius: 3px;
@@ -745,16 +745,16 @@
   font-size: 0.9em;
 }
 
-.neiki-content a {
+.neiki-content-default-style a {
   color: var(--neiki-accent-color);
   text-decoration: underline;
 }
 
-.neiki-content a:hover {
+.neiki-content-default-style a:hover {
   color: var(--neiki-accent-hover);
 }
 
-.neiki-content img {
+.neiki-content-default-style img {
   display: inline-block;
   max-width: 100%;
   height: auto;
@@ -762,12 +762,12 @@
   cursor: pointer;
 }
 
-.neiki-content img.neiki-selected {
+.neiki-content-default-style img.neiki-selected {
   outline: 2px solid var(--neiki-accent-color);
   outline-offset: 2px;
 }
 
-.neiki-content video {
+.neiki-content-default-style video {
   display: block;
   max-width: 100%;
   height: auto;
@@ -790,7 +790,7 @@
 /* ============================================
    Tables
    ============================================ */
-.neiki-content table,
+.neiki-content-default-style table,
 .neiki-table {
   width: 100%;
   border-collapse: collapse;
@@ -798,8 +798,8 @@
   table-layout: fixed;
 }
 
-.neiki-content table td,
-.neiki-content table th {
+.neiki-content-default-style table td,
+.neiki-content-default-style table th {
   border: 1px solid var(--neiki-table-border);
   padding: 8px 12px;
   min-width: 50px;
@@ -807,18 +807,18 @@
   position: relative;
 }
 
-.neiki-content table th {
+.neiki-content-default-style table th {
   background: var(--neiki-bg-secondary);
   font-weight: 600;
 }
 
-.neiki-content table td:hover,
-.neiki-content table th:hover {
+.neiki-content-default-style table td:hover,
+.neiki-content-default-style table th:hover {
   background: var(--neiki-bg-hover);
 }
 
-.neiki-content table td.neiki-cell-selected,
-.neiki-content table th.neiki-cell-selected {
+.neiki-content-default-style table td.neiki-cell-selected,
+.neiki-content-default-style table th.neiki-cell-selected {
   background: var(--neiki-selection-bg);
 }
 

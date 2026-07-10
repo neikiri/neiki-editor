@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 3.4.0
+ * Version: 3.5.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -2160,6 +2160,38 @@
       } catch (e) { }
     }
 
+    removeByPrefix(prefix = '') {
+      return StorageManager.removeByPrefix(this.prefix + prefix);
+    }
+
+    static removeKey(key) {
+      try {
+        localStorage.removeItem(key);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    static removeByPrefix(prefix) {
+      if (typeof prefix !== 'string') return 0;
+
+      try {
+        const keys = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.indexOf(prefix) === 0) {
+            keys.push(key);
+          }
+        }
+
+        keys.forEach(key => localStorage.removeItem(key));
+        return keys.length;
+      } catch (e) {
+        return 0;
+      }
+    }
+
     // Global storage (shared across all editors)
     static setGlobal(key, value) {
       try {
@@ -3082,7 +3114,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.svg" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.4.0</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.5.0</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -4670,7 +4702,7 @@
 
       const contentClasses = this.config.customClass
         ? `neiki-content ${this.config.customClass}`
-        : 'neiki-content';
+        : 'neiki-content neiki-content-default-style';
 
       this.contentArea = Utils.createElement('div', {
         className: contentClasses,
@@ -5214,6 +5246,30 @@
       this.history.record();
       this.triggerChange();
       this.updateStatusBar();
+    }
+
+    removeStorage(key) {
+      this.storage.remove(key);
+    }
+
+    removeStorageByPrefix(prefix = '') {
+      return this.storage.removeByPrefix(prefix);
+    }
+
+    clearAutosaveStorage() {
+      this.isAutosaveEnabled = false;
+      if (this.autosaveInterval) {
+        clearInterval(this.autosaveInterval);
+        this.autosaveInterval = null;
+      }
+
+      this.storage.remove('autosave_enabled');
+      this.storage.remove('autosave_content');
+
+      if (this.statusAutosave) {
+        this.statusAutosave.style.display = 'none';
+      }
+      this.updateToolbar();
     }
 
     _ensureDefaultBlock() {
@@ -7676,6 +7732,11 @@
 
   // Static methods
   NeikiEditor.addTranslation = addTranslation;
+  NeikiEditor.removeStorageKey = StorageManager.removeKey;
+  NeikiEditor.removeStorageByPrefix = StorageManager.removeByPrefix;
+  NeikiEditor.clearAutosaveStorage = function (prefix = 'neiki_autosave_') {
+    return StorageManager.removeByPrefix(prefix);
+  };
 
   // Export
   global.NeikiEditor = NeikiEditor;

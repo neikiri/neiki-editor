@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/web%20components-29ABE2.svg?style=for-the-badge&logo=webcomponentsdotorg&logoColor=white" alt="Web Components">
   <br>
   <img src="https://img.shields.io/badge/License-AGPL--3.0-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-3.4.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-3.5.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -140,7 +140,7 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 **Pin a specific version**
 
 ```html
-<script src="https://cdn.neikiri.dev/neiki-editor/3.4.0/neiki-editor.min.js"></script>
+<script src="https://cdn.neikiri.dev/neiki-editor/3.5.0/neiki-editor.min.js"></script>
 ```
 
 **Load CSS and JS separately**
@@ -151,8 +151,8 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 <script src="https://cdn.neikiri.dev/neiki-editor/neiki-editor.js"></script>
 
 <!-- Or pinned -->
-<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/3.4.0/neiki-editor.css">
-<script src="https://cdn.neikiri.dev/neiki-editor/3.4.0/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/3.5.0/neiki-editor.css">
+<script src="https://cdn.neikiri.dev/neiki-editor/3.5.0/neiki-editor.js"></script>
 ```
 
 **Alternative CDN — jsDelivr**
@@ -160,7 +160,7 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 ```html
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.min.js"></script>
 <!-- Pinned -->
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.4.0/dist/neiki-editor.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.5.0/dist/neiki-editor.min.js"></script>
 ```
 
 **Package manager**
@@ -263,7 +263,7 @@ const editor = new NeikiEditor('#editor', {
 | `translations` | `object \| null` | `null` | Custom translation keys, merged with built-ins |
 | `contextMenu` | `boolean` | `true` | Enable the custom right-click context menu. Set to `false` to fall back to the browser's native menu |
 | `autosaveKey` | `string \| null` | `null` | Custom `localStorage` scope for autosave |
-| `customClass` | `string \| null` | `null` | Extra CSS class appended to the content area (`neiki-content`) |
+| `customClass` | `string \| null` | `null` | Custom content style class that replaces the default `neiki-content-default-style` class |
 | `toolbar` | `array` | *(full set)* | Toolbar button configuration |
 | `showHelp` | `boolean` | `true` | Show the Help item in the More menu (⋯) |
 | `imageUploadHandler` | `function \| null` | `null` | Async `(file) => Promise<url>` for server/CDN image uploads instead of base64 |
@@ -309,11 +309,13 @@ editor.toggleTheme();        // cycle: light → dark → blue → dark-blue →
 
 ### Custom content styling
 
-Use `customClass` to add your own class to the content area without overriding the defaults:
+By default, the editable area uses the internal `neiki-content` class plus the default typography class `neiki-content-default-style`. Use `customClass` to replace only the default typography class while keeping the internal editor class:
 
 ```javascript
 new NeikiEditor('#editor', { customClass: 'article-content' });
 ```
+
+That renders the content area with `class="neiki-content article-content"` instead of `class="neiki-content neiki-content-default-style"`.
 
 ```css
 .article-content {
@@ -351,6 +353,18 @@ Autosave is toggled from the More menu (⋯). When enabled, content is written t
 new NeikiEditor('#editor', { autosaveKey: 'article-42' });
 ```
 
+You can clear saved autosave data for the current editor, remove a specific scoped storage key, or remove all scoped keys matching a prefix:
+
+```javascript
+editor.clearAutosaveStorage();                 // current editor's autosave flags/content
+editor.removeStorage('autosave_content');      // current editor storage key
+editor.removeStorageByPrefix('autosave_');     // current editor storage keys by prefix
+
+NeikiEditor.removeStorageKey('neiki_autosave_article-42_autosave_content');
+NeikiEditor.removeStorageByPrefix('neiki_autosave_');
+NeikiEditor.clearAutosaveStorage();            // shortcut for the default autosave prefix
+```
+
 > Autosave is intended for drafts and recovery. For production persistence, use the `onSave` or `onChange` callbacks to save to your backend.
 
 ---
@@ -386,6 +400,11 @@ editor.triggerSave();                // trigger onSave
 editor.previewContent();             // open preview modal
 editor.downloadContent();            // download as .html
 
+// Storage cleanup
+editor.clearAutosaveStorage();
+editor.removeStorage('autosave_content');
+editor.removeStorageByPrefix('autosave_');
+
 // Theme
 editor.setTheme('dark');
 editor.toggleTheme();
@@ -398,6 +417,9 @@ editor.execCommand('foreColor', '#ff0000');
 NeikiEditor.registerPlugin({ /* ... */ });
 NeikiEditor.getPlugins();            // array of registered plugins
 NeikiEditor.addTranslation('de', { /* ... */ });
+NeikiEditor.removeStorageKey('neiki_autosave_article-42_autosave_content');
+NeikiEditor.removeStorageByPrefix('neiki_autosave_');
+NeikiEditor.clearAutosaveStorage();
 ```
 
 > In SPA frameworks, always call `editor.destroy()` when the component unmounts to clean up listeners and avoid memory leaks.
