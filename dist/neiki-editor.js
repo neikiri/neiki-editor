@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 3.5.0
+ * Version: 3.6.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -3114,7 +3114,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.svg" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.5.0</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.6.0</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -3900,6 +3900,24 @@
       if (!Utils.isSafeUrl(url)) return;
       const selection = Utils.getSelection();
       const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+      const existingLink = this.editor.getLinkAtSelection();
+
+      if (existingLink) {
+        existingLink.setAttribute('href', url);
+        existingLink.textContent = text || url;
+        if (newTab) {
+          existingLink.setAttribute('target', '_blank');
+          existingLink.setAttribute('rel', 'noopener noreferrer');
+        } else {
+          existingLink.removeAttribute('target');
+          existingLink.removeAttribute('rel');
+        }
+
+        this.editor.history.record();
+        this.editor.syncToOriginal();
+        this.editor.triggerChange();
+        return;
+      }
 
       if (range && !range.collapsed) {
         this.exec('createLink', url);
@@ -4499,7 +4517,7 @@
           const insertItems = [
             {
               key: 'link', icon: Icons.link, labelKey: 'insert.link',
-              action: () => { this.saveCurrentSelection(); this.modal.open('link', { text: Utils.getSelection().toString() }); }
+              action: () => { this.saveCurrentSelection(); this.modal.open('link', this.getLinkModalData()); }
             },
             {
               key: 'image', icon: Icons.image, labelKey: 'insert.image',
@@ -4879,8 +4897,7 @@
         let data = {};
 
         if (item === 'link') {
-          const sel = Utils.getSelection();
-          data.text = sel.toString();
+          data = this.getLinkModalData();
         }
 
         this.modal.open(item, data);
@@ -4910,6 +4927,13 @@
     }
 
     handleKeydown(e) {
+      if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') &&
+        this.imageResizer &&
+        this.imageResizer.moveCaretFromSelectedImage(e.key === 'ArrowUp' ? 'before' : 'after')) {
+        e.preventDefault();
+        return;
+      }
+
       if ((e.key === 'Backspace' || e.key === 'Delete') &&
         this.imageResizer &&
         this.imageResizer.deleteSelectedImage()) {
@@ -4935,7 +4959,7 @@
           case 'k':
             e.preventDefault();
             this.saveCurrentSelection();
-            this.modal.open('link', { text: Utils.getSelection().toString() });
+            this.modal.open('link', this.getLinkModalData());
             break;
           case 'z':
             e.preventDefault();
@@ -4995,6 +5019,37 @@
           this.commands.indent();
         }
       }
+    }
+
+    getLinkAtSelection() {
+      const selection = window.getSelection();
+      if (!selection || !selection.rangeCount) return null;
+
+      const range = selection.getRangeAt(0);
+      if (!Utils.isRangeInside(range, this.contentArea)) return null;
+
+      const getClosestLink = (node) => {
+        const element = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+        const link = element && element.closest ? element.closest('a') : null;
+        return link && this.contentArea.contains(link) ? link : null;
+      };
+
+      const startLink = getClosestLink(range.startContainer);
+      const endLink = getClosestLink(range.endContainer);
+      return startLink && startLink === endLink ? startLink : null;
+    }
+
+    getLinkModalData() {
+      const link = this.getLinkAtSelection();
+      if (link) {
+        return {
+          url: link.getAttribute('href') || '',
+          text: link.textContent || '',
+          newTab: link.getAttribute('target') === '_blank'
+        };
+      }
+
+      return { text: Utils.getSelection().toString() };
     }
 
     handlePaste(e) {
@@ -6313,6 +6368,9 @@
       this.currentImg = img;
       const isVideo = img.tagName === 'VIDEO';
 
+      // Keep keyboard events in the editor while the media selection is active.
+      this.editor.contentArea.focus({ preventScroll: true });
+
       // Create wrapper around image
       this.wrapper = document.createElement('span');
       this.wrapper.className = 'neiki-img-resizable';
@@ -6643,6 +6701,30 @@
     clearNativeSelection() {
       const sel = window.getSelection();
       if (sel) sel.removeAllRanges();
+    }
+
+    moveCaretFromSelectedImage(position) {
+      if (!this.currentImg || !this.wrapper || !this.editor.contentArea.contains(this.wrapper)) {
+        return false;
+      }
+
+      const img = this.currentImg;
+      this.deselect();
+
+      const range = document.createRange();
+      if (position === 'before') {
+        range.setStartBefore(img);
+      } else {
+        range.setStartAfter(img);
+      }
+      range.collapse(true);
+
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      this.editor.savedSelectionRange = range.cloneRange();
+      this.editor.updateToolbar();
+      return true;
     }
 
     getSelectedImageClipboardData() {
@@ -7104,7 +7186,9 @@
       if (prev && prev.parentNode === this.editor.contentArea) {
         prev.parentNode.insertBefore(block, prev);
         this.editor.history.record();
+        this.editor.syncToOriginal();
         this.editor.triggerChange();
+        this.editor.updateStatusBar();
       }
     }
 
@@ -7115,7 +7199,9 @@
       if (next && next.parentNode === this.editor.contentArea) {
         next.parentNode.insertBefore(block, next.nextSibling);
         this.editor.history.record();
+        this.editor.syncToOriginal();
         this.editor.triggerChange();
+        this.editor.updateStatusBar();
       }
     }
 
@@ -7281,8 +7367,7 @@
 
     handleButtonClick(item) {
       if (item === 'link') {
-        const sel = Utils.getSelection();
-        this.editor.modal.open('link', { text: sel.toString() });
+        this.editor.modal.open('link', this.editor.getLinkModalData());
       } else if (item === 'moveUp') {
         if (this.editor.blockDragDrop) this.editor.blockDragDrop.moveBlockUp();
       } else if (item === 'moveDown') {

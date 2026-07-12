@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.6.0]
+- Fixed editing existing links: invoking Insert Link while the caret or selection is inside a link now pre-fills the dialog and updates that link instead of creating a new one.
+- Fixed Arrow Up and Arrow Down after selecting an image or video so they place the caret before or after the selected media and restore normal keyboard navigation.
+- Fixed image/video toolbar Move Block Up/Down actions not syncing the reordered content to the original form field.
+
 ## [3.5.0]
 - Added `neiki-content-default-style` as the default content typography class. When `customClass` is set, the custom class replaces this default style class while the internal `neiki-content` class remains for editor behavior.
 - Added autosave/localStorage cleanup APIs: `editor.clearAutosaveStorage()`, `editor.removeStorage(key)`, `editor.removeStorageByPrefix(prefix)`, `NeikiEditor.removeStorageKey(key)`, `NeikiEditor.removeStorageByPrefix(prefix)`, and `NeikiEditor.clearAutosaveStorage(prefix)`.
