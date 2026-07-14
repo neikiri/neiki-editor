@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.7.0]
+- Fixed mobile text selection controls overlapping the floating toolbar by leaving long-press selections to the browser's native controls on touch-first devices.
+- Added the `floatingToolbar` configuration option for choosing Floating Toolbar buttons or disabling it entirely; `link` can now be omitted to match the main toolbar.
+
 ## [3.6.0]
 - Fixed editing existing links: invoking Insert Link while the caret or selection is inside a link now pre-fills the dialog and updates that link instead of creating a new one.
 - Fixed Arrow Up and Arrow Down after selecting an image or video so they place the caret before or after the selected media and restore normal keyboard navigation.

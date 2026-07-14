@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/web%20components-29ABE2.svg?style=for-the-badge&logo=webcomponentsdotorg&logoColor=white" alt="Web Components">
   <br>
   <img src="https://img.shields.io/badge/License-AGPL--3.0-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-3.6.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-3.7.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -140,7 +140,7 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 **Pin a specific version**
 
 ```html
-<script src="https://cdn.neikiri.dev/neiki-editor/3.6.0/neiki-editor.min.js"></script>
+<script src="https://cdn.neikiri.dev/neiki-editor/3.7.0/neiki-editor.min.js"></script>
 ```
 
 **Load CSS and JS separately**
@@ -151,8 +151,8 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 <script src="https://cdn.neikiri.dev/neiki-editor/neiki-editor.js"></script>
 
 <!-- Or pinned -->
-<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/3.6.0/neiki-editor.css">
-<script src="https://cdn.neikiri.dev/neiki-editor/3.6.0/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/3.7.0/neiki-editor.css">
+<script src="https://cdn.neikiri.dev/neiki-editor/3.7.0/neiki-editor.js"></script>
 ```
 
 **Alternative CDN — jsDelivr**
@@ -160,7 +160,7 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 ```html
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.min.js"></script>
 <!-- Pinned -->
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.6.0/dist/neiki-editor.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.7.0/dist/neiki-editor.min.js"></script>
 ```
 
 **Package manager**
@@ -265,6 +265,7 @@ const editor = new NeikiEditor('#editor', {
 | `autosaveKey` | `string \| null` | `null` | Custom `localStorage` scope for autosave |
 | `customClass` | `string \| null` | `null` | Custom content style class that replaces the default `neiki-content-default-style` class |
 | `toolbar` | `array` | *(full set)* | Toolbar button configuration |
+| `floatingToolbar` | `array \| false` | *(full set)* | Floating selection toolbar button configuration; set to `false` to disable it |
 | `showHelp` | `boolean` | `true` | Show the Help item in the More menu (⋯) |
 | `imageUploadHandler` | `function \| null` | `null` | Async `(file) => Promise<url>` for server/CDN image uploads instead of base64 |
 | `videoUploadHandler` | `function \| null` | `null` | Async `(file) => Promise<url>` for server/CDN video uploads instead of base64 |
@@ -293,6 +294,16 @@ new NeikiEditor('#editor', {
 ```
 
 Available identifiers include text formatting (`bold`, `italic`, `underline`, `strikethrough`, `subscript`, `superscript`, `code`, `removeFormat`), style (`heading`, `fontFamily`, `fontSize`, `foreColor`, `backColor`), alignment and lists (`alignLeft`, `alignCenter`, `alignRight`, `alignJustify`, `bulletList`, `numberedList`, `indent`, `outdent`), structure (`blockquote`, `horizontalRule`), tools (`undo`, `redo`, `findReplace`, `viewCode`), the grouped `insertDropdown`, the right-aligned `moreMenu`, and a standalone `themeToggle`. See the [Toolbar Reference](https://github.com/neikiri/neiki-editor/wiki/Toolbar-Reference) for the full list.
+
+### Customizing the floating toolbar
+
+The `floatingToolbar` option controls the toolbar shown for desktop text selections. It accepts `moveUp`, `moveDown`, `bold`, `italic`, `underline`, `strikethrough`, `link`, and `'|'` separators. Omit an item to remove it, or set the option to `false` to disable the floating toolbar completely. On touch-first devices, the editor automatically leaves selection controls to the browser so the floating toolbar does not overlap the native long-press menu.
+
+```javascript
+new NeikiEditor('#editor', {
+  floatingToolbar: ['bold', 'italic', 'underline', 'strikethrough']
+});
+```
 
 ### Themes
 

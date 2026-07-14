@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 3.6.0
+ * Version: 3.7.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -1482,6 +1482,7 @@
       'insertDropdown', '|',
       'moreMenu'
     ],
+    floatingToolbar: ['moveUp', 'moveDown', '|', 'bold', 'italic', 'underline', 'strikethrough', 'link'],
     placeholder: 'Start typing...',
     minHeight: 300,
     maxHeight: null,
@@ -3114,7 +3115,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.svg" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.6.0</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.7.0</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -7241,61 +7242,53 @@
 
     createToolbar() {
       this.toolbar = Utils.createElement('div', { className: 'neiki-floating-toolbar' });
+      const items = {
+        moveUp: { icon: Icons.moveUp, title: t('blockToolbar.moveUp'), move: true },
+        moveDown: { icon: Icons.moveDown, title: t('blockToolbar.moveDown'), move: true },
+        bold: { icon: Icons.bold, title: t('toolbar.bold') },
+        italic: { icon: Icons.italic, title: t('toolbar.italic') },
+        underline: { icon: Icons.underline, title: t('toolbar.underline') },
+        strikethrough: { icon: Icons.strikethrough, title: t('toolbar.strikethrough') },
+        link: { icon: Icons.link, title: t('toolbar.link') }
+      };
+      let lastWasDivider = true;
 
-      // Move block buttons (left side)
-      const moveButtons = [
-        { item: 'moveUp', icon: Icons.moveUp, title: t('blockToolbar.moveUp') },
-        { item: 'moveDown', icon: Icons.moveDown, title: t('blockToolbar.moveDown') }
-      ];
+      if (Array.isArray(this.editor.config.floatingToolbar)) {
+        this.editor.config.floatingToolbar.forEach(item => {
+          if (item === '|') {
+            if (!lastWasDivider) {
+              this.toolbar.appendChild(Utils.createElement('span', { className: 'neiki-floating-divider' }));
+              lastWasDivider = true;
+            }
+            return;
+          }
 
-      moveButtons.forEach(({ item, icon, title }) => {
-        const button = Utils.createElement('button', {
-          className: 'neiki-toolbar-btn neiki-floating-btn neiki-floating-move-btn',
-          title: title,
-          type: 'button',
-          innerHTML: icon,
-          'data-command': item
+          const config = items[item];
+          if (!config) return;
+          const button = Utils.createElement('button', {
+            className: `neiki-toolbar-btn neiki-floating-btn${config.move ? ' neiki-floating-move-btn' : ''}`,
+            title: config.title,
+            'aria-label': config.title,
+            type: 'button',
+            innerHTML: config.icon,
+            'data-command': item
+          });
+
+          button.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.handleButtonClick(item);
+          });
+
+          this.toolbar.appendChild(button);
+          lastWasDivider = false;
         });
+      }
 
-        button.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          this.handleButtonClick(item);
-        });
-
-        this.toolbar.appendChild(button);
-      });
-
-      // Divider
-      const divider = Utils.createElement('span', { className: 'neiki-floating-divider' });
-      this.toolbar.appendChild(divider);
-
-      // Formatting buttons
-      const buttons = [
-        { item: 'bold', icon: Icons.bold, title: 'Bold' },
-        { item: 'italic', icon: Icons.italic, title: 'Italic' },
-        { item: 'underline', icon: Icons.underline, title: 'Underline' },
-        { item: 'strikeThrough', icon: Icons.strikethrough, title: 'Strikethrough' },
-        { item: 'link', icon: Icons.link, title: 'Link' }
-      ];
-
-      buttons.forEach(({ item, icon, title }) => {
-        const button = Utils.createElement('button', {
-          className: 'neiki-toolbar-btn neiki-floating-btn',
-          title: title,
-          type: 'button',
-          innerHTML: icon,
-          'data-command': item
-        });
-
-        button.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          this.handleButtonClick(item);
-        });
-
-        this.toolbar.appendChild(button);
-      });
+      if (lastWasDivider && this.toolbar.lastElementChild) {
+        this.toolbar.lastElementChild.remove();
+      }
+      this.isEnabled = this.toolbar.childElementCount > 0;
 
       document.body.appendChild(this.toolbar);
     }
@@ -7316,6 +7309,13 @@
     }
 
     updatePosition() {
+      // Mobile browsers provide their own selection controls after a long press.
+      // Do not place a second toolbar underneath those native controls.
+      if (!this.isEnabled || this.usesNativeTouchSelectionUI()) {
+        this.hide();
+        return;
+      }
+
       // Hide when an image is selected (image toolbar takes over)
       if (this.editor.imageResizer && this.editor.imageResizer.currentImg) {
         this.hide();
@@ -7351,6 +7351,10 @@
       this.toolbar.style.top = finalY + 'px';
     }
 
+    usesNativeTouchSelectionUI() {
+      return typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
+    }
+
     show() {
       if (!this.isVisible) {
         this.toolbar.classList.add('show');
@@ -7373,7 +7377,8 @@
       } else if (item === 'moveDown') {
         if (this.editor.blockDragDrop) this.editor.blockDragDrop.moveBlockDown();
       } else {
-        this.editor.commands[item]();
+        const command = item === 'strikethrough' ? 'strikeThrough' : item;
+        this.editor.commands[command]();
       }
       this.hide();
     }

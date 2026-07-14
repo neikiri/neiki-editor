@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 3.6.0
+ * Version: 3.7.0
  */
 
 /* ============================================
@@ -2547,6 +2547,13 @@
   .neiki-img-toolbar-separator {
     height: 16px;
     margin: 0 1px;
+  }
+}
+
+/* Mobile browsers provide native long-press selection controls. */
+@media (pointer: coarse) {
+  .neiki-floating-toolbar {
+    display: none !important;
   }
 }
 
