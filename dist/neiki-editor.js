@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 3.7.0
+ * Version: 3.8.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -60,6 +60,7 @@
       'toolbar.horizontalRule': 'Horizontal Line',
       'toolbar.subscript': 'Subscript',
       'toolbar.superscript': 'Superscript',
+      'toolbar.formatPainter': 'Copy Formatting',
       'toolbar.removeFormat': 'Remove Formatting',
       'toolbar.findReplace': 'Find & Replace',
       'toolbar.emoji': 'Insert Emoji',
@@ -260,6 +261,7 @@
       'toolbar.horizontalRule': 'Vodorovná čára',
       'toolbar.subscript': 'Dolní index',
       'toolbar.superscript': 'Horní index',
+      'toolbar.formatPainter': 'Kopírovat formátování',
       'toolbar.removeFormat': 'Odstranit formátování',
       'toolbar.findReplace': 'Najít a nahradit',
       'toolbar.emoji': 'Vložit emoji',
@@ -453,6 +455,7 @@
       'toolbar.horizontalRule': '水平线',
       'toolbar.subscript': '下标',
       'toolbar.superscript': '上标',
+      'toolbar.formatPainter': '复制格式',
       'toolbar.removeFormat': '清除格式',
       'toolbar.findReplace': '查找和替换',
       'toolbar.emoji': '插入表情',
@@ -621,6 +624,7 @@
       'toolbar.horizontalRule': 'Línea horizontal',
       'toolbar.subscript': 'Subíndice',
       'toolbar.superscript': 'Superíndice',
+      'toolbar.formatPainter': 'Copiar formato',
       'toolbar.removeFormat': 'Eliminar formato',
       'toolbar.findReplace': 'Buscar y reemplazar',
       'toolbar.emoji': 'Insertar emoji',
@@ -789,6 +793,7 @@
       'toolbar.horizontalRule': 'Horizontale Linie',
       'toolbar.subscript': 'Tiefgestellt',
       'toolbar.superscript': 'Hochgestellt',
+      'toolbar.formatPainter': 'Format kopieren',
       'toolbar.removeFormat': 'Formatierung entfernen',
       'toolbar.findReplace': 'Suchen und Ersetzen',
       'toolbar.emoji': 'Emoji einfügen',
@@ -957,6 +962,7 @@
       'toolbar.horizontalRule': 'Ligne horizontale',
       'toolbar.subscript': 'Indice',
       'toolbar.superscript': 'Exposant',
+      'toolbar.formatPainter': 'Copier la mise en forme',
       'toolbar.removeFormat': 'Supprimer la mise en forme',
       'toolbar.findReplace': 'Rechercher et remplacer',
       'toolbar.emoji': 'Insérer un emoji',
@@ -1125,6 +1131,7 @@
       'toolbar.horizontalRule': 'Linha horizontal',
       'toolbar.subscript': 'Subscrito',
       'toolbar.superscript': 'Sobrescrito',
+      'toolbar.formatPainter': 'Copiar formatação',
       'toolbar.removeFormat': 'Remover formatação',
       'toolbar.findReplace': 'Localizar e substituir',
       'toolbar.emoji': 'Inserir emoji',
@@ -1293,6 +1300,7 @@
       'toolbar.horizontalRule': '水平線',
       'toolbar.subscript': '下付き',
       'toolbar.superscript': '上付き',
+      'toolbar.formatPainter': '書式のコピー',
       'toolbar.removeFormat': '書式解除',
       'toolbar.findReplace': '検索と置換',
       'toolbar.emoji': '絵文字挿入',
@@ -1473,7 +1481,7 @@
   const DEFAULT_CONFIG = {
     toolbar: [
       'viewCode', 'undo', 'redo', 'findReplace', '|',
-      'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'code', 'removeFormat', '|',
+      'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'code', 'formatPainter', 'removeFormat', '|',
       'heading', 'fontFamily', 'fontSize', '|',
       'foreColor', 'backColor', '|',
       'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', '|',
@@ -1536,6 +1544,7 @@
     subscript: { icon: 'subscript', titleKey: 'toolbar.subscript', command: 'subscript' },
     superscript: { icon: 'superscript', titleKey: 'toolbar.superscript', command: 'superscript' },
     code: { icon: 'code-inline', titleKey: 'toolbar.code', command: 'toggleCode' },
+    formatPainter: { icon: 'format-painter', titleKey: 'toolbar.formatPainter', command: 'copyFormat' },
     removeFormat: { icon: 'eraser', titleKey: 'toolbar.removeFormat', command: 'removeFormat' },
     findReplace: { icon: 'search', titleKey: 'toolbar.findReplace', command: 'findReplace', modal: true },
     emoji: { icon: 'emoji', titleKey: 'toolbar.emoji', command: 'emoji', picker: 'emoji' },
@@ -2097,6 +2106,7 @@
     quote: '<svg viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>',
     code: '<svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>',
     'code-inline': '<svg viewBox="0 0 256 256"><path d="M0 0h256v256H0z" fill="none"/><path fill="currentColor" d="M71.68 97.22L34.74 128l36.94 30.78a12 12 0 1 1-15.36 18.44l-48-40a12 12 0 0 1 0-18.44l48-40a12 12 0 0 1 15.36 18.44m176 21.56l-48-40a12 12 0 1 0-15.36 18.44L221.26 128l-36.94 30.78a12 12 0 1 0 15.36 18.44l48-40a12 12 0 0 0 0-18.44M164.1 28.72a12 12 0 0 0-15.38 7.18l-64 176a12 12 0 0 0 7.18 15.37a11.8 11.8 0 0 0 4.1.73a12 12 0 0 0 11.28-7.9l64-176a12 12 0 0 0-7.18-15.38"/></svg>',
+    'format-painter': '<svg width="1em" height="1em" viewBox="0 0 32 32"><g transform="translate(0 32) scale(1 -1)"><path d="M0 0h32v32H0z" fill="none"/><path fill="currentColor" d="M28.83 23.17L23 17.33V13a1 1 0 0 0-.29-.71l-10-10a1 1 0 0 0-1.42 0l-9 9a1 1 0 0 0 0 1.42l10 10A1 1 0 0 0 13 23h4.34l5.83 5.84a4 4 0 0 0 5.66-5.66ZM6 10.41l2.29 2.3l1.42-1.42L7.41 9L9 7.41l4.29 4.3l1.42-1.42L10.41 6L12 4.41L18.59 11L11 18.59L4.41 12Zm21.41 17a2 2 0 0 1-2.82 0l-6.13-6.12a1.8 1.8 0 0 0-.71-.29h-4.34l-1-1L20 12.41l1 1v4.34a1 1 0 0 0 .29.7l6.12 6.14a2 2 0 0 1 0 2.82" stroke-width="0.45" stroke="currentColor"/></g></svg>',
     minus: '<svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>',
     eraser: '<svg viewBox="0 0 24 24"><path d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 01-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.6-10.6c.79-.78 2.05-.78 2.83 0zm-1.41 1.42L6.93 12.9l4.24 4.24 7.9-7.9-4.24-4.26z"/></svg>',
     fullscreen: '<svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>',
@@ -3115,7 +3125,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.svg" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.7.0</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.8.0</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -3533,6 +3543,7 @@
   class Commands {
     constructor(editor) {
       this.editor = editor;
+      this.formatPainter = null;
     }
 
     exec(command, value = null) {
@@ -3693,6 +3704,102 @@
 
     removeFormat() { this.exec('removeFormat'); }
 
+    isFormatPainterActive() {
+      return !!this.formatPainter;
+    }
+
+    copyFormat() {
+      if (this.formatPainter) {
+        this.formatPainter = null;
+        this.editor.updateToolbar();
+        return;
+      }
+
+      if (!this.editor.restoreSavedSelection()) return;
+      this._expandToWordIfCollapsed();
+
+      const selection = window.getSelection();
+      if (!selection || !selection.rangeCount) return;
+      const range = selection.getRangeAt(0);
+      if (!Utils.isRangeInside(range, this.editor.contentArea) || range.collapsed) return;
+
+      let sourceNode = range.startContainer;
+      if (sourceNode.nodeType === Node.TEXT_NODE) sourceNode = sourceNode.parentNode;
+      const sourceStyle = window.getComputedStyle(sourceNode);
+      const inlineCommands = ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript'];
+      const states = {};
+
+      inlineCommands.forEach(command => {
+        try {
+          states[command] = document.queryCommandState(command);
+        } catch (e) {
+          states[command] = false;
+        }
+      });
+
+      this.formatPainter = {
+        sourceRange: range.cloneRange(),
+        states,
+        fontFamily: sourceStyle.fontFamily,
+        fontSize: sourceStyle.fontSize,
+        color: sourceStyle.color,
+        backgroundColor: sourceStyle.backgroundColor
+      };
+      this.editor.saveCurrentSelection();
+      this.editor.updateToolbar();
+    }
+
+    applyCopiedFormat() {
+      if (!this.formatPainter) return false;
+
+      const selection = window.getSelection();
+      if (!selection || !selection.rangeCount) return false;
+      const range = selection.getRangeAt(0);
+      if (!Utils.isRangeInside(range, this.editor.contentArea) || this._areRangesEqual(range, this.formatPainter.sourceRange)) {
+        return false;
+      }
+
+      this._expandToWordIfCollapsed();
+      const style = this.formatPainter;
+      this.formatPainter = null;
+
+      Object.entries(style.states).forEach(([command, shouldBeActive]) => {
+        try {
+          if (document.queryCommandState(command) !== shouldBeActive) {
+            document.execCommand(command, false, null);
+          }
+        } catch (e) { /* Ignore unsupported command states. */ }
+      });
+
+      if (style.fontFamily) document.execCommand('fontName', false, style.fontFamily);
+      if (style.fontSize) this._applyFontSize(style.fontSize);
+      if (style.color) document.execCommand('foreColor', false, style.color);
+      if (this._isTransparentColor(style.backgroundColor)) {
+        this._resetColorProperty('backgroundColor', false);
+      } else if (style.backgroundColor) {
+        document.execCommand('backColor', false, style.backgroundColor);
+      }
+
+      this.editor.history.record();
+      this.editor.updateToolbar();
+      this.editor.triggerChange();
+      return true;
+    }
+
+    _areRangesEqual(first, second) {
+      if (!first || !second) return false;
+      try {
+        return first.compareBoundaryPoints(Range.START_TO_START, second) === 0 &&
+          first.compareBoundaryPoints(Range.END_TO_END, second) === 0;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    _isTransparentColor(color) {
+      return !color || color === 'transparent' || /^rgba\(0,\s*0,\s*0,\s*0\)$/.test(color);
+    }
+
     insertHorizontalRule() { this.exec('insertHorizontalRule'); }
 
     formatBlock(tag) {
@@ -3774,9 +3881,7 @@
       return ['ADDRESS', 'ARTICLE', 'ASIDE', 'BLOCKQUOTE', 'DIV', 'DL', 'FIGURE', 'FOOTER', 'FORM', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'HEADER', 'HR', 'MAIN', 'OL', 'P', 'PRE', 'SECTION', 'TABLE', 'UL'].includes(node.tagName);
     }
 
-    fontSize(sizeStr) {
-      this.editor.focus();
-      this._expandToWordIfCollapsed();
+    _applyFontSize(sizeStr) {
       document.execCommand('fontSize', false, '7');
       const marked = this.editor.contentArea.querySelectorAll('font[size="7"]');
       const spans = [];
@@ -3799,6 +3904,12 @@
           sel.addRange(range);
         } catch (e) { /* ignore */ }
       }
+    }
+
+    fontSize(sizeStr) {
+      this.editor.focus();
+      this._expandToWordIfCollapsed();
+      this._applyFontSize(sizeStr);
       this.editor.history.record();
       this.editor.updateToolbar();
       this.editor.triggerChange();
@@ -3824,7 +3935,7 @@
       this._resetColorProperty('backgroundColor');
     }
 
-    _resetColorProperty(cssProp) {
+    _resetColorProperty(cssProp, shouldRecord = true) {
       this.editor.focus();
       const sel = window.getSelection();
       if (!sel || !sel.rangeCount) return;
@@ -3873,9 +3984,11 @@
       sel.removeAllRanges();
       sel.addRange(range);
 
-      this.editor.history.record();
-      this.editor.updateToolbar();
-      this.editor.triggerChange();
+      if (shouldRecord) {
+        this.editor.history.record();
+        this.editor.updateToolbar();
+        this.editor.triggerChange();
+      }
     }
 
     viewCode() {
@@ -4831,6 +4944,13 @@
         }
       });
 
+      // Format Painter applies its copied inline formatting once the target selection is complete.
+      this.contentArea.addEventListener('mouseup', () => {
+        if (this.commands && this.commands.isFormatPainterActive()) {
+          this.commands.applyCopiedFormat();
+        }
+      });
+
       // Focus/Blur
       this.contentArea.addEventListener('focus', () => {
         if (this.config.onFocus) this.config.onFocus(this);
@@ -5175,6 +5295,10 @@
       // Update viewCode active state
       if (this.toolbarButtons.viewCode) {
         this.toolbarButtons.viewCode.classList.toggle('active', this.isCodeViewOpen);
+      }
+      if (this.toolbarButtons.formatPainter) {
+        this.toolbarButtons.formatPainter.classList.toggle('active',
+          !!(this.commands && this.commands.isFormatPainterActive()));
       }
 
       // Sync heading select

@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.8.0]
+- Added the `formatPainter` toolbar button, which copies the selected text's inline formatting and applies it once to the next selected or clicked text. It appears directly before `removeFormat` in the default toolbar.
+- Added `toolbar.formatPainter` translations in all 8 built-in languages (en, cs, zh, es, de, fr, pt, ja).
+
 ## [3.7.0]
 - Fixed mobile text selection controls overlapping the floating toolbar by leaving long-press selections to the browser's native controls on touch-first devices.
 - Added the `floatingToolbar` configuration option for choosing Floating Toolbar buttons or disabling it entirely; `link` can now be omitted to match the main toolbar.
