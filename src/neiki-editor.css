@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 3.8.0
+ * Version: 3.9.0
  */
 
 /* ============================================
@@ -575,6 +575,12 @@
 
 .neiki-content:focus {
   outline: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .neiki-content {
+    padding-left: 52px;
+  }
 }
 
 /* Placeholder */
@@ -1690,13 +1696,16 @@
    ============================================ */
 .neiki-find-replace {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 10px;
+  right: 10px;
   z-index: 100;
   width: 360px;
+  max-width: calc(100% - 20px);
+  max-height: calc(100% - 20px);
+  overflow: auto;
   background: var(--neiki-bg-primary);
   border: 1px solid var(--neiki-border-color);
-  border-radius: 0 0 0 8px;
+  border-radius: 8px;
   box-shadow: var(--neiki-shadow-lg);
   display: none;
 }
@@ -1711,6 +1720,23 @@
   justify-content: space-between;
   padding: 10px 12px;
   border-bottom: 1px solid var(--neiki-border-color);
+}
+
+.neiki-find-replace .neiki-modal-header {
+  cursor: grab;
+  touch-action: none;
+}
+
+.neiki-find-replace .neiki-modal-header:active {
+  cursor: grabbing;
+}
+
+.neiki-find-replace .neiki-modal-header h3 {
+  color: var(--neiki-text-primary);
+}
+
+.neiki-find-replace .neiki-modal-close {
+  cursor: pointer;
 }
 
 .neiki-find-replace-title {
@@ -2494,8 +2520,8 @@
   }
 
   .neiki-find-replace {
-    width: 100%;
-    border-radius: 0;
+    width: calc(100% - 16px);
+    max-width: 360px;
   }
 
   .neiki-checkbox-wrapper {
@@ -2506,6 +2532,13 @@
   .neiki-color-picker {
     left: auto;
     right: 0;
+  }
+}
+
+/* Keep the block-grip gutter on narrow desktop windows. */
+@media (max-width: 768px) and (hover: hover) and (pointer: fine) {
+  .neiki-content {
+    padding-left: 52px;
   }
 }
 

@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 3.8.0
+ * Version: 3.9.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -1442,6 +1442,38 @@
     }
   };
 
+  const MEDIA_EDIT_TRANSLATIONS = {
+    en: ['Edit Image', 'Edit Video'],
+    cs: ['Upravit obrázek', 'Upravit video'],
+    zh: ['编辑图片', '编辑视频'],
+    es: ['Editar imagen', 'Editar video'],
+    de: ['Bild bearbeiten', 'Video bearbeiten'],
+    fr: ["Modifier l'image", 'Modifier la vidéo'],
+    pt: ['Editar imagem', 'Editar vídeo'],
+    ja: ['画像を編集', '動画を編集']
+  };
+
+  Object.entries(MEDIA_EDIT_TRANSLATIONS).forEach(([language, labels]) => {
+    TRANSLATIONS[language]['imageToolbar.editImage'] = labels[0];
+    TRANSLATIONS[language]['videoToolbar.editVideo'] = labels[1];
+  });
+
+  const MEDIA_URL_TRANSLATIONS = {
+    en: ['Please enter a valid image URL.', 'Please enter a valid video URL.'],
+    cs: ['Zadejte prosím platnou URL obrázku.', 'Zadejte prosím platnou URL videa.'],
+    zh: ['请输入有效的图片 URL。', '请输入有效的视频 URL。'],
+    es: ['Introduzca una URL de imagen válida.', 'Introduzca una URL de video válida.'],
+    de: ['Bitte geben Sie eine gültige Bild-URL ein.', 'Bitte geben Sie eine gültige Video-URL ein.'],
+    fr: ["Veuillez saisir une URL d’image valide.", 'Veuillez saisir une URL vidéo valide.'],
+    pt: ['Insira uma URL de imagem válida.', 'Insira uma URL de vídeo válida.'],
+    ja: ['有効な画像 URL を入力してください。', '有効な動画 URL を入力してください。']
+  };
+
+  Object.entries(MEDIA_URL_TRANSLATIONS).forEach(([language, labels]) => {
+    TRANSLATIONS[language]['modal.invalidImageUrl'] = labels[0];
+    TRANSLATIONS[language]['modal.invalidVideoUrl'] = labels[1];
+  });
+
   // Current language (will be set per editor instance)
   let _currentLanguage = 'en';
 
@@ -2132,6 +2164,7 @@
     moveUp: '<svg viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>',
     moveDown: '<svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>',
     replaceImage: '<svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/><path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>',
+    edit: '<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.03 0-1.42l-2.34-2.33a.996.996 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>',
     cut: '<svg viewBox="0 0 24 24"><path d="M9.64 7.64c.23-.5.36-1.05.36-1.64 0-2.21-1.79-4-4-4S2 3.79 2 6s1.79 4 4 4c.59 0 1.14-.13 1.64-.36L10 12l-2.36 2.36C7.14 14.13 6.59 14 6 14c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4c0-.59-.13-1.14-.36-1.64L12 14l7 7h3v-1L9.64 7.64zM6 8c-1.1 0-2-.89-2-2s.9-2 2-2 2 .89 2 2-.9 2-2 2zm0 12c-1.1 0-2-.89-2-2s.9-2 2-2 2 .89 2 2-.9 2-2 2zm6-7.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zM19 3l-6 6 2 2 7-7V3z"/></svg>',
     copy: '<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>',
     paste: '<svg viewBox="0 0 24 24"><path d="M19 2h-4.18C14.4.84 13.3 0 12 0S9.6.84 9.18 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/></svg>',
@@ -2319,6 +2352,7 @@
       this.editor = editor;
       this.activeModal = null;
       this.overlay = null;
+      this.findReplacePanel = null;
     }
 
     createOverlay() {
@@ -2350,6 +2384,11 @@
     }
 
     open(type, data = {}) {
+      if (type === 'findReplace') {
+        this.openFindReplacePanel(data);
+        return;
+      }
+
       if (this.editor.saveCurrentSelection) {
         this.editor.saveCurrentSelection();
       }
@@ -2397,6 +2436,75 @@
           this.activeModal = null;
         }
       }
+    }
+
+    openFindReplacePanel(data = {}) {
+      if (this.findReplacePanel) {
+        const findInput = this.findReplacePanel.querySelector('[name="find"]');
+        if (findInput) findInput.focus();
+        return;
+      }
+
+      const panel = this.createFindReplaceModal(data);
+      this.findReplacePanel = panel;
+      this.editor.contentWrapper.appendChild(panel);
+      this.makeFindReplacePanelDraggable(panel);
+      panel.classList.add('show');
+
+      const findInput = panel.querySelector('[name="find"]');
+      if (findInput) findInput.focus();
+    }
+
+    closeFindReplacePanel() {
+      if (!this.findReplacePanel) return;
+      if (typeof this.findReplacePanel._cleanup === 'function') {
+        this.findReplacePanel._cleanup();
+      }
+      this.findReplacePanel.remove();
+      this.findReplacePanel = null;
+    }
+
+    makeFindReplacePanelDraggable(panel) {
+      const header = panel.querySelector('.neiki-modal-header');
+      if (!header) return;
+
+      header.addEventListener('pointerdown', (event) => {
+        if (event.button !== 0 || event.target.closest('button, input, label')) return;
+
+        const wrapperRect = this.editor.contentWrapper.getBoundingClientRect();
+        const panelRect = panel.getBoundingClientRect();
+        const offsetX = event.clientX - panelRect.left;
+        const offsetY = event.clientY - panelRect.top;
+
+        panel.style.right = 'auto';
+        panel.style.left = (panelRect.left - wrapperRect.left) + 'px';
+        panel.style.top = (panelRect.top - wrapperRect.top) + 'px';
+        header.setPointerCapture(event.pointerId);
+
+        const move = (moveEvent) => {
+          const maxLeft = Math.max(0, this.editor.contentWrapper.clientWidth - panel.offsetWidth);
+          const maxTop = Math.max(0, this.editor.contentWrapper.clientHeight - panel.offsetHeight);
+          const left = Math.max(0, Math.min(moveEvent.clientX - wrapperRect.left - offsetX, maxLeft));
+          const top = Math.max(0, Math.min(moveEvent.clientY - wrapperRect.top - offsetY, maxTop));
+          panel.style.left = left + 'px';
+          panel.style.top = top + 'px';
+        };
+        const stop = () => {
+          document.removeEventListener('pointermove', move);
+          document.removeEventListener('pointerup', stop);
+          document.removeEventListener('pointercancel', stop);
+        };
+
+        document.addEventListener('pointermove', move);
+        document.addEventListener('pointerup', stop);
+        document.addEventListener('pointercancel', stop);
+        event.preventDefault();
+      });
+    }
+
+    destroy() {
+      this.close();
+      this.closeFindReplacePanel();
     }
 
     createLinkModal(data) {
@@ -2481,21 +2589,56 @@
       return modal;
     }
 
+    updateMediaElement(media, url, text, width) {
+      const isVideo = media && media.tagName === 'VIDEO';
+      const mediaType = isVideo ? 'video' : 'image';
+      if (!media || !this.editor.contentArea.contains(media) || !Utils.isSafeUrl(url, mediaType)) {
+        return false;
+      }
+
+      media.setAttribute('src', url);
+      if (isVideo) {
+        if (text) {
+          media.setAttribute('title', text);
+        } else {
+          media.removeAttribute('title');
+        }
+      } else {
+        media.setAttribute('alt', text || '');
+      }
+
+      if (width) {
+        media.setAttribute('width', width);
+        media.style.width = width;
+      } else {
+        media.removeAttribute('width');
+        media.style.removeProperty('width');
+      }
+
+      this.editor.history.record();
+      this.editor.syncToOriginal();
+      this.editor.triggerChange();
+      this.editor.updateStatusBar();
+      return true;
+    }
+
     createImageModal(data) {
       const modal = Utils.createElement('div', { className: 'neiki-modal' });
+      const media = data.media;
+      const isEditing = !!(media && media.tagName === 'IMG' && this.editor.contentArea.contains(media));
       const hasUploadHandler = typeof this.editor.config.imageUploadHandler === 'function';
       const uploadHint = hasUploadHandler ? t('modal.handledViaUploader') : t('modal.convertedToBase64');
 
       modal.innerHTML = `
                 <div class="neiki-modal-header">
-                    <h3>${Utils.escapeHTML(t('modal.insertImage'))}</h3>
+                    <h3>${Utils.escapeHTML(isEditing ? t('imageToolbar.editImage') : t('modal.insertImage'))}</h3>
                     <button class="neiki-modal-close" type="button">${Icons.close}</button>
                 </div>
                 <div class="neiki-modal-body">
                     <div class="neiki-form-group">
                         <label>${Utils.escapeHTML(t('modal.uploadImage'))}</label>
                         <div class="neiki-image-upload-zone" role="button" tabindex="0">
-                            <input type="file" class="neiki-image-upload-input" name="upload" accept="image/*" multiple>
+                            <input type="file" class="neiki-image-upload-input" name="upload" accept="image/*"${isEditing ? '' : ' multiple'}>
                             <div class="neiki-image-upload-icon">${Icons.image}</div>
                             <div class="neiki-image-upload-title">${Utils.escapeHTML(t('modal.uploadImage'))}</div>
                             <div class="neiki-image-upload-hint">${Utils.escapeHTML(uploadHint)}</div>
@@ -2531,11 +2674,12 @@
       const insertBtn = modal.querySelector('[data-action="insert"]');
       let pendingFiles = [];
       let uploadDragCounter = 0;
+      let fileReadToken = 0;
 
-      urlInput.value = data.url || '';
+      urlInput.value = isEditing ? media.getAttribute('src') || '' : data.url || '';
       modal.querySelector('[name="alt"]').placeholder = t('modal.describeImage');
-      modal.querySelector('[name="alt"]').value = data.alt || '';
-      modal.querySelector('[name="width"]').value = data.width || '';
+      modal.querySelector('[name="alt"]').value = isEditing ? media.getAttribute('alt') || '' : data.alt || '';
+      modal.querySelector('[name="width"]').value = isEditing ? media.style.width || media.getAttribute('width') || '' : data.width || '';
 
       const updateUploadFeedback = (files) => {
         uploadZone.classList.toggle('has-files', files.length > 0);
@@ -2552,9 +2696,11 @@
         }
 
         if (files.length === 0) {
+          fileReadToken++;
           pendingFiles = [];
           updateUploadFeedback([]);
           urlInput.disabled = false;
+          insertBtn.disabled = false;
           return;
         }
 
@@ -2562,15 +2708,30 @@
         updateUploadFeedback(files);
 
         if (files.length === 1 && !hasUploadHandler) {
+          const readToken = ++fileReadToken;
+          insertBtn.disabled = true;
+          urlInput.value = '';
+          urlInput.disabled = true;
           const reader = new FileReader();
           reader.onload = (ev) => {
+            if (readToken !== fileReadToken) return;
             urlInput.value = ev.target.result;
-            urlInput.disabled = true;
+            insertBtn.disabled = false;
+          };
+          reader.onerror = () => {
+            if (readToken !== fileReadToken) return;
+            pendingFiles = [];
+            updateUploadFeedback([]);
+            urlInput.disabled = false;
+            insertBtn.disabled = false;
+            alert(t('modal.uploadError'));
           };
           reader.readAsDataURL(files[0]);
         } else {
+          fileReadToken++;
           urlInput.value = '';
           urlInput.disabled = true;
+          insertBtn.disabled = false;
         }
       };
 
@@ -2619,10 +2780,12 @@
       // Clear URL when upload is cleared
       urlInput.addEventListener('input', () => {
         if (!urlInput.value) {
+          fileReadToken++;
           urlInput.disabled = false;
           uploadInput.value = '';
           pendingFiles = [];
           updateUploadFeedback([]);
+          insertBtn.disabled = false;
         }
       });
 
@@ -2633,29 +2796,42 @@
         const width = modal.querySelector('[name="width"]').value;
 
         if (pendingFiles.length > 0 && hasUploadHandler) {
-          // Use imageUploadHandler for all pending files
           insertBtn.disabled = true;
           insertBtn.textContent = t('modal.uploadingImage');
 
+          let shouldClose = true;
           try {
-            const uploadedImages = [];
-            for (const file of pendingFiles) {
-              const url = await this.editor.config.imageUploadHandler(file);
-              if (url) {
-                uploadedImages.push({ url, alt: alt || file.name });
+            if (isEditing) {
+              const url = await this.editor.config.imageUploadHandler(pendingFiles[0]);
+              if (!url || !this.updateMediaElement(media, url, alt, width)) {
+                shouldClose = false;
+                alert(t(url ? 'modal.invalidImageUrl' : 'modal.uploadError'));
               }
+            } else {
+              const uploadedImages = [];
+              for (const file of pendingFiles) {
+                const url = await this.editor.config.imageUploadHandler(file);
+                if (url) {
+                  uploadedImages.push({ url, alt: alt || file.name });
+                }
+              }
+              this.editor.restoreSavedSelection();
+              uploadedImages.forEach(image => {
+                this.editor.commands.insertImage(image.url, image.alt, width);
+              });
             }
-            this.editor.restoreSavedSelection();
-            uploadedImages.forEach(image => {
-              this.editor.commands.insertImage(image.url, image.alt, width);
-            });
           } catch (err) {
+            shouldClose = false;
             alert(t('modal.uploadError'));
           }
 
-          this.close();
-        } else if (pendingFiles.length > 1) {
-          // Multiple files without handler — insert each as base64
+          if (shouldClose) {
+            this.close();
+          } else {
+            insertBtn.disabled = false;
+            insertBtn.textContent = t('modal.insert');
+          }
+        } else if (pendingFiles.length > 1 && !isEditing) {
           insertBtn.disabled = true;
           insertBtn.textContent = t('modal.uploadingImage');
 
@@ -2673,11 +2849,17 @@
 
           this.close();
         } else {
-          // Single file (already in URL field) or direct URL input
           const url = modal.querySelector('[name="url"]').value;
           if (url) {
-            this.editor.restoreSavedSelection();
-            this.editor.commands.insertImage(url, alt, width);
+            if (isEditing) {
+              if (!this.updateMediaElement(media, url, alt, width)) {
+                alert(t('modal.invalidImageUrl'));
+                return;
+              }
+            } else {
+              this.editor.restoreSavedSelection();
+              this.editor.commands.insertImage(url, alt, width);
+            }
           }
           this.close();
         }
@@ -2688,12 +2870,14 @@
 
     createVideoModal(data) {
       const modal = Utils.createElement('div', { className: 'neiki-modal' });
+      const media = data.media;
+      const isEditing = !!(media && media.tagName === 'VIDEO' && this.editor.contentArea.contains(media));
       const hasUploadHandler = typeof this.editor.config.videoUploadHandler === 'function';
       const uploadHint = hasUploadHandler ? t('modal.handledViaUploader') : t('modal.convertedVideoToBase64');
 
       modal.innerHTML = `
                 <div class="neiki-modal-header">
-                    <h3>${Utils.escapeHTML(t('modal.insertVideo'))}</h3>
+                    <h3>${Utils.escapeHTML(isEditing ? t('videoToolbar.editVideo') : t('modal.insertVideo'))}</h3>
                     <button class="neiki-modal-close" type="button">${Icons.close}</button>
                 </div>
                 <div class="neiki-modal-body">
@@ -2736,11 +2920,12 @@
       const insertBtn = modal.querySelector('[data-action="insert"]');
       let pendingFile = null;
       let uploadDragCounter = 0;
+      let fileReadToken = 0;
 
-      urlInput.value = data.url || '';
+      urlInput.value = isEditing ? media.getAttribute('src') || '' : data.url || '';
       modal.querySelector('[name="title"]').placeholder = t('modal.describeVideo');
-      modal.querySelector('[name="title"]').value = data.title || '';
-      modal.querySelector('[name="width"]').value = data.width || '';
+      modal.querySelector('[name="title"]').value = isEditing ? media.getAttribute('title') || '' : data.title || '';
+      modal.querySelector('[name="width"]').value = isEditing ? media.style.width || media.getAttribute('width') || '' : data.width || '';
 
       const updateUploadFeedback = (file) => {
         uploadZone.classList.toggle('has-files', !!file);
@@ -2751,10 +2936,12 @@
         const file = Array.from(fileList || []).find(f => f.type.startsWith('video/'));
 
         if (!file) {
+          fileReadToken++;
           if (fileList && fileList.length > 0) alert(t('modal.invalidVideoFile'));
           pendingFile = null;
           updateUploadFeedback(null);
           urlInput.disabled = false;
+          insertBtn.disabled = false;
           return;
         }
 
@@ -2762,15 +2949,30 @@
         updateUploadFeedback(file);
 
         if (!hasUploadHandler) {
+          const readToken = ++fileReadToken;
+          insertBtn.disabled = true;
+          urlInput.value = '';
+          urlInput.disabled = true;
           const reader = new FileReader();
           reader.onload = (ev) => {
+            if (readToken !== fileReadToken) return;
             urlInput.value = ev.target.result;
-            urlInput.disabled = true;
+            insertBtn.disabled = false;
+          };
+          reader.onerror = () => {
+            if (readToken !== fileReadToken) return;
+            pendingFile = null;
+            updateUploadFeedback(null);
+            urlInput.disabled = false;
+            insertBtn.disabled = false;
+            alert(t('modal.videoUploadError'));
           };
           reader.readAsDataURL(file);
         } else {
+          fileReadToken++;
           urlInput.value = '';
           urlInput.disabled = true;
+          insertBtn.disabled = false;
         }
       };
 
@@ -2817,10 +3019,12 @@
 
       urlInput.addEventListener('input', () => {
         if (!urlInput.value) {
+          fileReadToken++;
           urlInput.disabled = false;
           uploadInput.value = '';
           pendingFile = null;
           updateUploadFeedback(null);
+          insertBtn.disabled = false;
         }
       });
 
@@ -2834,24 +3038,46 @@
           insertBtn.disabled = true;
           insertBtn.textContent = t('modal.uploadingVideo');
 
+          let shouldClose = true;
           try {
             const url = await this.editor.config.videoUploadHandler(pendingFile);
-            if (url) {
+            if (!url) {
+              shouldClose = false;
+              alert(t('modal.videoUploadError'));
+            } else if (isEditing) {
+              if (!this.updateMediaElement(media, url, title || pendingFile.name, width)) {
+                shouldClose = false;
+                alert(t('modal.invalidVideoUrl'));
+              }
+            } else {
               this.editor.restoreSavedSelection();
               this.editor.commands.insertVideo(url, title || pendingFile.name, width);
             }
           } catch (err) {
+            shouldClose = false;
             alert(t('modal.videoUploadError'));
           }
 
-          this.close();
+          if (shouldClose) {
+            this.close();
+          } else {
+            insertBtn.disabled = false;
+            insertBtn.textContent = t('modal.insert');
+          }
           return;
         }
 
         const url = modal.querySelector('[name="url"]').value;
         if (url) {
-          this.editor.restoreSavedSelection();
-          this.editor.commands.insertVideo(url, title, width);
+          if (isEditing) {
+            if (!this.updateMediaElement(media, url, title, width)) {
+              alert(t('modal.invalidVideoUrl'));
+              return;
+            }
+          } else {
+            this.editor.restoreSavedSelection();
+            this.editor.commands.insertVideo(url, title, width);
+          }
         }
         this.close();
       });
@@ -2909,7 +3135,7 @@
     }
 
     createFindReplaceModal(data) {
-      const modal = Utils.createElement('div', { className: 'neiki-modal neiki-modal-wide' });
+      const modal = Utils.createElement('div', { className: 'neiki-find-replace neiki-modal-wide' });
 
       modal.innerHTML = `
                 <div class="neiki-modal-header">
@@ -2951,7 +3177,7 @@
       replaceInput.placeholder = t('modal.replacementText');
 
       const clearHighlights = () => {
-        const highlights = this.editor.contentArea.querySelectorAll('.neiki-highlight-find');
+        const highlights = this.editor.contentArea.querySelectorAll('[data-neiki-find-highlight]');
         highlights.forEach(h => {
           const text = document.createTextNode(h.textContent);
           h.parentNode.replaceChild(text, h);
@@ -3006,6 +3232,7 @@
               }
               const span = document.createElement('span');
               span.className = 'neiki-highlight-find';
+              span.setAttribute('data-neiki-find-highlight', 'true');
               span.textContent = match[0];
               frag.appendChild(span);
               currentMatches.push(span);
@@ -3043,13 +3270,14 @@
         if (currentIndex >= 0 && currentMatches[currentIndex]) {
           const match = currentMatches[currentIndex];
           match.textContent = replaceInput.value;
-          match.classList.remove('neiki-highlight-find', 'neiki-highlight-current');
-          currentMatches.splice(currentIndex, 1);
-          currentIndex--;
+          clearHighlights();
+          currentMatches = [];
+          currentIndex = -1;
           this.editor.history.record();
+          this.editor.syncToOriginal();
           this.editor.triggerChange();
-          resultsDiv.textContent = t('modal.matchesRemaining', { count: currentMatches.length });
-          if (currentMatches.length > 0) findNext();
+          this.editor.updateStatusBar();
+          findMatches();
         }
       };
 
@@ -3095,7 +3323,9 @@
         });
 
         this.editor.history.record();
+        this.editor.syncToOriginal();
         this.editor.triggerChange();
+        this.editor.updateStatusBar();
         currentMatches = [];
         currentIndex = -1;
         resultsDiv.textContent = t('modal.replacedOccurrences', { count: count });
@@ -3103,12 +3333,12 @@
 
       findInput.addEventListener('input', Utils.debounce(findMatches, 300));
       modal.querySelector('.neiki-modal-close').addEventListener('click', () => {
-        clearHighlights();
-        this.close();
+        this.closeFindReplacePanel();
       });
       modal.querySelector('[data-action="findNext"]').addEventListener('click', findNext);
       modal.querySelector('[data-action="replaceOne"]').addEventListener('click', replaceOne);
       modal.querySelector('[data-action="replaceAll"]').addEventListener('click', replaceAll);
+      modal._cleanup = clearHighlights;
 
       return modal;
     }
@@ -3125,7 +3355,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.svg" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.8.0</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.9.0</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -5474,20 +5704,8 @@
         } catch (e) {}
         return;
       }
-      // Wrap bare text nodes and normalize non-block elements into <p>
-      const BLOCK_TAGS = new Set(['P','H1','H2','H3','H4','H5','H6','UL','OL','BLOCKQUOTE','TABLE','HR','PRE','FIGURE','SECTION','ARTICLE']);
-      const childNodes = Array.from(this.contentArea.childNodes);
-
-      // First pass: convert stray <div> to <p>
-      childNodes.forEach(node => {
-        if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'DIV') {
-          const p = document.createElement('p');
-          while (node.firstChild) p.appendChild(node.firstChild);
-          node.parentNode.replaceChild(p, node);
-        }
-      });
-
-      // Second pass: group consecutive inline/text nodes into <p>
+      // Keep supported top-level block elements intact so custom HTML and attributes survive source/visual mode changes.
+      const BLOCK_TAGS = new Set(['DIV','P','H1','H2','H3','H4','H5','H6','UL','OL','BLOCKQUOTE','TABLE','HR','PRE','FIGURE','SECTION','ARTICLE']);
       const updatedNodes = Array.from(this.contentArea.childNodes);
       let inlineGroup = [];
 
@@ -5550,6 +5768,10 @@
         const media = wrapper.querySelector('img, video');
         if (media) wrapper.parentNode.insertBefore(media, wrapper);
         wrapper.remove();
+      });
+      // Unwrap temporary Find & Replace highlights without changing matched text.
+      clone.querySelectorAll('[data-neiki-find-highlight]').forEach(highlight => {
+        highlight.replaceWith(...highlight.childNodes);
       });
       // Remove grip handles, placeholders, resize handles
       clone.querySelectorAll('.neiki-block-grip, .neiki-block-placeholder, .neiki-table-col-resize-handle, .neiki-img-resize-handle, .neiki-img-size-label, .neiki-img-toolbar').forEach(el => el.remove());
@@ -5636,7 +5858,7 @@
     }
 
     destroy() {
-      this.modal.close();
+      this.modal.destroy();
       this.dropdown.close();
       this.colorPicker.close();
 
@@ -6582,6 +6804,18 @@
       const sep1 = document.createElement('span');
       sep1.className = 'neiki-img-toolbar-separator';
 
+      const editBtn = document.createElement('button');
+      editBtn.className = 'neiki-img-toolbar-btn';
+      editBtn.type = 'button';
+      editBtn.title = isVideo ? t('videoToolbar.editVideo') : t('imageToolbar.editImage');
+      editBtn.setAttribute('aria-label', editBtn.title);
+      editBtn.innerHTML = Icons.edit;
+      editBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.editSelectedMedia();
+      });
+
       const replaceBtn = document.createElement('button');
       replaceBtn.className = 'neiki-img-toolbar-btn';
       replaceBtn.type = 'button';
@@ -6608,6 +6842,7 @@
       this.imgToolbar.appendChild(moveUpBtn);
       this.imgToolbar.appendChild(moveDownBtn);
       this.imgToolbar.appendChild(sep1);
+      this.imgToolbar.appendChild(editBtn);
       this.imgToolbar.appendChild(replaceBtn);
       this.imgToolbar.appendChild(deleteBtn);
       this.wrapper.appendChild(this.imgToolbar);
@@ -6660,6 +6895,12 @@
           this.imgToolbar.style.transform = 'none';
         }
       });
+    }
+
+    editSelectedMedia() {
+      if (!this.currentImg || !this.editor.contentArea.contains(this.currentImg)) return;
+      const type = this.currentImg.tagName === 'VIDEO' ? 'video' : 'image';
+      this.editor.modal.open(type, { media: this.currentImg });
     }
 
     replaceImage() {
@@ -7176,7 +7417,15 @@
       // Show grip on hover
       this.editor.contentArea.addEventListener('mousemove', (e) => {
         if (this.isDragging) return;
-        const block = this.getBlockAt(e.target);
+        let block = this.getBlockAt(e.target);
+        // The left gutter reserved for the grip isn't covered by any block
+        // element, so moving through it briefly reports the content area
+        // itself as the target. Fall back to a vertical hit-test so the
+        // grip doesn't disappear while the cursor crosses the gutter on
+        // its way to the grip.
+        if (!block) {
+          block = this.getBlockNearGutter(e.clientX, e.clientY);
+        }
         if (block) {
           this.showGrip(block);
         } else {
@@ -7198,6 +7447,18 @@
       }
       if (node && node.nodeType === Node.ELEMENT_NODE && node.parentNode === this.editor.contentArea) {
         return node;
+      }
+      return null;
+    }
+
+    getBlockNearGutter(clientX, clientY) {
+      const wrapperRect = this.editor.contentWrapper.getBoundingClientRect();
+      // Only applies to the reserved left gutter, not arbitrary space to the left of the editor.
+      if (clientX < wrapperRect.left || clientX > wrapperRect.left + 60) return null;
+      const blocks = this.getTopLevelBlocks();
+      for (const block of blocks) {
+        const rect = block.getBoundingClientRect();
+        if (clientY >= rect.top && clientY <= rect.bottom) return block;
       }
       return null;
     }
@@ -7535,6 +7796,7 @@
       this.editor = editor;
       this.menu = null;
       this.currentCell = null;
+      this.lastPointerType = null;
 
       this.createMenu();
       this.bindEvents();
@@ -7567,7 +7829,22 @@
     }
 
     bindEvents() {
+      const rememberPointerType = (event) => {
+        this.lastPointerType = event.pointerType;
+      };
+      if (typeof window.PointerEvent === 'function') {
+        this.editor.contentArea.addEventListener('pointerdown', rememberPointerType, true);
+      } else {
+        this.editor.contentArea.addEventListener('touchstart', () => {
+          this.lastPointerType = 'touch';
+        }, { passive: true, capture: true });
+        this.editor.contentArea.addEventListener('mousedown', () => {
+          this.lastPointerType = 'mouse';
+        }, true);
+      }
+
       this.editor.contentArea.addEventListener('contextmenu', (e) => {
+        if (this.usesNativeTouchContextMenu(e)) return;
         const cell = e.target.closest('td, th');
         if (cell) {
           e.preventDefault();
@@ -7585,6 +7862,12 @@
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') this.hide();
       });
+    }
+
+    usesNativeTouchContextMenu(event) {
+      const pointerType = event?.pointerType || this.lastPointerType;
+      if (pointerType) return pointerType === 'touch';
+      return typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
     }
 
     syncThemeClasses() {
@@ -7743,6 +8026,7 @@
     constructor(editor) {
       this.editor = editor;
       this.menu = null;
+      this.lastPointerType = null;
 
       this.createMenu();
       this.bindEvents();
@@ -7801,7 +8085,22 @@
     }
 
     bindEvents() {
+      const rememberPointerType = (event) => {
+        this.lastPointerType = event.pointerType;
+      };
+      if (typeof window.PointerEvent === 'function') {
+        this.editor.contentArea.addEventListener('pointerdown', rememberPointerType, true);
+      } else {
+        this.editor.contentArea.addEventListener('touchstart', () => {
+          this.lastPointerType = 'touch';
+        }, { passive: true, capture: true });
+        this.editor.contentArea.addEventListener('mousedown', () => {
+          this.lastPointerType = 'mouse';
+        }, true);
+      }
+
       this.editor.contentArea.addEventListener('contextmenu', (e) => {
+        if (this.usesNativeTouchContextMenu(e)) return;
         if (e.target.closest('td, th')) return; // handled by TableContextMenu
 
         e.preventDefault();
@@ -7820,6 +8119,12 @@
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') this.hide();
       });
+    }
+
+    usesNativeTouchContextMenu(event) {
+      const pointerType = event?.pointerType || this.lastPointerType;
+      if (pointerType) return pointerType === 'touch';
+      return typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
     }
 
     show(x, y) {

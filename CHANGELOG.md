@@ -1,4 +1,11 @@
-# Changelog
+Napiš m # Changelog
+
+## [3.9.0]
+- On touch context-menu interactions, menus now fall back to the browser's native UI, preserving smooth long-press text selection and editing controls.
+- Added Edit actions to selected image and video toolbars. Existing media now opens a pre-filled dialog that can update its URL, alternative text or title, width, or file without reinserting the element.
+- Added a dedicated desktop gutter for the block drag handle so it no longer overlaps the first character of editable content, and fixed the handle disappearing while the cursor crossed that gutter on the way to it.
+- Reworked Find & Replace into a non-modal, draggable panel so searching and replacing no longer blocks interaction with editor content.
+- Preserved supported top-level `<div>` elements and their safe attributes when switching between HTML source and visual mode, preventing custom classes from being stripped during later edits.
 
 ## [3.8.0]
 - Added the `formatPainter` toolbar button, which copies the selected text's inline formatting and applies it once to the next selected or clicked text. It appears directly before `removeFormat` in the default toolbar.

@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/web%20components-29ABE2.svg?style=for-the-badge&logo=webcomponentsdotorg&logoColor=white" alt="Web Components">
   <br>
   <img src="https://img.shields.io/badge/License-AGPL--3.0-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-3.8.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-3.9.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -101,16 +101,16 @@ If you want a content editor that you can read, host, and reason about as a sing
 - Left, center, right, and justify alignment
 - Blockquotes and horizontal rules
 - **Tables** — configurable rows/columns and optional header row, a right-click context menu (insert/delete rows and columns, delete table, merge and split cells), and drag-to-resize columns
-- **Images** — insert by URL, file upload, drag & drop, or clipboard paste; resize via corner handles with a live size label; replace or delete from a contextual image toolbar
-- **Video** — insert by URL, file upload, or drag & drop; rendered as `<video controls>` and resizable like images
+- **Images** — insert by URL, file upload, drag & drop, or clipboard paste; resize via corner handles with a live size label; edit URL, alt text, or width, replace, or delete from a contextual image toolbar
+- **Video** — insert by URL, file upload, or drag & drop; rendered as `<video controls>`, resizable like images, and editable from its contextual toolbar
 
 ### Editing experience
 
-- **Right-click context menu** — Undo, Redo, Cut, Copy, Paste, **Paste as Plain Text**, Select All, and Remove Formatting, themed to match the active editor theme; disable it entirely with `contextMenu: false`
+- **Right-click context menu** — on desktop, Undo, Redo, Cut, Copy, Paste, **Paste as Plain Text**, Select All, and Remove Formatting, themed to match the active editor theme; touch input uses the browser's native context menu to preserve long-press selection controls
 - **Floating toolbar** that appears on text selection (move block up/down, bold, italic, underline, strikethrough, insert link)
-- **Block drag & drop** reordering using a grip handle, with ghost preview and drop placeholder
-- **Find & Replace** with case-sensitive and regular-expression modes
-- **HTML source view** with syntax highlighting
+- **Block drag & drop** reordering using a grip handle in a dedicated left gutter, with ghost preview and drop placeholder
+- **Find & Replace** in a draggable, non-modal panel with case-sensitive and regular-expression modes
+- **HTML source view** with syntax highlighting that preserves supported custom block attributes
 - Undo / redo, autosave to `localStorage`, fullscreen mode, content preview, download as HTML, and print
 - Status bar showing word count, character count, and the current block type
 
@@ -140,7 +140,7 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 **Pin a specific version**
 
 ```html
-<script src="https://cdn.neikiri.dev/neiki-editor/3.8.0/neiki-editor.min.js"></script>
+<script src="https://cdn.neikiri.dev/neiki-editor/3.9.0/neiki-editor.min.js"></script>
 ```
 
 **Load CSS and JS separately**
@@ -151,8 +151,8 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 <script src="https://cdn.neikiri.dev/neiki-editor/neiki-editor.js"></script>
 
 <!-- Or pinned -->
-<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/3.8.0/neiki-editor.css">
-<script src="https://cdn.neikiri.dev/neiki-editor/3.8.0/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/3.9.0/neiki-editor.css">
+<script src="https://cdn.neikiri.dev/neiki-editor/3.9.0/neiki-editor.js"></script>
 ```
 
 **Alternative CDN — jsDelivr**
@@ -160,7 +160,7 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 ```html
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.min.js"></script>
 <!-- Pinned -->
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.8.0/dist/neiki-editor.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.9.0/dist/neiki-editor.min.js"></script>
 ```
 
 **Package manager**
@@ -261,7 +261,7 @@ const editor = new NeikiEditor('#editor', {
 | `theme` | `string` | `'light'` | `'light'`, `'dark'`, `'blue'`, `'dark-blue'`, `'midnight'`, `'void'`, `'autumn'`, or `'dracula'` |
 | `language` | `string` | `'en'` | UI language (see list above) |
 | `translations` | `object \| null` | `null` | Custom translation keys, merged with built-ins |
-| `contextMenu` | `boolean` | `true` | Enable the custom right-click context menu. Set to `false` to fall back to the browser's native menu |
+| `contextMenu` | `boolean` | `true` | Enable the custom desktop right-click context menu. Touch input always retains the browser's native menu for long-press selection; set to `false` to use the native menu everywhere |
 | `autosaveKey` | `string \| null` | `null` | Custom `localStorage` scope for autosave |
 | `customClass` | `string \| null` | `null` | Custom content style class that replaces the default `neiki-content-default-style` class |
 | `toolbar` | `array` | *(full set)* | Toolbar button configuration |
