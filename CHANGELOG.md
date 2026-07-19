@@ -1,4 +1,4 @@
-Napiš m # Changelog
+# Changelog
 
 ## [3.9.0]
 - On touch context-menu interactions, menus now fall back to the browser's native UI, preserving smooth long-press text selection and editing controls.
