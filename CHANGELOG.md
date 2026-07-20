@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.10.0]
+- Fixed the non-modal Find & Replace panel so it remains in place in the viewport while the page or editor content is scrolled.
+- Fixed HTML source mode opening at the last line by no longer forcing focus into the built-in source textarea; source mode now preserves the editor scroll position.
+- Added the `viewCodeEditor` configuration option for replacing the built-in HTML source textarea with a third-party editor adapter or factory.
+- Fixed block drag-and-drop reordering when dragging a block upward.
+- Added public `editor.createModal(content, options)` and `editor.closeModal()` APIs so plugins can open themed custom modals.
+
 ## [3.9.0]
 - On touch context-menu interactions, menus now fall back to the browser's native UI, preserving smooth long-press text selection and editing controls.
 - Added Edit actions to selected image and video toolbars. Existing media now opens a pre-filled dialog that can update its URL, alternative text or title, width, or file without reinserting the element.

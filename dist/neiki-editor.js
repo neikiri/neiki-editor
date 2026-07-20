@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 3.9.0
+ * Version: 3.10.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -1543,6 +1543,8 @@
     showHelp: true,
     imageUploadHandler: null,
     videoUploadHandler: null,
+    // A source-editor adapter or factory. Adapters provide getValue() and setValue(value).
+    viewCodeEditor: null,
     customClass: null
   };
 
@@ -2428,6 +2430,37 @@
       if (firstInput) firstInput.focus();
     }
 
+    openCustom(content, options = {}) {
+      if (this.editor.saveCurrentSelection) {
+        this.editor.saveCurrentSelection();
+      }
+
+      this.close();
+      this.createOverlay();
+
+      const modal = Utils.createElement('div', {
+        className: options.className ? `neiki-modal ${options.className}` : 'neiki-modal'
+      });
+      if (typeof content === 'string') {
+        modal.innerHTML = content;
+      } else if (content instanceof Node) {
+        modal.appendChild(content);
+      } else {
+        throw new TypeError('NeikiEditor: modal content must be an HTML string or a DOM node.');
+      }
+
+      modal.querySelectorAll('.neiki-modal-close, [data-action="cancel"]').forEach(button => {
+        button.addEventListener('click', () => this.close());
+      });
+      this.activeModal = modal;
+      this.overlay.appendChild(modal);
+      this.overlay.classList.add('active');
+
+      const firstInput = modal.querySelector('input:not([type="file"]), textarea, select, button');
+      if (firstInput) firstInput.focus();
+      return modal;
+    }
+
     close() {
       if (this.overlay) {
         this.overlay.classList.remove('active');
@@ -2471,21 +2504,20 @@
       header.addEventListener('pointerdown', (event) => {
         if (event.button !== 0 || event.target.closest('button, input, label')) return;
 
-        const wrapperRect = this.editor.contentWrapper.getBoundingClientRect();
         const panelRect = panel.getBoundingClientRect();
         const offsetX = event.clientX - panelRect.left;
         const offsetY = event.clientY - panelRect.top;
 
         panel.style.right = 'auto';
-        panel.style.left = (panelRect.left - wrapperRect.left) + 'px';
-        panel.style.top = (panelRect.top - wrapperRect.top) + 'px';
+        panel.style.left = panelRect.left + 'px';
+        panel.style.top = panelRect.top + 'px';
         header.setPointerCapture(event.pointerId);
 
         const move = (moveEvent) => {
-          const maxLeft = Math.max(0, this.editor.contentWrapper.clientWidth - panel.offsetWidth);
-          const maxTop = Math.max(0, this.editor.contentWrapper.clientHeight - panel.offsetHeight);
-          const left = Math.max(0, Math.min(moveEvent.clientX - wrapperRect.left - offsetX, maxLeft));
-          const top = Math.max(0, Math.min(moveEvent.clientY - wrapperRect.top - offsetY, maxTop));
+          const maxLeft = Math.max(0, window.innerWidth - panel.offsetWidth);
+          const maxTop = Math.max(0, window.innerHeight - panel.offsetHeight);
+          const left = Math.max(0, Math.min(moveEvent.clientX - offsetX, maxLeft));
+          const top = Math.max(0, Math.min(moveEvent.clientY - offsetY, maxTop));
           panel.style.left = left + 'px';
           panel.style.top = top + 'px';
         };
@@ -3355,7 +3387,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.svg" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.9.0</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.10.0</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -5133,6 +5165,7 @@
       this.codeViewEditor = Utils.createElement('div', { className: 'neiki-code-view-editor' });
       this.codeViewEditor.appendChild(this.codeViewHighlight);
       this.codeViewEditor.appendChild(this.codeViewTextarea);
+      this.initializeCodeViewEditor();
       this.codeViewTextarea.addEventListener('input', () => this.renderCodeViewHighlight());
       this.codeViewTextarea.addEventListener('scroll', () => {
         this.codeViewHighlight.scrollTop = this.codeViewTextarea.scrollTop;
@@ -5650,6 +5683,14 @@
       URL.revokeObjectURL(url);
     }
 
+    createModal(content, options = {}) {
+      return this.modal.openCustom(content, options);
+    }
+
+    closeModal() {
+      this.modal.close();
+    }
+
     clearAll() {
       if (this.getContent().trim() && !confirm(t('confirm.clearAll'))) return;
       this.setContent('');
@@ -5865,6 +5906,9 @@
       if (this.imageResizer) this.imageResizer.destroy();
       if (this.tableColumnResizer) this.tableColumnResizer.destroy();
       if (this.blockDragDrop) this.blockDragDrop.destroy();
+      if (this.codeViewExternalEditor && typeof this.codeViewExternalEditor.destroy === 'function') {
+        this.codeViewExternalEditor.destroy();
+      }
 
       this.container.remove();
       this.originalElement.style.display = '';
@@ -5930,6 +5974,45 @@
         node = node.parentNode;
       }
       return 'p';
+    }
+
+    initializeCodeViewEditor() {
+      const configuredEditor = this.config.viewCodeEditor;
+      if (!configuredEditor) return;
+
+      try {
+        this.codeViewExternalEditor = typeof configuredEditor === 'function'
+          ? configuredEditor(this.codeViewEditor, this.formatHTMLSource(this.contentArea.innerHTML), this)
+          : configuredEditor;
+
+        if (!this.codeViewExternalEditor ||
+          typeof this.codeViewExternalEditor.getValue !== 'function' ||
+          typeof this.codeViewExternalEditor.setValue !== 'function') {
+          throw new TypeError('NeikiEditor: viewCodeEditor must provide getValue() and setValue(value).');
+        }
+
+        this.codeViewEditor.classList.add('neiki-code-view-editor-external');
+        this.codeViewTextarea.hidden = true;
+        this.codeViewHighlight.hidden = true;
+      } catch (error) {
+        this.codeViewExternalEditor = null;
+        console.error('NeikiEditor: Failed to initialize viewCodeEditor; using the built-in source editor instead.', error);
+      }
+    }
+
+    getCodeViewValue() {
+      return this.codeViewExternalEditor
+        ? this.codeViewExternalEditor.getValue()
+        : this.codeViewTextarea.value;
+    }
+
+    setCodeViewValue(value) {
+      if (this.codeViewExternalEditor) {
+        this.codeViewExternalEditor.setValue(value);
+      } else {
+        this.codeViewTextarea.value = value;
+        this.renderCodeViewHighlight();
+      }
     }
 
     formatHTMLSource(html) {
@@ -6041,15 +6124,18 @@
 
     toggleCodeView() {
       if (!this.isCodeViewOpen) {
-        this.codeViewTextarea.value = this.formatHTMLSource(this.contentArea.innerHTML);
-        this.renderCodeViewHighlight();
+        const contentScrollTop = this.contentArea.scrollTop;
+        this.setCodeViewValue(this.formatHTMLSource(this.contentArea.innerHTML));
         this.codeView.classList.add('show');
         this.isCodeViewOpen = true;
-        this.codeViewTextarea.focus();
+        if (!this.codeViewExternalEditor) {
+          this.codeViewTextarea.scrollTop = contentScrollTop;
+          this.codeViewHighlight.scrollTop = contentScrollTop;
+        }
         this._codeViewEsc = (e) => { if (e.key === 'Escape') this.toggleCodeView(); };
         document.addEventListener('keydown', this._codeViewEsc);
       } else {
-        this.contentArea.innerHTML = Utils.sanitizeHTML(this.codeViewTextarea.value);
+        this.contentArea.innerHTML = Utils.sanitizeHTML(this.getCodeViewValue());
         this.codeView.classList.remove('show');
         this.isCodeViewOpen = false;
         this.history.record();
@@ -7527,16 +7613,18 @@
       const onMove = (ev) => {
         this.ghostEl.style.top = (ev.clientY - this.offsetY) + 'px';
 
-        // Find target position
-        const target = this.getBlockFromPoint(ev.clientY);
-        if (target && target.block !== this.dragBlock && target.block !== this.placeholder) {
-          const targetRect = target.block.getBoundingClientRect();
-          const mid = targetRect.top + targetRect.height / 2;
-          if (ev.clientY < mid) {
-            target.block.parentNode.insertBefore(this.placeholder, target.block);
-          } else {
-            target.block.parentNode.insertBefore(this.placeholder, target.block.nextSibling);
-          }
+        // Determine the insertion point from every remaining block's midpoint.
+        // This keeps upward moves reliable even while the source block is hidden.
+        const remainingBlocks = this.getTopLevelBlocks().filter(block => block !== this.dragBlock);
+        const nextBlock = remainingBlocks.find(block => {
+          const blockRect = block.getBoundingClientRect();
+          return ev.clientY < blockRect.top + blockRect.height / 2;
+        });
+        if (nextBlock) {
+          nextBlock.parentNode.insertBefore(this.placeholder, nextBlock);
+        } else if (remainingBlocks.length > 0) {
+          const lastBlock = remainingBlocks[remainingBlocks.length - 1];
+          lastBlock.parentNode.insertBefore(this.placeholder, lastBlock.nextSibling);
         }
       };
 

@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/web%20components-29ABE2.svg?style=for-the-badge&logo=webcomponentsdotorg&logoColor=white" alt="Web Components">
   <br>
   <img src="https://img.shields.io/badge/License-AGPL--3.0-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-3.9.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-3.10.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -110,7 +110,7 @@ If you want a content editor that you can read, host, and reason about as a sing
 - **Floating toolbar** that appears on text selection (move block up/down, bold, italic, underline, strikethrough, insert link)
 - **Block drag & drop** reordering using a grip handle in a dedicated left gutter, with ghost preview and drop placeholder
 - **Find & Replace** in a draggable, non-modal panel with case-sensitive and regular-expression modes
-- **HTML source view** with syntax highlighting that preserves supported custom block attributes
+- **HTML source view** with syntax highlighting, preserved visual scroll position, and optional third-party code-editor integration that preserves supported custom block attributes
 - Undo / redo, autosave to `localStorage`, fullscreen mode, content preview, download as HTML, and print
 - Status bar showing word count, character count, and the current block type
 
@@ -140,7 +140,7 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 **Pin a specific version**
 
 ```html
-<script src="https://cdn.neikiri.dev/neiki-editor/3.9.0/neiki-editor.min.js"></script>
+<script src="https://cdn.neikiri.dev/neiki-editor/3.10.0/neiki-editor.min.js"></script>
 ```
 
 **Load CSS and JS separately**
@@ -151,8 +151,8 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 <script src="https://cdn.neikiri.dev/neiki-editor/neiki-editor.js"></script>
 
 <!-- Or pinned -->
-<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/3.9.0/neiki-editor.css">
-<script src="https://cdn.neikiri.dev/neiki-editor/3.9.0/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/3.10.0/neiki-editor.css">
+<script src="https://cdn.neikiri.dev/neiki-editor/3.10.0/neiki-editor.js"></script>
 ```
 
 **Alternative CDN — jsDelivr**
@@ -160,7 +160,7 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 ```html
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.min.js"></script>
 <!-- Pinned -->
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.9.0/dist/neiki-editor.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.10.0/dist/neiki-editor.min.js"></script>
 ```
 
 **Package manager**
@@ -269,6 +269,7 @@ const editor = new NeikiEditor('#editor', {
 | `showHelp` | `boolean` | `true` | Show the Help item in the More menu (⋯) |
 | `imageUploadHandler` | `function \| null` | `null` | Async `(file) => Promise<url>` for server/CDN image uploads instead of base64 |
 | `videoUploadHandler` | `function \| null` | `null` | Async `(file) => Promise<url>` for server/CDN video uploads instead of base64 |
+| `viewCodeEditor` | `object \| function \| null` | `null` | Third-party source-editor adapter or `(container, initialValue, editor) => adapter` factory; adapter implements `getValue()` and `setValue(value)` |
 | `onChange` | `function \| null` | `null` | Fired on every content change |
 | `onSave` | `function \| null` | `null` | Fired on save (Ctrl+S or More → Save) |
 | `onFocus` | `function \| null` | `null` | Fired when the editor gains focus |
@@ -304,6 +305,30 @@ new NeikiEditor('#editor', {
   floatingToolbar: ['bold', 'italic', 'underline', 'strikethrough']
 });
 ```
+
+### Custom source-code editor
+
+The built-in source view preserves its scroll position and does not steal focus when opened. To use a third-party editor, pass either an adapter or a factory. A factory receives the source-view container, the initial formatted HTML, and the Neiki editor instance; it must return an adapter with `getValue()` and `setValue(value)` methods. `destroy()` is called on the adapter when the Neiki's Editor is destroyed, when available.
+
+```javascript
+new NeikiEditor('#editor', {
+    viewCodeEditor: function(container, initialValue) {
+        const codeEditor = createEditor(container, {
+            language: 'xml',
+            value: initialValue
+        });
+
+        return {
+            getValue: () => codeEditor.getValue(),
+            setValue: (value) => codeEditor.setValue(value),
+            focus: () => codeEditor.focus?.(),
+            destroy: () => codeEditor.destroy?.()
+        };
+    }
+});
+```
+
+The adapter layer keeps Neiki's Editor independent of any specific editor package while ensuring changes made in source mode are applied when it closes.
 
 ### Themes
 
@@ -409,6 +434,8 @@ editor.destroy();                    // remove editor, restore original element
 editor.toggleFullscreen();
 editor.triggerSave();                // trigger onSave
 editor.previewContent();             // open preview modal
+editor.createModal('<div class="neiki-modal-body">Custom content</div>');
+editor.closeModal();
 editor.downloadContent();            // download as .html
 
 // Storage cleanup
