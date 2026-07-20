@@ -6106,18 +6106,119 @@
     renderCodeViewHighlight() {
       if (!this.codeViewHighlight || !this.codeViewTextarea) return;
       const source = this.codeViewTextarea.value;
-      const html = Utils.escapeHTML(source).replace(/(&lt;!--[\s\S]*?--&gt;)|(&lt;\/?[\s\S]*?&gt;)/g, (match, comment) => {
-        if (comment) return `<span class="neiki-html-comment">${match}</span>`;
+      const escapedSource = Utils.escapeHTML(source);
+      const isWhitespace = (char) => {
+        const code = char.charCodeAt(0);
+        return code === 32 || (code >= 9 && code <= 13);
+      };
+      const isAlphabetic = (char) => {
+        const code = char.charCodeAt(0);
+        return (code >= 65 && code <= 90) || (code >= 97 && code <= 122);
+      };
+      const isAttributeNameStart = (char) => isAlphabetic(char) || char === '_' || char === ':';
+      const isAttributeNameCharacter = (char) => {
+        const code = char.charCodeAt(0);
+        return isAttributeNameStart(char) || (code >= 48 && code <= 57) || char === '-' || char === '.';
+      };
+      const isTagNameCharacter = (char) => {
+        const code = char.charCodeAt(0);
+        return isAlphabetic(char) || (code >= 48 && code <= 57) || char === ':' || char === '-';
+      };
+      const highlightAttributes = (attributes) => {
+        let result = '';
+        let index = 0;
 
-        const tagParts = match.match(/^(&lt;\/?)([a-zA-Z0-9:-]+)([\s\S]*?)(\/?&gt;)$/);
-        if (!tagParts) return match;
+        while (index < attributes.length) {
+          if (!isWhitespace(attributes[index])) {
+            result += attributes[index++];
+            continue;
+          }
 
-        const attrs = tagParts[3].replace(/(\s+)([a-zA-Z_:][-a-zA-Z0-9_:.]*)(=)(&quot;.*?&quot;|&#039;.*?&#039;|[^\s&]+)?/g, (attrMatch, space, name, eq, value) => {
-          return `${space}<span class="neiki-html-attr">${name}</span>${eq}<span class="neiki-html-string">${value || ''}</span>`;
-        });
+          const whitespaceStart = index;
+          while (index < attributes.length && isWhitespace(attributes[index])) index++;
+          const nameStart = index;
+          if (index >= attributes.length || !isAttributeNameStart(attributes[index])) {
+            result += attributes.slice(whitespaceStart, index);
+            continue;
+          }
 
-        return `<span class="neiki-html-punct">${tagParts[1]}</span><span class="neiki-html-tag">${tagParts[2]}</span>${attrs}<span class="neiki-html-punct">${tagParts[4]}</span>`;
-      });
+          index++;
+          while (index < attributes.length && isAttributeNameCharacter(attributes[index])) index++;
+          const nameEnd = index;
+          if (attributes[index] !== '=') {
+            result += attributes.slice(whitespaceStart, index);
+            continue;
+          }
+
+          const valueStart = ++index;
+          let valueEnd = valueStart;
+          if (attributes.startsWith('&quot;', valueStart)) {
+            const closingQuote = attributes.indexOf('&quot;', valueStart + 6);
+            if (closingQuote !== -1) valueEnd = closingQuote + 6;
+          } else if (attributes.startsWith('&#039;', valueStart)) {
+            const closingQuote = attributes.indexOf('&#039;', valueStart + 6);
+            if (closingQuote !== -1) valueEnd = closingQuote + 6;
+          } else {
+            while (valueEnd < attributes.length && !isWhitespace(attributes[valueEnd]) && attributes[valueEnd] !== '&') valueEnd++;
+          }
+
+          const name = attributes.slice(nameStart, nameEnd);
+          const value = attributes.slice(valueStart, valueEnd);
+          result += `${attributes.slice(whitespaceStart, nameStart)}<span class="neiki-html-attr">${name}</span>=<span class="neiki-html-string">${value}</span>`;
+          index = valueEnd;
+        }
+
+        return result;
+      };
+      const highlightTag = (tag) => {
+        let index = 4;
+        if (tag[index] === '/') index++;
+        const tagNameStart = index;
+        if (index >= tag.length || !isTagNameCharacter(tag[index])) return tag;
+
+        index++;
+        while (index < tag.length && isTagNameCharacter(tag[index])) index++;
+        const tagName = tag.slice(tagNameStart, index);
+        const tagEnd = tag.length - 4;
+        const suffixStart = tag[tagEnd - 1] === '/' ? tagEnd - 1 : tagEnd;
+        const prefix = tag.slice(0, tagNameStart);
+        const attributes = tag.slice(index, suffixStart);
+        const suffix = tag.slice(suffixStart);
+
+        return `<span class="neiki-html-punct">${prefix}</span><span class="neiki-html-tag">${tagName}</span>${highlightAttributes(attributes)}<span class="neiki-html-punct">${suffix}</span>`;
+      };
+
+      let html = '';
+      let index = 0;
+      while (index < escapedSource.length) {
+        const tagStart = escapedSource.indexOf('&lt;', index);
+        if (tagStart === -1) {
+          html += escapedSource.slice(index);
+          break;
+        }
+
+        html += escapedSource.slice(index, tagStart);
+        if (escapedSource.startsWith('&lt;!--', tagStart)) {
+          const commentEnd = escapedSource.indexOf('--&gt;', tagStart + 7);
+          if (commentEnd === -1) {
+            html += escapedSource.slice(tagStart);
+            break;
+          }
+          const end = commentEnd + 6;
+          html += `<span class="neiki-html-comment">${escapedSource.slice(tagStart, end)}</span>`;
+          index = end;
+          continue;
+        }
+
+        const tagEnd = escapedSource.indexOf('&gt;', tagStart + 4);
+        if (tagEnd === -1) {
+          html += escapedSource.slice(tagStart);
+          break;
+        }
+        const end = tagEnd + 4;
+        html += highlightTag(escapedSource.slice(tagStart, end));
+        index = end;
+      }
 
       this.codeViewHighlight.innerHTML = html + (source.endsWith('\n') ? ' ' : '');
     }

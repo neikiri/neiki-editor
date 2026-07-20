@@ -1,0 +1,3 @@
+# dist/ is a generated release artifact built from the authored source.
+paths-ignore:
+  - dist
