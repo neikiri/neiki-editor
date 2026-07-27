@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/web%20components-29ABE2.svg?style=for-the-badge&logo=webcomponentsdotorg&logoColor=white" alt="Web Components">
   <br>
   <img src="https://img.shields.io/badge/License-AGPL--3.0-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-3.10.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-3.11.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -140,7 +140,7 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 **Pin a specific version**
 
 ```html
-<script src="https://cdn.neikiri.dev/neiki-editor/3.10.0/neiki-editor.min.js"></script>
+<script src="https://cdn.neikiri.dev/neiki-editor/3.11.0/neiki-editor.min.js"></script>
 ```
 
 **Load CSS and JS separately**
@@ -151,8 +151,8 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 <script src="https://cdn.neikiri.dev/neiki-editor/neiki-editor.js"></script>
 
 <!-- Or pinned -->
-<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/3.10.0/neiki-editor.css">
-<script src="https://cdn.neikiri.dev/neiki-editor/3.10.0/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/3.11.0/neiki-editor.css">
+<script src="https://cdn.neikiri.dev/neiki-editor/3.11.0/neiki-editor.js"></script>
 ```
 
 **Alternative CDN — jsDelivr**
@@ -160,7 +160,7 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 ```html
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.min.js"></script>
 <!-- Pinned -->
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.10.0/dist/neiki-editor.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.11.0/dist/neiki-editor.min.js"></script>
 ```
 
 **Package manager**
@@ -240,6 +240,7 @@ const editor = new NeikiEditor('#editor', {
   placeholder: 'Start typing...',
   minHeight: 300,
   maxHeight: 600,
+  baseUrl: 'https://www.example.com/',
   theme: 'light',     // 'light' | 'dark' | 'blue' | 'dark-blue' | 'midnight' | 'void' | 'autumn' | 'dracula'
   language: 'en',     // 'en' | 'cs' | 'zh' | 'es' | 'de' | 'fr' | 'pt' | 'ja'
   onChange: function (content, editor) {
@@ -263,6 +264,7 @@ const editor = new NeikiEditor('#editor', {
 | `translations` | `object \| null` | `null` | Custom translation keys, merged with built-ins |
 | `contextMenu` | `boolean` | `true` | Enable the custom desktop right-click context menu. Touch input always retains the browser's native menu for long-press selection; set to `false` to use the native menu everywhere |
 | `autosaveKey` | `string \| null` | `null` | Custom `localStorage` scope for autosave |
+| `baseUrl` | `string \| null` | `null` | Absolute base URL used to render relative links and media while preserving their relative URLs in output |
 | `customClass` | `string \| null` | `null` | Custom content style class that replaces the default `neiki-content-default-style` class |
 | `toolbar` | `array` | *(full set)* | Toolbar button configuration |
 | `floatingToolbar` | `array \| false` | *(full set)* | Floating selection toolbar button configuration; set to `false` to disable it |
@@ -294,7 +296,18 @@ new NeikiEditor('#editor', {
 });
 ```
 
-Available identifiers include text formatting (`bold`, `italic`, `underline`, `strikethrough`, `subscript`, `superscript`, `code`, `formatPainter`, `removeFormat`), style (`heading`, `fontFamily`, `fontSize`, `foreColor`, `backColor`), alignment and lists (`alignLeft`, `alignCenter`, `alignRight`, `alignJustify`, `bulletList`, `numberedList`, `indent`, `outdent`), structure (`blockquote`, `horizontalRule`), tools (`undo`, `redo`, `findReplace`, `viewCode`), the grouped `insertDropdown`, the right-aligned `moreMenu`, and a standalone `themeToggle`. See the [Toolbar Reference](https://github.com/neikiri/neiki-editor/wiki/Toolbar-Reference) for the full list.
+Available identifiers include text formatting (`bold`, `italic`, `underline`, `strikethrough`, `subscript`, `superscript`, `code`, `formatPainter`, `removeFormat`), style (`heading`, `fontFamily`, `fontSize`, `lineHeight`, `foreColor`, `backColor`), alignment and lists (`alignLeft`, `alignCenter`, `alignRight`, `alignJustify`, `bulletList`, `numberedList`, `indent`, `outdent`), structure (`blockquote`, `horizontalRule`), tools (`undo`, `redo`, `findReplace`, `viewCode`), the grouped `insertDropdown`, the right-aligned `moreMenu`, and a standalone `themeToggle`. See the [Toolbar Reference](https://github.com/neikiri/neiki-editor/wiki/Toolbar-Reference) for the full list.
+
+### Relative resource URLs
+
+Set `baseUrl` to render relative `href` and `src` values against a deployment-specific origin. The editor keeps the original relative values in `getContent()`, source mode, callbacks, and form submission, so the same content can be moved between environments.
+
+```javascript
+new NeikiEditor('#content', {
+  baseUrl: 'https://www.example.com/'
+});
+// Output can contain: /images/demo.png, /videos/demo.mp4, or /page/article.html
+```
 
 ### Customizing the floating toolbar
 

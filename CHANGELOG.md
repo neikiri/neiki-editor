@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.11.0]
+- Added the `baseUrl` option for rendering relative link, image, and video URLs against a deployment-specific base while preserving relative URLs in saved HTML.
+- Fixed the `lineHeight` control so it consistently applies the chosen or typed value to the saved editor selection, and made its input, arrow, and dropdown text theme-compatible.
+- Added the compact, editable `lineHeight` toolbar control with preset values and support for custom values from 0.1 to 10.
+- Enabled direct custom, including decimal, values in the `fontSize` toolbar input.
+- Fixed uneven desktop editor padding by reserving equal left and right gutters.
+- Fixed Undo so its oldest state reliably restores the initial editor content.
+- Fixed alignment after soft line breaks to retain paragraph blocks instead of browser-generated `<div>` elements.
+- Fixed Enter in headings so the following block is a paragraph instead of a `<div>`.
+
 ## [3.10.0]
 - Fixed the non-modal Find & Replace panel so it remains in place in the viewport while the page or editor content is scrolled.
 - Fixed HTML source mode opening at the last line by no longer forcing focus into the built-in source textarea; source mode now preserves the editor scroll position.

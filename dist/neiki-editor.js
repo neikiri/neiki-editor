@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 3.10.0
+ * Version: 3.11.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -1514,7 +1514,7 @@
     toolbar: [
       'viewCode', 'undo', 'redo', 'findReplace', '|',
       'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'code', 'formatPainter', 'removeFormat', '|',
-      'heading', 'fontFamily', 'fontSize', '|',
+      'heading', 'fontFamily', 'fontSize', 'lineHeight', '|',
       'foreColor', 'backColor', '|',
       'alignLeft', 'alignCenter', 'alignRight', 'alignJustify', '|',
       'indent', 'outdent', '|',
@@ -1543,6 +1543,8 @@
     showHelp: true,
     imageUploadHandler: null,
     videoUploadHandler: null,
+    // Absolute base URL used to render relative links and media while preserving relative URLs in output.
+    baseUrl: null,
     // A source-editor adapter or factory. Adapters provide getValue() and setValue(value).
     viewCodeEditor: null,
     customClass: null
@@ -1557,6 +1559,7 @@
     strikethrough: { icon: 'strikethrough', titleKey: 'toolbar.strikethrough', command: 'strikeThrough' },
     heading: { titleKey: 'toolbar.heading', command: 'heading', type: 'select' },
     fontSize: { titleKey: 'toolbar.fontSize', command: 'fontSize', type: 'fontSizeWidget' },
+    lineHeight: { title: 'Line height', command: 'lineHeight', type: 'select' },
     fontFamily: { titleKey: 'toolbar.fontFamily', command: 'fontFamily', type: 'select' },
     foreColor: { icon: 'text-color', titleKey: 'toolbar.foreColor', command: 'foreColor', picker: 'color' },
     backColor: { icon: 'highlight', titleKey: 'toolbar.backColor', command: 'backColor', picker: 'color' },
@@ -1592,6 +1595,15 @@
   };
 
   const FONT_SIZES = [8, 9, 10, 11, 12, 14, 18, 24, 30, 36, 48, 60, 72, 96];
+  const LINE_HEIGHTS = [
+    { label: '1', value: '1' },
+    { label: '1.15', value: '1.15' },
+    { label: '1.3', value: '1.3' },
+    { label: '1.5', value: '1.5' },
+    { label: '1.6', value: '1.6' },
+    { label: '1.75', value: '1.75' },
+    { label: '2', value: '2' }
+  ];
 
   const FONT_FAMILIES = [
     { labelKey: 'font.sansSerif', value: 'Arial, sans-serif' },
@@ -2263,7 +2275,9 @@
     constructor(editor, maxSize = 100) {
       this.editor = editor;
       this.maxSize = maxSize;
-      this.undoStack = [];
+      // Seed the stack immediately with the already-loaded document. This guarantees
+      // that undo always has the editor's initial content as its oldest state.
+      this.undoStack = [editor.getContent()];
       this.redoStack = [];
       this.isRecording = true;
       // Load persisted history if available
@@ -2628,6 +2642,7 @@
         return false;
       }
 
+      media.removeAttribute('data-neiki-relative-src');
       media.setAttribute('src', url);
       if (isVideo) {
         if (text) {
@@ -3354,6 +3369,7 @@
           }
         });
 
+        this.editor.resolveRelativeUrls();
         this.editor.history.record();
         this.editor.syncToOriginal();
         this.editor.triggerChange();
@@ -3387,7 +3403,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.svg" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.10.0</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.11.0</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -3815,6 +3831,7 @@
         this._expandToWordIfCollapsed();
       }
       document.execCommand(command, false, value);
+      this.editor.resolveRelativeUrls();
       this.editor.history.record();
       this.editor.updateToolbar();
       this.editor.triggerChange();
@@ -3953,10 +3970,68 @@
       return null;
     }
 
-    justifyLeft() { this.exec('justifyLeft'); }
-    justifyCenter() { this.exec('justifyCenter'); }
-    justifyRight() { this.exec('justifyRight'); }
-    justifyFull() { this.exec('justifyFull'); }
+    _getSelectedBlocks() {
+      const selection = window.getSelection();
+      if (!selection || !selection.rangeCount) return [];
+      const range = selection.getRangeAt(0);
+      if (!Utils.isRangeInside(range, this.editor.contentArea)) return [];
+
+      const startBlock = this._getBlockParent(range.startContainer);
+      const endBlock = this._getBlockParent(range.endContainer);
+      if (!startBlock) return [];
+
+      const blocks = [];
+      let block = startBlock;
+      while (block) {
+        blocks.push(block);
+        if (block === endBlock) break;
+        block = block.nextElementSibling;
+      }
+      return blocks;
+    }
+
+    _normalizeParagraphDiv(block) {
+      if (!block || block.tagName !== 'DIV' || block.attributes.length > 1 ||
+        (block.attributes.length === 1 && !block.hasAttribute('style'))) return block;
+
+      const paragraph = document.createElement('p');
+      paragraph.style.cssText = block.style.cssText;
+      while (block.firstChild) paragraph.appendChild(block.firstChild);
+      block.parentNode.replaceChild(paragraph, block);
+      return paragraph;
+    }
+
+    _applyAlignment(value) {
+      const blocks = this._getSelectedBlocks();
+      if (!blocks.length) return;
+
+      blocks.forEach(block => {
+        const normalizedBlock = this._normalizeParagraphDiv(block);
+        normalizedBlock.style.textAlign = value;
+      });
+      this.editor.history.record();
+      this.editor.syncToOriginal();
+      this.editor.triggerChange();
+      this.editor.updateToolbar();
+    }
+
+    justifyLeft() { this._applyAlignment('left'); }
+    justifyCenter() { this._applyAlignment('center'); }
+    justifyRight() { this._applyAlignment('right'); }
+    justifyFull() { this._applyAlignment('justify'); }
+
+    lineHeight(value) {
+      const blocks = this._getSelectedBlocks();
+      if (!blocks.length) return;
+
+      blocks.forEach(block => {
+        this._normalizeParagraphDiv(block).style.lineHeight = value;
+      });
+      this.editor.history.record();
+      this.editor.syncToOriginal();
+      this.editor.triggerChange();
+      this.editor.updateToolbar();
+    }
 
     insertUnorderedList() { this.exec('insertUnorderedList'); }
     insertOrderedList() { this.exec('insertOrderedList'); }
@@ -4280,6 +4355,7 @@
 
       if (existingLink) {
         existingLink.setAttribute('href', url);
+        existingLink.removeAttribute('data-neiki-relative-href');
         existingLink.textContent = text || url;
         if (newTab) {
           existingLink.setAttribute('target', '_blank');
@@ -4289,6 +4365,7 @@
           existingLink.removeAttribute('rel');
         }
 
+        this.editor.resolveRelativeUrls();
         this.editor.history.record();
         this.editor.syncToOriginal();
         this.editor.triggerChange();
@@ -4316,6 +4393,7 @@
 
         this.editor.focus();
         document.execCommand('insertHTML', false, link.outerHTML);
+        this.editor.resolveRelativeUrls();
         this.editor.history.record();
         this.editor.triggerChange();
       }
@@ -4330,6 +4408,7 @@
 
       this.editor.focus();
       document.execCommand('insertHTML', false, html);
+      this.editor.resolveRelativeUrls();
       this.editor.history.record();
       this.editor.triggerChange();
     }
@@ -4343,6 +4422,7 @@
 
       this.editor.focus();
       document.execCommand('insertHTML', false, html);
+      this.editor.resolveRelativeUrls();
       this.editor.history.record();
       this.editor.triggerChange();
     }
@@ -4366,6 +4446,7 @@
 
       this.editor.focus();
       document.execCommand('insertHTML', false, html);
+      this.editor.resolveRelativeUrls();
       this.editor.history.record();
       this.editor.triggerChange();
     }
@@ -4624,6 +4705,48 @@
       return Math.abs(hash).toString(36);
     }
 
+    resolveRelativeUrls(root = this.contentArea) {
+      if (!this.config.baseUrl || !root) return;
+
+      let baseUrl;
+      try {
+        baseUrl = new URL(this.config.baseUrl, window.location.href).href;
+      } catch (e) {
+        console.warn('NeikiEditor: baseUrl must be a valid URL.');
+        return;
+      }
+
+      root.querySelectorAll('a[href], img[src], video[src], source[src]').forEach(element => {
+        const attribute = element.hasAttribute('href') ? 'href' : 'src';
+        const originalAttribute = 'data-neiki-relative-' + attribute;
+        const value = element.getAttribute(originalAttribute) || element.getAttribute(attribute);
+        const mediaType = element.tagName === 'IMG' ? 'image' :
+          (element.tagName === 'VIDEO' || element.tagName === 'SOURCE' ? 'video' : null);
+        if (!value || !Utils.isSafeUrl(value, mediaType)) return;
+
+        try {
+          const resolved = new URL(value, baseUrl);
+          if (resolved.href !== value && !/^[a-z][a-z\d+.-]*:/i.test(value) && !value.startsWith('#')) {
+            element.setAttribute(originalAttribute, value);
+            element.setAttribute(attribute, resolved.href);
+          }
+        } catch (e) { /* Keep the original safe URL when it cannot be resolved. */ }
+      });
+    }
+
+    restoreRelativeUrls(root) {
+      if (!root) return;
+      root.querySelectorAll('[data-neiki-relative-href], [data-neiki-relative-src]').forEach(element => {
+        ['href', 'src'].forEach(attribute => {
+          const originalAttribute = 'data-neiki-relative-' + attribute;
+          if (element.hasAttribute(originalAttribute)) {
+            element.setAttribute(attribute, element.getAttribute(originalAttribute));
+            element.removeAttribute(originalAttribute);
+          }
+        });
+      });
+    }
+
     createToolbar() {
       this.toolbar = Utils.createElement('div', { className: 'neiki-toolbar' });
       this.toolbarButtons = {};
@@ -4648,11 +4771,119 @@
         const config = TOOLBAR_ITEMS[item];
         if (!config) return;
 
+        // Line height is an editable numeric field with a custom preset dropdown.
+        if (item === 'lineHeight') {
+          const wrapper = Utils.createElement('div', { className: 'neiki-lineheight-widget' });
+          const input = Utils.createElement('input', {
+            className: 'neiki-lineheight-input',
+            type: 'text',
+            value: '1.6',
+            title: config.title,
+            'aria-label': config.title,
+            'aria-expanded': 'false',
+            inputmode: 'decimal'
+          });
+          const toggle = Utils.createElement('button', {
+            className: 'neiki-lineheight-toggle',
+            type: 'button',
+            title: config.title,
+            'aria-label': config.title,
+            innerHTML: Icons['chevron-down']
+          });
+          const dropdown = Utils.createElement('div', { className: 'neiki-lineheight-dropdown' });
+
+          const applyLineHeight = () => {
+            const value = parseFloat(input.value);
+            if (!Number.isFinite(value) || value <= 0 || value > 10) return false;
+            if (this.savedSelectionRange && Utils.isRangeInside(this.savedSelectionRange, this.contentArea)) {
+              Utils.restoreSelection(this.savedSelectionRange);
+            }
+            input.value = String(value);
+            this.commands.lineHeight(String(value));
+            return true;
+          };
+          const closeDropdown = () => {
+            dropdown.classList.remove('show');
+            input.setAttribute('aria-expanded', 'false');
+          };
+          const openDropdown = () => {
+            dropdown.classList.add('show');
+            input.setAttribute('aria-expanded', 'true');
+          };
+
+          LINE_HEIGHTS.forEach(({ label, value }) => {
+            const option = Utils.createElement('button', {
+              className: 'neiki-lineheight-option',
+              type: 'button',
+              textContent: label,
+              'data-value': value
+            });
+            option.addEventListener('mousedown', (e) => {
+              this.saveCurrentSelection();
+              e.preventDefault();
+            });
+            option.addEventListener('click', () => {
+              input.value = value;
+              applyLineHeight();
+              closeDropdown();
+              this.focus();
+            });
+            dropdown.appendChild(option);
+          });
+
+          let skipLineHeightBlur = false;
+          input.addEventListener('mousedown', () => this.saveCurrentSelection());
+          input.addEventListener('focus', openDropdown);
+          input.addEventListener('click', openDropdown);
+          input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              skipLineHeightBlur = true;
+              applyLineHeight();
+              closeDropdown();
+              this.focus();
+            } else if (e.key === 'ArrowDown') {
+              e.preventDefault();
+              openDropdown();
+            } else if (e.key === 'Escape') {
+              closeDropdown();
+              this.focus();
+            }
+          });
+          input.addEventListener('change', applyLineHeight);
+          input.addEventListener('blur', () => {
+            if (skipLineHeightBlur) {
+              skipLineHeightBlur = false;
+              return;
+            }
+            applyLineHeight();
+          });
+          toggle.addEventListener('mousedown', (e) => {
+            this.saveCurrentSelection();
+            e.preventDefault();
+          });
+          toggle.addEventListener('click', () => {
+            if (dropdown.classList.contains('show')) closeDropdown();
+            else openDropdown();
+          });
+          document.addEventListener('mousedown', (e) => {
+            if (!wrapper.contains(e.target)) closeDropdown();
+          });
+
+          this.toolbarSelects[item] = input;
+          wrapper.appendChild(input);
+          wrapper.appendChild(toggle);
+          wrapper.appendChild(dropdown);
+          appendToGroup(wrapper);
+          return;
+        }
+
         // Handle <select> type (heading, fontFamily)
         if (config.type === 'select') {
           const select = Utils.createElement('select', {
             className: 'neiki-select',
-            title: t(config.titleKey),
+            title: config.title || t(config.titleKey),
+            'aria-label': config.title || t(config.titleKey),
             'data-command': item
           });
 
@@ -4671,6 +4902,14 @@
               opt.style.fontFamily = value;
               select.appendChild(opt);
             });
+          } else if (item === 'lineHeight') {
+            LINE_HEIGHTS.forEach(({ label, value }) => {
+              const opt = document.createElement('option');
+              opt.value = value;
+              opt.textContent = label;
+              select.appendChild(opt);
+            });
+            select.value = '1.6';
           }
 
           select.addEventListener('change', (e) => {
@@ -4679,6 +4918,8 @@
               this.commands.formatBlock(select.value);
             } else if (item === 'fontFamily') {
               this.commands.fontFamily(select.value);
+            } else if (item === 'lineHeight') {
+              this.commands.lineHeight(select.value);
             }
             this.focus();
           });
@@ -4703,7 +4944,8 @@
             className: 'neiki-fontsize-input',
             type: 'text',
             title: t('toolbar.fontSize'),
-            value: '16'
+            value: '16',
+            inputmode: 'decimal'
           });
 
           const plusBtn = Utils.createElement('button', {
@@ -4773,8 +5015,9 @@
           });
 
           const applyFontSize = () => {
-            const val = parseInt(input.value);
-            if (val && val > 0) {
+            const val = parseFloat(input.value);
+            if (Number.isFinite(val) && val > 0 && val <= 999) {
+              input.value = String(val);
               _restoreSelection();
               this.commands.fontSize(val + 'px');
               _saveSelection();
@@ -4788,7 +5031,7 @@
           minusBtn.addEventListener('click', (e) => {
             e.preventDefault();
             _restoreSelection();
-            const current = parseInt(input.value) || 16;
+            const current = parseFloat(input.value) || 16;
             const newSize = Math.max(1, current - 1);
             input.value = newSize;
             this.commands.fontSize(newSize + 'px');
@@ -4802,24 +5045,22 @@
           plusBtn.addEventListener('click', (e) => {
             e.preventDefault();
             _restoreSelection();
-            const current = parseInt(input.value) || 16;
+            const current = parseFloat(input.value) || 16;
             const newSize = Math.min(999, current + 1);
             input.value = newSize;
             this.commands.fontSize(newSize + 'px');
             _saveSelection();
           });
 
-          input.addEventListener('mousedown', (e) => {
-            e.preventDefault();
-          });
-
           input.addEventListener('focus', () => {
             dropdown.classList.add('show');
           });
 
+          let skipFontSizeBlur = false;
           input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
+              skipFontSizeBlur = true;
               applyFontSize();
               dropdown.classList.remove('show');
               this.focus();
@@ -4828,6 +5069,14 @@
               dropdown.classList.remove('show');
               this.focus();
             }
+          });
+
+          input.addEventListener('blur', () => {
+            if (skipFontSizeBlur) {
+              skipFontSizeBlur = false;
+              return;
+            }
+            applyFontSize();
           });
 
           document.addEventListener('mousedown', (e) => {
@@ -5134,6 +5383,7 @@
       }
 
       this._ensureDefaultBlock();
+      this.resolveRelativeUrls();
 
       this.contentWrapper.appendChild(this.contentArea);
 
@@ -5183,6 +5433,7 @@
       this.contentArea.addEventListener('input', Utils.debounce(() => {
         this.removeStrayGripSvgs();
         this._ensureDefaultBlock();
+        this.resolveRelativeUrls();
         this.history.record();
         this.syncToOriginal();
         this.triggerChange();
@@ -5364,16 +5615,41 @@
         }
       }
 
-      // Exit blockquote at end of document
+      // Continue with a paragraph after headings and exit blockquotes at document end.
       if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
         const sel = window.getSelection();
         if (sel.rangeCount) {
-          const node = sel.anchorNode;
-          const bq = node.nodeType === Node.TEXT_NODE
-            ? node.parentElement?.closest('blockquote')
-            : node.closest?.('blockquote');
+          const range = sel.getRangeAt(0);
+          const node = range.startContainer.nodeType === Node.TEXT_NODE
+            ? range.startContainer.parentElement
+            : range.startContainer;
+          const heading = node && node.closest ? node.closest('h1, h2, h3, h4, h5, h6') : null;
+
+          if (heading && this.contentArea.contains(heading)) {
+            e.preventDefault();
+            const trailingRange = range.cloneRange();
+            trailingRange.setEndAfter(heading.lastChild || heading);
+            const trailingContent = trailingRange.extractContents();
+            const paragraph = document.createElement('p');
+            if (trailingContent.childNodes.length) {
+              paragraph.appendChild(trailingContent);
+            } else {
+              paragraph.innerHTML = '<br>';
+            }
+            heading.after(paragraph);
+            const newRange = document.createRange();
+            newRange.setStart(paragraph, 0);
+            newRange.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(newRange);
+            this.history.record();
+            this.syncToOriginal();
+            this.triggerChange();
+            return;
+          }
+
+          const bq = node && node.closest ? node.closest('blockquote') : null;
           if (bq && bq === this.contentArea.lastElementChild) {
-            const range = sel.getRangeAt(0);
             const bqRange = document.createRange();
             bqRange.selectNodeContents(bq);
             bqRange.setStart(range.endContainer, range.endOffset);
@@ -5487,6 +5763,7 @@
       }
 
       document.execCommand('insertHTML', false, text);
+      this.resolveRelativeUrls();
       this.history.record();
       this.triggerChange();
     }
@@ -5569,6 +5846,20 @@
         const block = this.getCurrentBlockType();
         const validValues = HEADINGS.map(h => h.value);
         this.toolbarSelects.heading.value = validValues.includes(block) ? block : 'p';
+      }
+
+      if (this.toolbarSelects.lineHeight) {
+        const lineHeightInput = this.toolbarSelects.lineHeight;
+        if (document.activeElement !== lineHeightInput) {
+          const sel = window.getSelection();
+          if (sel && sel.rangeCount) {
+            let node = sel.getRangeAt(0).startContainer;
+            if (node.nodeType === Node.TEXT_NODE) node = node.parentNode;
+            const block = this.commands && this.commands._getBlockParent(node);
+            const value = block && block.style.lineHeight;
+            lineHeightInput.value = value || '1.6';
+          }
+        }
       }
 
       // Sync fontFamily select
@@ -5817,6 +6108,7 @@
       // Remove grip handles, placeholders, resize handles
       clone.querySelectorAll('.neiki-block-grip, .neiki-block-placeholder, .neiki-table-col-resize-handle, .neiki-img-resize-handle, .neiki-img-size-label, .neiki-img-toolbar').forEach(el => el.remove());
       this.removeStrayGripSvgs(clone);
+      this.restoreRelativeUrls(clone);
       const html = clone.innerHTML;
       // Return empty string when the editor contains only the default empty
       // block that browsers insert automatically (e.g. <p><br></p>).
@@ -5846,6 +6138,7 @@
       this.savedSelectionRange = null;
       this.contentArea.innerHTML = Utils.sanitizeHTML(html);
       this._ensureDefaultBlock();
+      this.resolveRelativeUrls();
       this.syncToOriginal();
     }
 
@@ -5982,7 +6275,7 @@
 
       try {
         this.codeViewExternalEditor = typeof configuredEditor === 'function'
-          ? configuredEditor(this.codeViewEditor, this.formatHTMLSource(this.contentArea.innerHTML), this)
+          ? configuredEditor(this.codeViewEditor, this.formatHTMLSource(this.getContent()), this)
           : configuredEditor;
 
         if (!this.codeViewExternalEditor ||
@@ -6226,7 +6519,7 @@
     toggleCodeView() {
       if (!this.isCodeViewOpen) {
         const contentScrollTop = this.contentArea.scrollTop;
-        this.setCodeViewValue(this.formatHTMLSource(this.contentArea.innerHTML));
+        this.setCodeViewValue(this.formatHTMLSource(this.getContent()));
         this.codeView.classList.add('show');
         this.isCodeViewOpen = true;
         if (!this.codeViewExternalEditor) {
@@ -6237,6 +6530,8 @@
         document.addEventListener('keydown', this._codeViewEsc);
       } else {
         this.contentArea.innerHTML = Utils.sanitizeHTML(this.getCodeViewValue());
+        this._ensureDefaultBlock();
+        this.resolveRelativeUrls();
         this.codeView.classList.remove('show');
         this.isCodeViewOpen = false;
         this.history.record();
@@ -7116,6 +7411,7 @@
           reader.onload = (ev) => { this.currentImg.src = ev.target.result; };
           reader.readAsDataURL(file);
         }
+        this.editor.resolveRelativeUrls();
         this.editor.history.record();
         this.editor.syncToOriginal();
         this.editor.triggerChange();
@@ -7223,6 +7519,7 @@
         // Re-select the image at its new position
         this.selectImage(img);
 
+        this.editor.resolveRelativeUrls();
         this.editor.history.record();
         this.editor.syncToOriginal();
         this.editor.triggerChange();
@@ -7745,6 +8042,7 @@
         this.ghostEl = null;
 
         this.editor.removeStrayGripSvgs();
+        this.editor.resolveRelativeUrls();
         this.editor.history.record();
         this.editor.syncToOriginal();
         this.editor.triggerChange();
@@ -7760,6 +8058,7 @@
       const prev = block.previousElementSibling;
       if (prev && prev.parentNode === this.editor.contentArea) {
         prev.parentNode.insertBefore(block, prev);
+        this.editor.resolveRelativeUrls();
         this.editor.history.record();
         this.editor.syncToOriginal();
         this.editor.triggerChange();
@@ -7773,6 +8072,7 @@
       const next = block.nextElementSibling;
       if (next && next.parentNode === this.editor.contentArea) {
         next.parentNode.insertBefore(block, next.nextSibling);
+        this.editor.resolveRelativeUrls();
         this.editor.history.record();
         this.editor.syncToOriginal();
         this.editor.triggerChange();
