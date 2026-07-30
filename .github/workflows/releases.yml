@@ -1,25 +1,20 @@
 name: Create Missing Releases
-
-on:
-  workflow_dispatch:
-
+'on':
+  workflow_dispatch: null
 permissions:
   contents: write
-
 jobs:
   create-releases:
     name: Create Missing Releases
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Create missing GitHub Releases
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         run: |
           set -e
 
@@ -55,25 +50,21 @@ jobs:
 
             if [ -z "$CHANGELOG" ]; then
               echo "⚠ No changelog entry found for $TAG"
-              CHANGELOG="## [$TAG]
-No changelog entry available."
+              CHANGELOG=$(printf "## [%s]\nNo changelog entry available." "$TAG")
             fi
 
             PREVIOUS_TAG=$(git tag --sort=-version:refname | awk -v tag="$TAG" '
-              $0 == tag {found=1; next}
-              found {print; exit}
-            ')
+                $0 == tag {found=1; next}
+                found {print; exit}
+              ')
 
-            if [ -n "$PREVIOUS_TAG" ]; then
-              CHANGELOG="$CHANGELOG
-
-**Full Changelog**: https://github.com/$REPO/compare/$PREVIOUS_TAG...$TAG"
-            else
-              CHANGELOG="$CHANGELOG
-
-**Full Changelog**: https://github.com/$REPO/commits/$TAG"
-            fi
-
+              if [ -n "$PREVIOUS_TAG" ]; then
+                CHANGELOG=$(printf "%s\n\n**Full Changelog**: https://github.com/%s/compare/%s...%s" \
+                  "$CHANGELOG" "$REPO" "$PREVIOUS_TAG" "$TAG")
+              else
+                CHANGELOG=$(printf "%s\n\n**Full Changelog**: https://github.com/%s/commits/%s" \
+                  "$CHANGELOG" "$REPO" "$TAG")
+              fi
             echo "Creating release $TAG..."
 
             gh release create "$TAG" \
