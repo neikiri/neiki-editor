@@ -20,6 +20,18 @@
 </p>
 
 <p align="center">
+  ⭐ Enjoying Neiki's Editor? Give it a Star and Fork the repository! ❤️<br>
+  Your support helps me see that the project is useful to developers<br>
+  and motivates me to keep improving it with more frequent updates.
+</p>
+
+<p align="center">
+  <a href="https://github.com/neikiri/neiki-editor/fork">
+    <img src="https://img.shields.io/badge/Fork%20the%20project-2563EB?style=for-the-badge&logo=github&logoColor=white" alt="Fork the project">
+  </a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Features-30%2B%20Tools-3b82f6?style=flat&labelColor=383C43" />
   <img src="https://img.shields.io/badge/Themes-Light%20%26%20Dark%20%26%20More-8b5cf6?style=flat&labelColor=383C43" />
   <img src="https://img.shields.io/badge/Setup-Zero%20Config-22c55e?style=flat&labelColor=383C43" />
