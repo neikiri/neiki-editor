@@ -1,10 +1,8 @@
 name: Publish to npm and GitHub Packages
 
 on:
-  push:
-    tags:
-      - '*.*.*'
   workflow_dispatch:
+    
 jobs:
   publish:
     runs-on: ubuntu-latest

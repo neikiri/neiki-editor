@@ -1,0 +1,88 @@
+name: Create Missing Releases
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  create-releases:
+    name: Create Missing Releases
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create missing GitHub Releases
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+
+          REPO="${{ github.repository }}"
+
+          echo "Fetching tags..."
+          git fetch --tags --force
+
+          echo "Processing tags..."
+
+          for TAG in $(git tag --sort=version:refname); do
+            echo ""
+            echo "Checking tag: $TAG"
+
+            if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
+              echo "✔ Release already exists"
+              continue
+            fi
+
+            echo "Finding changelog entry..."
+
+            CHANGELOG=$(awk "
+              /^## \\[$TAG\\]/ {
+                found=1
+              }
+              /^## \\[/ && found && !/^## \\[$TAG\\]/ {
+                exit
+              }
+              found {
+                print
+              }
+            " CHANGELOG.md)
+
+            if [ -z "$CHANGELOG" ]; then
+              echo "⚠ No changelog entry found for $TAG"
+              CHANGELOG="## [$TAG]
+No changelog entry available."
+            fi
+
+            PREVIOUS_TAG=$(git tag --sort=-version:refname | awk -v tag="$TAG" '
+              $0 == tag {found=1; next}
+              found {print; exit}
+            ')
+
+            if [ -n "$PREVIOUS_TAG" ]; then
+              CHANGELOG="$CHANGELOG
+
+**Full Changelog**: https://github.com/$REPO/compare/$PREVIOUS_TAG...$TAG"
+            else
+              CHANGELOG="$CHANGELOG
+
+**Full Changelog**: https://github.com/$REPO/commits/$TAG"
+            fi
+
+            echo "Creating release $TAG..."
+
+            gh release create "$TAG" \
+              --repo "$REPO" \
+              --title "$TAG" \
+              --notes "$CHANGELOG"
+
+            echo "✔ Release created"
+          done
+
+          echo ""
+          echo "Done."
