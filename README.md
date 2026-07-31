@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.svg" alt="Neiki's Editor" width="400">
+  <img src="assets/logo.svg" alt="Neiki's Editor" style="height: 90px; width: auto;">
 </p>
 
 <h1 align="center">Neiki's Editor</h1>
