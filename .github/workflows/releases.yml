@@ -53,9 +53,9 @@ jobs:
               CHANGELOG=$(printf "## [%s]\nNo changelog entry available." "$TAG")
             fi
 
-            PREVIOUS_TAG=$(git tag --sort=-version:refname | awk -v tag="$TAG" '
-                $0 == tag {found=1; next}
-                found {print; exit}
+            PREVIOUS_TAG=$(git tag --sort=version:refname | awk -v tag="$TAG" '
+                $0 == tag {print prev; exit}
+                {prev=$0}
               ')
 
               if [ -n "$PREVIOUS_TAG" ]; then
