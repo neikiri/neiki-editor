@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 3.11.0
+ * Version: 3.12.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -1520,7 +1520,7 @@
       'indent', 'outdent', '|',
       'bulletList', 'numberedList', 'blockquote', 'horizontalRule', '|',
       'insertDropdown', '|',
-      'moreMenu'
+      'themeToggle', 'moreMenu'
     ],
     floatingToolbar: ['moveUp', 'moveDown', '|', 'bold', 'italic', 'underline', 'strikethrough', 'link'],
     placeholder: 'Start typing...',
@@ -3403,7 +3403,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.svg" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.11.0</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.12.0</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -5226,10 +5226,9 @@
             { key: 'print', icon: Icons.print, labelKey: 'menu.print', action: () => this.printContent() },
             { key: 'divider' },
             { key: 'autosave', icon: Icons.save, labelKey: 'menu.autosave', action: () => this.toggleAutosave(), toggle: true },
+            { key: 'fullscreen', icon: Icons.fullscreen, labelKey: 'menu.fullscreen', action: () => this.toggleFullscreen() },
             { key: 'divider' },
-            { key: 'clearAll', icon: Icons.trash, labelKey: 'menu.clearAll', action: () => this.clearAll(), danger: true },
-            { key: 'themeSelect', icon: Icons.sun, labelKey: 'menu.toggleTheme' },
-            { key: 'fullscreen', icon: Icons.fullscreen, labelKey: 'menu.fullscreen', action: () => this.toggleFullscreen() }
+            { key: 'clearAll', icon: Icons.trash, labelKey: 'menu.clearAll', action: () => this.clearAll(), danger: true }
           ];
 
           if (this.config.showHelp) {
@@ -5243,45 +5242,21 @@
               return;
             }
 
-            if (key === 'themeSelect') {
-              const menuItem = Utils.createElement('label', {
-                className: 'neiki-dropdown-item neiki-theme-menu-item'
-              });
-              menuItem.innerHTML = '<span class="neiki-dropdown-item-icon">' + icon + '</span>';
-
-              const select = Utils.createElement('select', {
-                className: 'neiki-theme-menu-select',
-                'aria-label': t(labelKey)
-              });
-              THEME_OPTIONS.forEach(option => {
-                select.appendChild(Utils.createElement('option', {
-                  value: option.value,
-                  textContent: t(option.labelKey)
-                }));
-              });
-              select.value = this.config.theme;
-              select.addEventListener('click', (e) => e.stopPropagation());
-              select.addEventListener('change', () => {
-                this.setTheme(select.value);
-              });
-              menuItem.appendChild(select);
-              this._themeMenuItem = menuItem;
-              this._themeMenuSelect = select;
-              dropdown.appendChild(menuItem);
-              return;
-            }
-
             const menuItem = Utils.createElement('div', {
               className: 'neiki-dropdown-item' + (danger ? ' neiki-dropdown-item-danger' : '')
             });
             menuItem.innerHTML = '<span class="neiki-dropdown-item-icon">' + icon + '</span><span class="neiki-dropdown-item-label">' + t(labelKey) + '</span>';
 
-            if (key === 'autosave') {
-              const badge = Utils.createElement('span', { className: 'neiki-autosave-badge' });
-              badge.textContent = '✕';
-              menuItem.appendChild(badge);
+            if (toggle) {
+              const toggleState = Utils.createElement('span', {
+                className: 'neiki-autosave-badge',
+                role: 'switch',
+                'aria-label': t(labelKey),
+                'aria-checked': 'false'
+              });
               this._autosaveMenuItem = menuItem;
-              this._autosaveBadge = badge;
+              this._autosaveBadge = toggleState;
+              menuItem.appendChild(toggleState);
             }
 
             menuItem.addEventListener('click', (e) => {
@@ -5887,10 +5862,12 @@
         } catch (e) {}
       }
 
-      // Update autosave badge in more menu
+      // Update autosave toggle in More menu
       if (this._autosaveBadge) {
-        this._autosaveBadge.textContent = this.isAutosaveEnabled ? '✓' : '✕';
-        this._autosaveBadge.classList.toggle('active', this.isAutosaveEnabled);
+        const isEnabled = !!this.isAutosaveEnabled;
+        this._autosaveBadge.textContent = isEnabled ? 'On' : 'Off';
+        this._autosaveBadge.setAttribute('aria-checked', String(isEnabled));
+        this._autosaveBadge.classList.toggle('active', isEnabled);
       }
     }
 

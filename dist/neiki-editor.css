@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 3.11.0
+ * Version: 3.12.0
  */
 
 /* ============================================
@@ -648,6 +648,53 @@
 .neiki-theme-select {
   min-width: 116px;
   max-width: 150px;
+}
+
+/* Keep More menu actions visually balanced: fixed icon column, aligned status, and clear groups. */
+.neiki-more-dropdown .neiki-dropdown-item {
+  min-width: 196px;
+}
+
+.neiki-more-dropdown .neiki-dropdown-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+
+.neiki-more-dropdown .neiki-dropdown-item-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.neiki-more-dropdown .neiki-dropdown-item-label {
+  min-width: 0;
+}
+
+.neiki-more-dropdown .neiki-dropdown-divider {
+  margin: 6px 4px;
+}
+
+.neiki-autosave-badge {
+  min-width: 30px;
+  margin-left: auto;
+  padding: 2px 6px;
+  border: 1px solid var(--neiki-border-color);
+  border-radius: 999px;
+  color: var(--neiki-text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.neiki-autosave-badge.active {
+  border-color: var(--neiki-success-color);
+  background: color-mix(in srgb, var(--neiki-success-color) 14%, transparent);
+  color: var(--neiki-success-color);
 }
 
 /* Color Picker Button */

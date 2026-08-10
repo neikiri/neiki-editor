@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.12.0]
+- Moved the built-in theme selector from the More menu to the default toolbar, immediately before the More button (⋯).
+- Reorganized the More menu into file actions, editor settings, destructive action, and Help sections; Autosave now shows an aligned On/Off status.
+
 ## [3.11.0]
 - Added the `baseUrl` option for rendering relative link, image, and video URLs against a deployment-specific base while preserving relative URLs in saved HTML.
 - Fixed the `lineHeight` control so it consistently applies the chosen or typed value to the saved editor selection, and made its input, arrow, and dropdown text theme-compatible.

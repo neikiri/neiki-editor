@@ -1,7 +1,7 @@
 <?php
 /**
  * Neiki's Editor - PHP Integration Helper
- * Version: 3.11.0
+ * Version: 3.12.0
  *
  * A lightweight helper class for easy server-side integration
  * of Neiki's Editor into PHP projects.
@@ -15,7 +15,7 @@
 class NeikiEditor
 {
     /** @var string CDN base URL */
-    private static $cdnBase = 'https://cdn.neikiri.dev/neiki-editor/3.11.0/';
+    private static $cdnBase = 'https://cdn.neikiri.dev/neiki-editor/3.12.0/';
 
     /** @var bool Whether assets have already been included */
     private static $assetsIncluded = false;
@@ -31,16 +31,17 @@ class NeikiEditor
      */
     public static function assets(bool $local = false, string $basePath = '', bool $separate = false): string
     {
-        if (self::$assetsIncluded) return '';
+        if (self::$assetsIncluded)
+            return '';
         self::$assetsIncluded = true;
 
         $base = ($local && $basePath) ? rtrim($basePath, '/') : self::$cdnBase;
 
         if ($separate) {
             $css = $base . '/neiki-editor.css';
-            $js  = $base . '/neiki-editor.js';
+            $js = $base . '/neiki-editor.js';
             return '<link rel="stylesheet" href="' . self::escape($css) . '">' . "\n"
-                 . '<script src="' . self::escape($js) . '"></script>' . "\n";
+                . '<script src="' . self::escape($js) . '"></script>' . "\n";
         }
 
         $js = $base . '/neiki-editor.min.js';
@@ -57,11 +58,11 @@ class NeikiEditor
      */
     public static function render(string $id, string $content = '', array $options = []): string
     {
-        $safeId      = self::escape($id);
+        $safeId = self::escape($id);
         $safeContent = self::escape($content);
         $jsonOptions = !empty($options) ? json_encode($options, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : '{}';
 
-        $html  = '<textarea id="' . $safeId . '" name="' . $safeId . '">' . $safeContent . '</textarea>' . "\n";
+        $html = '<textarea id="' . $safeId . '" name="' . $safeId . '">' . $safeContent . '</textarea>' . "\n";
         $html .= '<script>new NeikiEditor("#' . $safeId . '", ' . $jsonOptions . ');</script>' . "\n";
 
         return $html;
@@ -78,10 +79,10 @@ class NeikiEditor
     {
         // Allowed HTML tags
         $allowed = '<p><br><b><strong><i><em><u><s><strike><del>'
-                 . '<h1><h2><h3><h4><h5><h6>'
-                 . '<ul><ol><li><blockquote><pre><code>'
-                 . '<a><img><video><source><table><thead><tbody><tr><th><td>'
-                 . '<span><div><hr><sub><sup><mark>';
+            . '<h1><h2><h3><h4><h5><h6>'
+            . '<ul><ol><li><blockquote><pre><code>'
+            . '<a><img><video><source><table><thead><tbody><tr><th><td>'
+            . '<span><div><hr><sub><sup><mark>';
 
         $html = strip_tags($html, $allowed);
 

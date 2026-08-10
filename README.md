@@ -11,17 +11,13 @@
   <img src="https://img.shields.io/badge/web%20components-29ABE2.svg?style=for-the-badge&logo=webcomponentsdotorg&logoColor=white" alt="Web Components">
   <br>
   <img src="https://img.shields.io/badge/License-AGPL--3.0-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-3.11.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-3.12.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
   <b>Lightweight WYSIWYG Rich Text Editor</b><br>
   <i>Easy to integrate, fully customizable, zero dependencies.</i>
 </p>
-
-
-
-
 
 <p align="center">
   <img src="https://img.shields.io/badge/Features-30%2B%20Tools-3b82f6?style=flat&labelColor=383C43" />
@@ -156,7 +152,7 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 **Pin a specific version**
 
 ```html
-<script src="https://cdn.neikiri.dev/neiki-editor/3.11.0/neiki-editor.min.js"></script>
+<script src="https://cdn.neikiri.dev/neiki-editor/3.12.0/neiki-editor.min.js"></script>
 ```
 
 **Load CSS and JS separately**
@@ -167,8 +163,8 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 <script src="https://cdn.neikiri.dev/neiki-editor/neiki-editor.js"></script>
 
 <!-- Or pinned -->
-<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/3.11.0/neiki-editor.css">
-<script src="https://cdn.neikiri.dev/neiki-editor/3.11.0/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/3.12.0/neiki-editor.css">
+<script src="https://cdn.neikiri.dev/neiki-editor/3.12.0/neiki-editor.js"></script>
 ```
 
 **Alternative CDN — jsDelivr**
@@ -176,7 +172,7 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 ```html
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.min.js"></script>
 <!-- Pinned -->
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.11.0/dist/neiki-editor.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.12.0/dist/neiki-editor.min.js"></script>
 ```
 
 **Package manager**
@@ -307,12 +303,12 @@ new NeikiEditor('#editor', {
     'heading', 'fontSize', '|',
     'bulletList', 'numberedList', '|',
     'insertDropdown', '|',
-    'moreMenu'
+    'themeToggle', 'moreMenu'
   ]
 });
 ```
 
-Available identifiers include text formatting (`bold`, `italic`, `underline`, `strikethrough`, `subscript`, `superscript`, `code`, `formatPainter`, `removeFormat`), style (`heading`, `fontFamily`, `fontSize`, `lineHeight`, `foreColor`, `backColor`), alignment and lists (`alignLeft`, `alignCenter`, `alignRight`, `alignJustify`, `bulletList`, `numberedList`, `indent`, `outdent`), structure (`blockquote`, `horizontalRule`), tools (`undo`, `redo`, `findReplace`, `viewCode`), the grouped `insertDropdown`, the right-aligned `moreMenu`, and a standalone `themeToggle`. See the [Toolbar Reference](https://github.com/neikiri/neiki-editor/wiki/Toolbar-Reference) for the full list.
+Available identifiers include text formatting (`bold`, `italic`, `underline`, `strikethrough`, `subscript`, `superscript`, `code`, `formatPainter`, `removeFormat`), style (`heading`, `fontFamily`, `fontSize`, `lineHeight`, `foreColor`, `backColor`), alignment and lists (`alignLeft`, `alignCenter`, `alignRight`, `alignJustify`, `bulletList`, `numberedList`, `indent`, `outdent`), structure (`blockquote`, `horizontalRule`), tools (`undo`, `redo`, `findReplace`, `viewCode`), the grouped `insertDropdown`, the standalone `themeToggle`, and the right-aligned `moreMenu`. The default toolbar places `themeToggle` directly before `moreMenu`. See the [Toolbar Reference](https://github.com/neikiri/neiki-editor/wiki/Toolbar-Reference) for the full list.
 
 ### Relative resource URLs
 
@@ -370,7 +366,7 @@ editor.setTheme('dracula');  // set a specific theme
 editor.toggleTheme();        // cycle: light → dark → blue → dark-blue → midnight → void → autumn → dracula → light
 ```
 
-> The selected theme is persisted to `localStorage` as a **global** setting. It applies to all editor instances on the page and persists across reloads. If a user has already chosen a theme, that saved preference takes priority over the `theme` config value — call `setTheme()` after init if you need to override it.
+> The theme selector is a standalone toolbar control. In the default toolbar it appears directly before the More menu (⋯), and can be omitted or repositioned through the `toolbar` option. The selected theme is persisted to `localStorage` as a **global** setting. It applies to all editor instances on the page and persists across reloads. If a user has already chosen a theme, that saved preference takes priority over the `theme` config value — call `setTheme()` after init if you need to override it.
 
 ### Custom content styling
 
