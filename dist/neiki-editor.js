@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 3.12.0
+ * Version: 3.13.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -116,6 +116,10 @@
       'theme.void': 'Void',
       'theme.autumn': 'Autumn',
       'theme.dracula': 'Dracula',
+      'theme.catppuccinLatte': 'Catppuccin Latte',
+      'theme.catppuccinFrappe': 'Catppuccin Frappé',
+      'theme.catppuccinMacchiato': 'Catppuccin Macchiato',
+      'theme.catppuccinMocha': 'Catppuccin Mocha',
 
       // Help modal
       'help.author': 'Author',
@@ -317,6 +321,10 @@
       'theme.void': 'Prázdnota',
       'theme.autumn': 'Podzim',
       'theme.dracula': 'Dracula',
+      'theme.catppuccinLatte': 'Catppuccin Latte',
+      'theme.catppuccinFrappe': 'Catppuccin Frappé',
+      'theme.catppuccinMacchiato': 'Catppuccin Macchiato',
+      'theme.catppuccinMocha': 'Catppuccin Mocha',
       'help.author': 'Autor',
       'help.version': 'Verze',
       'help.github': 'GitHub',
@@ -503,6 +511,10 @@
       'theme.void': '虚空',
       'theme.autumn': '秋天',
       'theme.dracula': 'Dracula',
+      'theme.catppuccinLatte': 'Catppuccin Latte',
+      'theme.catppuccinFrappe': 'Catppuccin Frappé',
+      'theme.catppuccinMacchiato': 'Catppuccin Macchiato',
+      'theme.catppuccinMocha': 'Catppuccin Mocha',
       'help.author': '作者',
       'help.version': '版本',
       'help.github': 'GitHub',
@@ -672,6 +684,10 @@
       'theme.void': 'Vacío',
       'theme.autumn': 'Otoño',
       'theme.dracula': 'Dracula',
+      'theme.catppuccinLatte': 'Catppuccin Latte',
+      'theme.catppuccinFrappe': 'Catppuccin Frappé',
+      'theme.catppuccinMacchiato': 'Catppuccin Macchiato',
+      'theme.catppuccinMocha': 'Catppuccin Mocha',
       'help.author': 'Autor',
       'help.version': 'Versión',
       'help.github': 'GitHub',
@@ -841,6 +857,10 @@
       'theme.void': 'Leere',
       'theme.autumn': 'Herbst',
       'theme.dracula': 'Dracula',
+      'theme.catppuccinLatte': 'Catppuccin Latte',
+      'theme.catppuccinFrappe': 'Catppuccin Frappé',
+      'theme.catppuccinMacchiato': 'Catppuccin Macchiato',
+      'theme.catppuccinMocha': 'Catppuccin Mocha',
       'help.author': 'Autor',
       'help.version': 'Version',
       'help.github': 'GitHub',
@@ -1010,6 +1030,10 @@
       'theme.void': 'Néant',
       'theme.autumn': 'Automne',
       'theme.dracula': 'Dracula',
+      'theme.catppuccinLatte': 'Catppuccin Latte',
+      'theme.catppuccinFrappe': 'Catppuccin Frappé',
+      'theme.catppuccinMacchiato': 'Catppuccin Macchiato',
+      'theme.catppuccinMocha': 'Catppuccin Mocha',
       'help.author': 'Auteur',
       'help.version': 'Version',
       'help.github': 'GitHub',
@@ -1179,6 +1203,10 @@
       'theme.void': 'Vazio',
       'theme.autumn': 'Outono',
       'theme.dracula': 'Dracula',
+      'theme.catppuccinLatte': 'Catppuccin Latte',
+      'theme.catppuccinFrappe': 'Catppuccin Frappé',
+      'theme.catppuccinMacchiato': 'Catppuccin Macchiato',
+      'theme.catppuccinMocha': 'Catppuccin Mocha',
       'help.author': 'Autor',
       'help.version': 'Versão',
       'help.github': 'GitHub',
@@ -1348,6 +1376,10 @@
       'theme.void': 'ヴォイド',
       'theme.autumn': 'オータム',
       'theme.dracula': 'Dracula',
+      'theme.catppuccinLatte': 'Catppuccin Latte',
+      'theme.catppuccinFrappe': 'Catppuccin Frappé',
+      'theme.catppuccinMacchiato': 'Catppuccin Macchiato',
+      'theme.catppuccinMocha': 'Catppuccin Mocha',
       'help.author': '作成者',
       'help.version': 'バージョン',
       'help.github': 'GitHub',
@@ -1498,7 +1530,7 @@
     return text;
   }
 
-  const THEMES = ['light', 'dark', 'blue', 'dark-blue', 'midnight', 'void', 'autumn', 'dracula'];
+  const THEMES = ['light', 'dark', 'blue', 'dark-blue', 'midnight', 'void', 'autumn', 'dracula', 'catppuccin-latte', 'catppuccin-frappe', 'catppuccin-macchiato', 'catppuccin-mocha'];
   const THEME_OPTIONS = [
     { value: 'light', labelKey: 'theme.light' },
     { value: 'dark', labelKey: 'theme.dark' },
@@ -1507,7 +1539,11 @@
     { value: 'midnight', labelKey: 'theme.midnight' },
     { value: 'void', labelKey: 'theme.void' },
     { value: 'autumn', labelKey: 'theme.autumn' },
-    { value: 'dracula', labelKey: 'theme.dracula' }
+    { value: 'dracula', labelKey: 'theme.dracula' },
+    { value: 'catppuccin-latte', labelKey: 'theme.catppuccinLatte' },
+    { value: 'catppuccin-frappe', labelKey: 'theme.catppuccinFrappe' },
+    { value: 'catppuccin-macchiato', labelKey: 'theme.catppuccinMacchiato' },
+    { value: 'catppuccin-mocha', labelKey: 'theme.catppuccinMocha' }
   ];
 
   const DEFAULT_CONFIG = {
@@ -2393,7 +2429,7 @@
 
     syncThemeClasses() {
       if (!this.overlay || !this.editor.getThemeClasses) return;
-      this.overlay.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn', 'neiki-theme-dracula');
+      this.overlay.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn', 'neiki-theme-dracula', 'neiki-theme-catppuccin-latte', 'neiki-theme-catppuccin-frappe', 'neiki-theme-catppuccin-macchiato', 'neiki-theme-catppuccin-mocha');
       this.editor.getThemeClasses(this.editor.config.theme).split(' ').filter(Boolean).forEach(className => {
         this.overlay.classList.add(className);
       });
@@ -3403,7 +3439,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.svg" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.12.0</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.13.0</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -4585,7 +4621,7 @@
       const normalizedTheme = THEMES.includes(theme) ? theme : 'light';
       const classes = [];
 
-      if (normalizedTheme === 'dark' || normalizedTheme === 'dark-blue' || normalizedTheme === 'midnight' || normalizedTheme === 'void' || normalizedTheme === 'autumn' || normalizedTheme === 'dracula') {
+      if (normalizedTheme === 'dark' || normalizedTheme === 'dark-blue' || normalizedTheme === 'midnight' || normalizedTheme === 'void' || normalizedTheme === 'autumn' || normalizedTheme === 'dracula' || normalizedTheme === 'catppuccin-frappe' || normalizedTheme === 'catppuccin-macchiato' || normalizedTheme === 'catppuccin-mocha') {
         classes.push('neiki-dark');
       }
 
@@ -4599,7 +4635,7 @@
     applyTheme(theme) {
       const normalizedTheme = THEMES.includes(theme) ? theme : 'light';
       this.config.theme = normalizedTheme;
-      this.container.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn', 'neiki-theme-dracula');
+      this.container.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn', 'neiki-theme-dracula', 'neiki-theme-catppuccin-latte', 'neiki-theme-catppuccin-frappe', 'neiki-theme-catppuccin-macchiato', 'neiki-theme-catppuccin-mocha');
       this.getThemeClasses(normalizedTheme).split(' ').filter(Boolean).forEach(className => {
         this.container.classList.add(className);
       });
@@ -5790,7 +5826,7 @@
               }
               break;
             case 'themeToggle':
-              isActive = this.config.theme === 'dark' || this.config.theme === 'dark-blue' || this.config.theme === 'midnight' || this.config.theme === 'void' || this.config.theme === 'autumn' || this.config.theme === 'dracula';
+              isActive = this.config.theme === 'dark' || this.config.theme === 'dark-blue' || this.config.theme === 'midnight' || this.config.theme === 'void' || this.config.theme === 'autumn' || this.config.theme === 'dracula' || this.config.theme === 'catppuccin-frappe' || this.config.theme === 'catppuccin-macchiato' || this.config.theme === 'catppuccin-mocha';
               break;
           }
         } catch (e) {
@@ -8338,7 +8374,7 @@
 
     syncThemeClasses() {
       if (!this.editor.getThemeClasses) return;
-      this.menu.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn', 'neiki-theme-dracula');
+      this.menu.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn', 'neiki-theme-dracula', 'neiki-theme-catppuccin-latte', 'neiki-theme-catppuccin-frappe', 'neiki-theme-catppuccin-macchiato', 'neiki-theme-catppuccin-mocha');
       this.editor.getThemeClasses(this.editor.config.theme).split(' ').filter(Boolean).forEach(className => {
         this.menu.classList.add(className);
       });
@@ -8534,7 +8570,7 @@
 
     syncThemeClasses() {
       if (!this.editor.getThemeClasses) return;
-      this.menu.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn', 'neiki-theme-dracula');
+      this.menu.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn', 'neiki-theme-dracula', 'neiki-theme-catppuccin-latte', 'neiki-theme-catppuccin-frappe', 'neiki-theme-catppuccin-macchiato', 'neiki-theme-catppuccin-mocha');
       this.editor.getThemeClasses(this.editor.config.theme).split(' ').filter(Boolean).forEach(className => {
         this.menu.classList.add(className);
       });

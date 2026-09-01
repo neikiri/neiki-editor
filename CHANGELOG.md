@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.13.0]
+- Added four new built-in themes: `catppuccin-latte`, `catppuccin-frappe`, `catppuccin-macchiato`, and `catppuccin-mocha` — the official [Catppuccin](https://catppuccin.com) palette; Latte is a pastel light flavor, while Frappé, Macchiato, and Mocha are progressively darker pastel flavors with mauve accents
+- Added Catppuccin-specific HTML code view syntax highlighting for tags, attributes, strings, and comments in all four flavors
+- Added `theme.catppuccinLatte`, `theme.catppuccinFrappe`, `theme.catppuccinMacchiato`, and `theme.catppuccinMocha` translation keys to all 8 built-in languages (en, cs, zh, es, de, fr, pt, ja)
+- Updated README and wiki documentation to reflect all twelve built-in themes
+
 ## [3.12.0]
 - Moved the built-in theme selector from the More menu to the default toolbar, immediately before the More button (⋯).
 - Reorganized the More menu into file actions, editor settings, destructive action, and Help sections; Autosave now shows an aligned On/Off status.

@@ -1,7 +1,7 @@
 /**
  * NeikiEditor - Production-Ready WYSIWYG Rich Text Editor
  * CSS Stylesheet
- * Version: 3.12.0
+ * Version: 3.13.0
  */
 
 /* ============================================
@@ -321,6 +321,220 @@
 
 .neiki-editor.neiki-theme-dracula .neiki-html-comment {
   color: #6272a4;
+}
+
+/* Catppuccin Latte Theme — light flavor of the official Catppuccin palette (https://catppuccin.com) */
+.neiki-editor.neiki-theme-catppuccin-latte,
+.neiki-modal-overlay.neiki-theme-catppuccin-latte,
+.neiki-context-menu.neiki-theme-catppuccin-latte {
+  --neiki-bg-primary: #eff1f5;
+  --neiki-bg-secondary: #e6e9ef;
+  --neiki-bg-tertiary: #ccd0da;
+  --neiki-bg-hover: #bcc0cc;
+  --neiki-bg-active: #acb0be;
+  --neiki-border-color: #ccd0da;
+  --neiki-border-color-dark: #9ca0b0;
+  --neiki-text-primary: #4c4f69;
+  --neiki-text-secondary: #5c5f77;
+  --neiki-text-muted: #8c8fa1;
+  --neiki-accent-color: #8839ef;
+  --neiki-accent-hover: #7287fd;
+  --neiki-danger-color: #d20f39;
+  --neiki-success-color: #40a02b;
+  --neiki-shadow-sm: 0 1px 2px rgba(76, 79, 105, 0.08);
+  --neiki-shadow-md: 0 4px 10px rgba(76, 79, 105, 0.12);
+  --neiki-shadow-lg: 0 14px 28px rgba(76, 79, 105, 0.16);
+  --neiki-editor-bg: #eff1f5;
+  --neiki-toolbar-bg: #e6e9ef;
+  --neiki-statusbar-bg: #e6e9ef;
+  --neiki-modal-overlay: rgba(220, 224, 232, 0.7);
+  --neiki-scrollbar-thumb: #acb0be;
+  --neiki-scrollbar-track: #dce0e8;
+  --neiki-selection-bg: rgba(124, 127, 147, 0.25);
+  --neiki-highlight-color: rgba(223, 142, 29, 0.3);
+  --neiki-table-border: #bcc0cc;
+}
+
+/* Catppuccin Latte — code view syntax highlighting */
+.neiki-editor.neiki-theme-catppuccin-latte .neiki-html-tag {
+  color: #ea76cb;
+}
+
+.neiki-editor.neiki-theme-catppuccin-latte .neiki-html-attr {
+  color: #df8e1d;
+}
+
+.neiki-editor.neiki-theme-catppuccin-latte .neiki-html-string {
+  color: #40a02b;
+}
+
+.neiki-editor.neiki-theme-catppuccin-latte .neiki-html-comment {
+  color: #7c7f93;
+}
+
+/* Catppuccin Frappé Theme — dark flavor of the official Catppuccin palette (https://catppuccin.com) */
+.neiki-editor.neiki-theme-catppuccin-frappe,
+.neiki-modal-overlay.neiki-theme-catppuccin-frappe,
+.neiki-context-menu.neiki-theme-catppuccin-frappe {
+  --neiki-bg-primary: #303446;
+  --neiki-bg-secondary: #292c3c;
+  --neiki-bg-tertiary: #414559;
+  --neiki-bg-hover: #51576d;
+  --neiki-bg-active: #626880;
+  --neiki-border-color: #414559;
+  --neiki-border-color-dark: #737994;
+  --neiki-text-primary: #c6d0f5;
+  --neiki-text-secondary: #b5bfe2;
+  --neiki-text-muted: #838ba7;
+  --neiki-accent-color: #ca9ee6;
+  --neiki-accent-hover: #babbf1;
+  --neiki-danger-color: #e78284;
+  --neiki-success-color: #a6d189;
+  --neiki-shadow-sm: 0 1px 2px rgba(35, 38, 52, 0.3);
+  --neiki-shadow-md: 0 4px 12px rgba(35, 38, 52, 0.4);
+  --neiki-shadow-lg: 0 16px 32px rgba(35, 38, 52, 0.5);
+  --neiki-editor-bg: #303446;
+  --neiki-toolbar-bg: #292c3c;
+  --neiki-statusbar-bg: #292c3c;
+  --neiki-modal-overlay: rgba(35, 38, 52, 0.7);
+  --neiki-scrollbar-thumb: #626880;
+  --neiki-scrollbar-track: #232634;
+  --neiki-selection-bg: rgba(148, 156, 187, 0.25);
+  --neiki-highlight-color: rgba(229, 200, 144, 0.25);
+  --neiki-table-border: #51576d;
+}
+
+/* Catppuccin Frappé — toolbar selects and fontsize input text color */
+.neiki-editor.neiki-theme-catppuccin-frappe .neiki-select,
+.neiki-editor.neiki-theme-catppuccin-frappe .neiki-fontsize-input {
+  color: var(--neiki-text-secondary);
+}
+
+/* Catppuccin Frappé — code view syntax highlighting */
+.neiki-editor.neiki-theme-catppuccin-frappe .neiki-html-tag {
+  color: #f4b8e4;
+}
+
+.neiki-editor.neiki-theme-catppuccin-frappe .neiki-html-attr {
+  color: #e5c890;
+}
+
+.neiki-editor.neiki-theme-catppuccin-frappe .neiki-html-string {
+  color: #a6d189;
+}
+
+.neiki-editor.neiki-theme-catppuccin-frappe .neiki-html-comment {
+  color: #949cbb;
+}
+
+/* Catppuccin Macchiato Theme — dark flavor of the official Catppuccin palette (https://catppuccin.com) */
+.neiki-editor.neiki-theme-catppuccin-macchiato,
+.neiki-modal-overlay.neiki-theme-catppuccin-macchiato,
+.neiki-context-menu.neiki-theme-catppuccin-macchiato {
+  --neiki-bg-primary: #24273a;
+  --neiki-bg-secondary: #1e2030;
+  --neiki-bg-tertiary: #363a4f;
+  --neiki-bg-hover: #494d64;
+  --neiki-bg-active: #5b6078;
+  --neiki-border-color: #363a4f;
+  --neiki-border-color-dark: #6e738d;
+  --neiki-text-primary: #cad3f5;
+  --neiki-text-secondary: #b8c0e0;
+  --neiki-text-muted: #8087a2;
+  --neiki-accent-color: #c6a0f6;
+  --neiki-accent-hover: #b7bdf8;
+  --neiki-danger-color: #ed8796;
+  --neiki-success-color: #a6da95;
+  --neiki-shadow-sm: 0 1px 2px rgba(24, 25, 38, 0.3);
+  --neiki-shadow-md: 0 4px 12px rgba(24, 25, 38, 0.4);
+  --neiki-shadow-lg: 0 16px 32px rgba(24, 25, 38, 0.5);
+  --neiki-editor-bg: #24273a;
+  --neiki-toolbar-bg: #1e2030;
+  --neiki-statusbar-bg: #1e2030;
+  --neiki-modal-overlay: rgba(24, 25, 38, 0.7);
+  --neiki-scrollbar-thumb: #5b6078;
+  --neiki-scrollbar-track: #181926;
+  --neiki-selection-bg: rgba(147, 154, 183, 0.25);
+  --neiki-highlight-color: rgba(238, 212, 159, 0.25);
+  --neiki-table-border: #494d64;
+}
+
+/* Catppuccin Macchiato — toolbar selects and fontsize input text color */
+.neiki-editor.neiki-theme-catppuccin-macchiato .neiki-select,
+.neiki-editor.neiki-theme-catppuccin-macchiato .neiki-fontsize-input {
+  color: var(--neiki-text-secondary);
+}
+
+/* Catppuccin Macchiato — code view syntax highlighting */
+.neiki-editor.neiki-theme-catppuccin-macchiato .neiki-html-tag {
+  color: #f5bde6;
+}
+
+.neiki-editor.neiki-theme-catppuccin-macchiato .neiki-html-attr {
+  color: #eed49f;
+}
+
+.neiki-editor.neiki-theme-catppuccin-macchiato .neiki-html-string {
+  color: #a6da95;
+}
+
+.neiki-editor.neiki-theme-catppuccin-macchiato .neiki-html-comment {
+  color: #939ab7;
+}
+
+/* Catppuccin Mocha Theme — dark flavor of the official Catppuccin palette (https://catppuccin.com) */
+.neiki-editor.neiki-theme-catppuccin-mocha,
+.neiki-modal-overlay.neiki-theme-catppuccin-mocha,
+.neiki-context-menu.neiki-theme-catppuccin-mocha {
+  --neiki-bg-primary: #1e1e2e;
+  --neiki-bg-secondary: #181825;
+  --neiki-bg-tertiary: #313244;
+  --neiki-bg-hover: #45475a;
+  --neiki-bg-active: #585b70;
+  --neiki-border-color: #313244;
+  --neiki-border-color-dark: #6c7086;
+  --neiki-text-primary: #cdd6f4;
+  --neiki-text-secondary: #bac2de;
+  --neiki-text-muted: #7f849c;
+  --neiki-accent-color: #cba6f7;
+  --neiki-accent-hover: #b4befe;
+  --neiki-danger-color: #f38ba8;
+  --neiki-success-color: #a6e3a1;
+  --neiki-shadow-sm: 0 1px 2px rgba(17, 17, 27, 0.3);
+  --neiki-shadow-md: 0 4px 12px rgba(17, 17, 27, 0.4);
+  --neiki-shadow-lg: 0 16px 32px rgba(17, 17, 27, 0.5);
+  --neiki-editor-bg: #1e1e2e;
+  --neiki-toolbar-bg: #181825;
+  --neiki-statusbar-bg: #181825;
+  --neiki-modal-overlay: rgba(17, 17, 27, 0.7);
+  --neiki-scrollbar-thumb: #585b70;
+  --neiki-scrollbar-track: #11111b;
+  --neiki-selection-bg: rgba(147, 153, 178, 0.25);
+  --neiki-highlight-color: rgba(249, 226, 175, 0.25);
+  --neiki-table-border: #45475a;
+}
+
+/* Catppuccin Mocha — toolbar selects and fontsize input text color */
+.neiki-editor.neiki-theme-catppuccin-mocha .neiki-select,
+.neiki-editor.neiki-theme-catppuccin-mocha .neiki-fontsize-input {
+  color: var(--neiki-text-secondary);
+}
+
+/* Catppuccin Mocha — code view syntax highlighting */
+.neiki-editor.neiki-theme-catppuccin-mocha .neiki-html-tag {
+  color: #f5c2e7;
+}
+
+.neiki-editor.neiki-theme-catppuccin-mocha .neiki-html-attr {
+  color: #f9e2af;
+}
+
+.neiki-editor.neiki-theme-catppuccin-mocha .neiki-html-string {
+  color: #a6e3a1;
+}
+
+.neiki-editor.neiki-theme-catppuccin-mocha .neiki-html-comment {
+  color: #9399b2;
 }
 
 /* ============================================

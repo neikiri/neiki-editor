@@ -16,6 +16,9 @@ desktop.ini
 # Wiki Folder
 wiki/
 
+# Temporary Folder
+temp/
+
 *.psd
 
 MINIFIER.txt
