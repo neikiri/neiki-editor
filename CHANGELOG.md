@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.14.0]
+- Added manifest-based third-party theme discovery through `themes/index.json` and the `themesUrl` configuration; packages include metadata, CSS, an optional manual registration entry point, and a license.
+- Externalized Dracula and the four Catppuccin flavors into standalone theme packages that work with the picker, `setTheme()`, `toggleTheme()`, and persisted theme preferences.
+
 ## [3.13.0]
 - Added four new built-in themes: `catppuccin-latte`, `catppuccin-frappe`, `catppuccin-macchiato`, and `catppuccin-mocha` — the official [Catppuccin](https://catppuccin.com) palette; Latte is a pastel light flavor, while Frappé, Macchiato, and Mocha are progressively darker pastel flavors with mauve accents
 - Added Catppuccin-specific HTML code view syntax highlighting for tags, attributes, strings, and comments in all four flavors

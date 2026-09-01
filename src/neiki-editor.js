@@ -1,6 +1,6 @@
 /**
  * NeikiEditor - A Modern WYSIWYG Editor
- * Version: 3.13.0
+ * Version: 3.14.0
  *
  * A lightweight, feature-rich text editor with support for:
  * - Rich text formatting (bold, italic, underline, etc.)
@@ -1530,21 +1530,96 @@
     return text;
   }
 
-  const THEMES = ['light', 'dark', 'blue', 'dark-blue', 'midnight', 'void', 'autumn', 'dracula', 'catppuccin-latte', 'catppuccin-frappe', 'catppuccin-macchiato', 'catppuccin-mocha'];
-  const THEME_OPTIONS = [
+  const BUILT_IN_THEMES = [
     { value: 'light', labelKey: 'theme.light' },
     { value: 'dark', labelKey: 'theme.dark' },
     { value: 'blue', labelKey: 'theme.blue' },
     { value: 'dark-blue', labelKey: 'theme.darkBlue' },
     { value: 'midnight', labelKey: 'theme.midnight' },
     { value: 'void', labelKey: 'theme.void' },
-    { value: 'autumn', labelKey: 'theme.autumn' },
-    { value: 'dracula', labelKey: 'theme.dracula' },
-    { value: 'catppuccin-latte', labelKey: 'theme.catppuccinLatte' },
-    { value: 'catppuccin-frappe', labelKey: 'theme.catppuccinFrappe' },
-    { value: 'catppuccin-macchiato', labelKey: 'theme.catppuccinMacchiato' },
-    { value: 'catppuccin-mocha', labelKey: 'theme.catppuccinMocha' }
+    { value: 'autumn', labelKey: 'theme.autumn' }
   ];
+  const EXTERNAL_THEMES = new Map();
+  const EDITOR_INSTANCES = new Set();
+  const THEME_LOADERS = new Map();
+
+  function getThemeOptions() {
+    return BUILT_IN_THEMES.concat(Array.from(EXTERNAL_THEMES.values()));
+  }
+
+  function getThemeNames() {
+    return getThemeOptions().map(theme => theme.value);
+  }
+
+  function getThemeClassNames() {
+    return getThemeNames().filter(theme => theme !== 'light' && theme !== 'dark').map(theme => 'neiki-theme-' + theme);
+  }
+
+  function registerTheme(theme) {
+    if (!theme || typeof theme !== 'object' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(theme.name) || typeof theme.label !== 'string' || !theme.label.trim()) {
+      throw new Error('NeikiEditor.registerTheme requires a name and label.');
+    }
+
+    const option = { value: theme.name, label: theme.label.trim(), dark: theme.dark === true };
+    EXTERNAL_THEMES.set(theme.name, option);
+
+    if (typeof theme.css === 'string' && theme.css.trim() && !document.querySelector('style[data-neiki-theme="' + theme.name + '"]')) {
+      const style = document.createElement('style');
+      style.dataset.neikiTheme = theme.name;
+      style.textContent = theme.css;
+      document.head.appendChild(style);
+    }
+
+    if (typeof theme.cssUrl === 'string' && theme.cssUrl && !document.querySelector('link[data-neiki-theme="' + theme.name + '"]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = theme.cssUrl;
+      link.dataset.neikiTheme = theme.name;
+      document.head.appendChild(link);
+    }
+
+    EDITOR_INSTANCES.forEach(editor => {
+      editor.refreshThemeOptions();
+      const savedTheme = StorageManager.getGlobal('theme');
+      if (savedTheme === theme.name || (!savedTheme && editor.initialTheme === theme.name)) {
+        editor.applyTheme(theme.name);
+      }
+    });
+  }
+
+  function loadThemes(themesUrl = 'themes/') {
+    const manifestUrl = new URL('index.json', new URL(themesUrl, document.baseURI)).href;
+    if (THEME_LOADERS.has(manifestUrl)) return THEME_LOADERS.get(manifestUrl);
+
+    const loader = fetch(manifestUrl)
+      .then(response => {
+        if (!response.ok) throw new Error('Could not load ' + manifestUrl);
+        return response.json();
+      })
+      .then(manifest => {
+        if (!manifest || !Array.isArray(manifest.themes)) throw new Error('Invalid theme manifest: ' + manifestUrl);
+        return Promise.all(manifest.themes.map(themePath => {
+          const themeUrl = new URL(themePath, manifestUrl).href;
+          return fetch(themeUrl)
+            .then(response => {
+              if (!response.ok) throw new Error('Could not load ' + themeUrl);
+              return response.json();
+            })
+            .then(theme => ({ theme, themeUrl }));
+        })).then(themes => {
+          themes.forEach(({ theme, themeUrl }) => {
+            theme.cssUrl = new URL(theme.stylesheet || 'theme.css', themeUrl).href;
+            registerTheme(theme);
+          });
+        });
+      })
+      .catch(error => {
+        console.warn('NeikiEditor: External themes were not loaded.', error);
+      });
+
+    THEME_LOADERS.set(manifestUrl, loader);
+    return loader;
+  }
 
   const DEFAULT_CONFIG = {
     toolbar: [
@@ -1566,6 +1641,7 @@
     spellcheck: true,
     readonly: false,
     theme: 'light',
+    themesUrl: 'themes/',
     language: 'en',
     translations: null,
     contextMenu: true,
@@ -2429,7 +2505,7 @@
 
     syncThemeClasses() {
       if (!this.overlay || !this.editor.getThemeClasses) return;
-      this.overlay.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn', 'neiki-theme-dracula', 'neiki-theme-catppuccin-latte', 'neiki-theme-catppuccin-frappe', 'neiki-theme-catppuccin-macchiato', 'neiki-theme-catppuccin-mocha');
+      this.overlay.classList.remove('neiki-dark', ...getThemeClassNames());
       this.editor.getThemeClasses(this.editor.config.theme).split(' ').filter(Boolean).forEach(className => {
         this.overlay.classList.add(className);
       });
@@ -3439,7 +3515,7 @@
           <img src="https://github.com/neikiri/neiki-editor/raw/main/assets/logo.svg" alt="Neiki's Editor" style="width: 240px; height: auto; margin: 0 auto 16px; display: block;">
           <div style="font-size: 14px; line-height: 2; color: var(--neiki-text-primary);">
             <div><strong>${Utils.escapeHTML(t('help.author'))}:</strong> neikiri (Jindřich Stoklasa)</div>
-            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.13.0</div>
+            <div><strong>${Utils.escapeHTML(t('help.version'))}:</strong> 3.14.0</div>
             <div><strong>${Utils.escapeHTML(t('help.github'))}:</strong> <a href="https://github.com/neikiri/neiki-editor" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">github.com/neikiri/neiki-editor</a></div>
             <div><strong>${Utils.escapeHTML(t('help.documentation'))}:</strong> <a href="https://github.com/neikiri/neiki-editor/wiki" target="_blank" rel="noopener noreferrer" style="color: var(--neiki-accent);">Wiki</a></div>
           </div>
@@ -4522,6 +4598,7 @@
         'neiki_' + (typeof element === 'string' ? element.replace(/[^a-zA-Z0-9]/g, '_') : 'editor');
 
       this.config = Utils.deepMerge(DEFAULT_CONFIG, options);
+      this.initialTheme = this.config.theme;
 
       // Backward compatibility: support old custom_class option
       if (this.config.custom_class && !this.config.customClass) {
@@ -4553,11 +4630,13 @@
 
       // Load theme preference
       const savedTheme = StorageManager.getGlobal('theme', this.config.theme);
-      this.config.theme = THEMES.includes(savedTheme) ? savedTheme : 'light';
+      this.config.theme = getThemeNames().includes(savedTheme) ? savedTheme : 'light';
 
       this.createStructure();
       this.createToolbar();
-      this.applyTheme(this.config.theme);
+      this.applyTheme(this.config.theme, false);
+      EDITOR_INSTANCES.add(this);
+      if (this.config.themesUrl) loadThemes(this.config.themesUrl);
       this.createContentArea();
       this.createStatusBar();
 
@@ -4618,10 +4697,11 @@
     }
 
     getThemeClasses(theme) {
-      const normalizedTheme = THEMES.includes(theme) ? theme : 'light';
+      const normalizedTheme = getThemeNames().includes(theme) ? theme : 'light';
       const classes = [];
 
-      if (normalizedTheme === 'dark' || normalizedTheme === 'dark-blue' || normalizedTheme === 'midnight' || normalizedTheme === 'void' || normalizedTheme === 'autumn' || normalizedTheme === 'dracula' || normalizedTheme === 'catppuccin-frappe' || normalizedTheme === 'catppuccin-macchiato' || normalizedTheme === 'catppuccin-mocha') {
+      const externalTheme = EXTERNAL_THEMES.get(normalizedTheme);
+      if (normalizedTheme === 'dark' || normalizedTheme === 'dark-blue' || normalizedTheme === 'midnight' || normalizedTheme === 'void' || normalizedTheme === 'autumn' || (externalTheme && externalTheme.dark)) {
         classes.push('neiki-dark');
       }
 
@@ -4632,20 +4712,32 @@
       return classes.join(' ');
     }
 
-    applyTheme(theme) {
-      const normalizedTheme = THEMES.includes(theme) ? theme : 'light';
+    applyTheme(theme, persist = true) {
+      const normalizedTheme = getThemeNames().includes(theme) ? theme : 'light';
       this.config.theme = normalizedTheme;
-      this.container.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn', 'neiki-theme-dracula', 'neiki-theme-catppuccin-latte', 'neiki-theme-catppuccin-frappe', 'neiki-theme-catppuccin-macchiato', 'neiki-theme-catppuccin-mocha');
+      this.container.classList.remove('neiki-dark', ...getThemeClassNames());
       this.getThemeClasses(normalizedTheme).split(' ').filter(Boolean).forEach(className => {
         this.container.classList.add(className);
       });
-      StorageManager.setGlobal('theme', normalizedTheme);
+      if (persist) StorageManager.setGlobal('theme', normalizedTheme);
 
       if (this._themeSelect) {
         this._themeSelect.value = normalizedTheme;
       }
       if (this.modal) this.modal.syncThemeClasses();
       this._updateThemeMenuItem();
+    }
+
+    refreshThemeOptions() {
+      if (!this._themeSelect) return;
+      this._themeSelect.replaceChildren();
+      getThemeOptions().forEach(option => {
+        this._themeSelect.appendChild(Utils.createElement('option', {
+          value: option.value,
+          textContent: option.label || t(option.labelKey)
+        }));
+      });
+      this._themeSelect.value = this.config.theme;
     }
 
     createAutosaveStorageId(element) {
@@ -5147,10 +5239,10 @@
             'aria-label': t(config.titleKey)
           });
 
-          THEME_OPTIONS.forEach(option => {
+          getThemeOptions().forEach(option => {
             select.appendChild(Utils.createElement('option', {
               value: option.value,
-              textContent: t(option.labelKey)
+              textContent: option.label || t(option.labelKey)
             }));
           });
 
@@ -5918,8 +6010,9 @@
     }
 
     toggleTheme() {
-      const currentIndex = THEMES.indexOf(this.config.theme);
-      const nextTheme = THEMES[(currentIndex + 1) % THEMES.length];
+      const themes = getThemeNames();
+      const currentIndex = themes.indexOf(this.config.theme);
+      const nextTheme = themes[(currentIndex + 1) % themes.length];
       this.applyTheme(nextTheme);
     }
 
@@ -6217,6 +6310,7 @@
       }
 
       this.container.remove();
+      EDITOR_INSTANCES.delete(this);
       this.originalElement.style.display = '';
 
       if (this.modal.overlay) {
@@ -8374,7 +8468,7 @@
 
     syncThemeClasses() {
       if (!this.editor.getThemeClasses) return;
-      this.menu.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn', 'neiki-theme-dracula', 'neiki-theme-catppuccin-latte', 'neiki-theme-catppuccin-frappe', 'neiki-theme-catppuccin-macchiato', 'neiki-theme-catppuccin-mocha');
+      this.menu.classList.remove('neiki-dark', ...getThemeClassNames());
       this.editor.getThemeClasses(this.editor.config.theme).split(' ').filter(Boolean).forEach(className => {
         this.menu.classList.add(className);
       });
@@ -8570,7 +8664,7 @@
 
     syncThemeClasses() {
       if (!this.editor.getThemeClasses) return;
-      this.menu.classList.remove('neiki-dark', 'neiki-theme-blue', 'neiki-theme-dark-blue', 'neiki-theme-midnight', 'neiki-theme-void', 'neiki-theme-autumn', 'neiki-theme-dracula', 'neiki-theme-catppuccin-latte', 'neiki-theme-catppuccin-frappe', 'neiki-theme-catppuccin-macchiato', 'neiki-theme-catppuccin-mocha');
+      this.menu.classList.remove('neiki-dark', ...getThemeClassNames());
       this.editor.getThemeClasses(this.editor.config.theme).split(' ').filter(Boolean).forEach(className => {
         this.menu.classList.add(className);
       });
@@ -8753,6 +8847,9 @@
 
   // Static methods
   NeikiEditor.addTranslation = addTranslation;
+  NeikiEditor.registerTheme = registerTheme;
+  NeikiEditor.getThemes = function () { return getThemeOptions().map(theme => ({ ...theme })); };
+  NeikiEditor.loadThemes = loadThemes;
   NeikiEditor.removeStorageKey = StorageManager.removeKey;
   NeikiEditor.removeStorageByPrefix = StorageManager.removeByPrefix;
   NeikiEditor.clearAutosaveStorage = function (prefix = 'neiki_autosave_') {

@@ -25,3 +25,6 @@ MINIFIER.txt
 
 # Screenshot folder
 screenshot/
+
+# User-installed themes
+themes/*/

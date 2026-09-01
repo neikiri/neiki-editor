@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/web%20components-29ABE2.svg?style=for-the-badge&logo=webcomponentsdotorg&logoColor=white" alt="Web Components">
   <br>
   <img src="https://img.shields.io/badge/License-AGPL--3.0-2563EB?style=for-the-badge&logo=open-source-initiative&logoColor=white&labelColor=000F15&logoWidth=20" alt="License">
-  <img src="https://img.shields.io/badge/Version-3.13.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
+  <img src="https://img.shields.io/badge/Version-3.14.0-2563EB?style=for-the-badge&logo=semantic-release&logoColor=white&labelColor=000F15&logoWidth=20" alt="Version">
 </p>
 
 <p align="center">
@@ -55,11 +55,6 @@
   <img src="assets/neiki-editor-midnight.png" alt="Midnight Theme" width="260">
   <img src="assets/neiki-editor-void.png" alt="Void Theme" width="260">
   <img src="assets/neiki-editor-autumn.png" alt="Autumn Theme" width="260">
-  <img src="assets/neiki-editor-dracula.png" alt="Dracula Theme" width="260">
-  <img src="assets/neiki-editor-catppuccin-latte.png" alt="Catppuccin Latte Theme" width="260">
-  <img src="assets/neiki-editor-catppuccin-frappe.png" alt="Catppuccin Frappé Theme" width="260">
-  <img src="assets/neiki-editor-catppuccin-macchiato.png" alt="Catppuccin Macchiato Theme" width="260">
-  <img src="assets/neiki-editor-catppuccin-mocha.png" alt="Catppuccin Mocha Theme" width="260">
 </p>
 
 ---
@@ -136,7 +131,7 @@ If you want a content editor that you can read, host, and reason about as a sing
 - Plugin API for custom toolbar buttons and init hooks
 - PHP integration helper with asset loading, rendering, and HTML sanitization
 - Eight built-in UI languages: `en`, `cs`, `zh`, `es`, `de`, `fr`, `pt`, `ja`
-- Twelve built-in themes: Light, Dark, Blue, Dark Blue, Midnight, Void, Autumn, Dracula, Catppuccin Latte, Catppuccin Frappé, Catppuccin Macchiato, Catppuccin Mocha
+- Seven built-in themes: Light, Dark, Blue, Dark Blue, Midnight, Void, Autumn
 - Lifecycle callbacks: `onReady`, `onChange`, `onSave`, `onFocus`, `onBlur`
 
 ---
@@ -156,7 +151,7 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 **Pin a specific version**
 
 ```html
-<script src="https://cdn.neikiri.dev/neiki-editor/3.13.0/neiki-editor.min.js"></script>
+<script src="https://cdn.neikiri.dev/neiki-editor/3.14.0/neiki-editor.min.js"></script>
 ```
 
 **Load CSS and JS separately**
@@ -167,8 +162,8 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 <script src="https://cdn.neikiri.dev/neiki-editor/neiki-editor.js"></script>
 
 <!-- Or pinned -->
-<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/3.13.0/neiki-editor.css">
-<script src="https://cdn.neikiri.dev/neiki-editor/3.13.0/neiki-editor.js"></script>
+<link rel="stylesheet" href="https://cdn.neikiri.dev/neiki-editor/3.14.0/neiki-editor.css">
+<script src="https://cdn.neikiri.dev/neiki-editor/3.14.0/neiki-editor.js"></script>
 ```
 
 **Alternative CDN — jsDelivr**
@@ -176,7 +171,7 @@ The recommended install is the single bundled script from the CDN. CSS is includ
 ```html
 <script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@latest/dist/neiki-editor.min.js"></script>
 <!-- Pinned -->
-<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.13.0/dist/neiki-editor.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/neikiri/neiki-editor@3.14.0/dist/neiki-editor.min.js"></script>
 ```
 
 **Package manager**
@@ -257,7 +252,7 @@ const editor = new NeikiEditor('#editor', {
   minHeight: 300,
   maxHeight: 600,
   baseUrl: 'https://www.example.com/',
-  theme: 'light',     // 'light' | 'dark' | 'blue' | 'dark-blue' | 'midnight' | 'void' | 'autumn' | 'dracula' | 'catppuccin-latte' | 'catppuccin-frappe' | 'catppuccin-macchiato' | 'catppuccin-mocha'
+  theme: 'light',     // 'light' | 'dark' | 'blue' | 'dark-blue' | 'midnight' | 'void' | 'autumn'
   language: 'en',     // 'en' | 'cs' | 'zh' | 'es' | 'de' | 'fr' | 'pt' | 'ja'
   onChange: function (content, editor) {
     console.log('Content changed:', content);
@@ -275,7 +270,7 @@ const editor = new NeikiEditor('#editor', {
 | `autofocus` | `boolean` | `false` | Focus the editor on initialization |
 | `spellcheck` | `boolean` | `true` | Enable browser spellcheck |
 | `readonly` | `boolean` | `false` | Make the editor read-only |
-| `theme` | `string` | `'light'` | `'light'`, `'dark'`, `'blue'`, `'dark-blue'`, `'midnight'`, `'void'`, `'autumn'`, `'dracula'`, `'catppuccin-latte'`, `'catppuccin-frappe'`, `'catppuccin-macchiato'`, or `'catppuccin-mocha'` |
+| `theme` | `string` | `'light'` | `'light'`, `'dark'`, `'blue'`, `'dark-blue'`, `'midnight'`, `'void'`, or `'autumn'` |
 | `language` | `string` | `'en'` | UI language (see list above) |
 | `translations` | `object \| null` | `null` | Custom translation keys, merged with built-ins |
 | `contextMenu` | `boolean` | `true` | Enable the custom desktop right-click context menu. Touch input always retains the browser's native menu for long-press selection; set to `false` to use the native menu everywhere |
@@ -361,16 +356,38 @@ The adapter layer keeps Neiki's Editor independent of any specific editor packag
 
 ### Themes
 
-Twelve themes ship by default: `light`, `dark`, `blue`, `dark-blue`, `midnight`, `void` (a dark purple cyberpunk theme with neon-purple glow accents), `autumn` (a warm retro theme with a brown background and orange accents), `dracula` (the official [Dracula theme](https://draculatheme.com) — a dark purple-blue palette with pink, purple, green, and yellow accents), and the four official [Catppuccin](https://catppuccin.com) flavors: `catppuccin-latte` (a pastel light palette), `catppuccin-frappe`, `catppuccin-macchiato`, and `catppuccin-mocha` (progressively darker pastel palettes with mauve accents). Set one at init or change it at runtime:
+Seven themes ship by default: `light`, `dark`, `blue`, `dark-blue`, `midnight`, `void`, and `autumn`. Since version 3.14.0, third-party themes use a central manifest. Copy a downloaded package folder, such as `dracula/` or `catppuccin/`, into the editor's [themes](themes) folder and add its `theme.json` path to `themes/index.json`. Each package contains `theme.json`, `theme.css`, `theme.js`, and `LICENSE`. The editor loads the central manifest automatically:
+
+```html
+<script src="neiki-editor.js"></script>
+```
+
+Set `themesUrl` when the themes folder is elsewhere, or to `false` to disable automatic loading:
+
+```javascript
+new NeikiEditor('#editor', { themesUrl: '/assets/neiki-themes/' });
+```
+
+Registered external themes appear in the toolbar picker, persist in `localStorage`, and work with the existing API:
 
 ```javascript
 const editor = new NeikiEditor('#editor', { theme: 'dark' });
 
-editor.setTheme('catppuccin-mocha');  // set a specific theme
-editor.toggleTheme();        // cycle: light → dark → blue → dark-blue → midnight → void → autumn → dracula → catppuccin-latte → catppuccin-frappe → catppuccin-macchiato → catppuccin-mocha → light
+editor.setTheme('catppuccin-mocha');  // set a registered external theme
+editor.toggleTheme();                 // cycles built-in and registered themes
 ```
 
 > The theme selector is a standalone toolbar control. In the default toolbar it appears directly before the More menu (⋯), and can be omitted or repositioned through the `toolbar` option. The selected theme is persisted to `localStorage` as a **global** setting. It applies to all editor instances on the page and persists across reloads. If a user has already chosen a theme, that saved preference takes priority over the `theme` config value — call `setTheme()` after init if you need to override it.
+
+The root `index.json` lists theme metadata files. A theme `theme.json` owns its name and picker label; `theme.css` styles that theme; `theme.js` is an optional direct-load fallback. `name` must contain lowercase letters, numbers, and hyphens; `dark` adds `neiki-dark`. `NeikiEditor.getThemes()` returns current metadata and `NeikiEditor.loadThemes(url)` loads a manifest on demand.
+
+```javascript
+// themes/index.json
+{ "themes": ["forest/theme.json"] }
+
+// themes/forest/theme.json
+{ "name": "forest", "label": "Forest", "dark": true, "stylesheet": "theme.css" }
+```
 
 ### Custom content styling
 
@@ -484,6 +501,9 @@ editor.execCommand('foreColor', '#ff0000');
 NeikiEditor.registerPlugin({ /* ... */ });
 NeikiEditor.getPlugins();            // array of registered plugins
 NeikiEditor.addTranslation('de', { /* ... */ });
+NeikiEditor.registerTheme({ name: 'forest', label: 'Forest', cssUrl: '/themes/forest.css' });
+NeikiEditor.getThemes();
+NeikiEditor.loadThemes('/assets/neiki-themes/');
 NeikiEditor.removeStorageKey('neiki_autosave_article-42_autosave_content');
 NeikiEditor.removeStorageByPrefix('neiki_autosave_');
 NeikiEditor.clearAutosaveStorage();
