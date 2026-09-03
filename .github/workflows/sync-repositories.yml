@@ -1,0 +1,132 @@
+name: Sync repositories
+
+on:
+  push:
+    branches:
+      - "**"
+    tags:
+      - "**"
+
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ==========================================
+      # GitLab
+      # ==========================================
+
+      - name: Sync to GitLab
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        run: |
+          set -e
+
+          echo "=== Syncing to GitLab ==="
+
+          git remote add gitlab \
+            "https://oauth2:${GITLAB_TOKEN}@gitlab.com/neikiri/${{ github.event.repository.name }}.git"
+
+          git fetch origin --prune --tags
+
+          # Push all branches
+          git for-each-ref --format='%(refname)' refs/remotes/origin/ | while read -r ref; do
+            branch="${ref#refs/remotes/origin/}"
+
+            if [ "$branch" = "HEAD" ]; then
+              continue
+            fi
+
+            echo "Syncing GitLab branch: $branch"
+            git push gitlab "$ref:refs/heads/$branch" --force
+          done
+
+          # Push all tags
+          git push gitlab 'refs/tags/*:refs/tags/*' --force
+
+          # Remove branches that no longer exist on GitHub
+          git ls-remote --heads gitlab | while read -r sha ref; do
+            branch="${ref#refs/heads/}"
+
+            if ! git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+              echo "Deleting GitLab branch: $branch"
+              git push gitlab --delete "$branch"
+            fi
+          done
+
+          echo "GitLab sync completed."
+
+      # ==========================================
+      # Forgejo
+      # ==========================================
+
+      - name: Sync to Forgejo
+        env:
+          FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
+        run: |
+          echo "=== Syncing to Forgejo ==="
+
+          FORGEJO_URL="https://git.neikiri.dev"
+          REPO="${{ github.event.repository.name }}"
+
+          # Check if Forgejo is available
+          if ! curl -fsS \
+              --connect-timeout 5 \
+              --max-time 10 \
+              "$FORGEJO_URL/api/v1/version" > /dev/null; then
+
+            echo "::warning::Forgejo is unavailable. Skipping Forgejo sync."
+            exit 0
+          fi
+
+          echo "Forgejo is available."
+
+          # Check if repository exists
+          if ! curl -fsS \
+              --connect-timeout 5 \
+              --max-time 10 \
+              -H "Authorization: token ${FORGEJO_TOKEN}" \
+              "$FORGEJO_URL/api/v1/repos/neikiri/$REPO" > /dev/null; then
+
+            echo "::warning::Forgejo repository neikiri/$REPO does not exist. Skipping Forgejo sync."
+            exit 0
+          fi
+
+          git remote add forgejo \
+            "https://neikiri:${FORGEJO_TOKEN}@git.neikiri.dev/neikiri/${REPO}.git"
+
+          git fetch origin --prune --tags
+
+          # Push all branches
+          git for-each-ref --format='%(refname)' refs/remotes/origin/ | while read -r ref; do
+            branch="${ref#refs/remotes/origin/}"
+
+            if [ "$branch" = "HEAD" ]; then
+              continue
+            fi
+
+            echo "Syncing Forgejo branch: $branch"
+            git push forgejo "$ref:refs/heads/$branch" --force
+          done
+
+          # Push all tags
+          git push forgejo 'refs/tags/*:refs/tags/*' --force
+
+          # Remove branches that no longer exist on GitHub
+          git ls-remote --heads forgejo | while read -r sha ref; do
+            branch="${ref#refs/heads/}"
+
+            if ! git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+              echo "Deleting Forgejo branch: $branch"
+              git push forgejo --delete "$branch"
+            fi
+          done
+
+          echo "Forgejo sync completed."
