@@ -1,0 +1,75 @@
+name: Publish to CDN
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+      - '*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish CDN
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify dist directory
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "ERROR: dist/ directory does not exist."
+            exit 1
+          fi
+
+          echo "dist/ directory found:"
+          find dist -type f -print
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+
+          printf '%s\n' "${{ secrets.CDN_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+          ssh-keyscan -H "${{ secrets.CDN_SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Publish
+        env:
+          VERSION: ${{ github.ref_name }}
+          PROJECT: ${{ github.event.repository.name }}
+        run: |
+          VERSION="${VERSION#v}"
+
+          echo "Project: $PROJECT"
+          echo "Version: $VERSION"
+
+          ssh \
+            -p "${{ secrets.CDN_SSH_PORT }}" \
+            "${{ secrets.CDN_SSH_USER }}@${{ secrets.CDN_SSH_HOST }}" \
+            "mkdir -p '${{ secrets.CDN_PATH }}/$PROJECT/$VERSION'"
+
+          rsync -avz \
+            -e "ssh -p ${{ secrets.CDN_SSH_PORT }}" \
+            dist/ \
+            "${{ secrets.CDN_SSH_USER }}@${{ secrets.CDN_SSH_HOST }}:${{ secrets.CDN_PATH }}/$PROJECT/$VERSION/"
+
+      - name: Update latest
+        env:
+          VERSION: ${{ github.ref_name }}
+          PROJECT: ${{ github.event.repository.name }}
+        run: |
+          VERSION="${VERSION#v}"
+
+          ssh \
+            -p "${{ secrets.CDN_SSH_PORT }}" \
+            "${{ secrets.CDN_SSH_USER }}@${{ secrets.CDN_SSH_HOST }}" \
+            "cd '${{ secrets.CDN_PATH }}/$PROJECT' && \
+             rm -f latest && \
+             ln -s '$VERSION' latest"
+
+          echo "latest -> $VERSION"
