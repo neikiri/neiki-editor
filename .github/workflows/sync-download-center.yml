@@ -1,0 +1,69 @@
+name: Sync Download Center
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to synchronize'
+        required: true
+        type: string
+
+  push:
+    tags:
+      - 'v*.*.*'
+      - '*.*.*'
+
+  delete:
+
+jobs:
+  sync:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Sync Download Center
+        env:
+          DOWNLOAD_CENTER_TOKEN: ${{ secrets.DOWNLOAD_CENTER_TOKEN }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.tag }}"
+          else
+            TAG="$GITHUB_REF_NAME"
+          fi
+
+          payload=$(jq -n \
+            --arg repository "$GITHUB_REPOSITORY" \
+            --arg tag "$TAG" \
+            --arg action "sync" \
+            '{repository:$repository,tag:$tag,action:$action}')
+
+          curl --fail-with-body -sS \
+            -X POST \
+            -H "Authorization: Bearer ${DOWNLOAD_CENTER_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -H "Accept: application/json" \
+            --data "$payload" \
+            https://update.neikiri.dev/download-center/sync.php
+
+  delete:
+    if: github.event_name == 'delete' && github.event.ref_type == 'tag'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Delete from Download Center
+        env:
+          DOWNLOAD_CENTER_TOKEN: ${{ secrets.DOWNLOAD_CENTER_TOKEN }}
+        run: |
+          payload=$(jq -n \
+            --arg repository "$GITHUB_REPOSITORY" \
+            --arg tag "${{ github.event.ref }}" \
+            --arg action "delete" \
+            '{repository:$repository,tag:$tag,action:$action}')
+
+          curl --fail-with-body -sS \
+            -X POST \
+            -H "Authorization: Bearer ${DOWNLOAD_CENTER_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -H "Accept: application/json" \
+            --data "$payload" \
+            https://update.neikiri.dev/download-center/sync.php
