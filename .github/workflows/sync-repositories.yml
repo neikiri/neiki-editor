@@ -5,37 +5,76 @@ on:
     branches:
       - "**"
 
+  release:
+    types:
+      - published
+      - edited
+      - deleted
+
   workflow_dispatch:
+
+concurrency:
+  group: sync-${{ github.repository }}
+  cancel-in-progress: true
 
 jobs:
   sync:
     runs-on: ubuntu-latest
 
+    env:
+      REPO: ${{ github.event.repository.name }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      GITHUB_API_URL: ${{ github.api_url }}
+      GITHUB_TOKEN: ${{ github.token }}
+
     steps:
+
+      # ======================================================
+      # CHECKOUT
+      # ======================================================
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # ==========================================
-      # GitLab
-      # ==========================================
+      # ======================================================
+      # GITLAB
+      # ======================================================
 
       - name: Sync to GitLab
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
         run: |
-          set -e
+          set -euo pipefail
 
-          echo "=== Syncing to GitLab ==="
+          GITLAB_URL="https://gitlab.com"
+          GITLAB_API="${GITLAB_URL}/api/v4"
+
+          echo "=================================================="
+          echo "Syncing to GitLab"
+          echo "=================================================="
+
+          # --------------------------------------------------
+          # GitLab remote
+          # --------------------------------------------------
 
           git remote add gitlab \
-            "https://oauth2:${GITLAB_TOKEN}@gitlab.com/neikiri/${{ github.event.repository.name }}.git"
+            "https://oauth2:${GITLAB_TOKEN}@gitlab.com/neikiri/${REPO}.git"
 
           git fetch origin --prune --tags
 
-          # Push all branches
-          git for-each-ref --format='%(refname)' refs/remotes/origin/ | while read -r ref; do
+          # --------------------------------------------------
+          # Branches
+          # --------------------------------------------------
+
+          echo ""
+          echo "=== Syncing GitLab branches ==="
+
+          git for-each-ref \
+            --format='%(refname)' \
+            refs/remotes/origin/ | while read -r ref; do
+
             branch="${ref#refs/remotes/origin/}"
 
             if [ "$branch" = "HEAD" ]; then
@@ -43,67 +82,907 @@ jobs:
             fi
 
             echo "Syncing GitLab branch: $branch"
-            git push gitlab "$ref:refs/heads/$branch" --force
+
+            git push \
+              gitlab \
+              "$ref:refs/heads/$branch" \
+              --force
+
           done
 
-          # Push all tags
-          git push gitlab 'refs/tags/*:refs/tags/*' --force
+          # --------------------------------------------------
+          # Tags
+          # --------------------------------------------------
 
-          # Remove branches that no longer exist on GitHub
+          echo ""
+          echo "=== Syncing GitLab tags ==="
+
+          git push \
+            gitlab \
+            'refs/tags/*:refs/tags/*' \
+            --force
+
+          # --------------------------------------------------
+          # Remove obsolete branches
+          # --------------------------------------------------
+
+          echo ""
+          echo "=== Removing obsolete GitLab branches ==="
+
           git ls-remote --heads gitlab | while read -r sha ref; do
+
             branch="${ref#refs/heads/}"
 
-            if ! git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+            if ! git show-ref \
+              --verify \
+              --quiet \
+              "refs/remotes/origin/$branch"; then
+
               echo "Deleting GitLab branch: $branch"
-              git push gitlab --delete "$branch"
+
+              git push \
+                gitlab \
+                --delete "$branch"
+
             fi
+
           done
 
-          echo "GitLab sync completed."
+          echo ""
+          echo "GitLab repository sync completed."
 
-      # ==========================================
-      # Forgejo
-      # ==========================================
+          # ==================================================
+          # GITLAB PROJECT
+          # ==================================================
+
+          echo ""
+          echo "=================================================="
+          echo "GitHub Releases -> GitLab Releases"
+          echo "=================================================="
+
+          ENCODED_PROJECT=$(jq -rn \
+            --arg value "neikiri/${REPO}" \
+            '$value | @uri')
+
+          GITLAB_PROJECT_JSON=$(curl -fsS \
+            --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+            "${GITLAB_API}/projects/${ENCODED_PROJECT}")
+
+          GITLAB_PROJECT_ID=$(echo "$GITLAB_PROJECT_JSON" | jq -r '.id')
+
+          if [ -z "$GITLAB_PROJECT_ID" ] ||
+             [ "$GITLAB_PROJECT_ID" = "null" ]; then
+
+            echo "::warning::GitLab project neikiri/${REPO} was not found."
+            exit 0
+
+          fi
+
+          echo "GitLab project ID: ${GITLAB_PROJECT_ID}"
+
+          # ==================================================
+          # GET ALL GITHUB RELEASES
+          # ==================================================
+
+          echo "[]" > /tmp/github-releases.json
+
+          PAGE=1
+
+          while true; do
+
+            RESPONSE=$(curl -fsS \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -H "X-GitHub-Api-Version: 2026-03-10" \
+              "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/releases?per_page=100&page=${PAGE}")
+
+            COUNT=$(echo "$RESPONSE" | jq 'length')
+
+            if [ "$COUNT" -eq 0 ]; then
+              break
+            fi
+
+            jq -s '.[0] + .[1]' \
+              /tmp/github-releases.json \
+              <(echo "$RESPONSE") \
+              > /tmp/github-releases.tmp
+
+            mv \
+              /tmp/github-releases.tmp \
+              /tmp/github-releases.json
+
+            if [ "$COUNT" -lt 100 ]; then
+              break
+            fi
+
+            PAGE=$((PAGE + 1))
+
+          done
+
+          echo ""
+          echo "GitHub releases found: $(jq 'length' /tmp/github-releases.json)"
+
+          # ==================================================
+          # PROCESS EACH RELEASE
+          # ==================================================
+
+          jq -c '.[]' /tmp/github-releases.json |
+          while read -r release; do
+
+            TAG_NAME=$(echo "$release" | jq -r '.tag_name')
+            RELEASE_NAME=$(echo "$release" | jq -r '.name // .tag_name')
+            RELEASE_BODY=$(echo "$release" | jq -r '.body // ""')
+            TARGET_COMMITISH=$(echo "$release" | jq -r '.target_commitish // "main"')
+            ASSETS_URL=$(echo "$release" | jq -r '.assets_url')
+
+            ENCODED_TAG=$(jq -rn \
+              --arg value "$TAG_NAME" \
+              '$value | @uri')
+
+            echo ""
+            echo "=================================================="
+            echo "Release: ${TAG_NAME}"
+            echo "=================================================="
+
+            # ==================================================
+            # CREATE / UPDATE GITLAB RELEASE
+            # ==================================================
+
+            HTTP_STATUS=$(curl -sS \
+              -o /tmp/gitlab-release.json \
+              -w "%{http_code}" \
+              --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+              "${GITLAB_API}/projects/${GITLAB_PROJECT_ID}/releases/${ENCODED_TAG}")
+
+            if [ "$HTTP_STATUS" = "404" ]; then
+
+              echo "Creating GitLab release..."
+
+              jq -n \
+                --arg name "$RELEASE_NAME" \
+                --arg tag "$TAG_NAME" \
+                --arg description "$RELEASE_BODY" \
+                --arg ref "$TARGET_COMMITISH" \
+                '{
+                  name: $name,
+                  tag_name: $tag,
+                  description: $description,
+                  ref: $ref
+                }' \
+                > /tmp/gitlab-release-payload.json
+
+              curl -fsS \
+                --request POST \
+                --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+                --header "Content-Type: application/json" \
+                --data @/tmp/gitlab-release-payload.json \
+                "${GITLAB_API}/projects/${GITLAB_PROJECT_ID}/releases"
+
+              echo "✓ GitLab release created."
+
+            elif [ "$HTTP_STATUS" = "200" ]; then
+
+              echo "Updating GitLab release..."
+
+              jq -n \
+                --arg name "$RELEASE_NAME" \
+                --arg description "$RELEASE_BODY" \
+                '{
+                  name: $name,
+                  description: $description
+                }' \
+                > /tmp/gitlab-release-payload.json
+
+              curl -fsS \
+                --request PUT \
+                --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+                --header "Content-Type: application/json" \
+                --data @/tmp/gitlab-release-payload.json \
+                "${GITLAB_API}/projects/${GITLAB_PROJECT_ID}/releases/${ENCODED_TAG}"
+
+              echo "✓ GitLab release updated."
+
+            else
+
+              echo "::warning::Could not check GitLab release ${TAG_NAME}. HTTP ${HTTP_STATUS}"
+              continue
+
+            fi
+
+            # ==================================================
+            # GET GITHUB CUSTOM RELEASE ASSETS
+            # ==================================================
+
+            echo "[]" > /tmp/github-assets.json
+
+            ASSET_PAGE=1
+
+            while true; do
+
+              ASSET_RESPONSE=$(curl -fsS \
+                -H "Accept: application/vnd.github+json" \
+                -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+                -H "X-GitHub-Api-Version: 2026-03-10" \
+                "${ASSETS_URL}?per_page=100&page=${ASSET_PAGE}")
+
+              ASSET_COUNT=$(echo "$ASSET_RESPONSE" | jq 'length')
+
+              if [ "$ASSET_COUNT" -eq 0 ]; then
+                break
+              fi
+
+              jq -s '.[0] + .[1]' \
+                /tmp/github-assets.json \
+                <(echo "$ASSET_RESPONSE") \
+                > /tmp/github-assets.tmp
+
+              mv \
+                /tmp/github-assets.tmp \
+                /tmp/github-assets.json
+
+              if [ "$ASSET_COUNT" -lt 100 ]; then
+                break
+              fi
+
+              ASSET_PAGE=$((ASSET_PAGE + 1))
+
+            done
+
+            CUSTOM_ASSET_COUNT=$(jq 'length' /tmp/github-assets.json)
+
+            echo ""
+            echo "Custom GitHub release assets: ${CUSTOM_ASSET_COUNT}"
+
+            # ==================================================
+            # PACKAGE NAME / VERSION
+            # ==================================================
+
+            PACKAGE_NAME="release-assets"
+
+            SAFE_PACKAGE_VERSION=$(echo "$TAG_NAME" |
+              sed 's/[^a-zA-Z0-9._-]/-/g')
+
+            PACKAGE_BASE_URL="${GITLAB_API}/projects/${GITLAB_PROJECT_ID}/packages/generic/${PACKAGE_NAME}/${SAFE_PACKAGE_VERSION}"
+
+            # ==================================================
+            # FIND EXISTING PACKAGE
+            # ==================================================
+
+            PACKAGE_JSON=$(curl -fsS \
+              --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+              --get \
+              --data-urlencode "package_type=generic" \
+              --data-urlencode "package_name=${PACKAGE_NAME}" \
+              --data-urlencode "package_version=${SAFE_PACKAGE_VERSION}" \
+              --data-urlencode "per_page=100" \
+              "${GITLAB_API}/projects/${GITLAB_PROJECT_ID}/packages")
+
+            PACKAGE_ID=$(echo "$PACKAGE_JSON" |
+              jq -r \
+                --arg version "$SAFE_PACKAGE_VERSION" \
+                '.[] |
+                 select(
+                   .package_type == "generic" and
+                   .name == "release-assets" and
+                   .version == $version
+                 ) |
+                 .id' |
+              head -n 1)
+
+            if [ -z "$PACKAGE_ID" ] ||
+               [ "$PACKAGE_ID" = "null" ]; then
+
+              PACKAGE_ID=""
+
+            fi
+
+            # ==================================================
+            # NO CUSTOM ASSETS
+            # ==================================================
+
+            if [ "$CUSTOM_ASSET_COUNT" -eq 0 ]; then
+
+              echo "No custom release assets."
+
+              if [ -n "$PACKAGE_ID" ]; then
+
+                echo "Removing obsolete package..."
+
+                curl -fsS \
+                  --request DELETE \
+                  --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+                  "${GITLAB_API}/projects/${GITLAB_PROJECT_ID}/packages/${PACKAGE_ID}"
+
+                echo "✓ Package removed."
+
+              fi
+
+            else
+
+              # ==================================================
+              # GET CURRENT PACKAGE FILES
+              # ==================================================
+
+              if [ -n "$PACKAGE_ID" ]; then
+
+                curl -fsS \
+                  --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+                  "${GITLAB_API}/projects/${GITLAB_PROJECT_ID}/packages/${PACKAGE_ID}/package_files?per_page=100" \
+                  > /tmp/gitlab-package-files.json
+
+              else
+
+                echo "[]" > /tmp/gitlab-package-files.json
+
+              fi
+
+              GITLAB_FILE_COUNT=$(jq 'length' /tmp/gitlab-package-files.json)
+
+              PACKAGE_CURRENT=true
+
+              # --------------------------------------------------
+              # File count must match
+              # --------------------------------------------------
+
+              if [ "$GITLAB_FILE_COUNT" -ne "$CUSTOM_ASSET_COUNT" ]; then
+
+                PACKAGE_CURRENT=false
+
+                echo "Package file count differs."
+                echo "GitHub: ${CUSTOM_ASSET_COUNT}"
+                echo "GitLab: ${GITLAB_FILE_COUNT}"
+
+              fi
+
+              # --------------------------------------------------
+              # Check every asset by SHA-256
+              # --------------------------------------------------
+
+              if [ "$PACKAGE_CURRENT" = true ]; then
+
+                while read -r asset; do
+
+                  ASSET_NAME=$(echo "$asset" | jq -r '.name')
+                  GITHUB_DIGEST=$(echo "$asset" | jq -r '.digest // ""')
+
+                  if [[ "$ASSET_NAME" == */* ]] ||
+                     [[ "$ASSET_NAME" == *".."* ]] ||
+                     [ -z "$ASSET_NAME" ]; then
+
+                    echo "::error::Unsafe asset filename: ${ASSET_NAME}"
+                    exit 1
+
+                  fi
+
+                  MATCH_COUNT=$(jq -r \
+                    --arg name "$ASSET_NAME" \
+                    '[.[] | select(.file_name == $name)] | length' \
+                    /tmp/gitlab-package-files.json)
+
+                  if [ "$MATCH_COUNT" -ne 1 ]; then
+
+                    PACKAGE_CURRENT=false
+                    echo "Asset ${ASSET_NAME}: file count is ${MATCH_COUNT}"
+
+                    continue
+
+                  fi
+
+                  GITLAB_SHA256=$(jq -r \
+                    --arg name "$ASSET_NAME" \
+                    '.[] |
+                     select(.file_name == $name) |
+                     .file_sha256' \
+                    /tmp/gitlab-package-files.json)
+
+                  if [ -z "$GITHUB_DIGEST" ] ||
+                     [[ "$GITHUB_DIGEST" != sha256:* ]]; then
+
+                    PACKAGE_CURRENT=false
+
+                    continue
+
+                  fi
+
+                  EXPECTED_SHA256="${GITHUB_DIGEST#sha256:}"
+
+                  if [ "$GITLAB_SHA256" != "$EXPECTED_SHA256" ]; then
+
+                    PACKAGE_CURRENT=false
+
+                    echo "Asset ${ASSET_NAME}: SHA-256 differs."
+
+                  else
+
+                    echo "✓ ${ASSET_NAME} unchanged."
+
+                  fi
+
+                done < <(jq -c '.[]' /tmp/github-assets.json)
+
+              fi
+
+              # ==================================================
+              # REBUILD PACKAGE IF NECESSARY
+              # ==================================================
+
+              if [ "$PACKAGE_CURRENT" = true ]; then
+
+                echo ""
+                echo "✓ GitLab Package Registry is synchronized."
+
+              else
+
+                echo ""
+                echo "Package needs rebuilding."
+
+                # ------------------------------------------------
+                # Delete entire package.
+                #
+                # This also removes duplicate files such as:
+                # test.txt
+                # test.txt
+                # ------------------------------------------------
+
+                if [ -n "$PACKAGE_ID" ]; then
+
+                  echo "Deleting old package..."
+
+                  curl -fsS \
+                    --request DELETE \
+                    --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+                    "${GITLAB_API}/projects/${GITLAB_PROJECT_ID}/packages/${PACKAGE_ID}"
+
+                  echo "✓ Old package deleted."
+
+                fi
+
+                ASSET_DIR="/tmp/release-assets-${SAFE_PACKAGE_VERSION}"
+
+                rm -rf "$ASSET_DIR"
+                mkdir -p "$ASSET_DIR"
+
+                # ------------------------------------------------
+                # Download + verify + upload
+                # ------------------------------------------------
+
+                while read -r asset; do
+
+                  ASSET_NAME=$(echo "$asset" | jq -r '.name')
+                  ASSET_URL=$(echo "$asset" | jq -r '.browser_download_url')
+                  GITHUB_DIGEST=$(echo "$asset" | jq -r '.digest // ""')
+
+                  echo ""
+                  echo "Asset: ${ASSET_NAME}"
+
+                  if [[ "$ASSET_NAME" == */* ]] ||
+                     [[ "$ASSET_NAME" == *".."* ]] ||
+                     [ -z "$ASSET_NAME" ]; then
+
+                    echo "::error::Unsafe asset filename: ${ASSET_NAME}"
+                    exit 1
+
+                  fi
+
+                  ENCODED_ASSET_NAME=$(jq -rn \
+                    --arg value "$ASSET_NAME" \
+                    '$value | @uri')
+
+                  ASSET_PATH="${ASSET_DIR}/${ASSET_NAME}"
+
+                  echo "Downloading..."
+
+                  curl -fL \
+                    -H "Accept: application/octet-stream" \
+                    -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+                    -H "X-GitHub-Api-Version: 2026-03-10" \
+                    "$ASSET_URL" \
+                    -o "$ASSET_PATH"
+
+                  LOCAL_SHA256=$(sha256sum "$ASSET_PATH" |
+                    awk '{print $1}')
+
+                  if [ -n "$GITHUB_DIGEST" ] &&
+                     [[ "$GITHUB_DIGEST" == sha256:* ]]; then
+
+                    EXPECTED_SHA256="${GITHUB_DIGEST#sha256:}"
+
+                    if [ "$LOCAL_SHA256" != "$EXPECTED_SHA256" ]; then
+
+                      echo "::error::SHA-256 mismatch for ${ASSET_NAME}"
+                      echo "Expected: ${EXPECTED_SHA256}"
+                      echo "Actual:   ${LOCAL_SHA256}"
+
+                      exit 1
+
+                    fi
+
+                    echo "✓ SHA-256 verified."
+
+                  fi
+
+                  echo "Uploading..."
+
+                  curl -fL \
+                    --request PUT \
+                    --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+                    --upload-file "$ASSET_PATH" \
+                    "${PACKAGE_BASE_URL}/${ENCODED_ASSET_NAME}"
+
+                  echo "✓ ${ASSET_NAME} uploaded."
+
+                done < <(jq -c '.[]' /tmp/github-assets.json)
+
+              fi
+
+            fi
+
+            # ==================================================
+            # RELEASE LINKS
+            # ==================================================
+
+            echo ""
+            echo "=== Synchronizing GitLab release links ==="
+
+            curl -fsS \
+              --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+              "${GITLAB_API}/projects/${GITLAB_PROJECT_ID}/releases/${ENCODED_TAG}/assets/links" \
+              > /tmp/gitlab-release-links.json
+
+            while read -r asset; do
+
+              ASSET_NAME=$(echo "$asset" | jq -r '.name')
+
+              if [[ "$ASSET_NAME" == */* ]] ||
+                 [[ "$ASSET_NAME" == *".."* ]] ||
+                 [ -z "$ASSET_NAME" ]; then
+
+                continue
+
+              fi
+
+              ENCODED_ASSET_NAME=$(jq -rn \
+                --arg value "$ASSET_NAME" \
+                '$value | @uri')
+
+              ASSET_GITLAB_URL="${PACKAGE_BASE_URL}/${ENCODED_ASSET_NAME}"
+              DIRECT_ASSET_PATH="/assets/${ASSET_NAME}"
+
+              EXISTING_LINK_ID=$(jq -r \
+                --arg name "$ASSET_NAME" \
+                '.[] |
+                 select(.name == $name) |
+                 .id' \
+                /tmp/gitlab-release-links.json |
+                head -n 1)
+
+              jq -n \
+                --arg name "$ASSET_NAME" \
+                --arg url "$ASSET_GITLAB_URL" \
+                --arg path "$DIRECT_ASSET_PATH" \
+                '{
+                  name: $name,
+                  url: $url,
+                  direct_asset_path: $path,
+                  link_type: "package"
+                }' \
+                > /tmp/gitlab-release-link.json
+
+              if [ -n "$EXISTING_LINK_ID" ] &&
+                 [ "$EXISTING_LINK_ID" != "null" ]; then
+
+                echo "Updating link: ${ASSET_NAME}"
+
+                curl -fsS \
+                  --request PUT \
+                  --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+                  --header "Content-Type: application/json" \
+                  --data @/tmp/gitlab-release-link.json \
+                  "${GITLAB_API}/projects/${GITLAB_PROJECT_ID}/releases/${ENCODED_TAG}/assets/links/${EXISTING_LINK_ID}"
+
+              else
+
+                echo "Creating link: ${ASSET_NAME}"
+
+                curl -fsS \
+                  --request POST \
+                  --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+                  --header "Content-Type: application/json" \
+                  --data @/tmp/gitlab-release-link.json \
+                  "${GITLAB_API}/projects/${GITLAB_PROJECT_ID}/releases/${ENCODED_TAG}/assets/links"
+
+              fi
+
+              echo "✓ Release link synchronized."
+
+            done < <(jq -c '.[]' /tmp/github-assets.json)
+
+            # ==================================================
+            # REMOVE OBSOLETE RELEASE LINKS
+            # ==================================================
+
+            while read -r gitlab_asset; do
+
+              GITLAB_ASSET_ID=$(echo "$gitlab_asset" | jq -r '.id')
+              GITLAB_ASSET_NAME=$(echo "$gitlab_asset" | jq -r '.name')
+
+              if ! jq -e \
+                --arg name "$GITLAB_ASSET_NAME" \
+                '.[] |
+                 select(.name == $name)' \
+                /tmp/github-assets.json \
+                > /dev/null; then
+
+                echo "Deleting obsolete release link: ${GITLAB_ASSET_NAME}"
+
+                curl -fsS \
+                  --request DELETE \
+                  --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+                  "${GITLAB_API}/projects/${GITLAB_PROJECT_ID}/releases/${ENCODED_TAG}/assets/links/${GITLAB_ASSET_ID}"
+
+              fi
+
+            done < <(jq -c '.[]' /tmp/gitlab-release-links.json)
+
+            echo ""
+            echo "✓ Release ${TAG_NAME} synchronized."
+
+          done
+
+          # ==================================================
+          # REMOVE OBSOLETE GITLAB RELEASES
+          # ==================================================
+
+          echo ""
+          echo "=================================================="
+          echo "Removing obsolete GitLab releases"
+          echo "=================================================="
+
+          echo "[]" > /tmp/gitlab-releases.json
+
+          PAGE=1
+
+          while true; do
+
+            RESPONSE=$(curl -fsS \
+              --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+              "${GITLAB_API}/projects/${GITLAB_PROJECT_ID}/releases?per_page=100&page=${PAGE}")
+
+            COUNT=$(echo "$RESPONSE" | jq 'length')
+
+            if [ "$COUNT" -eq 0 ]; then
+              break
+            fi
+
+            jq -s '.[0] + .[1]' \
+              /tmp/gitlab-releases.json \
+              <(echo "$RESPONSE") \
+              > /tmp/gitlab-releases.tmp
+
+            mv \
+              /tmp/gitlab-releases.tmp \
+              /tmp/gitlab-releases.json
+
+            if [ "$COUNT" -lt 100 ]; then
+              break
+            fi
+
+            PAGE=$((PAGE + 1))
+
+          done
+
+          while read -r TAG_NAME; do
+
+            if ! jq -e \
+              --arg tag "$TAG_NAME" \
+              '.[] |
+               select(.tag_name == $tag)' \
+              /tmp/github-releases.json \
+              > /dev/null; then
+
+              echo ""
+              echo "Obsolete release: ${TAG_NAME}"
+
+              ENCODED_TAG=$(jq -rn \
+                --arg value "$TAG_NAME" \
+                '$value | @uri')
+
+              # ------------------------------------------------
+              # Delete GitLab release
+              # ------------------------------------------------
+
+              curl -fsS \
+                --request DELETE \
+                --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+                "${GITLAB_API}/projects/${GITLAB_PROJECT_ID}/releases/${ENCODED_TAG}"
+
+              echo "✓ GitLab release deleted."
+
+              # ------------------------------------------------
+              # Delete Generic Package
+              # ------------------------------------------------
+
+              SAFE_PACKAGE_VERSION=$(echo "$TAG_NAME" |
+                sed 's/[^a-zA-Z0-9._-]/-/g')
+
+              PACKAGE_JSON=$(curl -fsS \
+                --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+                --get \
+                --data-urlencode "package_type=generic" \
+                --data-urlencode "package_name=release-assets" \
+                --data-urlencode "package_version=${SAFE_PACKAGE_VERSION}" \
+                --data-urlencode "per_page=100" \
+                "${GITLAB_API}/projects/${GITLAB_PROJECT_ID}/packages")
+
+              PACKAGE_ID=$(echo "$PACKAGE_JSON" |
+                jq -r \
+                  --arg version "$SAFE_PACKAGE_VERSION" \
+                  '.[] |
+                   select(
+                     .package_type == "generic" and
+                     .name == "release-assets" and
+                     .version == $version
+                   ) |
+                   .id' |
+                head -n 1)
+
+              if [ -n "$PACKAGE_ID" ] &&
+                 [ "$PACKAGE_ID" != "null" ]; then
+
+                echo "Deleting package release-assets/${SAFE_PACKAGE_VERSION}"
+
+                curl -fsS \
+                  --request DELETE \
+                  --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+                  "${GITLAB_API}/projects/${GITLAB_PROJECT_ID}/packages/${PACKAGE_ID}"
+
+                echo "✓ Package deleted."
+
+              fi
+
+            fi
+
+          done < <(jq -r '.[].tag_name' /tmp/gitlab-releases.json)
+
+          echo ""
+          echo "=================================================="
+          echo "GitLab synchronization completed."
+          echo "=================================================="
+
+
+      # ======================================================
+      # FORGEJO
+      # ======================================================
 
       - name: Sync to Forgejo
         env:
           FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
+          GITHUB_REPO_PRIVATE: ${{ github.event.repository.private }}
+          GITHUB_REPO_DESCRIPTION: ${{ github.event.repository.description }}
         run: |
-          echo "=== Syncing to Forgejo ==="
+          set -euo pipefail
 
           FORGEJO_URL="https://git.neikiri.dev"
-          REPO="${{ github.event.repository.name }}"
+          FORGEJO_API="${FORGEJO_URL}/api/v1"
 
-          # Check if Forgejo is available
+          echo "=================================================="
+          echo "Syncing to Forgejo"
+          echo "=================================================="
+
+          # ==================================================
+          # CHECK FORGEJO AVAILABILITY
+          # ==================================================
+
           if ! curl -fsS \
               --connect-timeout 5 \
               --max-time 10 \
-              "$FORGEJO_URL/api/v1/version" > /dev/null; then
+              "${FORGEJO_API}/version" > /dev/null; then
 
             echo "::warning::Forgejo is unavailable. Skipping Forgejo sync."
+
             exit 0
+
           fi
 
           echo "Forgejo is available."
 
-          # Check if repository exists
-          if ! curl -fsS \
-              --connect-timeout 5 \
-              --max-time 10 \
-              -H "Authorization: token ${FORGEJO_TOKEN}" \
-              "$FORGEJO_URL/api/v1/repos/neikiri/$REPO" > /dev/null; then
+          # ==================================================
+          # CHECK REPOSITORY
+          # ==================================================
 
-            echo "::warning::Forgejo repository neikiri/$REPO does not exist. Skipping Forgejo sync."
+          REPO_STATUS=$(curl -sS \
+            -o /tmp/forgejo-repository.json \
+            -w "%{http_code}" \
+            --connect-timeout 5 \
+            --max-time 10 \
+            -H "Authorization: token ${FORGEJO_TOKEN}" \
+            "${FORGEJO_API}/repos/neikiri/${REPO}")
+
+          if [ "$REPO_STATUS" = "404" ]; then
+
+            echo ""
+            echo "Forgejo repository does not exist."
+            echo "Creating neikiri/${REPO}..."
+
+            PRIVATE_VALUE="${GITHUB_REPO_PRIVATE:-false}"
+
+            DESCRIPTION_VALUE="${GITHUB_REPO_DESCRIPTION:-}"
+
+            jq -n \
+              --arg name "$REPO" \
+              --arg description "$DESCRIPTION_VALUE" \
+              --argjson private "$PRIVATE_VALUE" \
+              '{
+                name: $name,
+                description: $description,
+                private: $private,
+                auto_init: false
+              }' \
+              > /tmp/forgejo-create-repository.json
+
+            CREATE_STATUS=$(curl -sS \
+              -o /tmp/forgejo-create-response.json \
+              -w "%{http_code}" \
+              --request POST \
+              --connect-timeout 5 \
+              --max-time 15 \
+              -H "Authorization: token ${FORGEJO_TOKEN}" \
+              -H "Content-Type: application/json" \
+              --data @/tmp/forgejo-create-repository.json \
+              "${FORGEJO_API}/user/repos")
+
+            if [ "$CREATE_STATUS" = "201" ]; then
+
+              echo "✓ Forgejo repository created."
+
+            elif [ "$CREATE_STATUS" = "409" ]; then
+
+              echo "Forgejo repository already exists."
+
+            else
+
+              echo "::warning::Could not create Forgejo repository."
+              echo "HTTP status: ${CREATE_STATUS}"
+
+              cat /tmp/forgejo-create-response.json || true
+
+              exit 0
+
+            fi
+
+          elif [ "$REPO_STATUS" = "200" ]; then
+
+            echo "Forgejo repository already exists."
+
+          else
+
+            echo "::warning::Could not check Forgejo repository."
+            echo "HTTP status: ${REPO_STATUS}"
+
             exit 0
+
           fi
+
+          # ==================================================
+          # FORGEJO REMOTE
+          # ==================================================
 
           git remote add forgejo \
             "https://neikiri:${FORGEJO_TOKEN}@git.neikiri.dev/neikiri/${REPO}.git"
 
           git fetch origin --prune --tags
 
-          # Push all branches
-          git for-each-ref --format='%(refname)' refs/remotes/origin/ | while read -r ref; do
+          # ==================================================
+          # BRANCHES
+          # ==================================================
+
+          echo ""
+          echo "=== Syncing Forgejo branches ==="
+
+          git for-each-ref \
+            --format='%(refname)' \
+            refs/remotes/origin/ | while read -r ref; do
+
             branch="${ref#refs/remotes/origin/}"
 
             if [ "$branch" = "HEAD" ]; then
@@ -111,20 +990,53 @@ jobs:
             fi
 
             echo "Syncing Forgejo branch: $branch"
-            git push forgejo "$ref:refs/heads/$branch" --force
+
+            git push \
+              forgejo \
+              "$ref:refs/heads/$branch" \
+              --force
+
           done
 
-          # Push all tags
-          git push forgejo 'refs/tags/*:refs/tags/*' --force
+          # ==================================================
+          # TAGS
+          # ==================================================
 
-          # Remove branches that no longer exist on GitHub
+          echo ""
+          echo "=== Syncing Forgejo tags ==="
+
+          git push \
+            forgejo \
+            'refs/tags/*:refs/tags/*' \
+            --force
+
+          # ==================================================
+          # REMOVE OBSOLETE BRANCHES
+          # ==================================================
+
+          echo ""
+          echo "=== Removing obsolete Forgejo branches ==="
+
           git ls-remote --heads forgejo | while read -r sha ref; do
+
             branch="${ref#refs/heads/}"
 
-            if ! git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+            if ! git show-ref \
+              --verify \
+              --quiet \
+              "refs/remotes/origin/$branch"; then
+
               echo "Deleting Forgejo branch: $branch"
-              git push forgejo --delete "$branch"
+
+              git push \
+                forgejo \
+                --delete "$branch"
+
             fi
+
           done
 
-          echo "Forgejo sync completed."
+          echo ""
+          echo "=================================================="
+          echo "Forgejo synchronization completed."
+          echo "=================================================="
